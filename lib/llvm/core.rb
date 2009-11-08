@@ -514,7 +514,7 @@ module LLVM
     attach_function :LLVMDisposePassManager, [:pointer], :void
   end
   
-  module Util # :nodoc:
+  module Syntax # :nodoc:
     module_function
     
     # Symbols over LLVM_INT_PREDICATE
@@ -756,7 +756,7 @@ module LLVM
   end
   
   class ConstantInt < Constant
-    include Util
+    include Syntax
     
     def self.all_ones
       from_ptr(C.LLVMConstAllOnes(type))
@@ -853,7 +853,7 @@ module LLVM
   end
   
   class ConstantReal < Constant
-    include Util
+    include Syntax
     
     def self.from_f(n)
       from_ptr(C.LLVMConstReal(type, n))
@@ -1004,7 +1004,7 @@ module LLVM
   end
   
   class Builder
-    include Util
+    include Syntax
     
     class << self
       private :new

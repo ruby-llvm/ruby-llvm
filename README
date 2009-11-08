@@ -1,0 +1,13 @@
+= LLVM
+
+Author:: Jeremy Voorhis
+Copyright:: Copyright (c) 2009 Jeremy Voorhis
+License:: BSD 3-clause (see LICENSE)
+
+This package contains Ruby bindings to the LLVM api, enabling users to make use
+of LLVM's optimization passes and JIT compilation for implementing compiled
+DSLs, callback functions, or fast Ruby method implementations.
+
+== Requirements
+* LLVM >= 2.6, compiled with SHARED_LIBRARY=1
+* Fairly complete support for Ruby's foreign function interface
