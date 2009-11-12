@@ -117,12 +117,21 @@ module LLVM
       new(C.LLVMCreateGenericValueOfInt(type, i, 0))
     end
     
+    def self.from_f(f)
+      type = LLVM::Float.type
+      new(C.LLVMCreateGenericValueOfFloat(type, f))
+    end
+    
     def self.from_ptr(ptr)
       new(ptr)
     end
     
     def to_i
       C.LLVMGenericValueToInt(self, 0)
+    end
+    
+    def to_f
+      C.LLVMGenericValueToFloat(LLVM::Float.type, self)
     end
   end
 end
