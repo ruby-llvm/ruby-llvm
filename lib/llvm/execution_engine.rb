@@ -97,6 +97,10 @@ module LLVM
           C.LLVMRunFunction(self, fun, args.size, args_ptr))
       end
     end
+    
+    def pointer_to_global(val)
+      C.LLVMGetPointerToGlobal(self, val)
+    end
   end
   
   class GenericValue
