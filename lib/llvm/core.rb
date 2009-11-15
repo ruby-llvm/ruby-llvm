@@ -593,6 +593,10 @@ module LLVM
       private :new
     end
     
+    def self.from_ptr(ptr)
+      ptr.null? ? nil : new(ptr)
+    end
+    
     def initialize(ptr) # :nodoc:
       @ptr = ptr
     end
@@ -619,6 +623,10 @@ module LLVM
       
       type = C.LLVMFunctionType(result_type, arg_types_ptr, arg_types.size, 0)
       Function.from_ptr(C.LLVMAddFunction(self, name.to_s, type))
+    end
+    
+    def named_function(name)
+      self.class.from_ptr(C.LLVMGetNamedFunction(self, name))
     end
     
     # Print the module's IR to stdout
@@ -658,6 +666,18 @@ module LLVM
     
     def self.from_ptr(ptr)
       ptr.null? ? nil : new(ptr)
+    end
+    
+    def self.array(type, element_count)
+      from_ptr(C.LLVMArrayType(type, element_count))
+    end
+    
+    def self.pointer(type, address_space = 0)
+      from_ptr(C.LLVMPointerType(type, address_space))
+    end
+    
+    def self.vector(type, element_count)
+      from_ptr(C.LLVMVectorType(type, element_count))
     end
   end
   
@@ -1214,15 +1234,15 @@ module LLVM
     # Casts
     
     def trunc(val, type, name)
-      Instruction.from_ptr(C.LLVMBuildTrunc(self, type, name))
+      Instruction.from_ptr(C.LLVMBuildTrunc(self, val, type, name))
     end
     
     def zext(val, type, name)
-      Instruction.from_ptr(C.LLVMBuildZExt(self, type, name))
+      Instruction.from_ptr(C.LLVMBuildZExt(self, val, type, name))
     end
     
     def sext(val, type, name)
-      Instruction.from_ptr(C.LLVMBuildSExt(self, type, name))
+      Instruction.from_ptr(C.LLVMBuildSExt(self, val, type, name))
     end
     
     def fp2ui(val, type, name)
