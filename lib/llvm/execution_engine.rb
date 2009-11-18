@@ -98,8 +98,8 @@ module LLVM
       end
     end
     
-    def pointer_to_global(val)
-      C.LLVMGetPointerToGlobal(self, val)
+    def pointer_to_global(global)
+      C.LLVMGetPointerToGlobal(self, global)
     end
   end
   

@@ -573,9 +573,7 @@ module LLVM
     
     # Creates a new Context
     def self.create
-      new(FFI::AutoPointer.new(
-            C.LLVMContextCreate(),
-            self.method(:release)))
+      new(C.LLVMContextCreate())
     end
     
     # Obtains a reference to the global Context
@@ -583,8 +581,8 @@ module LLVM
       new(C.LLVMGetGlobalContext())
     end
     
-    def self.release(ptr) # :nodoc:
-      C.LLVMContextDispose(ptr)
+    def dispose
+      C.LLVMContextDispose(@ptr)
     end
   end
   
@@ -606,15 +604,11 @@ module LLVM
     end
     
     def self.create_with_name(name)
-      new(FFI::AutoPointer.new(
-            C.LLVMModuleCreateWithName(name),
-            method(:release)))
+      new(C.LLVMModuleCreateWithName(name))
     end
     
     def self.create_with_name_in_context(name, context)
-      new(FFI::AutoPointer.new(
-            C.LLVMModuleCreateWithNameInContext(name, context),
-            method(:release)))
+      new(C.LLVMModuleCreateWithNameInContext(name, context))
     end
     
     def add_function(name, arg_types, result_type)
@@ -634,12 +628,8 @@ module LLVM
       C.LLVMDumpModule(self)
     end
     
-    def self.release(ptr) # :nodoc:
-      # This seems to cause the module to be freed while live pointers exist.
-      # Error:
-      #   An asserting value handle still pointed to this value!
-      #   UNREACHABLE executed at Value.cpp:492!
-      # C.LLVMDisposeModule(ptr)
+    def dispose
+      C.LLVMDisposeModule(@ptr)
     end
   end
   
@@ -1039,15 +1029,11 @@ module LLVM
     end
     
     def self.create
-      new(FFI::AutoPointer.new(
-          C.LLVMCreateBuilder(),
-          method(:release)))
+      new(C.LLVMCreateBuilder())
     end
     
     def self.create_in_context(context)
-      new(FFI::AutoPointer.new(
-            C.LLVMCreateBuilderInContext(context),
-            method(:release)))
+      new(C.LLVMCreateBuilderInContext(context))
     end
     
     def position_at_end(block)
@@ -1370,8 +1356,8 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildPtrDiff(lhs, rhs, name))
     end
     
-    def self.release(ptr) # :nodoc:
-      C.LLVMDisposeBuilder(ptr)
+    def dispose
+      C.LLVMDisposeBuilder(@ptr)
     end
   end
   
