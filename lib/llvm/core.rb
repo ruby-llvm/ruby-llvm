@@ -622,7 +622,7 @@ module LLVM
     
     def define_function(name, arg_types, result_type)
       fun = add_function(name, arg_types, result_type)
-      action = basic_block("entry") {
+      action = Builder.basic_block("entry") {
         yield *(0...arg_types.size).map { |i|
           Builder.const(fun.params[i])
         }
@@ -636,7 +636,7 @@ module LLVM
     end
     
     def named_function(name)
-      self.class.from_ptr(C.LLVMGetNamedFunction(self, name))
+      self.class.from_ptr(C.LLVMGetNamedFunction(self, name.to_s))
     end
     
     # Print the module's IR to stdout

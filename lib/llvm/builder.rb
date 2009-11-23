@@ -17,9 +17,23 @@ module LLVM
     end
     
     def const(val)
-      action { |_,_|
-        val
+      action { |_,_| val }
+    end
+    
+    def seq(*actions)
+      actions.reduce { |fst, snd|
+        action { |f,b|
+          fst.(f,b); snd.(f,b)
+        }
       }
+    end
+    
+    def recur(*args)
+      action { |f,b| call(f, *args).(f,b) }
+    end
+    
+    def current_block
+      action { |f,b| C.LLVMGetInsertBlock(b) }
     end
     
     def int64(n)
@@ -176,7 +190,7 @@ module LLVM
     
     def fdiv(lhs, rhs, name = "fdiv")
       action { |f,b|
-        C.LLVMBuildExactSDiv(b, lhs.(f,b), rhs.(f,b), name)
+        C.LLVMBuildFDiv(b, lhs.(f,b), rhs.(f,b), name)
       }
     end
     
@@ -476,22 +490,14 @@ module LLVM
       }
     end
     
-    def call(fun, *args)
+    def call(fun, args, name = "call #{fun}")
       action { |f,b|
-        args, name = case args[-1]
-          when String then [args[0..-2], args[-1]]
-          else [args, "call"]
-        end
         args_ptr = FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * args.size)
         args_ptr.write_array_of_pointer args.map { |a| a.(f,b) }
         C.LLVMBuildCall(b, fun, args_ptr, args.size, name)
       }
     end
-    
-    def recur(*args)
-      action { |f,b| call(f, *args).(f,b) }
-    end
-    
+
     def select(test, iftrue, iffalse, name = "select")
       action { |f,b|
         C.LLVMBuildSelect(b, iftrue.(f,b), iffalse.(f,b), name)
