@@ -14,10 +14,10 @@ mod = LLVM::Module.create_with_name "Factorial"
 # Add an LLVM::Function to the module
 fac = mod.define_function "fac", [LLVM::Int64], LLVM::Int64 do |p0|
   cond icmp(:eq, p0, int64(1)),
-    basic_block("iftrue") {
+    basic_block {
       ret int64(1)
     },
-    basic_block("iffalse") {
+    basic_block {
       ret mul(p0,
             recur(
               sub(p0, int64(1))))
