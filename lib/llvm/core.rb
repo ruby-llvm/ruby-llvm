@@ -1035,5 +1035,9 @@ module LLVM
     def run(mod)
       C.LLVMRunPassManager(self, mod)
     end
+    
+    def dispose
+      C.LLVMDisposePassManager(self)
+    end
   end
 end
