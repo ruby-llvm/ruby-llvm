@@ -36,6 +36,14 @@ module LLVM
       action { |f,b| C.LLVMGetInsertBlock(b) }
     end
     
+    def float(x)
+      const(LLVM::Float.from_f(x).to_ptr)
+    end
+    
+    def int32(n)
+      const(LLVM::Int32.from_i(n).to_ptr)
+    end
+    
     def int64(n)
       const(LLVM::Int64.from_i(n).to_ptr)
     end
