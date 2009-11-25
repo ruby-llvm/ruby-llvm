@@ -687,6 +687,11 @@ module LLVM
     end
   end
   
+  def Pointer(type, address_space = 0)
+    Type.pointer(type, address_space)
+  end
+  module_function :Pointer
+  
   class Value
     class << self
       private :new
