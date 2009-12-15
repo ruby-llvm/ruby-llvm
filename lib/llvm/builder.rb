@@ -312,13 +312,22 @@ module LLVM
       }
     end
     
-    def gep(pointer, indices, name = "gep")
+    def gep(pointer, *indices)
+      indices, name = String === indices[-1] ?
+        [indices[0..-2], indices[-1]] :
+        [indices, "gep"]
+      
       action { |f,b|
-        C.LLVMBuildGEP(b,
-          pointer.(f,b), 
-          indices.map { |i| i.(f,b) },
-          indices.size,
-          name)
+        gep = nil
+        FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * indices.size) do |indices_ptr|
+          indices_ptr.write_array_of_pointer indices.map { |i| i.(f,b) }
+          gep = C.LLVMBuildGEP(b,
+            pointer.(f,b),
+            indices_ptr,
+            indices.size,
+            name)
+        end
+        gep
       }
     end
     

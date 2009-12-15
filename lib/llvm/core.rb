@@ -663,29 +663,49 @@ module LLVM
     end
     
     def size
-      Int64.from_ptr(C.LLVMSizeOf(self))
+      Int64.from_ptr C.LLVMSizeOf(self)
     end
     
     def align
-      Int64.from_ptr(C.LLVMAlignOf(self))
+      Int64.from_ptr C.LLVMAlignOf(self)
     end
     
     def self.from_ptr(ptr)
       ptr.null? ? nil : new(ptr)
     end
     
+    def self.struct(*types)
+      types, options = Hash === types[-1] ?
+        [types[0..-2], types[-1]] :
+        [types, { :packed => false }]
+      size = types.size
+      packed = options[:packed] ? 1 : 0
+      
+      struct_type = nil
+      FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * size) do |types_ptr|
+        types_ptr.write_array_of_pointer(types)
+        struct_type = from_ptr C.LLVMStructType(types_ptr, size, packed)
+      end
+      struct_type
+    end
+    
     def self.array(type, element_count)
-      from_ptr(C.LLVMArrayType(type, element_count))
+      from_ptr C.LLVMArrayType(type, element_count)
     end
     
     def self.pointer(type, address_space = 0)
-      from_ptr(C.LLVMPointerType(type, address_space))
+      from_ptr C.LLVMPointerType(type, address_space)
     end
     
     def self.vector(type, element_count)
-      from_ptr(C.LLVMVectorType(type, element_count))
+      from_ptr C.LLVMVectorType(type, element_count)
     end
   end
+  
+  def Struct(*types)
+    Type.struct(*types)
+  end
+  module_function :Struct
   
   def Pointer(type, address_space = 0)
     Type.pointer(type, address_space)
