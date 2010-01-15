@@ -20,35 +20,35 @@ builder  = LLVM::Builder.create
  
 builder.position_at_end(entry)
 builder.cond(
-  builder.icmp(:eq, p0, LLVM::Int.from_i(1), "n == 0"),
+  builder.icmp(:eq, p0, LLVM::Int.from_i(1)),
   iftrue,
   iffalse)
- 
+
 builder.position_at_end(iftrue)
 res_iftrue = LLVM::Int.from_i(1)
 builder.br(endblock)
- 
+
 builder.position_at_end(iffalse)
-n_minus = builder.sub(p0, LLVM::Int.from_i(1), "n - 1")
-call_fac = builder.call(fac, n_minus, "fac(n - 1)")
-res_iffalse = builder.mul(p0, call_fac, "n * fac(n - 1)")
+n_minus = builder.sub(p0, LLVM::Int.from_i(1))
+call_fac = builder.call(fac, n_minus)
+res_iffalse = builder.mul(p0, call_fac)
 builder.br(endblock)
- 
+
 builder.position_at_end(endblock)
 builder.ret(
-  builder.phi(LLVM::Int.type, "result",
+  builder.phi(LLVM::Int.type,
     res_iftrue,  iftrue,
     res_iffalse, iffalse))
  
 mod.verify(:return)
- 
+
 puts
 puts "; Pre-optimization"
 mod.dump
- 
+
 provider = LLVM::ModuleProvider.for_existing_module(mod)
 engine = LLVM::ExecutionEngine.create_jit_compiler(provider)
- 
+
 pass = LLVM::PassManager.new_with_execution_engine(engine)
 pass.add(
   :constant_propagation,
@@ -57,7 +57,7 @@ pass.add(
   :gvn,
   :cfg_simplification)
 pass.run(mod)
- 
+
 puts
 puts "; Post-optimization"
 mod.dump
