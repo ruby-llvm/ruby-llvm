@@ -1,5 +1,4 @@
 require 'llvm'
-require 'llvm/builder'
 
 module LLVM
   module C
@@ -515,7 +514,7 @@ module LLVM
     attach_function :LLVMDisposePassManager, [:pointer], :void
   end
   
-  module Predicates
+  module Syntax # :nodoc:
     module_function
     
     # Symbols over LLVM_INT_PREDICATE
@@ -564,11 +563,11 @@ module LLVM
       private :new
     end
     
-    def initialize(ptr)
+    def initialize(ptr) # :nodoc:
       @ptr = ptr
     end
     
-    def to_ptr
+    def to_ptr # :nodoc:
       @ptr
     end
     
@@ -596,11 +595,11 @@ module LLVM
       ptr.null? ? nil : new(ptr)
     end
     
-    def initialize(ptr)
+    def initialize(ptr) # :nodoc:
       @ptr = ptr
     end
     
-    def to_ptr
+    def to_ptr # :nodoc:
       @ptr
     end
     
@@ -620,23 +619,8 @@ module LLVM
       Function.from_ptr(C.LLVMAddFunction(self, name.to_s, type))
     end
     
-    def define_function(name, arg_types, result_type)
-      fun = add_function(name, arg_types, result_type)
-      action = Builder.basic_block("entry") {
-        yield *(0...arg_types.size).map { |i|
-          Builder.const(fun.params[i])
-        }
-      }
-      
-      builder = C.LLVMCreateBuilder()
-      action.(fun, builder)
-      fun
-    ensure
-      C.LLVMDisposeBuilder(builder)
-    end
-    
     def named_function(name)
-      self.class.from_ptr(C.LLVMGetNamedFunction(self, name.to_s))
+      self.class.from_ptr(C.LLVMGetNamedFunction(self, name))
     end
     
     # Print the module's IR to stdout
@@ -654,63 +638,38 @@ module LLVM
       private :new
     end
     
-    def initialize(ptr)
+    def initialize(ptr) # :nodoc:
       @ptr = ptr
     end
     
-    def to_ptr
+    def to_ptr # :nodoc:
       @ptr
     end
     
     def size
-      Int64.from_ptr C.LLVMSizeOf(self)
+      Int64.from_ptr(C.LLVMSizeOf(self))
     end
     
     def align
-      Int64.from_ptr C.LLVMAlignOf(self)
+      Int64.from_ptr(C.LLVMAlignOf(self))
     end
     
     def self.from_ptr(ptr)
       ptr.null? ? nil : new(ptr)
     end
     
-    def self.struct(*types)
-      types, options = Hash === types[-1] ?
-        [types[0..-2], types[-1]] :
-        [types, { :packed => false }]
-      size = types.size
-      packed = options[:packed] ? 1 : 0
-      
-      struct_type = nil
-      FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * size) do |types_ptr|
-        types_ptr.write_array_of_pointer(types)
-        struct_type = from_ptr C.LLVMStructType(types_ptr, size, packed)
-      end
-      struct_type
-    end
-    
     def self.array(type, element_count)
-      from_ptr C.LLVMArrayType(type, element_count)
+      from_ptr(C.LLVMArrayType(type, element_count))
     end
     
     def self.pointer(type, address_space = 0)
-      from_ptr C.LLVMPointerType(type, address_space)
+      from_ptr(C.LLVMPointerType(type, address_space))
     end
     
     def self.vector(type, element_count)
-      from_ptr C.LLVMVectorType(type, element_count)
+      from_ptr(C.LLVMVectorType(type, element_count))
     end
   end
-  
-  def Struct(*types)
-    Type.struct(*types)
-  end
-  module_function :Struct
-  
-  def Pointer(type, address_space = 0)
-    Type.pointer(type, address_space)
-  end
-  module_function :Pointer
   
   class Value
     class << self
@@ -721,11 +680,7 @@ module LLVM
       @ptr = ptr
     end
     
-    def self.to_ptr
-      type.to_ptr
-    end
-    
-    def to_ptr
+    def to_ptr # :nodoc:
       @ptr
     end
     
@@ -772,6 +727,9 @@ module LLVM
     end
   end
   
+  class Argument < Value
+  end
+  
   class BasicBlock < Value
   end
   
@@ -808,7 +766,7 @@ module LLVM
   end
   
   class ConstantInt < Constant
-    include Predicates
+    include Syntax
     
     def self.all_ones
       from_ptr(C.LLVMConstAllOnes(type))
@@ -862,11 +820,11 @@ module LLVM
       self.class.from_ptr(C.LLVMConstAnd(self, rhs))
     end
     
-    def or(rhs) # Nor can ||.
+    def or(rhs) # Nor is ||.
       self.class.from_ptr(C.LLVMConstOr(self, rhs))
     end
     
-    def xor(rhs)
+    def xor(rhs) # Nor is ||.
       self.class.from_ptr(C.LLVMConstXor(self, rhs))
     end
     
@@ -887,14 +845,15 @@ module LLVM
     end
   end
   
-  def LLVM.const_missing(const)
+  def LLVM.const_missing(const) # :nodoc:
     case const.to_s
       when /Int(\d+)/
-        bits, name = $1, "Int#{bits}"
+        width = $1.to_i
+        name  = "Int#{width}"
         eval <<-KLASS
           class #{name} < ConstantInt
             def self.type
-              Type.from_ptr(C.LLVMIntType(#{bits}))
+              Type.from_ptr(C.LLVMIntType(#{width}))
             end            
           end
         KLASS
@@ -904,8 +863,17 @@ module LLVM
     end
   end
   
+  # Native integer type
+  NATIVE_INT_SIZE = case FFI::Platform::ARCH
+    when "x86_64" then 64
+    # PPC, other arches?
+    else 32
+  end
+  
+  ::LLVM::Int = const_get("Int#{NATIVE_INT_SIZE}")
+  
   class ConstantReal < Constant
-    include Predicates
+    include Syntax
     
     def self.from_f(n)
       from_ptr(C.LLVMConstReal(type, n))
@@ -1014,6 +982,395 @@ module LLVM
   class GlobalVariable < GlobalValue
   end
   
+  class Instruction < Value
+  end
+  
+  class CallInst < Instruction
+  end
+  
+  class Phi < Instruction
+    # Add incoming branches to a phi node by passing an alternating list
+    # of resulting values and basic blocks. e.g.
+    #   phi.add_incoming(val1, block1, val2, block2, ...)
+    def add_incoming(*incoming)
+      vals, blocks = [], []
+      incoming.each_with_index do |node, i|
+        (i % 2 == 0 ? vals : blocks) << node
+      end
+      
+      unless vals.size == blocks.size
+        raise ArgumentError, "Expected vals.size and blocks.size to match"
+      end
+      
+      size = vals.size
+      FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * size) do |vals_ptr|
+        vals_ptr.write_array_of_pointer(vals)
+        FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * size) do |blocks_ptr|
+          blocks_ptr.write_array_of_pointer(blocks)
+          C.LLVMAddIncoming(self, vals_ptr, blocks_ptr, vals.size)
+        end
+      end
+      
+      nil
+    end
+  end
+  
+  class SwitchInst < Instruction
+    # Adds a case to a switch instruction. First the value to match on,
+    # then the basic block.
+    def add_case(val, block)
+      C.LLVMAddCase(self, val, block)
+    end
+  end
+  
+  class Builder
+    include Syntax
+    
+    class << self
+      private :new
+    end
+    
+    def initialize(ptr) # :nodoc:
+      @ptr = ptr
+    end
+    
+    def to_ptr # :nodoc:
+      @ptr
+    end
+    
+    def self.create
+      new(C.LLVMCreateBuilder())
+    end
+    
+    def self.create_in_context(context)
+      new(C.LLVMCreateBuilderInContext(context))
+    end
+    
+    def position_at_end(block)
+      C.LLVMPositionBuilderAtEnd(self, block)
+      nil
+    end
+    
+    # Terminators
+    
+    def ret_void
+      Instruction.from_ptr(C.LLVMBuildRetVoid(self))
+    end
+    
+    def ret(val)
+      Instruction.from_ptr(C.LLVMBuildRet(self, val))
+    end
+    
+    def aggregate_ret(*vals)
+      Instruction.from_ptr(C.LLVMBuildAggregateRet(self, vals, vals.size))
+    end
+    
+    def br(block)
+      Instruction.from_ptr(
+        C.LLVMBuildBr(self, block))
+    end
+    
+    def cond(cond, iftrue, iffalse)
+      Instruction.from_ptr(
+        C.LLVMBuildCondBr(self, cond, iftrue, iffalse))
+    end
+    
+    def switch(val, block, ncases)
+      SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, block, ncases))
+    end
+    
+    def invoke(fun, args, _then, _catch, name)
+      Instruction.from_ptr(
+        C.LLVMBuildInvoke(self,
+          fun, args, args.size, _then, _catch, name))
+    end
+    
+    def unwind
+      Instruction.from_ptr(C.LLVMBuildUnwind(self))
+    end
+    
+    def unreachable
+      Instruction.from_ptr(C.LLVMBuildUnreachable(self))
+    end
+    
+    # Arithmetic
+    
+    def add(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildAdd(self, lhs, rhs, name))
+    end
+    
+    def nsw_add(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildNSWAdd(self, lhs, rhs, name))
+    end
+    
+    def fadd(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildFAdd(self, lhs, rhs, name))
+    end
+    
+    def sub(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildSub(self, lhs, rhs, name))
+    end
+    
+    def fsub(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildFSub(self, lhs, rhs, name))
+    end
+    
+    def mul(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildMul(self, lhs, rhs, name))
+    end
+    
+    def fmul(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildFMul(self, lhs, rhs, name))
+    end
+    
+    def udiv(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildUDiv(self, lhs, rhs, name))
+    end
+    
+    def sdiv(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildSDiv(self, lhs, rhs, name))
+    end
+    
+    def exact_sdiv(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildExactSDiv(self, lhs, rhs, name))
+    end
+    
+    def fdiv(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildFDiv(self, lhs, rhs, name))
+    end
+    
+    def urem(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildURem(self, lhs, rhs, name))
+    end
+    
+    def srem(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildSRem(self, lhs, rhs, name))
+    end
+    
+    def frem(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildFRem(self, lhs, rhs, name))
+    end
+    
+    def shl(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildShl(self, lhs, rhs, name))
+    end
+    
+    def lshr(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildLShr(self, lhs, rhs, name))
+    end
+    
+    def ashr(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildAShr(self, lhs, rhs, name))
+    end
+    
+    def and(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildAnd(self, lhs, rhs, name))
+    end
+    
+    def or(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildOr(self, lhs, rhs, name))
+    end
+    
+    def xor(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildXor(self, lhs, rhs, name))
+    end
+    
+    def neg(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildNeg(self, lhs, rhs, name))
+    end
+    
+    def not(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildNot(self, lhs, rhs, name))
+    end
+    
+    # Memory
+    
+    def malloc(type, name)
+      Instruction.from_ptr(C.LLVMBuildMalloc(self, type, name))
+    end
+    
+    def array_malloc(type, val, name)
+      Instruction.from_ptr(C.LLVMBuildArrayMalloc(self, type, val, name))
+    end
+    
+    def alloca(type, name)
+      Instruction.from_ptr(C.LLVMBuildAlloca(self, type, name))
+    end
+    
+    def array_alloca(type, val, name)
+      Instruction.from_ptr(C.LLVMBuildArrayAlloca(self, type, val, name))
+    end
+    
+    def free(pointer)
+      Instruction.from_ptr(C.LLVMBuildFree(self, pointer))
+    end
+    
+    def load(pointer, name)
+      Instruction.from_ptr(C.LLVMBuildLoad(self, pointer, name))
+    end
+    
+    def store(val, pointer)
+      Instruction.from_ptr(C.LLVMBuildStore(self, val, pointer))
+    end
+    
+    def gep(pointer, indices, inbounds = false, name)
+      Instruction.from_ptr(inbounds ?
+        C.LLVMBuildInBoundsGEP(self, pointer, indices, indices.size, name) :
+        C.LLVMBuildGEP(self, pointer, indices, indices.size, name))
+    end
+    
+    def global_string(string, name)
+      Instruction.from_ptr(C.LLVMBuildGlobalString(self, string, name))
+    end
+    
+    def global_string_pointer(string, name)
+      Instruction.from_ptr(C.LLVMBuildGlobalStringPointer(self, string, name))
+    end
+    
+    # Casts
+    
+    def trunc(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildTrunc(self, val, type, name))
+    end
+    
+    def zext(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildZExt(self, val, type, name))
+    end
+    
+    def sext(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildSExt(self, val, type, name))
+    end
+    
+    def fp2ui(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildFPToUI(self, val, type, name))
+    end
+    
+    def fp2si(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildFPToSI(self, val, type, name))
+    end
+    
+    def ui2fp(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildUIToFP(self, val, type, name))
+    end
+    
+    def si2fp(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildSIToFP(self, val, type, name))
+    end
+    
+    def fp_trunc(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildFPTrunc(self, val, type, name))
+    end
+    
+    def fp_ext(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildFPExt(self, val, type, name))
+    end
+    
+    def ptr2int(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildPtrToInt(self, val, type, name))
+    end
+    
+    def int2ptr(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildIntToPtr(self, val, type, name))
+    end
+    
+    def bit_cast(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildBitCast(self, val, type, name))
+    end
+    
+    def zext_or_bit_cast(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildZExtOrBitCast(self, val, type, name))
+    end
+    
+    def sext_or_bit_cast(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildSExtOrBitCast(self, val, type, name))
+    end
+    
+    def trunc_or_bit_cast(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildTruncOrBitCast(self, val, type, name))
+    end
+    
+    def pointer_cast(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildPointerCast(self, val, type, name))
+    end
+    
+    def int_cast(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildIntCast(self, val, type, name))
+    end
+    
+    def fp_cast(val, type, name)
+      Instruction.from_ptr(C.LLVMBuildFPCast(self, val, type, name))
+    end
+    
+    # Comparisons
+    
+    def icmp(pred, lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildICmp(self, sym2ipred(pred), lhs, rhs, name))
+    end
+    
+    def fcmp(pred, lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildFCmp(self, sym2rpred(pred), lhs, rhs, name))
+    end
+    
+    # Misc
+    
+    def phi(type, name, *incoming)
+      phi = Phi.from_ptr(C.LLVMBuildPhi(self, type, name))
+      phi.add_incoming(*incoming) unless incoming.empty?
+      phi
+    end
+    
+    def call(fun, *args)
+      args, name = args[0..-2], args[-1]
+      args_ptr = FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * args.size)
+      args_ptr.write_array_of_pointer(args)
+      Instruction.from_ptr(C.LLVMBuildCall(self, fun, args_ptr, args.size, name))
+    end
+    
+    def select(_if, _then, _else, name)
+      Instruction.from_ptr(C.LLVMBuildSelect(self, _if, _then, _else, name))
+    end
+    
+    def va_arg(list, type, name)
+      Instruction.from_ptr(C.LLVMBuildVAArg(self, list, type, name))
+    end
+    
+    def extract_element(vector, index, name)
+      Instruction.from_ptr(C.LLVMBuildExtractElement(self, vector, index, name))
+    end
+    
+    def insert_element(vector, elem, index, name)
+      Instruction.from_ptr(C.LLVMBuildInsertElement(self, vector, elem, index, name))
+    end
+    
+    def shuffle_vector(vec1, vec2, mask, name)
+      Instruction.from_ptr(C.LLVMBuildShuffleVector(self, vec1, vec2, mask, name))
+    end
+    
+    def extract_value(aggregate, index, name)
+      Instruction.from_ptr(C.LLVMBuildExtractValue(self, aggregate, index, name))
+    end
+    
+    def insert_value(aggregate, elem, index, name)
+      Instruction.from_ptr(C.LLVMBuildInsertValue(self, aggregate, elem, index, name))
+    end
+    
+    def is_null(val, name)
+      Instruction.from_ptr(C.LLVMBuildIsNull(self, val, name))
+    end
+    
+    def is_not_null(val, name)
+      Instruction.from_ptr(C.LLVMBuildIsNotNull(self, val, name))
+    end
+    
+    def ptr_diff(lhs, rhs, name)
+      Instruction.from_ptr(C.LLVMBuildPtrDiff(lhs, rhs, name))
+    end
+    
+    def dispose
+      C.LLVMDisposeBuilder(@ptr)
+    end
+  end
+  
   class ModuleProvider
     class << self
       private :new
@@ -1037,7 +1394,7 @@ module LLVM
       private :new
     end
     
-    def initialize(ptr)
+    def initialize(ptr) # :nodoc:
       @ptr = ptr
     end
     
@@ -1048,16 +1405,12 @@ module LLVM
       new(ptr)
     end
     
-    def to_ptr
+    def to_ptr # :nodoc:
       @ptr
     end
     
     def run(mod)
       C.LLVMRunPassManager(self, mod)
-    end
-    
-    def dispose
-      C.LLVMDisposePassManager(self)
     end
   end
 end

@@ -51,6 +51,8 @@ module LLVM
     ffi_lib 'LLVMSelectionDAG'
     ffi_lib 'LLVMJIT'
     ffi_lib 'LLVMInterpreter'
+    ffi_lib 'LLVMMC'
+    ffi_lib 'LLVMTransformUtils'
     
     ffi_lib 'LLVMX86Info'
     attach_function :LLVMInitializeX86TargetInfo, [], :void
@@ -79,14 +81,17 @@ module LLVM
     
     def self.create_jit_compiler(provider, opt_level = 3)
       FFI::MemoryPointer.new(FFI::Pointer) do |ptr|
-        error = FFI::MemoryPointer.new(FFI::Pointer)
-        status = C.LLVMCreateJITCompiler(ptr, provider, opt_level, error)
-        errorp = error.read_pointer
-        message = errorp.null? ? "" : errorp.read_string
-        C.LLVMDisposeMessage(error)
-        return new(ptr.read_pointer) if status.zero?
+        error   = FFI::MemoryPointer.new(FFI::Pointer)
+        status  = C.LLVMCreateJITCompiler(ptr, provider, opt_level, error)
+        errorp  = error.read_pointer
+        message = errorp.read_string unless errorp.null?
         
-        raise RuntimeError, "Error creating JIT compiler: #{message}"
+        if status.zero?
+          return new(ptr.read_pointer)
+        else
+          C.LLVMDisposeMessage(error)
+          raise RuntimeError, "Error creating JIT compiler: #{message}"
+        end
       end
     end
     
@@ -116,9 +121,9 @@ module LLVM
       @ptr
     end
     
-    def self.from_i(i, width = 32)
+    def self.from_i(i, width = NATIVE_INT_SIZE, signed = false)
       type = LLVM.const_get("Int#{width}").type
-      new(C.LLVMCreateGenericValueOfInt(type, i, 0))
+      new(C.LLVMCreateGenericValueOfInt(type, i, signed ? 1 : 0))
     end
     
     def self.from_f(f)
