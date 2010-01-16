@@ -677,7 +677,7 @@ module LLVM
     end
     
     def self.function(arg_types, result_type)
-      arg_types_ptr = FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * arg_types.size)
+      arg_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_types.size)
       arg_types_ptr.write_array_of_pointer(arg_types)
       from_ptr(C.LLVMFunctionType(result_type, arg_types_ptr, arg_types.size, 0))
     end
@@ -796,7 +796,7 @@ module LLVM
       self.class.from_ptr(C.LLVMConstNeg(self))
     end
     
-    def !@
+    def not
       self.class.from_ptr(C.LLVMConstNot(self))
     end
     
@@ -1045,9 +1045,9 @@ module LLVM
       end
       
       size = vals.size
-      FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * size) do |vals_ptr|
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |vals_ptr|
         vals_ptr.write_array_of_pointer(vals)
-        FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * size) do |blocks_ptr|
+        FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |blocks_ptr|
           blocks_ptr.write_array_of_pointer(blocks)
           C.LLVMAddIncoming(self, vals_ptr, blocks_ptr, vals.size)
         end
@@ -1382,7 +1382,7 @@ module LLVM
         when String then [args[0..-2], args[-1]]
         else [args, ""]
       end
-      args_ptr = FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * args.size)
+      args_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size)
       args_ptr.write_array_of_pointer(args)
       Instruction.from_ptr(C.LLVMBuildCall(self, fun, args_ptr, args.size, name))
     end

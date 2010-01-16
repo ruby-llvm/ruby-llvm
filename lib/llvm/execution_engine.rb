@@ -80,8 +80,8 @@ module LLVM
     end
     
     def self.create_jit_compiler(provider, opt_level = 3)
-      FFI::MemoryPointer.new(FFI::Pointer) do |ptr|
-        error   = FFI::MemoryPointer.new(FFI::Pointer)
+      FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |ptr|
+        error   = FFI::MemoryPointer.new(FFI.type_size(:pointer))
         status  = C.LLVMCreateJITCompiler(ptr, provider, opt_level, error)
         errorp  = error.read_pointer
         message = errorp.read_string unless errorp.null?
@@ -96,7 +96,7 @@ module LLVM
     end
     
     def run_function(fun, *args)
-      FFI::MemoryPointer.new(FFI::Pointer.size * args.size) do |args_ptr|
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
         args_ptr.write_array_of_pointer(args.map { |arg| LLVM.GenericValue(arg).to_ptr })
         return LLVM::GenericValue.from_ptr(
           C.LLVMRunFunction(self, fun, args.size, args_ptr))

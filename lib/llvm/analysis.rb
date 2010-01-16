@@ -38,7 +38,7 @@ module LLVM
     
     private
       def do_verification(action)
-        str = FFI::MemoryPointer.new(FFI::Pointer.size)
+        str = FFI::MemoryPointer.new(FFI.type_size(:pointer))
         status = C.LLVMVerifyModule(self, LLVM::verifier_action(action), str)
         case status
           when 1 then str.read_string
@@ -49,7 +49,7 @@ module LLVM
   
   class Function
     def verify(action = :abort)
-      str = FFI::MemoryPointer.new(FFI::Pointer.size)
+      str = FFI::MemoryPointer.new(FFI.type_size(:pointer))
       case status = C.LLVMVerifyFunction(self, LLVM::verifier_action(action), str)
         when 1 then str.read_string
         else nil
