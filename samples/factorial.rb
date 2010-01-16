@@ -1,70 +1,47 @@
 require 'llvm/core'
-require 'llvm/analysis'
 require 'llvm/execution_engine'
-require 'llvm/target'
 require 'llvm/transforms/scalar'
- 
+
 LLVM.init_x86
- 
-context = LLVM::Context.global
-mod = LLVM::Module.create_with_name_in_context("Factorial", context)
-fac = mod.add_function("fac", [LLVM::Int.type], LLVM::Int.type)
-fac.call_conv = :ccall
-p0 = fac.params[0]
- 
-entry    = fac.append_basic_block("entry")
-iftrue   = fac.append_basic_block("iftrue")
-iffalse  = fac.append_basic_block("iffalse")
-endblock = fac.append_basic_block("end")
-builder  = LLVM::Builder.create
- 
-builder.position_at_end(entry)
-builder.cond(
-  builder.icmp(:eq, p0, LLVM::Int.from_i(1)),
-  iftrue,
-  iffalse)
 
-builder.position_at_end(iftrue)
-res_iftrue = LLVM::Int.from_i(1)
-builder.br(endblock)
+mod = LLVM::Module.create_with_name("Factorial")
+mod.add_function("fac", [LLVM::Int.type], LLVM::Int.type) do |fac, p0|
+  entry   = fac.basic_blocks.append("entry")
+  recur   = fac.basic_blocks.append("recur")
+  result  = fac.basic_blocks.append("result")
+  builder = LLVM::Builder.create
+  
+  builder.with_block(entry) do
+    builder.cond(
+      builder.icmp(:eq, p0, LLVM::Int(1)),
+      result, recur)
+  end
+  
+  res_rec = nil
+  builder.with_block(recur) do
+    call_fac = builder.call(fac,
+                 builder.sub(p0, LLVM::Int(1)))
+    res_rec = builder.mul(p0, call_fac)
+    builder.br(result)
+  end
+  
+  builder.with_block(result) do
+    builder.ret(
+      builder.phi(LLVM::Int.type,
+        LLVM::Int(1), fac.basic_blocks.entry,
+        res_rec, recur))
+  end
+end
 
-builder.position_at_end(iffalse)
-n_minus = builder.sub(p0, LLVM::Int.from_i(1))
-call_fac = builder.call(fac, n_minus)
-res_iffalse = builder.mul(p0, call_fac)
-builder.br(endblock)
-
-builder.position_at_end(endblock)
-builder.ret(
-  builder.phi(LLVM::Int.type,
-    res_iftrue,  iftrue,
-    res_iffalse, iffalse))
- 
-mod.verify(:return)
-
-puts
-puts "; Pre-optimization"
+mod.verify
 mod.dump
 
 provider = LLVM::ModuleProvider.for_existing_module(mod)
 engine = LLVM::ExecutionEngine.create_jit_compiler(provider)
 
-pass = LLVM::PassManager.new_with_execution_engine(engine)
-pass.add(
-  :constant_propagation,
-  :instruction_combining,
-  :promote_memory_to_register,
-  :gvn,
-  :cfg_simplification)
-pass.run(mod)
+arg = (ARGV[0] || 6).to_i
+value = engine.run_function(mod.named_function("fac"), arg)
 
 puts
-puts "; Post-optimization"
-mod.dump
-
-n = (ARGV[0] || 6).to_i
-
+puts "fac(%i) = %i" % [arg, value]
 puts
-puts "fac(#{n}) = %i\n" % [
-  engine.run_function(fac, LLVM::GenericValue.from_i(n))
-]

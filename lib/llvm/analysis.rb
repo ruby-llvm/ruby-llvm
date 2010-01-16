@@ -28,13 +28,23 @@ module LLVM
   module_function :verifier_action
   
   class Module
-    def verify(action = :abort)
-      str = FFI::MemoryPointer.new(FFI::Pointer.size)
-      case status = C.LLVMVerifyModule(self, LLVM::verifier_action(action), str)
-        when 1 then str.read_string
-        else nil
-      end
+    def verify
+      do_verification(:return)
     end
+    
+    def verify!
+      do_verification(:abort)
+    end
+    
+    private
+      def do_verification(action)
+        str = FFI::MemoryPointer.new(FFI::Pointer.size)
+        status = C.LLVMVerifyModule(self, LLVM::verifier_action(action), str)
+        case status
+          when 1 then str.read_string
+          else nil
+        end
+      end
   end
   
   class Function

@@ -365,7 +365,6 @@ module LLVM
     attach_function :LLVMInsertBasicBlockInContext, [:pointer, :pointer, :string], :pointer
     
     attach_function :LLVMAppendBasicBlock, [:pointer, :string], :pointer
-    attach_function :LLVMAppendBasicBlock, [:pointer, :string], :pointer
     attach_function :LLVMDeleteBasicBlock, [:pointer], :void
     
     # Instructions
@@ -611,12 +610,19 @@ module LLVM
       new(C.LLVMModuleCreateWithNameInContext(name, context))
     end
     
-    def add_function(name, arg_types, result_type)
-      arg_types_ptr = FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * arg_types.size)
-      arg_types_ptr.write_array_of_pointer(arg_types)
+    def add_function(name, *args) # arg_types, result_type)
+      type = case args[0]
+        when Type then args[0]
+        else Type.function(*args)
+      end
+      function = Function.from_ptr(C.LLVMAddFunction(self, name.to_s, type))
       
-      type = C.LLVMFunctionType(result_type, arg_types_ptr, arg_types.size, 0)
-      Function.from_ptr(C.LLVMAddFunction(self, name.to_s, type))
+      if block_given?
+        params = (0...function.params.size).map { |i| function.params[i] }
+        yield function, *params
+      end
+      
+      function
     end
     
     def named_function(name)
@@ -668,6 +674,12 @@ module LLVM
     
     def self.vector(type, element_count)
       from_ptr(C.LLVMVectorType(type, element_count))
+    end
+    
+    def self.function(arg_types, result_type)
+      arg_types_ptr = FFI::MemoryPointer.new(FFI::TYPE_POINTER.size * arg_types.size)
+      arg_types_ptr.write_array_of_pointer(arg_types)
+      from_ptr(C.LLVMFunctionType(result_type, arg_types_ptr, arg_types.size, 0))
     end
   end
   
@@ -872,6 +884,14 @@ module LLVM
   
   ::LLVM::Int = const_get("Int#{NATIVE_INT_SIZE}")
   
+  def Int(val)
+    case val
+      when LLVM::ConstantInt then val
+      when Integer then Int.from_i(val)
+    end
+  end
+  module_function :Int
+  
   class ConstantReal < Constant
     include Syntax
     
@@ -957,6 +977,28 @@ module LLVM
       conv
     end
     
+    def basic_blocks
+      @basic_block_collection ||= BasicBlockCollection.new(self)
+    end
+    
+    class BasicBlockCollection
+      def initialize(fun)
+        @fun = fun
+      end
+      
+      def size
+        C.LLVMCountBasicBlocks(@fun)
+      end
+      
+      def append(name)
+        BasicBlock.from_ptr(C.LLVMAppendBasicBlock(@fun, name))
+      end
+      
+      def entry
+        BasicBlock.from_ptr(C.LLVMGetEntryBasicBlock(@fun))
+      end
+    end
+    
     def params
       @parameter_collection ||= ParameterCollection.new(self)
     end
@@ -969,10 +1011,10 @@ module LLVM
       def [](i)
         Value.from_ptr(C.LLVMGetParam(@fun, i))
       end
-    end
-    
-    def append_basic_block(name)
-      BasicBlock.from_ptr(C.LLVMAppendBasicBlock(self, name))
+      
+      def size
+        C.LLVMCountParams(@fun)
+      end
     end
   end
   
@@ -1049,6 +1091,18 @@ module LLVM
     def position_at_end(block)
       C.LLVMPositionBuilderAtEnd(self, block)
       nil
+    end
+    
+    def get_insert_block
+      BasicBlock.from_ptr(C.LLVMGetInsertBlock(self))
+    end
+    
+    def with_block(block)
+      prev = get_insert_block
+      position_at_end(block)
+      yield
+    ensure
+      position_at_end(prev)
     end
     
     # Terminators

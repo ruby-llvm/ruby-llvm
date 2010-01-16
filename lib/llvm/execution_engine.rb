@@ -97,7 +97,7 @@ module LLVM
     
     def run_function(fun, *args)
       FFI::MemoryPointer.new(FFI::Pointer.size * args.size) do |args_ptr|
-        args_ptr.write_array_of_pointer(args)
+        args_ptr.write_array_of_pointer(args.map { |arg| LLVM.GenericValue(arg).to_ptr })
         return LLVM::GenericValue.from_ptr(
           C.LLVMRunFunction(self, fun, args.size, args_ptr))
       end
@@ -143,4 +143,13 @@ module LLVM
       C.LLVMGenericValueToFloat(LLVM::Float.type, self)
     end
   end
+  
+  def GenericValue(val)
+    case val
+      when GenericValue then val
+      when Integer then GenericValue.from_i(val)
+      when Float then GenericValue.from_f(val)
+    end
+  end
+  module_function :GenericValue
 end
