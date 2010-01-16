@@ -34,6 +34,8 @@ mod.add_function("fac", [LLVM::Int.type], LLVM::Int.type) do |fac, p0|
 end
 
 mod.verify
+
+puts
 mod.dump
 
 provider = LLVM::ModuleProvider.for_existing_module(mod)
