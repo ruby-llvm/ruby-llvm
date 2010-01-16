@@ -4,109 +4,109 @@ module LLVM
   module C
     ffi_lib 'LLVMCore'
     
-    LLVMAttribute = [
-      LLVMZExtAttribute            = 1 <<  0,
-      LLVMSExtAttribute            = 1 <<  1,
-      LLVMNoReturnAttribute        = 1 <<  2,
-      LLVMInRegAttribute           = 1 <<  3,
-      LLVMStructRetAttribute       = 1 <<  4,
-      LLVMNoUnwindAttribute        = 1 <<  5,
-      LLVMNoAliasAttribute         = 1 <<  6,
-      LLVMByValAttribute           = 1 <<  7,
-      LLVMNestAttribute            = 1 <<  8,
-      LLVMReadNoneAttribute        = 1 <<  9,
-      LLVMReadOnlyAttribute        = 1 << 10,
-      LLVMNoInlineAttribute        = 1 << 11,
-      LLVMAlwaysInlineAttribute    = 1 << 12,
-      LLVMOptimizeForSizeAttribute = 1 << 13,
-      LLVMStackProtectAttribute    = 1 << 14,
-      LLVMStackProtectReqAttribute = 1 << 15,
-      LLVMNoCaptureAttribute       = 1 << 21,
-      LLVMNoRedZoneAttribute       = 1 << 22,
-      LLVMNoImplicitFloatAttribute = 1 << 23,
-      LLVMNakedAttribute           = 1 << 24
+    enum :attribute, [
+      :ext,               1 <<  0,
+      :sext,              1 <<  1,
+      :no_return,         1 <<  2,
+      :in_reg,            1 <<  3,
+      :struct_ret,        1 <<  4,
+      :no_unwind,         1 <<  5,
+      :no_alias,          1 <<  6,
+      :by_val,            1 <<  7,
+      :nest,              1 <<  8,
+      :read_none,         1 <<  9,
+      :read_only,         1 << 10,
+      :no_inline,         1 << 11,
+      :always_inline,     1 << 12,
+      :optimize_for_size, 1 << 13,
+      :stack_protect,     1 << 14,
+      :stack_protect_req, 1 << 15,
+      :no_capture,        1 << 21,
+      :no_red_zone,       1 << 22,
+      :no_implicit_float, 1 << 23,
+      :naked,             1 << 24
     ]
     
-    LLVM_TYPE_KIND = [
-      LLVMVoidTypeKind      =  0,
-      LLVMFloatTypeKind     =  1,
-      LLVMDoubleTypeKind    =  2,
-      LLVMX86_FP80TypeKind  =  3,
-      LLVMFP128TypeKind     =  4,
-      LLVMPPC_FP128TypeKind =  5,
-      LLVMLabelTypeKind     =  6,
-      LLVMIntegerTypeKind   =  7,
-      LLVMFunctionTypeKind  =  8,
-      LLVMStructTypeKind    =  9,
-      LLVMArrayTypeKind     = 10,
-      LLVMPointerTypeKind   = 11,
-      LLVMOpaqueTypeKind    = 12,
-      LLVMVectorTypeKind    = 13,
-      LLVMMetadataTypeKind  = 14
+    enum :type_kind, [
+      :void,
+      :float,
+      :double,
+      :x86_fp80,
+      :fp128,
+      :ppc_fp128,
+      :label,
+      :integer,
+      :function,
+      :struct,
+      :array,
+      :pointer,
+      :opaque,
+      :vector,
+      :metadata
     ]
     
-    LLVM_LINKAGE = [
-      LLVMExternalLinkage            =  0,
-      LLVMAvailableExternallyLinkage =  1,
-      LLVMLinkOnceAnyLinkage         =  2,
-      LLVMLinkOnceODRLinkage         =  3,
-      LLVMWeakAnyLinkage             =  4,
-      LLVMWeakODRLinkage             =  5,
-      LLVMAppendingLinkage           =  6,
-      LLVMInternalLinkage            =  7,
-      LLVMPrivateLinkage             =  8,
-      LLVMDLLImportLinkage           =  9,
-      LLVMDLLExportLinkage           = 10,
-      LLVMExternalWeakLinkage        = 11,
-      LLVMGhostLinkage               = 12,
-      LLVMCommonLinkage              = 13,
-      LLVMLinkerPrivateLinkage       = 14
+    enum :linkage, [
+      :external,
+      :available_externally,
+      :link_once_any,
+      :link_once_odr,
+      :weak_any,
+      :weak_odr,
+      :appending,
+      :internal,
+      :private,
+      :dll_import,
+      :dll_export,
+      :external_weak,
+      :ghost,
+      :common,
+      :linker_private
     ]
     
-    LLVM_VISIBILITY = [
-      LLVMDefaultVisibility   = 0,
-      LLVMHiddenVisibility    = 1,
-      LLVMProtectedVisibility = 2
+    enum :visibility, [
+      :default,
+      :hidden,
+      :protected
     ]
     
-    LLVM_CALL_CONV = [
-      LLVMCCallConv           =  0,
-      LLVMFastCallConv        =  8,
-      LLVMColdCallConv        =  9,
-      LLVMX86StdcallCallConv  = 64,
-      LLVMX86FastcallCallConv = 65
+    enum :call_conv, [
+      :ccall,         0,
+      :fastcall,      8,
+      :coldcall,      9,
+      :x86_stdcall,  64,
+      :x86_fastcall, 65
     ]
     
-    LLVM_INT_PREDICATE = [
-      LLVMIntEQ  = 32,
-      LLVMIntNE  = 33,
-      LLVMIntUGT = 34,
-      LLVMIntUGE = 35,
-      LLVMIntULT = 36,
-      LLVMIntULE = 37,
-      LLVMIntSGT = 38,
-      LLVMIntSGE = 39,
-      LLVMIntSLT = 40,
-      LLVMIntSLE = 41
+    enum :int_predicate, [
+      :eq,  32,
+      :ne,  33,
+      :ugt, 34,
+      :uge, 35,
+      :ult, 36,
+      :ule, 37,
+      :sgt, 38,
+      :sge, 39,
+      :slt, 40,
+      :sle, 41
     ]
     
-    LLVM_REAL_PREDICATE = [
-      LLVMRealPredicateFalse =  0,
-      LLVMRealOEQ            =  1,
-      LLVMRealOGT            =  2,
-      LLVMRealOGE            =  3,
-      LLVMRealOLT            =  4,
-      LLVMRealOLE            =  5,
-      LLVMRealONE            =  6,
-      LLVMRealORD            =  7,
-      LLVMRealUNO            =  8,
-      LLVMRealUEQ            =  9,
-      LLVMRealUGT            = 10,
-      LLVMRealUGE            = 11,
-      LLVMRealULT            = 12,
-      LLVMRealULE            = 13,
-      LLVMRealUNE            = 14,
-      LLVMRealPredicateTrue  = 15
+    enum :real_predicate, [
+      :false,
+      :oeq,
+      :ogt,
+      :oge,
+      :olt,
+      :ole,
+      :one,
+      :ord,
+      :uno,
+      :ueq,
+      :ugt,
+      :uge,
+      :ult,
+      :ule,
+      :une,
+      :true
     ]
     
     # Error handling
@@ -131,7 +131,7 @@ module LLVM
     attach_function :LLVMDumpModule, [:pointer], :void
     
     # Types
-    attach_function :LLVMGetTypeKind, [:pointer], :int
+    attach_function :LLVMGetTypeKind, [:pointer], :type_kind
     attach_function :LLVMGetTypeContext, [:pointer], :pointer
     
     # Integer types
@@ -293,12 +293,12 @@ module LLVM
     # Global variables, functions and aliases (globals)
     attach_function :LLVMGetGlobalParent, [:pointer], :pointer
     attach_function :LLVMIsDeclaration, [:pointer], :int
-    attach_function :LLVMGetLinkage, [:pointer], :int
-    attach_function :LLVMSetLinkage, [:pointer, :int], :void
+    attach_function :LLVMGetLinkage, [:pointer], :linkage
+    attach_function :LLVMSetLinkage, [:pointer, :linkage], :void
     attach_function :LLVMGetSection, [:pointer], :string
     attach_function :LLVMSetSection, [:pointer, :string], :void
-    attach_function :LLVMGetVisibility, [:pointer], :int
-    attach_function :LLVMSetVisibility, [:pointer, :int], :void
+    attach_function :LLVMGetVisibility, [:pointer], :visibility
+    attach_function :LLVMSetVisibility, [:pointer, :visibility], :void
     attach_function :LLVMGetAlignment, [:pointer], :uint
     attach_function :LLVMSetAlignment, [:pointer, :uint], :void
     
@@ -328,12 +328,12 @@ module LLVM
     attach_function :LLVMGetPreviousFunction, [:pointer], :pointer
     attach_function :LLVMDeleteFunction, [:pointer], :pointer
     attach_function :LLVMGetIntrinsicID, [:pointer], :uint
-    attach_function :LLVMGetFunctionCallConv, [:pointer], :uint
-    attach_function :LLVMSetFunctionCallConv, [:pointer, :uint], :void
+    attach_function :LLVMGetFunctionCallConv, [:pointer], :call_conv
+    attach_function :LLVMSetFunctionCallConv, [:pointer, :call_conv], :void
     attach_function :LLVMGetGC, [:pointer], :string
     attach_function :LLVMSetGC, [:pointer, :string], :void
-    attach_function :LLVMAddFunctionAttr, [:pointer, :int], :void
-    attach_function :LLVMRemoveFunctionAttr, [:pointer, :int], :void
+    attach_function :LLVMAddFunctionAttr, [:pointer, :attribute], :void
+    attach_function :LLVMRemoveFunctionAttr, [:pointer, :attribute], :void
     
     # Parameters
     attach_function :LLVMCountParams, [:pointer], :uint
@@ -344,8 +344,8 @@ module LLVM
     attach_function :LLVMGetLastParam, [:pointer], :pointer
     attach_function :LLVMGetNextParam, [:pointer], :pointer
     attach_function :LLVMGetPreviousParam, [:pointer], :pointer
-    attach_function :LLVMAddAttribute, [:pointer, :int], :void
-    attach_function :LLVMRemoveAttribute, [:pointer, :int], :void
+    attach_function :LLVMAddAttribute, [:pointer, :attribute], :void
+    attach_function :LLVMRemoveAttribute, [:pointer, :attribute], :void
     attach_function :LLVMSetParamAlignment, [:pointer, :uint], :void
     
     # Basic blocks
@@ -375,10 +375,10 @@ module LLVM
     attach_function :LLVMGetPreviousInstruction, [:pointer], :pointer
     
     # Call sites
-    attach_function :LLVMSetInstructionCallConv, [:pointer, :uint], :void
-    attach_function :LLVMGetInstructionCallConv, [:pointer], :uint
-    attach_function :LLVMAddInstrAttribute, [:pointer, :uint, :int], :void
-    attach_function :LLVMRemoveInstrAttribute, [:pointer, :uint, :int], :void
+    attach_function :LLVMSetInstructionCallConv, [:pointer, :call_conv], :void
+    attach_function :LLVMGetInstructionCallConv, [:pointer], :call_conv
+    attach_function :LLVMAddInstrAttribute, [:pointer, :uint, :attribute], :void
+    attach_function :LLVMRemoveInstrAttribute, [:pointer, :uint, :attribute], :void
     attach_function :LLVMSetInstrParamAlignment, [:pointer, :uint, :uint], :void
     
     # Call instructions
@@ -476,8 +476,8 @@ module LLVM
     attach_function :LLVMBuildFPCast, [:pointer, :pointer, :pointer, :string], :pointer
     
     # Comparisons
-    attach_function :LLVMBuildICmp, [:pointer, :int, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFCmp, [:pointer, :int, :pointer, :pointer, :string], :pointer
+    attach_function :LLVMBuildICmp, [:pointer, :int_predicate, :pointer, :pointer, :string], :pointer
+    attach_function :LLVMBuildFCmp, [:pointer, :real_predicate, :pointer, :pointer, :string], :pointer
     
     # Misc
     attach_function :LLVMBuildPhi, [:pointer, :pointer, :string], :pointer
@@ -511,50 +511,6 @@ module LLVM
     attach_function :LLVMRunFunctionPassManager, [:pointer, :pointer], :int
     attach_function :LLVMFinalizeFunctionPassManager, [:pointer], :int
     attach_function :LLVMDisposePassManager, [:pointer], :void
-  end
-  
-  module Syntax # :nodoc:
-    module_function
-    
-    # Symbols over LLVM_INT_PREDICATE
-    def sym2ipred(pred)
-      case pred
-        when *C::LLVM_INT_PREDICATE then pred
-        when :eq  then C::LLVMIntEQ
-        when :ne  then C::LLVMIntNE
-        when :gt  then C::LLVMIntUGT
-        when :uge then C::LLVMIntUGE
-        when :ult then C::LLVMIntULT
-        when :ule then C::LLVMIntULE
-        when :sgt then C::LLVMIntSGT
-        when :sge then C::LLVMIntSGE
-        when :slt then C::LLVMIntSLT
-        when :sle then C::LLVMIntSLE
-      end
-    end
-    
-    # Symbols over LLVM_REAL_PREDICATE
-    def sym2rpred(pred)
-      case pred
-        when *C::LLVM_REAL_PREDICATE then pred
-        when :false then C::LLVMRealPredicateFalse
-        when :oeq   then C::LLVMRealPredicateOEQ
-        when :ogt   then C::LLVMRealPredicateOGT
-        when :oge   then C::LLVMRealPredicateOGE
-        when :olt   then C::LLVMRealPredicateOLT
-        when :ole   then C::LLVMRealPredicateOLE
-        when :one   then C::LLVMRealPredicateONE
-        when :ord   then C::LLVMRealPredicateORD
-        when :uno   then C::LLVMRealPredicateUNO
-        when :ueq   then C::LLVMRealPredicateUEQ
-        when :ugt   then C::LLVMRealPredicateUGT
-        when :uge   then C::LLVMRealPredicateUGE
-        when :ult   then C::LLVMRealPredicateULT
-        when :ule   then C::LLVMRealPredicateULE
-        when :une   then C::LLVMRealPredicateUNE
-        when :true  then C::LLVMRealPredicateTrue
-      end
-    end
   end
   
   require 'llvm/core/context'

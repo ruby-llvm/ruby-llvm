@@ -1,7 +1,5 @@
 module LLVM
   class Builder
-    include Syntax
-    
     class << self
       private :new
     end
@@ -292,11 +290,11 @@ module LLVM
     # Comparisons
     
     def icmp(pred, lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildICmp(self, sym2ipred(pred), lhs, rhs, name))
+      Instruction.from_ptr(C.LLVMBuildICmp(self, pred, lhs, rhs, name))
     end
     
     def fcmp(pred, lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildFCmp(self, sym2rpred(pred), lhs, rhs, name))
+      Instruction.from_ptr(C.LLVMBuildFCmp(self, pred, lhs, rhs, name))
     end
     
     # Misc
@@ -318,7 +316,7 @@ module LLVM
       end
       args_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size)
       args_ptr.write_array_of_pointer(args)
-      Instruction.from_ptr(C.LLVMBuildCall(self, fun, args_ptr, args.size, name))
+      CallInst.from_ptr(C.LLVMBuildCall(self, fun, args_ptr, args.size, name))
     end
     
     def select(_if, _then, _else, name = "")

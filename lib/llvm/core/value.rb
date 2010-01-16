@@ -94,8 +94,6 @@ module LLVM
   end
   
   class ConstantInt < Constant
-    include Syntax
-    
     def self.all_ones
       from_ptr(C.LLVMConstAllOnes(type))
     end
@@ -157,7 +155,7 @@ module LLVM
     end
     
     def icmp(pred, rhs)
-      self.class.from_ptr(C.LLVMConstICmp(sym2ipred(pred), self, rhs))
+      self.class.from_ptr(C.LLVMConstICmp(pred, self, rhs))
     end
     
     def <<(bits)
@@ -203,8 +201,6 @@ module LLVM
   module_function :Int
   
   class ConstantReal < Constant
-    include Syntax
-    
     def self.from_f(n)
       from_ptr(C.LLVMConstReal(type, n))
     end
@@ -234,7 +230,7 @@ module LLVM
     end
     
     def fcmp(pred, rhs)
-      self.class.from_ptr(C.LLMVConstFCmp(sym2rpred(pred), self, rhs))
+      self.class.from_ptr(C.LLMVConstFCmp(pred, self, rhs))
     end
   end
   
@@ -273,17 +269,7 @@ module LLVM
   
   class Function < GlobalValue
     def call_conv=(conv)
-      conv = case conv
-        when *C::LLVM_CALL_CONV then conv
-        when :ccall          then C::LLVMCCallConv
-        when :fastcall       then C::LLVMFastCallConv
-        when :coldcall       then C::LLVMColdCallConv
-        when :x86stdcall     then C::LLVMX86StdcallCallConv
-        when :x86fastcall    then C::LLVMX86FastcallCallConv
-      end
-      
       C.LLVMSetFunctionCallConv(self, conv)
-      
       conv
     end
     
@@ -338,6 +324,14 @@ module LLVM
   end
   
   class CallInst < Instruction
+    def call_conv=(conv)
+      C.LLVMSetInstructionCallConv(self, conv)
+      conv
+    end
+    
+    def call_conv
+      C.LLVMGetInstructionCallConv(self)
+    end
   end
   
   class Phi < Instruction
