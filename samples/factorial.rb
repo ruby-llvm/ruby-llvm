@@ -6,10 +6,15 @@ LLVM.init_x86
 
 mod = LLVM::Module.create_with_name("Factorial")
 mod.add_function("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
+  builder = LLVM::Builder.create
+  
+  # Basic blocks
   entry   = fac.basic_blocks.append
   recur   = fac.basic_blocks.append
   result  = fac.basic_blocks.append
-  builder = LLVM::Builder.create
+  
+  # Locals
+  fac_ = nil
   
   builder.with_block(entry) do
     builder.cond(
@@ -17,19 +22,18 @@ mod.add_function("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
       result, recur)
   end
   
-  res_rec = nil
   builder.with_block(recur) do
-    call_fac = builder.call(fac,
+    fac_call = builder.call(fac,
                  builder.sub(p0, LLVM::Int(1)))
-    res_rec = builder.mul(p0, call_fac)
+    fac_ = builder.mul(p0, fac_call)
     builder.br(result)
   end
   
   builder.with_block(result) do
     builder.ret(
       builder.phi(LLVM::Int,
-        LLVM::Int(1), fac.basic_blocks.entry,
-        res_rec, recur))
+        LLVM::Int(1), entry,
+        fac_,         recur))
   end
 end
 
