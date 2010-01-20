@@ -171,20 +171,20 @@ module LLVM
     
     # Memory
     
-    def malloc(type, name = "")
-      Instruction.from_ptr(C.LLVMBuildMalloc(self, type, name))
+    def malloc(ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildMalloc(self, LLVM::Type(ty), name))
     end
     
-    def array_malloc(type, val, name = "")
-      Instruction.from_ptr(C.LLVMBuildArrayMalloc(self, type, val, name))
+    def array_malloc(ty, val, name = "")
+      Instruction.from_ptr(C.LLVMBuildArrayMalloc(self, LLVM::Type(ty), val, name))
     end
     
-    def alloca(type, name = "")
-      Instruction.from_ptr(C.LLVMBuildAlloca(self, type, name))
+    def alloca(ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildAlloca(self, LLVM::Type(ty), name))
     end
     
-    def array_alloca(type, val, name = "")
-      Instruction.from_ptr(C.LLVMBuildArrayAlloca(self, type, val, name))
+    def array_alloca(ty, val, name = "")
+      Instruction.from_ptr(C.LLVMBuildArrayAlloca(self, LLVM::Type(ty), val, name))
     end
     
     def free(pointer)
@@ -215,76 +215,76 @@ module LLVM
     
     # Casts
     
-    def trunc(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildTrunc(self, val, type, name))
+    def trunc(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildTrunc(self, val, LLVM::Type(ty), name))
     end
     
-    def zext(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildZExt(self, val, type, name))
+    def zext(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildZExt(self, val, LLVM::Type(ty), name))
     end
     
-    def sext(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildSExt(self, val, type, name))
+    def sext(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildSExt(self, val, LLVM::Type(ty), name))
     end
     
-    def fp2ui(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPToUI(self, val, type, name))
+    def fp2ui(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildFPToUI(self, val, LLVM::Type(ty), name))
     end
     
-    def fp2si(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPToSI(self, val, type, name))
+    def fp2si(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildFPToSI(self, val, LLVM::Type(ty), name))
     end
     
-    def ui2fp(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildUIToFP(self, val, type, name))
+    def ui2fp(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildUIToFP(self, val, LLVM::Type(ty), name))
     end
     
-    def si2fp(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildSIToFP(self, val, type, name))
+    def si2fp(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildSIToFP(self, val, LLVM::Type(ty), name))
     end
     
-    def fp_trunc(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPTrunc(self, val, type, name))
+    def fp_trunc(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildFPTrunc(self, val, LLVM::Type(ty), name))
     end
     
-    def fp_ext(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPExt(self, val, type, name))
+    def fp_ext(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildFPExt(self, val, LLVM::Type(ty), name))
     end
     
-    def ptr2int(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildPtrToInt(self, val, type, name))
+    def ptr2int(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildPtrToInt(self, val, LLVM::Type(ty), name))
     end
     
-    def int2ptr(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildIntToPtr(self, val, type, name))
+    def int2ptr(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildIntToPtr(self, val, LLVM::Type(ty), name))
     end
     
-    def bit_cast(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildBitCast(self, val, type, name))
+    def bit_cast(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildBitCast(self, val, LLVM::Type(ty), name))
     end
     
-    def zext_or_bit_cast(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildZExtOrBitCast(self, val, type, name))
+    def zext_or_bit_cast(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildZExtOrBitCast(self, val, LLVM::Type(ty), name))
     end
     
-    def sext_or_bit_cast(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildSExtOrBitCast(self, val, type, name))
+    def sext_or_bit_cast(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildSExtOrBitCast(self, val, LLVM::Type(ty), name))
     end
     
-    def trunc_or_bit_cast(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildTruncOrBitCast(self, val, type, name))
+    def trunc_or_bit_cast(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildTruncOrBitCast(self, val, LLVM::Type(ty), name))
     end
     
-    def pointer_cast(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildPointerCast(self, val, type, name))
+    def pointer_cast(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildPointerCast(self, val, LLVM::Type(ty), name))
     end
     
-    def int_cast(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildIntCast(self, val, type, name))
+    def int_cast(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildIntCast(self, val, LLVM::Type(ty), name))
     end
     
-    def fp_cast(val, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPCast(self, val, type, name))
+    def fp_cast(val, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildFPCast(self, val, LLVM::Type(ty), name))
     end
     
     # Comparisons
@@ -299,12 +299,12 @@ module LLVM
     
     # Misc
     
-    def phi(type, *incoming)
+    def phi(ty, *incoming)
       incoming, name = case incoming[-1]
         when String then [incoming[0..-2], incoming[-1]]
         else [incoming, ""]
       end
-      phi = Phi.from_ptr(C.LLVMBuildPhi(self, type, name))
+      phi = Phi.from_ptr(C.LLVMBuildPhi(self, LLVM::Type(ty), name))
       phi.add_incoming(*incoming) unless incoming.empty?
       phi
     end
@@ -323,8 +323,8 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildSelect(self, _if, _then, _else, name))
     end
     
-    def va_arg(list, type, name = "")
-      Instruction.from_ptr(C.LLVMBuildVAArg(self, list, type, name))
+    def va_arg(list, ty, name = "")
+      Instruction.from_ptr(C.LLVMBuildVAArg(self, list, LLVM::Type(ty), name))
     end
     
     def extract_element(vector, index, name = "")
