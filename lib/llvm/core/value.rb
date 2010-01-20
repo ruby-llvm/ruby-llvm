@@ -294,7 +294,7 @@ module LLVM
         C.LLVMCountBasicBlocks(@fun)
       end
       
-      def append(name)
+      def append(name = "")
         BasicBlock.from_ptr(C.LLVMAppendBasicBlock(@fun, name))
       end
       

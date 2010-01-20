@@ -6,9 +6,9 @@ LLVM.init_x86
 
 mod = LLVM::Module.create_with_name("Factorial")
 mod.add_function("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
-  entry   = fac.basic_blocks.append("entry")
-  recur   = fac.basic_blocks.append("recur")
-  result  = fac.basic_blocks.append("result")
+  entry   = fac.basic_blocks.append
+  recur   = fac.basic_blocks.append
+  result  = fac.basic_blocks.append
   builder = LLVM::Builder.create
   
   builder.with_block(entry) do
