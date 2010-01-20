@@ -5,7 +5,7 @@ require 'llvm/transforms/scalar'
 LLVM.init_x86
 
 mod = LLVM::Module.create_with_name("Factorial")
-mod.add_function("fac", [LLVM::Int.type], LLVM::Int.type) do |fac, p0|
+mod.add_function("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
   entry   = fac.basic_blocks.append("entry")
   recur   = fac.basic_blocks.append("recur")
   result  = fac.basic_blocks.append("result")
@@ -27,7 +27,7 @@ mod.add_function("fac", [LLVM::Int.type], LLVM::Int.type) do |fac, p0|
   
   builder.with_block(result) do
     builder.ret(
-      builder.phi(LLVM::Int.type,
+      builder.phi(LLVM::Int,
         LLVM::Int(1), fac.basic_blocks.entry,
         res_rec, recur))
   end

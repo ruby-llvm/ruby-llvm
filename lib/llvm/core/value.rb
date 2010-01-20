@@ -240,10 +240,18 @@ module LLVM
     end
   end
   
+  def LLVM.Float(val)
+    Float.from_f(val)
+  end
+  
   class Double < ConstantReal
     def self.type
       Type.from_ptr(C.LLVMDoubleType)
     end
+  end
+  
+  def LLVM.Double(val)
+    Double.from_f(val)
   end
   
   class ConstantStruct < Constant
