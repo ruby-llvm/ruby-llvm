@@ -28,8 +28,13 @@ module LLVM
       from_ptr(C.LLVMArrayType(LLVM::Type(ty), element_count))
     end
     
+<<<<<<< HEAD
     def self.pointer(ty, address_space = 0)
       from_ptr(C.LLVMPointerType(LLVM::Type(ty), address_space))
+=======
+    def self.pointer(type, address_space = 0)
+      from_ptr(C.LLVMPointerType(LLVM::Type(type), address_space))
+>>>>>>> 118a6ca80b82c4396f9ad1ad5e6d38a7dd45f45d
     end
     
     def self.vector(ty, element_count)
