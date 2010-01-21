@@ -1,4 +1,4 @@
-module LLVM  
+module LLVM
   class Value
     class << self
       private :new
@@ -59,6 +59,18 @@ module LLVM
   end
   
   class BasicBlock < Value
+    def build(builder = nil)
+      if builder.nil?
+        builder = Builder.create
+        islocal = true
+      else
+        islocal = false
+      end
+      builder.position_at_end(self)
+      yield builder
+    ensure
+      builder.dispose
+    end
   end
   
   class Constant < Value

@@ -29,14 +29,6 @@ module LLVM
       BasicBlock.from_ptr(C.LLVMGetInsertBlock(self))
     end
     
-    def with_block(block)
-      prev = get_insert_block
-      position_at_end(block)
-      yield
-    ensure
-      position_at_end(prev)
-    end
-    
     # Terminators
     
     def ret_void
