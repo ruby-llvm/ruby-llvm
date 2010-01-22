@@ -1,5 +1,9 @@
 module LLVM
   class Value
+    def self.from_ptr(ptr)
+      new(ptr) unless ptr.null?
+    end
+    
     class << self
       private :new
     end
@@ -204,13 +208,12 @@ module LLVM
   # Native integer type
   ::LLVM::Int = const_get("Int#{NATIVE_INT_SIZE}")
   
-  def Int(val)
+  def LLVM.Int(val)
     case val
       when LLVM::ConstantInt then val
       when Integer then Int.from_i(val)
     end
   end
-  module_function :Int
   
   class ConstantReal < Constant
     def self.from_f(n)
@@ -338,6 +341,24 @@ module LLVM
   end
   
   class GlobalVariable < GlobalValue
+    def initializer
+      Value.from_ptr(C.LLVMGetInitializer(self))
+    end
+    
+    def initializer=(val)
+      C.LLVMSetInitializer(self, val)
+    end
+    
+    def thread_local?
+      case C.LLVMIsThreadLocal(self)
+        when 0 then false
+        else true
+      end
+    end
+    
+    def thread_local=(local)
+      C.LLVMSetThreadLocal(self, local ? 1 : 0)
+    end
   end
   
   class Instruction < Value

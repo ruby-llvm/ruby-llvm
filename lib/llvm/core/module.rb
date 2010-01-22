@@ -24,6 +24,69 @@ module LLVM
       new(C.LLVMModuleCreateWithNameInContext(name, context))
     end
     
+    def globals
+      @globals ||= GlobalCollection.new(self)
+    end
+    
+    class GlobalCollection
+      include Enumerable
+      
+      def initialize(mod)
+        @module = mod
+      end
+      
+      def add(ty, name)
+        GlobalVariable.from_ptr(C.LLVMAddGlobal(@module, LLVM::Type(ty), name))
+      end
+      
+      def named(name)
+        GlobalValue.from_ptr(C.LLVMGetNamedGlobal(@module, name))
+      end
+      
+      def first
+        GlobalValue.from_ptr(C.LLVMGetFirstGlobal(@module))
+      end
+      
+      def last
+        GlobalValue.from_ptr(C.LLVMGetLastGlobal(@module))
+      end
+      
+      def next(global)
+        GlobalValue.from_ptr(C.LLVMGetNextGlobal(global))
+      end
+      
+      def previous(global)
+        GlobalValue.from_ptr(C.LLVMGetPreviousGlobal(global))
+      end
+      
+      def delete(global)
+        C.LLVMDeleteGlobal(global)
+      end
+      
+      def [](key)
+        case key
+          when String then named(key)
+          when Symbol then named(key.to_s)
+          when Integer then
+            i = 0
+            g = first
+            until i >= key || g.nil?
+              g = self.next(g)
+              i += 1
+            end
+            g
+        end
+      end
+      
+      def each
+        g = first
+        until g.nil?
+          yield g
+          g = self.next(g)
+        end
+      end
+    end
+    
     def functions
       @functions ||= FunctionCollection.new(self)
     end
