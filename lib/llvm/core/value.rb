@@ -288,6 +288,41 @@ module LLVM
   end
   
   class GlobalValue < Constant
+    def declaration?
+      C.LLVMIsDeclaration(self)
+    end
+    
+    def linkage
+      C.LLVMGetLinkage(self)
+    end
+    
+    def linkage=(linkage)
+      C.LLVMSetLinkage(self, linkage)
+    end
+    
+    def section
+      C.LLVMGetSection(self)
+    end
+    
+    def section=(section)
+      C.LLVMSetSection(self, section)
+    end
+    
+    def visibility
+      C.LLVMGetVisibility(self)
+    end
+    
+    def visibility=(viz)
+      C.LLVMSetVisibility(self, viz)
+    end
+    
+    def alignment
+      C.LLVMGetAlignment(self)
+    end
+    
+    def alignment=(bytes)
+      C.LLVMSetAlignment(self, bytes)
+    end
   end
   
   class Function < GlobalValue
