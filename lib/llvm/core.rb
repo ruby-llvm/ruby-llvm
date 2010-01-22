@@ -326,7 +326,7 @@ module LLVM
     attach_function :LLVMGetLastFunction, [:pointer], :pointer
     attach_function :LLVMGetNextFunction, [:pointer], :pointer
     attach_function :LLVMGetPreviousFunction, [:pointer], :pointer
-    attach_function :LLVMDeleteFunction, [:pointer], :pointer
+    attach_function :LLVMDeleteFunction, [:pointer], :void
     attach_function :LLVMGetIntrinsicID, [:pointer], :uint
     attach_function :LLVMGetFunctionCallConv, [:pointer], :call_conv
     attach_function :LLVMSetFunctionCallConv, [:pointer, :call_conv], :void

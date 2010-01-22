@@ -5,7 +5,7 @@ require 'llvm/transforms/scalar'
 LLVM.init_x86
 
 mod = LLVM::Module.create_with_name("Factorial")
-mod.add_function("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
+mod.functions.add("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
   
   # Basic blocks
   entry   = fac.basic_blocks.append
@@ -45,7 +45,7 @@ provider = LLVM::ModuleProvider.for_existing_module(mod)
 engine = LLVM::ExecutionEngine.create_jit_compiler(provider)
 
 arg = (ARGV[0] || 6).to_i
-value = engine.run_function(mod.named_function("fac"), arg)
+value = engine.run_function(mod.functions["fac"], arg)
 
 puts
 puts "fac(%i) = %i" % [arg, value]

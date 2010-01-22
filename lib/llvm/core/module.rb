@@ -24,23 +24,78 @@ module LLVM
       new(C.LLVMModuleCreateWithNameInContext(name, context))
     end
     
-    def add_function(name, *args) # arg_types, result_type)
-      type = case args[0]
-        when Type then args[0]
-        else Type.function(*args)
-      end
-      function = Function.from_ptr(C.LLVMAddFunction(self, name.to_s, type))
-      
-      if block_given?
-        params = (0...function.params.size).map { |i| function.params[i] }
-        yield function, *params
-      end
-      
-      function
+    def functions
+      @functions ||= FunctionCollection.new(self)
     end
     
-    def named_function(name)
-      self.class.from_ptr(C.LLVMGetNamedFunction(self, name))
+    class FunctionCollection
+      include Enumerable
+      
+      def initialize(mod)
+        @module = mod
+      end
+      
+      def add(name, *args)
+        type = case args[0]
+          when Type then args[0]
+          else Type.function(*args)
+        end
+        function = Function.from_ptr(C.LLVMAddFunction(@module, name.to_s, type))
+        
+        if block_given?
+          params = (0...function.params.size).map { |i| function.params[i] }
+          yield function, *params
+        end
+        
+        function        
+      end
+      
+      def named(name)
+        Function.from_ptr(C.LLVMGetNamedFunction(@module, name))
+      end
+      
+      def first
+        Function.from_ptr(C.LLVMGetFirstFunction(@module))
+      end
+      
+      def last
+        Function.from_ptr(C.LLVMGetLastFunction(@module))
+      end
+      
+      def next(function)
+        Function.from_ptr(C.LLVMGetNextFunction(function))
+      end
+      
+      def previous(function)
+        Function.from_ptr(C.LLVMGetPreviousFunction(function))
+      end
+      
+      def delete(function)
+        C.LLVMDeleteFunction(function)
+      end
+      
+      def [](key)
+        case key
+        when String then named(key)
+        when Symbol then named(key.to_s)
+        when Integer
+          i = 0
+          f = first
+          until i >= key || f.nil?
+            f = self.next(f)
+            i += 1
+          end
+          f
+        end
+      end
+      
+      def each
+        f = first
+        until f.nil?
+          yield f
+          f = self.next(f)
+        end
+      end
     end
     
     # Print the module's IR to stdout
