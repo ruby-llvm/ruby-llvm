@@ -42,6 +42,13 @@ module LLVM
       arg_types_ptr.write_array_of_pointer(arg_types)
       from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, 0))
     end
+    
+    def self.struct(elt_types, is_packed)
+      elt_types.map! { |ty| LLVM::Type(ty) }
+      elt_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * elt_types.size)
+      elt_types_ptr.write_array_of_pointer(elt_types)
+      from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
+    end
   end
   
   def LLVM.Type(ty)
@@ -52,6 +59,10 @@ module LLVM
   end
   
   def LLVM.Pointer(ty)
-    LLVM::Type.pointer(LLVM::Type(ty))
+    LLVM::Type.pointer(ty)
+  end
+  
+  def LLVM.Struct(*elt_types)
+    LLVM::Type.struct(elt_types, false)
   end
 end
