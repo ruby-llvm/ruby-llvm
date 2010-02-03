@@ -24,8 +24,8 @@ module LLVM
       ptr.null? ? nil : new(ptr)
     end
     
-    def self.array(ty, element_count)
-      from_ptr(C.LLVMArrayType(LLVM::Type(ty), element_count))
+    def self.array(ty, sz)
+      from_ptr(C.LLVMArrayType(LLVM::Type(ty), sz))
     end
     
     def self.pointer(ty, address_space = 0)
@@ -49,6 +49,21 @@ module LLVM
       elt_types_ptr.write_array_of_pointer(elt_types)
       from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
     end
+    
+    def self.opaque
+      from_ptr(C.LLVMOpaqueType)
+    end
+    
+    def self.rec
+      h = opaque
+      ty = yield h
+      h.refine(ty)
+      ty
+    end
+    
+    def refine(ty)
+      C.LLVMRefineType(self, ty)
+    end
   end
   
   def LLVM.Type(ty)
@@ -60,6 +75,10 @@ module LLVM
   
   def LLVM.Pointer(ty)
     LLVM::Type.pointer(ty)
+  end
+  
+  def LLVM.Array(ty, sz)
+    LLVM::Type.array(ty, sz)
   end
   
   def LLVM.Struct(*elt_types)
