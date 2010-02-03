@@ -24,6 +24,34 @@ module LLVM
       new(C.LLVMModuleCreateWithNameInContext(name, context))
     end
     
+    def types
+      @types ||= TypeCollection.new(self)
+    end
+    
+    class TypeCollection
+      def initialize(mod)
+        @module = mod
+      end
+      
+      def add(name, type)
+        C.LLVMAddTypeName(@module, name.to_s, type)
+      end
+      
+      def named(name)
+        Type.from_pointer(C.LLVMGetTypeByName(@module, name))
+      end
+      
+      def [](key)
+        case name
+          when String then named(key)
+        end
+      end
+      
+      def []=(key, type)
+        add(key, type)
+      end
+    end
+    
     def globals
       @globals ||= GlobalCollection.new(self)
     end
