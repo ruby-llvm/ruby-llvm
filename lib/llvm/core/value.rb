@@ -53,10 +53,6 @@ module LLVM
         when 1 then true
       end
     end
-    
-    def self.from_ptr(ptr)
-      ptr.null? ? nil : new(ptr)
-    end
   end
   
   class Argument < Value
