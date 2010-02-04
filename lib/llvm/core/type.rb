@@ -77,6 +77,10 @@ module LLVM
     LLVM::Type.pointer(ty)
   end
   
+  def LLVM.Vector(ty, sz)
+    LLVM::Type.vector(ty, sz)
+  end
+  
   def LLVM.Array(ty, sz)
     LLVM::Type.array(ty, sz)
   end
