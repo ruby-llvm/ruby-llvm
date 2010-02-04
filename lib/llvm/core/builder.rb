@@ -191,10 +191,26 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildStore(self, val, pointer))
     end
     
-    def gep(pointer, indices, inbounds = false, name = "")
-      Instruction.from_ptr(inbounds ?
-        C.LLVMBuildInBoundsGEP(self, pointer, indices, indices.size, name) :
-        C.LLVMBuildGEP(self, pointer, indices, indices.size, name))
+    def gep(pointer, indices, name = "")
+      indices = Array(indices)
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
+        indices_ptr.write_array_of_pointer(indices)
+        return Instruction.from_ptr(
+          C.LLVMBuildInBoundsGEP(self, pointer, indices_ptr, indices.size, name))
+      end
+    end
+    
+    def inbounds_gep(pointer, indices, name = "")
+      indices = Array(indices)
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
+        indices_ptr.write_array_of_pointer(indices)
+        return Instruction.from_ptr(
+          C.LLVMBuildGEP(self, pointer, indices_ptr, indices.size, name))
+      end
+    end
+    
+    def struct_gep(pointer, idx, name = "")
+      Instruction.from_ptr(C.LLVMBuildStructGEP(self, pointer, idx, name))
     end
     
     def global_string(string, name = "")
