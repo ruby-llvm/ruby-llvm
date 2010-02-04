@@ -38,12 +38,13 @@ module LLVM
       end
       
       def named(name)
-        Type.from_pointer(C.LLVMGetTypeByName(@module, name))
+        Type.from_ptr(C.LLVMGetTypeByName(@module, name))
       end
       
       def [](key)
-        case name
+        case key
           when String then named(key)
+          when Symbol then named(key.to_s)
         end
       end
       
