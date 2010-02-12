@@ -1,18 +1,21 @@
-module LLVM  
+module LLVM
+  # The PassManager runs a queue of passes on a module. See
+  # http://llvm.org/docs/Passes.html for the list of available passes.
+  # Currently, only scalar transformation passes are supported.
   class PassManager
-    class << self
-      private :new
-    end
-    
-    def initialize(ptr) # :nodoc:
-      @ptr = ptr
-    end
-    
-    def self.new_with_execution_engine(engine)
+    def initialize(execution_engine)
       ptr = C.LLVMCreatePassManager()
       C.LLVMAddTargetData(
-        C.LLVMGetExecutionEngineTargetData(engine), ptr)
-      new(ptr)
+        C.LLVMGetExecutionEngineTargetData(execution_engine), ptr)
+      @ptr = ptr
+      
+      if block_given?
+        begin
+          yield self
+        ensure
+          dispose
+        end
+      end
     end
     
     def to_ptr # :nodoc:
