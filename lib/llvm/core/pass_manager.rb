@@ -19,8 +19,17 @@ module LLVM
       @ptr
     end
     
+    def <<(name)
+      send(:"#{name}!")
+      self
+    end
+    
     def run(mod)
       C.LLVMRunPassManager(self, mod)
+    end
+    
+    def dispose
+      C.LLVMDisposePassManager(self)
     end
   end
 end

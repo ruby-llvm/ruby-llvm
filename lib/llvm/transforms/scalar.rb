@@ -31,100 +31,96 @@ module LLVM
   end
   
   class PassManager
-    def add(*syms)
-      syms.each { |sym| send(:"add_#{sym}_pass") }
+    def adce!
+      C.LLVMAddAggressiveDCEPass(self)
     end
     
-    def add_aggressive_dce_pass
-      C.LLVMAddAggressiveDCEPass(self); nil
+    def simplifycfg!
+      C.LLVMAddCFGSimplificationPass(self)
     end
     
-    def add_cfg_simplification_pass
-      C.LLVMAddCFGSimplificationPass(self); nil
+    def condprop!
+      C.LLVMAddCondPropagationPass(self)
     end
     
-    def add_cond_propagation_pass
-      C.LLVMAddCondPropagationPass(self); nil
+    def dse!
+      C.LLVMAddDeadStoreEliminationPass(self)
     end
     
-    def add_dead_store_elimination_pass
-      C.LLVMAddDeadStoreEliminationPass(self); nil
+    def gvn!
+      C.LLVMAddGVNPass(self)
     end
     
-    def add_gvn_pass
-      C.LLVMAddGVNPass(self); nil
+    def indvars!
+      C.LLVMAddIndVarSimplifyPass(self)
     end
     
-    def add_ind_var_simplify_pass
-      C.LLVMAddIndVarSimplifyPass(self); nil
+    def instcombine!
+      C.LLVMAddInstructionCombiningPass(self)
     end
     
-    def add_instruction_combining_pass
-      C.LLVMAddInstructionCombiningPass(self); nil
+    def jump_threading!
+      C.LLVMAddJumpThreadingPass(self)
     end
     
-    def add_jump_threading_pass
-      C.LLVMAddJumpThreadingPass(self); nil
+    def licm!
+      C.LLVMAddLICMPass(self)
     end
     
-    def add_licm_pass
-      C.LLVMAddLICMPass(self); nil
+    def loop_deletion!
+      C.LLVMAddLoopDeletionPass(self)
     end
     
-    def add_loop_deletion_pass
-      C.LLVMAddLoopDeletionPass(self); nil
+    def loop_index_split!
+      C.LLVMAddLoopIndexSplitPass(self)
     end
     
-    def add_loop_index_split_pass
-      C.LLVMAddLoopIndexSplitPass(self); nil
+    def loop_rotate!
+      C.LLVMAddLoopRotatePass(self)
     end
     
-    def add_loop_rotate_pass
-      C.LLVMAddLoopRotatePass(self); nil
+    def loop_unroll!
+      C.LLVMAddLoopUnrollPass(self)
     end
     
-    def add_loop_unroll_pass
-      C.LLVMAddLoopUnrollPass(self); nil
+    def loop_unswitch!
+      C.LLVMAddLoopUnswitchPass(self)
     end
     
-    def add_loop_unswitch_pass
-      C.LLVMAddLoopUnswitchPass(self); nil
+    def memcpyopt!
+      C.LLVMAddMemCpyOptPass(self)
     end
     
-    def add_mem_cpy_opt_pass
-      C.LLVMAddMemCpyOptPass(self); nil
+    def mem2reg!
+      C.LLVMAddPromoteMemoryToRegisterPass(self)
     end
     
-    def add_promote_memory_to_register_pass
-      C.LLVMAddPromoteMemoryToRegisterPass(self); nil
+    def reassociate!
+      C.LLVMAddReassociatePass(self)
     end
     
-    def add_reassociate_pass
-      C.LLVMAddReassociatePass(self); nil
+    def sccp!
+      C.LLVMAddSCCPPass(self)
     end
     
-    def add_sccp_pass
-      C.LLVMAddSCCPPass(self); nil
+    def scalarrepl!
+      C.LLVMAddScalarReplAggregatesPass(self)
     end
     
-    def add_scalar_repl_aggregates_pass
-      C.LLVMAddScalarReplAggregatesPass(self); nil
+    def simplify_libcalls!
+      C.LLVMAddSimplifyLibCallsPass(self)
     end
     
-    def add_simplify_lib_calls_pass
-      C.LLVMAddSimplifyLibCallsPass(self); nil
+    def tailcallelim!
+      C.LLVMAddTailCallEliminationPass(self)
     end
     
-    def add_tail_call_elimination_pass
-      C.LLVMAddTailCallEliminationPass(self); nil
+    def constprop!
+      C.LLVMAddConstantPropagationPass(self)
     end
     
-    def add_constant_propagation_pass
-      C.LLVMAddConstantPropagationPass(self); nil
-    end
-    
-    def add_demote_memory_to_register_pass
-      C.LLVMAddDemoteMemoryToRegisterPass(self); nil
+    def reg2mem!
+      C.LLVMAddDemoteMemoryToRegisterPass(self)
     end
   end
 end
