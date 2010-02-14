@@ -24,7 +24,7 @@ module LLVM
       ptr.null? ? nil : new(ptr)
     end
     
-    def self.array(ty, sz)
+    def self.array(ty, sz = 0)
       from_ptr(C.LLVMArrayType(LLVM::Type(ty), sz))
     end
     
@@ -81,7 +81,7 @@ module LLVM
     LLVM::Type.vector(ty, sz)
   end
   
-  def LLVM.Array(ty, sz)
+  def LLVM.Array(ty, sz = 0)
     LLVM::Type.array(ty, sz)
   end
   
