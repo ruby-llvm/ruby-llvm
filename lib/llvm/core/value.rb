@@ -16,6 +16,14 @@ module LLVM
       @ptr
     end
     
+    def self.type
+      raise NotImplementedError, "Value.type is abstract"
+    end
+    
+    def self.to_ptr
+      type.to_ptr
+    end
+    
     def type
       Type.from_ptr(C.LLVMTypeOf(self))
     end
@@ -52,6 +60,10 @@ module LLVM
         when 0 then false
         when 1 then true
       end
+    end
+    
+    def add_attribute(attr)
+      C.LLVMAddAttribute(self, attr)
     end
   end
   
@@ -325,6 +337,14 @@ module LLVM
     def call_conv=(conv)
       C.LLVMSetFunctionCallConv(self, conv)
       conv
+    end
+    
+    def add_attribute(attr)
+      C.LLVMAddFunctionAttr(self, attr)
+    end
+    
+    def remove_attribute(attr)
+      C.LLVMRemoveFunctionAttr(self, attr)
     end
     
     def basic_blocks

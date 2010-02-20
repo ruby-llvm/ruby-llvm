@@ -73,6 +73,10 @@ module LLVM
     end
   end
   
+  def LLVM.Array(ty, sz = 0)
+    LLVM::Type.array(ty, sz)
+  end
+  
   def LLVM.Pointer(ty)
     LLVM::Type.pointer(ty)
   end
@@ -81,8 +85,8 @@ module LLVM
     LLVM::Type.vector(ty, sz)
   end
   
-  def LLVM.Array(ty, sz = 0)
-    LLVM::Type.array(ty, sz)
+  def LLVM.Function(argtypes, rettype)
+    LLVM::Type.function(argtypes, rettype)
   end
   
   def LLVM.Struct(*elt_types)
