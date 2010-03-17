@@ -16,10 +16,6 @@ module LLVM
       new(C.LLVMCreateBuilder())
     end
     
-    def self.create_in_context(context)
-      new(C.LLVMCreateBuilderInContext(context))
-    end
-    
     def position_at_end(block)
       C.LLVMPositionBuilderAtEnd(self, block)
       nil

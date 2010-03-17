@@ -16,12 +16,8 @@ module LLVM
       @ptr
     end
     
-    def self.create_with_name(name)
+    def self.create(name)
       new(C.LLVMModuleCreateWithName(name))
-    end
-    
-    def self.create_with_name_in_context(name, context)
-      new(C.LLVMModuleCreateWithNameInContext(name, context))
     end
     
     def types
