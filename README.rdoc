@@ -18,3 +18,10 @@ If using MRI, then at least ffi >= 0.5.4 is required.
 
 == Requirements
 * LLVM >= 2.6, compiled with SHARED_LIBRARY=1
+
+== About version numbers
+
+The first two digits of ruby-llvm's version number refer to the required major
+and minor version of LLVM. The third digit refers to the ruby-llvm release
+itself. Because LLVM's api changes often, this coupling between LLVM and
+ruby-llvm versions is necessary.
