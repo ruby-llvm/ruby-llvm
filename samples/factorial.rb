@@ -4,7 +4,7 @@ require 'llvm/transforms/scalar'
 
 LLVM.init_x86
 
-mod = LLVM::Module.create_with_name("Factorial")
+mod = LLVM::Module.create("Factorial")
 mod.functions.add("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
   
   # Basic blocks
