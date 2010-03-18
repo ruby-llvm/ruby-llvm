@@ -68,8 +68,8 @@ module LLVM
   
   def LLVM.Type(ty)
     case ty
-      when LLVM::Type then ty
-      else ty.type
+    when LLVM::Type then ty
+    else ty.type
     end
   end
   

@@ -304,20 +304,24 @@ module LLVM
     # Misc
     
     def phi(ty, *incoming)
-      incoming, name = case incoming[-1]
-        when String then [incoming[0..-2], incoming[-1]]
-        else [incoming, ""]
+      if incoming.last.kind_of? String
+        name = incomimg.pop
+      else
+        name = ""
       end
+
       phi = Phi.from_ptr(C.LLVMBuildPhi(self, LLVM::Type(ty), name))
       phi.add_incoming(*incoming) unless incoming.empty?
       phi
     end
     
     def call(fun, *args)
-      args, name = case args[-1]
-        when String then [args[0..-2], args[-1]]
-        else [args, ""]
+      if args.last.kind_of? String
+        name = args.pop
+      else
+        name = ""
       end
+
       args_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size)
       args_ptr.write_array_of_pointer(args)
       CallInst.from_ptr(C.LLVMBuildCall(self, fun, args_ptr, args.size, name))

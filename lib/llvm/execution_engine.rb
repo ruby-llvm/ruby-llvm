@@ -146,9 +146,9 @@ module LLVM
   
   def GenericValue(val)
     case val
-      when GenericValue then val
-      when Integer then GenericValue.from_i(val)
-      when Float then GenericValue.from_f(val)
+    when GenericValue then val
+    when Integer then GenericValue.from_i(val)
+    when Float then GenericValue.from_f(val)
     end
   end
   module_function :GenericValue

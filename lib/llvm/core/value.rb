@@ -43,22 +43,22 @@ module LLVM
     
     def constant?
       case C.LLVMIsConstant(self)
-        when 0 then false
-        when 1 then true
+      when 0 then false
+      when 1 then true
       end
     end
     
     def null?
       case C.LLVMIsNull(self)
-        when 0 then false
-        when 1 then true
+      when 0 then false
+      when 1 then true
       end
     end
     
     def undefined?
       case C.LLVMIsUndef(self)
-        when 0 then false
-        when 1 then true
+      when 0 then false
+      when 1 then true
       end
     end
     
@@ -197,19 +197,19 @@ module LLVM
   
   def LLVM.const_missing(const) # :nodoc:
     case const.to_s
-      when /Int(\d+)/
-        width = $1.to_i
-        name  = "Int#{width}"
-        eval <<-KLASS
-          class #{name} < ConstantInt
-            def self.type
-              Type.from_ptr(C.LLVMIntType(#{width}))
-            end            
+    when /Int(\d+)/
+      width = $1.to_i
+      name  = "Int#{width}"
+      eval <<-KLASS
+        class #{name} < ConstantInt
+          def self.type
+            Type.from_ptr(C.LLVMIntType(#{width}))
           end
-        KLASS
-        const_get(name)
-      else
-        super
+        end
+      KLASS
+      const_get(name)
+    else
+      super
     end
   end
   
@@ -218,8 +218,8 @@ module LLVM
   
   def LLVM.Int(val)
     case val
-      when LLVM::ConstantInt then val
-      when Integer then Int.from_i(val)
+    when LLVM::ConstantInt then val
+    when Integer then Int.from_i(val)
     end
   end
   
@@ -402,8 +402,8 @@ module LLVM
     
     def thread_local?
       case C.LLVMIsThreadLocal(self)
-        when 0 then false
-        else true
+      when 0 then false
+      else true
       end
     end
     
