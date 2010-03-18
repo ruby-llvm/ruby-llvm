@@ -39,8 +39,8 @@ module LLVM
       
       def [](key)
         case key
-          when String then named(key)
-          when Symbol then named(key.to_s)
+        when String then named(key)
+        when Symbol then named(key.to_s)
         end
       end
       
@@ -90,16 +90,16 @@ module LLVM
       
       def [](key)
         case key
-          when String then named(key)
-          when Symbol then named(key.to_s)
-          when Integer then
-            i = 0
-            g = first
-            until i >= key || g.nil?
-              g = self.next(g)
-              i += 1
-            end
-            g
+        when String then named(key)
+        when Symbol then named(key.to_s)
+        when Integer then
+          i = 0
+          g = first
+          until i >= key || g.nil?
+            g = self.next(g)
+            i += 1
+          end
+          g
         end
       end
       
@@ -124,9 +124,10 @@ module LLVM
       end
       
       def add(name, *args)
-        type = case args[0]
-          when Type then args[0]
-          else Type.function(*args)
+        if args.first.kind_of? Type
+          type = args.first
+        else
+          type = Type.function(*args)
         end
         function = Function.from_ptr(C.LLVMAddFunction(@module, name.to_s, type))
         
