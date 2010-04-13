@@ -18,7 +18,7 @@ module LLVM
     
     def position_at_end(block)
       C.LLVMPositionBuilderAtEnd(self, block)
-      nil
+      self
     end
     
     def get_insert_block
