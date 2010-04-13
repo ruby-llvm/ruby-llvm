@@ -8,14 +8,6 @@ module LLVM
       C.LLVMAddTargetData(
         C.LLVMGetExecutionEngineTargetData(execution_engine), ptr)
       @ptr = ptr
-      
-      if block_given?
-        begin
-          yield self
-        ensure
-          dispose
-        end
-      end
     end
     
     def to_ptr # :nodoc:
