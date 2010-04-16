@@ -36,7 +36,10 @@ module LLVM
     end
     
     def aggregate_ret(*vals)
-      Instruction.from_ptr(C.LLVMBuildAggregateRet(self, vals, vals.size))
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * vals.size) do |vals_ptr|
+        vals_ptr.write_array_of_pointer(vals)
+        Instruction.from_ptr(C.LLVMBuildAggregateRet(self, vals_ptr, vals.size))
+      end
     end
     
     def br(block)
