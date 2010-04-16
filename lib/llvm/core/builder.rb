@@ -153,8 +153,8 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildNeg(self, arg, name))
     end
     
-    def not(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildNot(self, lhs, rhs, name))
+    def not(arg, name = "")
+      Instruction.from_ptr(C.LLVMBuildNot(self, arg, name))
     end
     
     # Memory
