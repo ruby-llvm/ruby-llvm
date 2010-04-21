@@ -8,13 +8,13 @@ module LLVM
     ffi_lib 'LLVMExecutionEngine'
     
     # Generic values
-    attach_function :LLVMCreateGenericValueOfInt, [:pointer, :ulong_long, :int], :pointer
+    attach_function :LLVMCreateGenericValueOfInt, [:pointer, :long_long, :int], :pointer
     attach_function :LLVMCreateGenericValueOfPointer, [:pointer], :pointer
     attach_function :LLVMCreateGenericValueOfFloat, [:pointer, :double], :pointer
     
     attach_function :LLVMGenericValueIntWidth, [:pointer], :uint
     
-    attach_function :LLVMGenericValueToInt, [:pointer, :int], :ulong_long
+    attach_function :LLVMGenericValueToInt, [:pointer, :int], :long_long
     attach_function :LLVMGenericValueToPointer, [:pointer], :pointer
     attach_function :LLVMGenericValueToFloat, [:pointer, :pointer], :double
     attach_function :LLVMDisposeGenericValue, [:pointer], :void
@@ -121,7 +121,7 @@ module LLVM
       @ptr
     end
     
-    def self.from_i(i, width = NATIVE_INT_SIZE, signed = false)
+    def self.from_i(i, width = NATIVE_INT_SIZE, signed = true)
       type = LLVM.const_get("Int#{width}").type
       new(C.LLVMCreateGenericValueOfInt(type, i, signed ? 1 : 0))
     end
@@ -135,8 +135,8 @@ module LLVM
       new(ptr)
     end
     
-    def to_i
-      C.LLVMGenericValueToInt(self, 0)
+    def to_i(signed = true)
+      C.LLVMGenericValueToInt(self, signed ? 1 : 0)
     end
     
     def to_f
