@@ -121,8 +121,7 @@ module LLVM
       @ptr
     end
     
-    def self.from_i(i, width = NATIVE_INT_SIZE, signed = true)
-      type = LLVM.const_get("Int#{width}").type
+    def self.from_i(i, type = LLVM::Int, signed = true)
       new(C.LLVMCreateGenericValueOfInt(type, i, signed ? 1 : 0))
     end
     
