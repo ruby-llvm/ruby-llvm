@@ -12,6 +12,16 @@ module LLVM
       @ptr
     end
     
+    # LLVM's represents types uniquely, and supports pointer equality. 
+    def ==(type)
+      case type
+      when LLVM::Type
+        @ptr == type.to_ptr
+      else
+        false
+      end
+    end
+
     def size
       Int64.from_ptr(C.LLVMSizeOf(self))
     end
