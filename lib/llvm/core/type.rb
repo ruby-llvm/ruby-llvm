@@ -59,6 +59,10 @@ module LLVM
       elt_types_ptr.write_array_of_pointer(elt_types)
       from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
     end
+
+    def self.void
+      from_ptr(C.LLVMVoidType)
+    end
     
     def self.opaque
       from_ptr(C.LLVMOpaqueType)
@@ -101,5 +105,9 @@ module LLVM
   
   def LLVM.Struct(*elt_types)
     LLVM::Type.struct(elt_types, false)
+  end
+
+  def LLVM.Void
+    LLVM::Type.void
   end
 end
