@@ -516,6 +516,5 @@ module LLVM
   require 'llvm/core/type'
   require 'llvm/core/value'
   require 'llvm/core/builder'
-  require 'llvm/core/module_provider'
   require 'llvm/core/pass_manager'
 end
