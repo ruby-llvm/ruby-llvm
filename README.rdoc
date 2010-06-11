@@ -2,7 +2,7 @@
 
 Author:: Jeremy Voorhis
 Contributors:: Evan Phoenix
-Copyright:: Copyright (c) 2009 Jeremy Voorhis
+Copyright:: Copyright (c) 2010 Jeremy Voorhis
 License:: BSD 3-clause (see LICENSE)
 
 This package contains Ruby bindings to the LLVM api, enabling users to make use
