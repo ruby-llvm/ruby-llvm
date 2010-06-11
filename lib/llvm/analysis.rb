@@ -4,8 +4,6 @@ require 'llvm/target'
 
 module LLVM
   module C
-    ffi_lib 'LLVMAnalysis'
-    
     enum :verifier_failure_action, [
       :abort_process,
       :print_message,

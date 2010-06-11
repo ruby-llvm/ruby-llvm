@@ -3,11 +3,8 @@ require 'llvm/core'
 
 module LLVM
   module C
-    ffi_lib 'LLVMScalarOpts'
-    
     attach_function :LLVMAddAggressiveDCEPass, [:pointer], :void
     attach_function :LLVMAddCFGSimplificationPass, [:pointer], :void
-    attach_function :LLVMAddCondPropagationPass, [:pointer], :void
     attach_function :LLVMAddDeadStoreEliminationPass, [:pointer], :void
     attach_function :LLVMAddGVNPass, [:pointer], :void
     attach_function :LLVMAddIndVarSimplifyPass, [:pointer], :void
@@ -37,10 +34,6 @@ module LLVM
     
     def simplifycfg!
       C.LLVMAddCFGSimplificationPass(self)
-    end
-    
-    def condprop!
-      C.LLVMAddCondPropagationPass(self)
     end
     
     def dse!

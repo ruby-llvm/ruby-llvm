@@ -4,8 +4,7 @@ module LLVM
   module C
     extend ::FFI::Library
     # load required libraries
-    ffi_lib 'LLVMSystem'
-    ffi_lib 'LLVMSupport'
+    ffi_lib 'LLVM-2.7'
   end
   
   NATIVE_INT_SIZE = case FFI::Platform::ARCH

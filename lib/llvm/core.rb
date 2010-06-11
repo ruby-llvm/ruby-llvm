@@ -2,8 +2,6 @@ require 'llvm'
 
 module LLVM
   module C
-    ffi_lib 'LLVMCore'
-    
     enum :attribute, [
       :ext,               1 <<  0,
       :sext,              1 <<  1,

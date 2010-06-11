@@ -5,8 +5,6 @@ require 'llvm/analysis'
 
 module LLVM
   module C
-    ffi_lib 'LLVMExecutionEngine'
-    
     # Generic values
     attach_function :LLVMCreateGenericValueOfInt, [:pointer, :long_long, :int], :pointer
     attach_function :LLVMCreateGenericValueOfPointer, [:pointer], :pointer
@@ -43,21 +41,8 @@ module LLVM
     
     attach_function :LLVMGetPointerToGlobal, [:pointer, :pointer], :pointer
     
-    ffi_lib 'LLVMipa'
-    ffi_lib 'LLVMTransformUtils'
-    ffi_lib 'LLVMScalarOpts'
-    ffi_lib 'LLVMCodeGen'
-    ffi_lib 'LLVMAsmPrinter'
-    ffi_lib 'LLVMSelectionDAG'
-    ffi_lib 'LLVMJIT'
-    ffi_lib 'LLVMInterpreter'
-    ffi_lib 'LLVMMC'
-    ffi_lib 'LLVMTransformUtils'
-    
-    ffi_lib 'LLVMX86Info'
     attach_function :LLVMInitializeX86TargetInfo, [], :void
     
-    ffi_lib 'LLVMX86CodeGen'
     attach_function :LLVMInitializeX86Target, [], :void
   end
   
