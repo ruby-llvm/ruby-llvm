@@ -41,12 +41,10 @@ mod.verify
 puts
 mod.dump
 
-provider = LLVM::ModuleProvider.for_existing_module(mod)
-engine = LLVM::ExecutionEngine.create_jit_compiler(provider)
+engine = LLVM::ExecutionEngine.create_jit_compiler(mod)
 
 arg = (ARGV[0] || 6).to_i
 value = engine.run_function(mod.functions["fac"], arg)
 
-puts
-puts "fac(%i) = %i" % [arg, value]
-puts
+printf("\nfac(%i) = %i\n\n", arg, value)
+

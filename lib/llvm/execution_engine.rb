@@ -18,9 +18,9 @@ module LLVM
     attach_function :LLVMDisposeGenericValue, [:pointer], :void
     
     # Execution engines
-    attach_function :LLVMCreateExecutionEngine, [:pointer, :pointer, :pointer], :int
-    attach_function :LLVMCreateInterpreter, [:pointer, :pointer, :pointer], :int
-    attach_function :LLVMCreateJITCompiler, [:pointer, :pointer, :uint, :pointer], :int
+    attach_function :LLVMCreateExecutionEngineForModule, [:pointer, :pointer, :pointer], :int
+    attach_function :LLVMCreateInterpreterForModule, [:pointer, :pointer, :pointer], :int
+    attach_function :LLVMCreateJITCompilerForModule, [:pointer, :pointer, :uint, :pointer], :int
     attach_function :LLVMDisposeExecutionEngine, [:pointer], :void
     
     attach_function :LLVMRunStaticConstructors, [:pointer], :void
@@ -64,10 +64,10 @@ module LLVM
       @ptr
     end
     
-    def self.create_jit_compiler(provider, opt_level = 3)
+    def self.create_jit_compiler(mod, opt_level = 3)
       FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |ptr|
         error   = FFI::MemoryPointer.new(FFI.type_size(:pointer))
-        status  = C.LLVMCreateJITCompiler(ptr, provider, opt_level, error)
+        status  = C.LLVMCreateJITCompilerForModule(ptr, mod, opt_level, error)
         errorp  = error.read_pointer
         message = errorp.read_string unless errorp.null?
         
