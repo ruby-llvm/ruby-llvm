@@ -18,7 +18,7 @@ ruby-llvm has been tested on the following Ruby interpreters:
 If using MRI, then at least ffi >= 0.5.4 is required.
 
 == Requirements
-* LLVM >= 2.6, compiled with SHARED_LIBRARY=1
+* LLVM 2.7, compiled with --shared-library
 
 == About version numbers
 
