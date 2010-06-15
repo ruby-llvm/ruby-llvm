@@ -4,9 +4,7 @@ module LLVM
       new(ptr) unless ptr.null?
     end
     
-    class << self
-      private :new
-    end
+    private_class_method :new
     
     def initialize(ptr)
       @ptr = ptr

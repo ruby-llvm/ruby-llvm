@@ -52,9 +52,7 @@ module LLVM
   end
   
   class ExecutionEngine
-    class << self
-      private :new
-    end
+    private_class_method :new
     
     def initialize(ptr) # :nodoc:
       @ptr = ptr
@@ -94,10 +92,8 @@ module LLVM
   end
   
   class GenericValue
-    class << self
-      private :new
-    end
-    
+    private_class_method :new
+
     def initialize(ptr) # :nodoc:
       @ptr = ptr
     end
