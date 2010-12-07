@@ -374,10 +374,19 @@ module LLVM
     end
     
     class ParameterCollection
+      include Enumerable
+
       def initialize(fun)
         @fun = fun
       end
       
+      def each
+        return Enumerator.new(self) unless block_given?
+        n = size
+        0.upto(n-1) {|i| yield self[i] }
+        self
+      end
+
       def [](i)
         Value.from_ptr(C.LLVMGetParam(@fun, i))
       end
