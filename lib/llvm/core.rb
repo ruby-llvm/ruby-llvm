@@ -459,7 +459,7 @@ module LLVM
     attach_function :LLVMBuildSExt, [:pointer, :pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildFPToUI, [:pointer, :pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildFPToSI, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildUIToFP, [:pointer, :pointer, :string], :pointer
+    attach_function :LLVMBuildUIToFP, [:pointer, :pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildSIToFP, [:pointer, :pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildFPTrunc, [:pointer, :pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildFPExt, [:pointer, :pointer, :pointer, :string], :pointer
