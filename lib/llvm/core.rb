@@ -309,10 +309,10 @@ module LLVM
     attach_function :LLVMDeleteGlobal, [:pointer], :void
     attach_function :LLVMGetInitializer, [:pointer], :pointer
     attach_function :LLVMSetInitializer, [:pointer, :pointer], :void
-    attach_function :LLVMIsThreadLocal, [:pointer], :int
+    attach_function :LLVMIsThreadLocal, [:pointer], :bool
     attach_function :LLVMSetThreadLocal, [:pointer, :int], :void
-    attach_function :LLVMIsGlobalConstant, [:pointer], :int
-    attach_function :LLVMSetGlobalConstant, [:pointer, :int], :void
+    attach_function :LLVMIsGlobalConstant, [:pointer], :bool
+    attach_function :LLVMSetGlobalConstant, [:pointer, :bool], :void
     
     # Aliases
     attach_function :LLVMAddAlias, [:pointer, :pointer, :pointer, :string], :pointer
