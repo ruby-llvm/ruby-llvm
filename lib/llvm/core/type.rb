@@ -29,6 +29,14 @@ module LLVM
     def align
       Int64.from_ptr(C.LLVMAlignOf(self))
     end
+
+    def null_pointer
+      ConstantExpr.from_ptr(C.LLVMConstPointerNull(self))
+    end
+
+    def null
+      ConstantExpr.from_ptr(C.LLVMConstNull(self))
+    end
     
     def self.from_ptr(ptr)
       ptr.null? ? nil : new(ptr)
