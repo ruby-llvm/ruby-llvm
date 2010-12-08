@@ -101,6 +101,19 @@ module LLVM
     def self.null_ptr
       from_ptr(C.LLVMConstPointerNull(type))
     end
+
+    def bitcast_to(type)
+      ConstantExpr.from_ptr(C.LLVMConstBitCast(self, type))
+    end
+
+    def gep(*indices)
+      indices = Array(indices)
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
+        indices_ptr.write_array_of_pointer(indices)
+        return ConstantExpr.from_ptr(
+          C.LLVMConstGEP(self, indices_ptr, indices.size))
+      end
+    end
   end
   
   class ConstantArray < Constant
