@@ -443,7 +443,7 @@ module LLVM
     attach_function :LLVMBuildMalloc, [:pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildArrayMalloc, [:pointer, :pointer, :pointer, :string], :string
     attach_function :LLVMBuildAlloca, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildArrayAlloca, [:pointer, :pointer, :string], :pointer
+    attach_function :LLVMBuildArrayAlloca, [:pointer, :pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildFree, [:pointer, :pointer], :pointer
     attach_function :LLVMBuildLoad, [:pointer, :pointer, :string], :pointer
     attach_function :LLVMBuildStore, [:pointer, :pointer, :pointer], :pointer
