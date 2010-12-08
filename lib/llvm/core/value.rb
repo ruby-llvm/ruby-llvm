@@ -279,8 +279,13 @@ module LLVM
   
   class ConstantStruct < Constant
     def self.const(size, packed = false)
-      vals = (0..size).map { |i| yield i }
-      from_ptr(C.LLVMConstStruct(vals, size, packed ? 1 : 0))
+      vals = (0...size).map { |i| yield i }
+      res = nil
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |vals_ptr|
+        vals_ptr.write_array_of_pointer(vals)
+	res = from_ptr(C.LLVMConstStruct(vals_ptr, size, packed ? 1 : 0))
+      end
+      res
     end
   end
   
