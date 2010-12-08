@@ -336,6 +336,22 @@ module LLVM
     def alignment=(bytes)
       C.LLVMSetAlignment(self, bytes)
     end
+
+    def initializer
+      Value.from_ptr(C.LLVMGetInitializer(self))
+    end
+
+    def initializer=(val)
+      C.LLVMSetInitializer(self, val)
+    end
+
+    def global_constant?
+      C.LLVMIsGlobalConstant(self)
+    end
+
+    def global_constant=(flag)
+      C.LLVMSetGlobalConstant(self, flag)
+    end
   end
   
   class Function < GlobalValue
