@@ -37,6 +37,10 @@ module LLVM
     def null
       ConstantExpr.from_ptr(C.LLVMConstNull(self))
     end
+
+    def pointer(address_space = 0)
+      Type.pointer(self, address_space)
+    end
     
     def self.from_ptr(ptr)
       ptr.null? ? nil : new(ptr)
