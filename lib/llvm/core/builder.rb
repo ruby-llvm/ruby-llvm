@@ -217,7 +217,7 @@ module LLVM
     end
     
     def global_string_pointer(string, name = "")
-      Instruction.from_ptr(C.LLVMBuildGlobalStringPointer(self, string, name))
+      Instruction.from_ptr(C.LLVMBuildGlobalStringPtr(self, string, name))
     end
     
     # Casts
