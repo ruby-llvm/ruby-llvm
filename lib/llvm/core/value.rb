@@ -105,7 +105,7 @@ module LLVM
   
   class ConstantArray < Constant
     def self.string(str, null_terminate = true)
-      from_ptr(C.LLVMConstString(str, null_terminate ? 0 : 1))
+      from_ptr(C.LLVMConstString(str, str.length, null_terminate ? 0 : 1))
     end
     
     def self.const(type, size)
