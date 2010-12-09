@@ -383,6 +383,12 @@ module LLVM
       def size
         C.LLVMCountParams(@fun)
       end
+      
+      include Enumerable
+      
+      def each
+        0.upto(size-1) { |i| yield self[i] }
+      end
     end
   end
   
