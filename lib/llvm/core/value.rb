@@ -99,11 +99,24 @@ module LLVM
     def self.null_ptr
       from_ptr(C.LLVMConstPointerNull(type))
     end
+
+    def bitcast_to(type)
+      ConstantExpr.from_ptr(C.LLVMConstBitCast(self, type))
+    end
+
+    def gep(*indices)
+      indices = Array(indices)
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
+        indices_ptr.write_array_of_pointer(indices)
+        return ConstantExpr.from_ptr(
+          C.LLVMConstGEP(self, indices_ptr, indices.size))
+      end
+    end
   end
   
   class ConstantArray < Constant
     def self.string(str, null_terminate = true)
-      from_ptr(C.LLVMConstString(str, null_terminate ? 0 : 1))
+      from_ptr(C.LLVMConstString(str, str.length, null_terminate ? 0 : 1))
     end
     
     def self.const(type, size)
@@ -277,8 +290,13 @@ module LLVM
   
   class ConstantStruct < Constant
     def self.const(size, packed = false)
-      vals = (0..size).map { |i| yield i }
-      from_ptr(C.LLVMConstStruct(vals, size, packed ? 1 : 0))
+      vals = (0...size).map { |i| yield i }
+      res = nil
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |vals_ptr|
+        vals_ptr.write_array_of_pointer(vals)
+	res = from_ptr(C.LLVMConstStruct(vals_ptr, size, packed ? 1 : 0))
+      end
+      res
     end
   end
   
@@ -328,6 +346,22 @@ module LLVM
     
     def alignment=(bytes)
       C.LLVMSetAlignment(self, bytes)
+    end
+
+    def initializer
+      Value.from_ptr(C.LLVMGetInitializer(self))
+    end
+
+    def initializer=(val)
+      C.LLVMSetInitializer(self, val)
+    end
+
+    def global_constant?
+      C.LLVMIsGlobalConstant(self)
+    end
+
+    def global_constant=(flag)
+      C.LLVMSetGlobalConstant(self, flag)
     end
   end
   

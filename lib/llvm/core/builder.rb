@@ -15,6 +15,7 @@ module LLVM
     end
     
     def position_at_end(block)
+      raise "block must not be nil" if block.nil?
       C.LLVMPositionBuilderAtEnd(self, block)
       self
     end
@@ -215,7 +216,7 @@ module LLVM
     end
     
     def global_string_pointer(string, name = "")
-      Instruction.from_ptr(C.LLVMBuildGlobalStringPointer(self, string, name))
+      Instruction.from_ptr(C.LLVMBuildGlobalStringPtr(self, string, name))
     end
     
     # Casts
@@ -317,6 +318,7 @@ module LLVM
     end
     
     def call(fun, *args)
+      raise "No fun" if fun.nil?
       if args.last.kind_of? String
         name = args.pop
       else
