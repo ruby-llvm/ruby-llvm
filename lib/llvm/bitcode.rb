@@ -35,5 +35,9 @@ module LLVM
       raise msg_ref.get_pointer(0).get_string(0) if failed
       new(buf_ref.get_pointer(0))
     end
+
+    def dispose
+      C.LLVMDisposeMemoryBuffer(@ptr)
+    end
   end
 end
