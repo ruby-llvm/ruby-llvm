@@ -497,7 +497,7 @@ module LLVM
     attach_function :LLVMDisposeModuleProvider, [:pointer], :void
     
     # Memory buffers
-    attach_function :LLVMCreateMemoryBufferWithContentsOfFile, [:string, :pointer, :pointer], :int
+    attach_function :LLVMCreateMemoryBufferWithContentsOfFile, [:string, :buffer_out, :buffer_out], :bool
     attach_function :LLVMCreateMemoryBufferWithSTDIN, [:pointer, :pointer], :int
     attach_function :LLVMDisposeMemoryBuffer, [:pointer], :void
     
