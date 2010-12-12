@@ -504,6 +504,7 @@ module LLVM
     # Pass managers
     attach_function :LLVMCreatePassManager, [], :pointer
     attach_function :LLVMCreateFunctionPassManager, [:pointer], :pointer
+    attach_function :LLVMCreateFunctionPassManagerForModule, [:pointer], :pointer
     attach_function :LLVMRunPassManager, [:pointer, :pointer], :int
     attach_function :LLVMInitializeFunctionPassManager, [:pointer], :int
     attach_function :LLVMRunFunctionPassManager, [:pointer, :pointer], :int

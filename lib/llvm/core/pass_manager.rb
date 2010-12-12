@@ -18,13 +18,40 @@ module LLVM
       send(:"#{name}!")
       self
     end
-    
+
+    def do_initialization
+    end
+
+    def do_finalization
+    end
+
     def run(mod)
       C.LLVMRunPassManager(self, mod)
     end
     
     def dispose
       C.LLVMDisposePassManager(self)
+    end
+  end
+
+  class FunctionPassManager < PassManager
+    def initialize(execution_engine, mod)
+      ptr = C.LLVMCreateFunctionPassManagerForModule(mod)
+      C.LLVMAddTargetData(
+        C.LLVMGetExecutionEngineTargetData(execution_engine), ptr)
+      @ptr = ptr
+    end
+
+    def do_initialization
+      !!C.LLVMInitializeFunctionPassManager(self)
+    end
+
+    def do_finalization
+      !!C.LLVMFinalizeFunctionPassManager(self)
+    end
+
+    def run(fn)
+      C.LLVMRunFunctionPassManager(self, fn)
     end
   end
 end
