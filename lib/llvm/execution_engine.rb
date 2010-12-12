@@ -75,6 +75,7 @@ module LLVM
           return new(ptr.read_pointer)
         else
           C.LLVMDisposeMessage(error)
+          error.autorelease=false
           raise RuntimeError, "Error creating JIT compiler: #{message}"
         end
       end
