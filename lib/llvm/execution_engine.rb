@@ -124,8 +124,8 @@ module LLVM
       C.LLVMGenericValueToInt(self, signed ? 1 : 0)
     end
     
-    def to_f
-      C.LLVMGenericValueToFloat(LLVM::Float.type, self)
+    def to_f(type = LLVM::Float.type)
+      C.LLVMGenericValueToFloat(type, self)
     end
   end
   
