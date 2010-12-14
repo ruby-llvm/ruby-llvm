@@ -308,7 +308,7 @@ module LLVM
     
     def phi(ty, *incoming)
       if incoming.last.kind_of? String
-        name = incomimg.pop
+        name = incoming.pop
       else
         name = ""
       end
