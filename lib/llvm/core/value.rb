@@ -83,6 +83,11 @@ module LLVM
     ensure
       builder.dispose if islocal
     end
+
+    def parent
+      fp = C.LLVMGetBasicBlockParent(self)
+      LLVM::Function.from_ptr(fp)
+    end
   end
   
   class Constant < Value
