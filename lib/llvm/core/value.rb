@@ -71,6 +71,10 @@ module LLVM
   end
   
   class BasicBlock < Value
+    def self.create(fun = nil, name = "")
+      self.from_ptr(C.LLVMAppendBasicBlock(fun, name))
+    end
+
     def build(builder = nil)
       if builder.nil?
         builder = Builder.create
@@ -366,7 +370,7 @@ module LLVM
       end
       
       def append(name = "")
-        BasicBlock.from_ptr(C.LLVMAppendBasicBlock(@fun, name))
+        BasicBlock.create(@fun, name)
       end
       
       def entry
