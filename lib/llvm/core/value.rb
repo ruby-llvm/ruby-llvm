@@ -81,7 +81,7 @@ module LLVM
       builder.position_at_end(self)
       yield builder
     ensure
-      builder.dispose
+      builder.dispose if islocal
     end
   end
   
