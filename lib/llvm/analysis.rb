@@ -36,7 +36,7 @@ module LLVM
   
   class Function
     def verify(action = :abort_process)
-      !!C.LLVMVerifyFunction(self, action)
+      C.LLVMVerifyFunction(self, action) != 0
     end
   end
 end

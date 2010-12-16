@@ -43,11 +43,11 @@ module LLVM
     end
 
     def do_initialization
-      !!C.LLVMInitializeFunctionPassManager(self)
+      C.LLVMInitializeFunctionPassManager(self) != 0
     end
 
     def do_finalization
-      !!C.LLVMFinalizeFunctionPassManager(self)
+      C.LLVMFinalizeFunctionPassManager(self) != 0
     end
 
     def run(fn)
