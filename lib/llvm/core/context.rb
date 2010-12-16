@@ -1,9 +1,7 @@
 module LLVM  
   class Context
-    class << self
-      private :new
-    end
-    
+    private_class_method :new
+
     def initialize(ptr) # :nodoc:
       @ptr = ptr
     end
