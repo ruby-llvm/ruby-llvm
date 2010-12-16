@@ -415,19 +415,10 @@ module LLVM
     end
     
     class ParameterCollection
-      include Enumerable
-
       def initialize(fun)
         @fun = fun
       end
       
-      def each
-        return Enumerator.new(self) unless block_given?
-        n = size
-        0.upto(n-1) {|i| yield self[i] }
-        self
-      end
-
       def [](i)
         Value.from_ptr(C.LLVMGetParam(@fun, i))
       end
@@ -439,7 +430,9 @@ module LLVM
       include Enumerable
       
       def each
+        return to_enum :each unless block_given?
         0.upto(size-1) { |i| yield self[i] }
+        self
       end
     end
   end
