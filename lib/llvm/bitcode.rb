@@ -1,17 +1,23 @@
 module LLVM
   module C
-    attach_function :LLVMParseBitcode, [:pointer, :buffer_out, :buffer_out], :bool
-    attach_function :LLVMParseBitcodeInContext, [:pointer, :pointer, :buffer_out, :buffer_out], :bool
+    attach_function :LLVMParseBitcode, [:pointer, :buffer_out, :buffer_out], :int
+    attach_function :LLVMParseBitcodeInContext, [:pointer, :pointer, :buffer_out, :buffer_out], :int
 
+    attach_function :LLVMWriteBitcodeToFile, [:pointer, :string], :int
   end
 
   class Module
     def self.parse_bitcode(memory_buffer)
       mod_ref = FFI::Buffer.new :pointer
       msg_ref = FFI::Buffer.new :pointer
-      failed = C.LLVMParseBitcode(memory_buffer.to_ptr, mod_ref, msg_ref)
-      raise msg_ref.get_pointer(0).get_string(0) if failed
+      status = C.LLVMParseBitcode(memory_buffer.to_ptr, mod_ref, msg_ref)
+      raise msg_ref.get_pointer(0).get_string(0) if status != 0
       from_ptr(mod_ref.get_pointer(0))
+    end
+
+    def write_bitcode(filename)
+      status = C.LLVMWriteBitcodeToFile(@ptr, filename.to_str)
+      raise "writing #{filename.inspect} failed, status #{status}" if status!=0
     end
   end
 
