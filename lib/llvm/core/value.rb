@@ -4,9 +4,7 @@ module LLVM
       new(ptr) unless ptr.null?
     end
     
-    class << self
-      private :new
-    end
+    private_class_method :new
     
     def initialize(ptr)
       @ptr = ptr
@@ -418,6 +416,12 @@ module LLVM
       
       def size
         C.LLVMCountParams(@fun)
+      end
+      
+      include Enumerable
+      
+      def each
+        0.upto(size-1) { |i| yield self[i] }
       end
     end
   end

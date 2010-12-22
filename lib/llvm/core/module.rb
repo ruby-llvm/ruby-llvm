@@ -1,8 +1,6 @@
 module LLVM  
   class Module
-    class << self
-      private :new
-    end
+    private_class_method :new
     
     def self.from_ptr(ptr)
       ptr.null? ? nil : new(ptr)
