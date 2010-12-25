@@ -90,6 +90,16 @@ module LLVM
       fp = C.LLVMGetBasicBlockParent(self)
       LLVM::Function.from_ptr(fp)
     end
+
+    def first_instruction
+      ptr = C.LLVMGetFirstInstruction(self)
+      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+    end
+
+    def last_instruction
+      ptr = C.LLVMGetLastInstruction(self)
+      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+    end
   end
   
   class Constant < Value

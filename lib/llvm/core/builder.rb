@@ -14,6 +14,18 @@ module LLVM
       new(C.LLVMCreateBuilder())
     end
     
+    def position(block, instruction)
+      raise "block must not be nil" if block.nil?
+      C.LLVMPositionBuilder(self, block, instruction)
+      self
+    end
+
+    def position_before(instruction)
+      raise "instruction must not be nil" if instruction.nil?
+      C.LLVMPositionBuilderBefore(self, instruction)
+      self
+    end
+
     def position_at_end(block)
       raise "block must not be nil" if block.nil?
       C.LLVMPositionBuilderAtEnd(self, block)
