@@ -418,6 +418,16 @@ module LLVM
       def entry
         BasicBlock.from_ptr(C.LLVMGetEntryBasicBlock(@fun))
       end
+
+      def first
+        ptr = C.LLVMGetFirstBasicBlock(@fun)
+        BasicBlock.from_ptr(ptr) unless ptr.null?
+      end
+
+      def last
+        ptr = C.LLVMGetLastBasicBlock(@fun)
+        BasicBlock.from_ptr(ptr) unless ptr.null?
+      end
     end
     
     def params
