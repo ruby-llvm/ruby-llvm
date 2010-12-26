@@ -20,6 +20,10 @@ module LLVM
       end
     end
 
+    def kind
+        C.LLVMGetTypeKind(self)
+    end
+
     def size
       Int64.from_ptr(C.LLVMSizeOf(self))
     end
