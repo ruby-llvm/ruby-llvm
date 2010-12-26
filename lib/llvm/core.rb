@@ -24,7 +24,76 @@ module LLVM
       :no_implicit_float, 1 << 23,
       :naked,             1 << 24
     ]
-    
+
+    enum :opcode, [
+      # Terminator Instructions
+      :ret,             1,
+      :br,              2,
+      :switch,          3,
+      :indirectbr,      4,
+      :invoke,          5,
+      :unwind,          6,
+      :unreachable,     7,
+
+      # Standard Binary Operators
+      :add,             8,
+      :fadd,            9,
+      :sub,             10,
+      :fsub,            11,
+      :mul,             12,
+      :fmul,            13,
+      :udiv,            14,
+      :sdiv,            15,
+      :fdiv,            16,
+      :urem,            17,
+      :srem,            18,
+      :frem,            19,
+
+      # Logical Operators
+      :shl,             20,
+      :lshr,            21,
+      :ashr,            22,
+      :and,             23,
+      :or,              24,
+      :xor,             25,
+
+      # Memory Operators
+      :alloca,          26,
+      :load,            27,
+      :store,           28,
+      :getelementptr,   29,
+
+      # Cast Operators
+      :trunc,           30,
+      :zext,            31,
+      :sext,            32,
+      :fptoui,          33,
+      :fptosi,          34,
+      :uitofp,          35,
+      :sitofp,          36,
+      :fptrunc,         37,
+      :fpext,           38,
+      :ptrtoint,        39,
+      :inttoptr,        40,
+      :bitcast,         41,
+
+      # Other Operators
+      :icmp,            42,
+      :fcmp,            43,
+      :phi,             44,
+      :call,            45,
+      :select,          46,
+
+      # UserOp1
+      # UserOp2
+      :vaarg,           49,
+      :extractelement,  50,
+      :insertelement,   51,
+      :shufflevector,   52,
+      :extractvalue,    53,
+      :insertvalue,     54,
+    ]
+
     enum :type_kind, [
       :void,
       :float,
@@ -233,6 +302,7 @@ module LLVM
     attach_function :LLVMConstVector, [:pointer, :uint], :pointer
     
     # Constant expressions
+    attach_function :LLVMGetConstOpcode, [:pointer], :opcode
     attach_function :LLVMAlignOf, [:pointer], :pointer
     attach_function :LLVMSizeOf, [:pointer], :pointer
     attach_function :LLVMConstNeg, [:pointer], :pointer
