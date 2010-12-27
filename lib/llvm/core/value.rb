@@ -15,7 +15,7 @@ module LLVM
     end
     
     def self.type
-      raise NotImplementedError, "Value.type is abstract"
+      raise NotImplementedError, "#{self.name}.type() is abstract."
     end
     
     def self.to_ptr
@@ -101,12 +101,41 @@ module LLVM
       LLVM::Instruction.from_ptr(ptr) unless ptr.null?
     end
   end
-  
-  class Constant < Value
-    def self.type
-      raise NotImplementedError, "Constant.type() is abstract."
+
+  class User < Value
+    def operands
+      @operand_collection ||= OperandCollection.new(self)
     end
-    
+
+    class OperandCollection
+      include Enumerable
+
+      def initialize(user)
+        @user = user
+      end
+
+      def [](i)
+        ptr = C.LLVMGetOperand(@user, i)
+        Value.from_ptr(ptr) unless ptr.null?
+      end
+
+      def []=(i, v)
+        C.LLVMSetOperand(@user, i, v)
+      end
+
+      def size
+        C.LLVMGetNumOperands(@user)
+      end
+
+      def each
+        return to_enum :each unless block_given?
+        0.upto(size-1) { |i| yield self[i] }
+        self
+      end
+    end
+  end
+
+  class Constant < User
     def self.null
       from_ptr(C.LLVMConstNull(type))
     end
@@ -481,7 +510,7 @@ module LLVM
     end
   end
   
-  class Instruction < Value
+  class Instruction < User
   end
   
   class CallInst < Instruction

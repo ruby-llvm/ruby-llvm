@@ -275,6 +275,11 @@ module LLVM
     attach_function :LLVMSetValueName, [:pointer, :string], :void
     attach_function :LLVMDumpValue, [:pointer], :void
     
+    # Operations on Users
+    attach_function :LLVMGetOperand, [:pointer, :int], :pointer
+    attach_function :LLVMSetOperand, [:pointer, :int, :pointer], :void
+    attach_function :LLVMGetNumOperands, [:pointer], :int
+
     # Constants of any type
     attach_function :LLVMConstNull, [:pointer], :pointer
     attach_function :LLVMConstAllOnes, [:pointer], :pointer
