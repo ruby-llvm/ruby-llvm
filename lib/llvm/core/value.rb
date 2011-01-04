@@ -352,14 +352,24 @@ module LLVM
   end
   
   class ConstantStruct < Constant
-    def self.const(size, packed = false)
-      vals = (0...size).map { |i| yield i }
-      res = nil
-      FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |vals_ptr|
-        vals_ptr.write_array_of_pointer(vals)
-	res = from_ptr(C.LLVMConstStruct(vals_ptr, size, packed ? 1 : 0))
+    # ConstantStruct.const(size) {|i| ... } or
+    # ConstantStruct.const([...])
+    def self.const(size_or_values, packed = false)
+      if size_or_values.is_a?(Integer)
+        raise ArgumentError, 'block not given' unless block_given?
+        size = size_or_values
+        values = (0...size).map { |i| yield i }
+      else
+        values = size_or_values
+        size = values.size
       end
-      res
+
+      mp = FFI::MemoryPointer.new(:pointer, size)
+      values.each_with_index do |p, i|
+        mp[i].put_pointer(0, p)
+      end
+
+      from_ptr C.LLVMConstStruct(mp, size, packed ? 1: 0)
     end
   end
   
