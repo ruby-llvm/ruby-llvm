@@ -162,14 +162,8 @@ module LLVM
     end
   end
   
-  class ConstantArray < Constant
-    def self.string(str, null_terminate = true)
-      from_ptr(C.LLVMConstString(str, str.length, null_terminate ? 0 : 1))
-    end
-    
-    # ConstantArray.const(type, 3) {|i| ... } or
-    # ConstantArray.const(type, [...])
-    def self.const(type, size_or_values)
+  module Support
+    def allocate_pointers(size_or_values, &block)
       if size_or_values.is_a?(Integer)
         raise ArgumentError, 'block not given' unless block_given?
         size = size_or_values
@@ -180,11 +174,23 @@ module LLVM
       end
 
       mp = FFI::MemoryPointer.new(:pointer, size)
-      values.each_with_index do |p, i|
-        mp[i].put_pointer(0, p)
-      end
+      values.each_with_index { |p, i| mp[i].put_pointer(0, p) }
+      mp
+    end
 
-      from_ptr C.LLVMConstArray(type, mp, size)
+    module_function :allocate_pointers
+  end
+
+  class ConstantArray < Constant
+    def self.string(str, null_terminate = true)
+      from_ptr(C.LLVMConstString(str, str.length, null_terminate ? 0 : 1))
+    end
+    
+    # ConstantArray.const(type, 3) {|i| ... } or
+    # ConstantArray.const(type, [...])
+    def self.const(type, size_or_values, &block)
+      vals = LLVM::Support.allocate_pointers(size_or_values, &block)
+      from_ptr C.LLVMConstArray(type, vals, vals.size / vals.type_size)
     end
   end
   
@@ -354,22 +360,9 @@ module LLVM
   class ConstantStruct < Constant
     # ConstantStruct.const(size) {|i| ... } or
     # ConstantStruct.const([...])
-    def self.const(size_or_values, packed = false)
-      if size_or_values.is_a?(Integer)
-        raise ArgumentError, 'block not given' unless block_given?
-        size = size_or_values
-        values = (0...size).map { |i| yield i }
-      else
-        values = size_or_values
-        size = values.size
-      end
-
-      mp = FFI::MemoryPointer.new(:pointer, size)
-      values.each_with_index do |p, i|
-        mp[i].put_pointer(0, p)
-      end
-
-      from_ptr C.LLVMConstStruct(mp, size, packed ? 1: 0)
+    def self.const(size_or_values, packed = false, &block)
+      vals = LLVM::Support.allocate_pointers(size_or_values, &block)
+      from_ptr C.LLVMConstStruct(vals, vals.size / vals.type_size, packed ? 1 : 0)
     end
   end
   
