@@ -167,9 +167,24 @@ module LLVM
       from_ptr(C.LLVMConstString(str, str.length, null_terminate ? 0 : 1))
     end
     
-    def self.const(type, size)
-      vals = (0...size).map { |i| yield i }
-      from_ptr C.LLVMConstArray(type, vals, size)
+    # ConstantArray.const(type, 3) {|i| ... } or
+    # ConstantArray.const(type, [...])
+    def self.const(type, size_or_values)
+      if size_or_values.is_a?(Integer)
+        raise ArgumentError, 'block not given' unless block_given?
+        size = size_or_values
+        values = (0...size).map { |i| yield i }
+      else
+        values = size_or_values
+        size = values.size
+      end
+
+      mp = FFI::MemoryPointer.new(:pointer, size)
+      values.each_with_index do |p, i|
+        mp[i].put_pointer(0, p)
+      end
+
+      from_ptr C.LLVMConstArray(type, mp, size)
     end
   end
   
