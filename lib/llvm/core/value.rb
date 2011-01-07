@@ -112,6 +112,10 @@ module LLVM
           C.LLVMConstGEP(self, indices_ptr, indices.size))
       end
     end
+
+    def bit_cast(type)
+      return ConstantExpr.from_ptr(C.LLVMConstBitCast(self, type))
+    end
   end
   
   class ConstantArray < Constant
