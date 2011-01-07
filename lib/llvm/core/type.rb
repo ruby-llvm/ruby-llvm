@@ -44,6 +44,10 @@ module LLVM
     def kind
       C.LLVMGetTypeKind(self)
     end
+
+    def element_type
+      Type.from_ptr(C.LLVMGetElementType(self))
+    end
     
     def self.from_ptr(ptr)
       if ptr.null?
