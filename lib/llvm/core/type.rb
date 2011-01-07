@@ -39,6 +39,11 @@ module LLVM
     def pointer(address_space = 0)
       Type.pointer(self, address_space)
     end
+
+    # produces a symbol from the LLVM::C.type_kind enum
+    def kind
+      C.LLVMGetTypeKind(self)
+    end
     
     def self.from_ptr(ptr)
       if ptr.null?
