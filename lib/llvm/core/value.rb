@@ -235,6 +235,10 @@ module LLVM
     case val
     when LLVM::ConstantInt then val
     when Integer then Int.from_i(val)
+    when Value
+      return val if val.type.kind == :integer
+      raise "value not of integer type: #{val.type.kind}"
+    else raise "can't make an LLVM::ConstantInt from #{val.class.name}"
     end
   end
   
