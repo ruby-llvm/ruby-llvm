@@ -41,7 +41,13 @@ module LLVM
     end
     
     def self.from_ptr(ptr)
-      ptr.null? ? nil : new(ptr)
+      if ptr.null?
+	nil
+      elsif C.LLVMGetTypeKind(ptr) == :function
+	FunctionType.new(ptr)
+      else
+	new(ptr)
+      end
     end
     
     def self.array(ty, sz = 0)
@@ -56,11 +62,11 @@ module LLVM
       from_ptr(C.LLVMVectorType(LLVM::Type(ty), element_count))
     end
     
-    def self.function(arg_types, result_type)
+    def self.function(arg_types, result_type, isvararg=false)
       arg_types.map! { |ty| LLVM::Type(ty) }
       arg_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_types.size)
       arg_types_ptr.write_array_of_pointer(arg_types)
-      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, 0))
+      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, isvararg))
     end
     
     def self.struct(elt_types, is_packed)
@@ -119,5 +125,28 @@ module LLVM
 
   def LLVM.Void
     LLVM::Type.void
+  end
+
+  class FunctionType < Type
+    # hack to make from_ptr, above, work
+    public_class_method :new
+
+    def return_type
+      Type.from_ptr(C.LLVMGetReturnType(self))
+    end
+
+    def argument_types
+      size = C.LLVMCountParamTypes(self)
+      result = nil
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |types_ptr|
+	C.LLVMGetParamTypes(self, types_ptr)
+	result = types_ptr.read_array_of_pointer(size)
+      end
+      result.map{ |p| Type.from_ptr(p) }
+    end
+
+    def vararg?
+      C.LLVMIsFunctionVarArg(self)
+    end
   end
 end

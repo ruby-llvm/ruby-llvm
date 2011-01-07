@@ -162,8 +162,8 @@ module LLVM
     attach_function :LLVMPPCFP128Type, [], :pointer
     
     # Function types
-    attach_function :LLVMFunctionType, [:pointer, :pointer, :uint, :int], :pointer
-    attach_function :LLVMIsFunctionVarArg, [:pointer], :int
+    attach_function :LLVMFunctionType, [:pointer, :pointer, :uint, :bool], :pointer
+    attach_function :LLVMIsFunctionVarArg, [:pointer], :bool
     attach_function :LLVMGetReturnType, [:pointer], :pointer
     attach_function :LLVMCountParamTypes, [:pointer], :uint
     attach_function :LLVMGetParamTypes, [:pointer, :pointer], :void
