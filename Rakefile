@@ -1,5 +1,6 @@
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
+require 'rake/testtask'
 
 Rake::RDocTask.new do |t|
   t.rdoc_files   = Dir['lib/**/*.rb']
@@ -28,3 +29,10 @@ end
 
 Rake::GemPackageTask.new(spec) do |t|
 end
+
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList["test/**/*_test.rb"]
+end
+
+task :default => [:test]
