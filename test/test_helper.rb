@@ -6,7 +6,7 @@ require "llvm/core"
 require "llvm/execution_engine"
 require "llvm/transforms/scalar"
 
-def define_function(argument_types, argument_values, return_type)
+def run_function(argument_types, argument_values, return_type)
 
   test_module = LLVM::Module.create("test_module")
 

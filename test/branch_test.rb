@@ -13,7 +13,7 @@ class BranchTestCase < Test::Unit::TestCase
   end
 
   def direct_jump_function
-    define_function([], [], LLVM::Int) do |builder, function, *arguments|
+    run_function([], [], LLVM::Int) do |builder, function, *arguments|
       entry = function.basic_blocks.append
       branch_1 = function.basic_blocks.append
       branch_2 = function.basic_blocks.append
@@ -27,7 +27,7 @@ class BranchTestCase < Test::Unit::TestCase
   end
 
   def conditional_jump_function
-    define_function([], [], LLVM::Int) do |builder, function, *arguments|
+    run_function([], [], LLVM::Int) do |builder, function, *arguments|
       entry = function.basic_blocks.append
       branch_1 = function.basic_blocks.append
       branch_2 = function.basic_blocks.append
@@ -41,7 +41,7 @@ class BranchTestCase < Test::Unit::TestCase
   end
 
   def switched_jump_function
-    define_function([], [], LLVM::Int) do |builder, function, *arguments|
+    run_function([], [], LLVM::Int) do |builder, function, *arguments|
       entry = function.basic_blocks.append
       branch_1 = function.basic_blocks.append
       branch_2 = function.basic_blocks.append

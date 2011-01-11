@@ -11,7 +11,7 @@ class ModuleTestCase < Test::Unit::TestCase
   end
 
   def simple_function
-    define_function([], [], LLVM::Int) do |builder, function, *arguments|
+    run_function([], [], LLVM::Int) do |builder, function, *arguments|
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret(LLVM::Int(1))
