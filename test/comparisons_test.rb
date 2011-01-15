@@ -2,12 +2,6 @@ require "test_helper"
 
 class ComparisonsTestCase < Test::Unit::TestCase
 
-  LLVM_SIGNED = true
-  LLVM_UNSIGNED = false
-
-  LLVM_FALSE = 0
-  LLVM_TRUE = 1
-
   def setup
     LLVM.init_x86
   end
