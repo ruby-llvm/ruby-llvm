@@ -7,30 +7,30 @@ class BasicOperationsTestCase < Test::Unit::TestCase
   end
 
   def test_integer_binary_operations
-    integer_binary_operation_assertion(:add, 3, 2, 5)
-    integer_binary_operation_assertion(:sub, 3, 2, 1)
-    integer_binary_operation_assertion(:mul, 3, 2, 6)
-    integer_binary_operation_assertion(:udiv, 10, 2, 5)
-    integer_binary_operation_assertion(:sdiv, 10, 2, 5)
-    integer_binary_operation_assertion(:urem, 10, 3, 1)
-    integer_binary_operation_assertion(:srem, 10, 3, 1)
+    integer_binary_operation_assertion(:add, 3, 2, 3 + 2)
+    integer_binary_operation_assertion(:sub, 3, 2, 3 - 2)
+    integer_binary_operation_assertion(:mul, 3, 2, 3 * 2)
+    integer_binary_operation_assertion(:udiv, 10, 2, 10 / 2)
+    integer_binary_operation_assertion(:sdiv, 10, 2, 10 / 2)
+    integer_binary_operation_assertion(:urem, 10, 3, 10 % 3)
+    integer_binary_operation_assertion(:srem, 10, 3, 10 % 3)
   end
 
   def test_integer_bitwise_binary_operations
-    integer_binary_operation_assertion(:shl, 2, 3, 16)
-    integer_binary_operation_assertion(:lshr, 16, 3, 2)
-    integer_binary_operation_assertion(:ashr, 16, 3, 2)
-    integer_binary_operation_assertion(:and, 2, 1, 0)
-    integer_binary_operation_assertion(:or, 2, 1, 3)
-    integer_binary_operation_assertion(:xor, 3, 2, 1)
+    integer_binary_operation_assertion(:shl, 2, 3, 2 << 3)
+    integer_binary_operation_assertion(:lshr, 16, 3, 16 >> 3)
+    integer_binary_operation_assertion(:ashr, 16, 3, 16 >> 3)
+    integer_binary_operation_assertion(:and, 2, 1, 2 & 1)
+    integer_binary_operation_assertion(:or, 2, 1, 2 | 1)
+    integer_binary_operation_assertion(:xor, 3, 2, 3 ^ 2)
   end
 
   def test_float_binary_operations
-    float_binary_operation_assertion(:fadd, 3.1, 2.2, 5.30)
-    float_binary_operation_assertion(:fsub, 3.1, 2.2, 0.90)
-    float_binary_operation_assertion(:fmul, 3.1, 2.2, 6.82)
-    float_binary_operation_assertion(:fdiv, 3.1, 2.2, 1.41)
-    float_binary_operation_assertion(:frem, 3.1, 2.2, 0.90)
+    float_binary_operation_assertion(:fadd, 3.1, 2.2, 3.1 + 2.2)
+    float_binary_operation_assertion(:fsub, 3.1, 2.2, 3.1 - 2.2)
+    float_binary_operation_assertion(:fmul, 3.1, 2.2, 3.1 * 2.2)
+    float_binary_operation_assertion(:fdiv, 3.1, 2.2, 3.1 / 2.2)
+    float_binary_operation_assertion(:frem, 3.1, 2.2, 3.1 % 2.2)
   end
 
   def integer_binary_operation_assertion(operation, operand1, operand2, expected_result)
