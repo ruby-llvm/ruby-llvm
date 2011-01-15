@@ -6,6 +6,24 @@ class VectorTestCase < Test::Unit::TestCase
     LLVM.init_x86
   end
 
+  def test_all_ones_vector
+    assert_raise(NotImplementedError) do
+      LLVM::ConstantVector.all_ones
+    end
+  end
+
+  def test_constant_vector_from_size
+    vector = LLVM::ConstantVector.const(2) { |i| LLVM::Int(i) }
+    assert_instance_of LLVM::ConstantVector, vector
+    assert_equal 2, vector.operands.size
+  end
+
+  def test_constant_vector_from_array
+    vector = LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(1)])
+    assert_instance_of LLVM::ConstantVector, vector
+    assert_equal 2, vector.operands.size
+  end
+
   def test_vector_elements
     assert_equal 5, run_vector_elements().to_i
   end
