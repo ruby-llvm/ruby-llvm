@@ -2,38 +2,44 @@ require "test_helper"
 
 class ComparisonsTestCase < Test::Unit::TestCase
 
+  LLVM_SIGNED = true
+  LLVM_UNSIGNED = false
+
+  LLVM_FALSE = 0
+  LLVM_TRUE = 1
+
   def setup
     LLVM.init_x86
   end
 
   def test_integer_comparison
-    integer_comparison_assertion(:eq, 1, 1, true, 1)
-    integer_comparison_assertion(:ne, 1, 1, true, 0)
-    integer_comparison_assertion(:ugt, 2, 2, false, 0)
-    integer_comparison_assertion(:uge, 2, 1, false, 1)
-    integer_comparison_assertion(:ult, 1, 1, false, 0)
-    integer_comparison_assertion(:ule, 1, 2, false, 1)
-    integer_comparison_assertion(:sgt, -2, 2, true, 0)
-    integer_comparison_assertion(:sge, -2, 1, true, 0)
-    integer_comparison_assertion(:slt, -1, 2, true, 1)
-    integer_comparison_assertion(:sle, -1, 2, true, 1)
+    integer_comparison_assertion(:eq, 1, 1, LLVM_SIGNED, LLVM_TRUE)
+    integer_comparison_assertion(:ne, 1, 1, LLVM_SIGNED, LLVM_FALSE)
+    integer_comparison_assertion(:ugt, 2, 2, LLVM_UNSIGNED, LLVM_FALSE)
+    integer_comparison_assertion(:uge, 2, 1, LLVM_UNSIGNED, LLVM_TRUE)
+    integer_comparison_assertion(:ult, 1, 1, LLVM_UNSIGNED, LLVM_FALSE)
+    integer_comparison_assertion(:ule, 1, 2, LLVM_UNSIGNED, LLVM_TRUE)
+    integer_comparison_assertion(:sgt, -2, 2, LLVM_SIGNED, LLVM_FALSE)
+    integer_comparison_assertion(:sge, -2, 1, LLVM_SIGNED, LLVM_FALSE)
+    integer_comparison_assertion(:slt, -1, 2, LLVM_SIGNED, LLVM_TRUE)
+    integer_comparison_assertion(:sle, -1, 2, LLVM_SIGNED, LLVM_TRUE)
   end
 
   def test_float_comparison
-    float_comparison_assertion(:oeq, 1.0, 1.0, 1)
-    float_comparison_assertion(:one, 1.0, 1.0, 0)
-    float_comparison_assertion(:ogt, 2.0, 2.0, 0)
-    float_comparison_assertion(:oge, 2.0, 1.0, 1)
-    float_comparison_assertion(:olt, 1.0, 1.0, 0)
-    float_comparison_assertion(:ole, 1.0, 2.0, 1)
-    float_comparison_assertion(:ord, 1.0, 2.0, 1)
-    float_comparison_assertion(:ueq, 1.0, 1.0, 1)
-    float_comparison_assertion(:une, 1.0, 1.0, 0)
-    float_comparison_assertion(:ugt, 2.0, 2.0, 0)
-    float_comparison_assertion(:uge, 2.0, 1.0, 1)
-    float_comparison_assertion(:ult, 1.0, 1.0, 0)
-    float_comparison_assertion(:ule, 1.0, 2.0, 1)
-    float_comparison_assertion(:uno, 1.0, 2.0, 0)
+    float_comparison_assertion(:oeq, 1.0, 1.0, LLVM_TRUE)
+    float_comparison_assertion(:one, 1.0, 1.0, LLVM_FALSE)
+    float_comparison_assertion(:ogt, 2.0, 2.0, LLVM_FALSE)
+    float_comparison_assertion(:oge, 2.0, 1.0, LLVM_TRUE)
+    float_comparison_assertion(:olt, 1.0, 1.0, LLVM_FALSE)
+    float_comparison_assertion(:ole, 1.0, 2.0, LLVM_TRUE)
+    float_comparison_assertion(:ord, 1.0, 2.0, LLVM_TRUE)
+    float_comparison_assertion(:ueq, 1.0, 1.0, LLVM_TRUE)
+    float_comparison_assertion(:une, 1.0, 1.0, LLVM_FALSE)
+    float_comparison_assertion(:ugt, 2.0, 2.0, LLVM_FALSE)
+    float_comparison_assertion(:uge, 2.0, 1.0, LLVM_TRUE)
+    float_comparison_assertion(:ult, 1.0, 1.0, LLVM_FALSE)
+    float_comparison_assertion(:ule, 1.0, 2.0, LLVM_TRUE)
+    float_comparison_assertion(:uno, 1.0, 2.0, LLVM_FALSE)
   end
 
   def integer_comparison_assertion(operation, operand1, operand2, signed, expected_result)
