@@ -172,10 +172,7 @@ module LLVM
         values = size_or_values
         size = values.size
       end
-
-      mp = FFI::MemoryPointer.new(:pointer, size)
-      values.each_with_index { |p, i| mp[i].put_pointer(0, p) }
-      mp
+      FFI::MemoryPointer.new(:pointer, size).write_array_of_pointer(values)
     end
 
     module_function :allocate_pointers
