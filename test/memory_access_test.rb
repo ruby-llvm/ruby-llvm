@@ -7,8 +7,8 @@ class MemoryAccessTestCase < Test::Unit::TestCase
   end
 
   def test_memory_access
-    assert_equal 3, simple_memory_access_function(1, 2).to_i
-    assert_equal 7, array_memory_access_function(3, 4).to_i
+    assert_equal 1 + 2, simple_memory_access_function(1, 2).to_i
+    assert_equal 3 + 4, array_memory_access_function(3, 4).to_i
   end
 
   def simple_memory_access_function(value1, value2)
