@@ -63,4 +63,20 @@ class CallTestCase < Test::Unit::TestCase
     assert_equal -10.abs, run_function_on_module(test_module, "test_function", -10).to_i
   end
 
+  def test_external_string
+    test_module = define_module("test_module") do |host_module|
+      global = host_module.globals.add(LLVM::Array(LLVM::Int8, 5), "path")
+      global.linkage = :internal
+      global.initializer = LLVM::ConstantArray.string("PATH")
+      external = host_module.functions.add("getenv", [LLVM::Pointer(LLVM::Int8)], LLVM::Pointer(LLVM::Int8))
+      define_function(host_module, "test_function", [], LLVM::Pointer(LLVM::Int8)) do |builder, function, *arguments|
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        parameter = builder.gep(global, [LLVM::Int(0), LLVM::Int(0)])
+        builder.ret(builder.call(external, parameter))
+      end
+    end
+    assert_equal ENV["PATH"], run_function_on_module(test_module, "test_function").to_ptr.read_pointer.read_string_to_null
+  end
+
 end
