@@ -51,4 +51,16 @@ class CallTestCase < Test::Unit::TestCase
     assert_equal 5, run_function_on_module(test_module, "test_function", 1).to_i
   end
 
+  def test_external
+    test_module = define_module("test_module") do |host_module|
+      external = host_module.functions.add("abs", [LLVM::Int32], LLVM::Int32)
+      define_function(host_module, "test_function", [LLVM::Int32], LLVM::Int32) do |builder, function, *arguments|
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        builder.ret(builder.call(external, arguments.first))
+      end
+    end
+    assert_equal -10.abs, run_function_on_module(test_module, "test_function", -10).to_i
+  end
+
 end
