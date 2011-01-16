@@ -7,8 +7,8 @@ class SelectTestCase < Test::Unit::TestCase
   end
 
   def test_select
-    assert 0, select_function(0).to_i
-    assert 1, select_function(1).to_i
+    assert_equal 0, select_function(1).to_i
+    assert_equal 1, select_function(0).to_i
   end
 
   def select_function(value)
