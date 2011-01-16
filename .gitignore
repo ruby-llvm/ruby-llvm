@@ -2,3 +2,4 @@
 *.rbc
 pkg
 .rvmrc
+coverage/*
