@@ -6,9 +6,9 @@ module LLVM
 
     # load required libraries
     begin
-      ffi_lib 'LLVM-2.8'
+      ffi_lib ['LLVM-2.8', 'libLLVM-2.8']
     rescue LoadError
-      ffi_lib 'LLVM-2.7'
+      ffi_lib ['LLVM-2.7', 'libLLVM-2.7']
     end
   end
   
