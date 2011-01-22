@@ -14,6 +14,15 @@ module LLVM
       @ptr
     end
     
+    def ==(other)
+      case other
+      when LLVM::Module
+        @ptr == other.to_ptr
+      else
+        false
+      end
+    end
+
     def self.create(name)
       new(C.LLVMModuleCreateWithName(name))
     end

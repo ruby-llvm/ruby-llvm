@@ -14,6 +14,15 @@ module LLVM
       @ptr
     end
 
+    def ==(other)
+      case other
+      when LLVM::Value
+        @ptr == other.to_ptr
+      else
+        false
+      end
+    end
+
     def self.type
       raise NotImplementedError, "#{self.name}.type() is abstract."
     end
