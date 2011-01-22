@@ -100,6 +100,16 @@ module LLVM
       LLVM::Function.from_ptr(fp)
     end
 
+    def next
+      ptr = C.LLVMGetNextBasicBlock(self)
+      BasicBlock.from_ptr(ptr) unless ptr.null?
+    end
+
+    def previous
+      ptr = C.LLVMGetPreviousBasicBlock(self)
+      BasicBlock.from_ptr(ptr) unless ptr.null?
+    end
+
     def first_instruction
       ptr = C.LLVMGetFirstInstruction(self)
       LLVM::Instruction.from_ptr(ptr) unless ptr.null?
@@ -462,6 +472,18 @@ module LLVM
 
       def size
         C.LLVMCountBasicBlocks(@fun)
+      end
+
+      def each
+        return to_enum :each unless block_given?
+
+        ptr = C.LLVMGetFirstBasicBlock(@fun)
+        0.upto(size-1) do |i|
+          yield BasicBlock.from_ptr(ptr)
+          ptr = C.LLVMGetNextBasicBlock(ptr)
+        end
+
+        self
       end
 
       def append(name = "")
