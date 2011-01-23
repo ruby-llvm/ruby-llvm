@@ -78,6 +78,8 @@ module LLVM
   end
 
   class BasicBlock < Value
+    include Enumerable
+
     def self.create(fun = nil, name = "")
       self.from_ptr(C.LLVMAppendBasicBlock(fun, name))
     end
@@ -108,6 +110,20 @@ module LLVM
     def previous
       ptr = C.LLVMGetPreviousBasicBlock(self)
       BasicBlock.from_ptr(ptr) unless ptr.null?
+    end
+
+    def each
+      return to_enum :each unless block_given?
+      inst = first_instruction
+      last = last_instruction
+
+      while inst
+        yield inst
+        break if inst == last
+        inst = inst.next
+      end
+
+      self
     end
 
     def first_instruction
