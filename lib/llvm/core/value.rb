@@ -97,7 +97,7 @@ module LLVM
 
     def parent
       fp = C.LLVMGetBasicBlockParent(self)
-      LLVM::Function.from_ptr(fp)
+      LLVM::Function.from_ptr(fp) unless fp.null?
     end
 
     def next
