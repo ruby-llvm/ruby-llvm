@@ -78,8 +78,6 @@ module LLVM
   end
 
   class BasicBlock < Value
-    include Enumerable
-
     def self.create(fun = nil, name = "")
       self.from_ptr(C.LLVMAppendBasicBlock(fun, name))
     end
@@ -112,28 +110,47 @@ module LLVM
       BasicBlock.from_ptr(ptr) unless ptr.null?
     end
 
-    def each
-      return to_enum :each unless block_given?
-      inst = first_instruction
-      last = last_instruction
+    def first_instruction  # deprecated
+      instructions.first
+    end
 
-      while inst
-        yield inst
-        break if inst == last
-        inst = inst.next
+    def last_instruction  # deprecated
+      instructions.last
+    end
+
+    def instructions
+      @instructions ||= InstructionCollection.new(self)
+    end
+
+    class InstructionCollection
+      include Enumerable
+
+      def initialize(block)
+        @block = block
       end
 
-      self
-    end
+      def each
+        return to_enum :each unless block_given?
+        inst, last = first, last
 
-    def first_instruction
-      ptr = C.LLVMGetFirstInstruction(self)
-      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
-    end
+        while inst
+          yield inst
+          break if inst == last
+          inst = inst.next
+        end
 
-    def last_instruction
-      ptr = C.LLVMGetLastInstruction(self)
-      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+        self
+      end
+
+      def first
+        ptr = C.LLVMGetFirstInstruction(@block)
+        LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+      end
+
+      def last
+        ptr = C.LLVMGetLastInstruction(@block)
+        LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+      end
     end
   end
 

@@ -65,7 +65,7 @@ class BasicBlockTestCase < Test::Unit::TestCase
     @module.functions.add("test_basic_block_enumerable", [LLVM::Double], LLVM::Double) do |fn, arg|
       block1 = fn.basic_blocks.append
 
-      [ block1.to_a, block1.each.to_a ].each do |insts|
+      [ block1.instructions.to_a, block1.instructions.each.to_a ].each do |insts|
         assert_equal 0, insts.size, 'Empty basic block'
       end
 
@@ -73,10 +73,12 @@ class BasicBlockTestCase < Test::Unit::TestCase
 				builder.ret(builder.fadd(arg, LLVM.Double(1.0)))
       end
 
-      [ block1.to_a, block1.each.to_a ].each do |insts|
+      [ block1.instructions.to_a, block1.instructions.each.to_a ].each do |insts|
         assert_equal 2, insts.size
-        assert_equal block1.first_instruction, insts[0]
-        assert_equal block1.last_instruction, insts[1]
+        assert_equal block1.first_instruction, insts[0]  # deprecated
+        assert_equal block1.last_instruction,  insts[1]  # deprecated
+        assert_equal block1.instructions.first, insts[0]
+        assert_equal block1.instructions.last,  insts[1]
       end
 
     end

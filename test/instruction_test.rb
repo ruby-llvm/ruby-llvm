@@ -17,8 +17,8 @@ class InstructionTestCase < Test::Unit::TestCase
 
 		entry = fn.basic_blocks.entry
 
-		inst1 = entry.first_instruction
-		inst2 = entry.last_instruction
+		inst1 = entry.instructions.first
+		inst2 = entry.instructions.last
 
 		assert_kind_of LLVM::Instruction, inst1
 		assert_kind_of LLVM::Instruction, inst2
