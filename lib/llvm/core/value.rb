@@ -557,6 +557,20 @@ module LLVM
   end
 
   class Instruction < User
+    def parent
+      ptr = C.LLVMGetInstructionParent(self)
+      LLVM::BasicBlock.from_ptr(ptr) unless ptr.null?
+    end
+
+    def next
+      ptr = C.LLVMGetNextInstruction(self)
+      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+    end
+
+    def previous
+      ptr = C.LLVMGetPreviousInstruction(self)
+      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+    end
   end
 
   class CallInst < Instruction
