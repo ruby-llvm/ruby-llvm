@@ -25,10 +25,11 @@ class BasicBlockTestCase < Test::Unit::TestCase
       assert_equal block1, coll.first
       assert_equal block2, coll.last
 
-      blocks = coll.each.to_a
-      assert_equal 2, blocks.size
-      assert_equal block1, blocks[0]
-      assert_equal block2, blocks[1]
+      [ coll.each.to_a, coll.to_a ].each do |blocks|
+        assert_equal 2, blocks.size
+        assert_equal block1, blocks[0]
+        assert_equal block2, blocks[1]
+      end
     end
   end
 

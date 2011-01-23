@@ -466,6 +466,8 @@ module LLVM
     end
 
     class BasicBlockCollection
+      include Enumerable
+
       def initialize(fun)
         @fun = fun
       end
