@@ -32,6 +32,13 @@ module LLVM
       Int64.from_ptr(C.LLVMAlignOf(self))
     end
 
+    def element_type
+      case self.kind
+      when :pointer, :vector, :array
+        Type.from_ptr(C.LLVMGetElementType(self))
+      end
+    end
+
     def null_pointer
       ConstantExpr.from_ptr(C.LLVMConstPointerNull(self))
     end
