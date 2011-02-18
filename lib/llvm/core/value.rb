@@ -23,6 +23,10 @@ module LLVM
       end
     end
 
+    def eql?(other)
+      other.instance_of?(self.class) && self == other
+    end
+
     def self.type
       raise NotImplementedError, "#{self.name}.type() is abstract."
     end

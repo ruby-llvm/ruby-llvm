@@ -20,6 +20,10 @@ module LLVM
       end
     end
 
+    def eql?(other)
+      other.instance_of?(self.class) && self == other
+    end
+
     def kind
         C.LLVMGetTypeKind(self)
     end
