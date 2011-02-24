@@ -3,9 +3,9 @@ require "llvm/core"
 
 class EqualityTestCase < Test::Unit::TestCase
 
-	def setup
+  def setup
     LLVM.init_x86
-	end
+  end
 
   class MyModule < LLVM::Module; end
   class MyInt < LLVM::Int32; end
@@ -44,10 +44,10 @@ class EqualityTestCase < Test::Unit::TestCase
                       :not_eql   => [int1, int3, int4]
   end
 
-	def test_module
-		mod1 = LLVM::Module.create('test')
+  def test_module
+    mod1 = LLVM::Module.create('test')
     mod2 = LLVM::Module.from_ptr(mod1.to_ptr)
-		mod3 = LLVM::Module.create('dummy')
+    mod3 = LLVM::Module.create('dummy')
     mod4 = MyModule.from_ptr(mod1.to_ptr)
 
     assert_equalities :equal     => [mod1, mod2, mod4],
@@ -56,9 +56,9 @@ class EqualityTestCase < Test::Unit::TestCase
                       :not_same  => [mod1, mod2, mod3, mod4],
                       :eql       => [mod1, mod2],
                       :not_eql   => [mod1, mod3, mod4]
-	end
+  end
 
-	def test_type
+  def test_type
     type1 = LLVM::Float.type
     type2 = LLVM::Type.from_ptr(type1.to_ptr)
     type3 = LLVM::Double.type
@@ -70,14 +70,14 @@ class EqualityTestCase < Test::Unit::TestCase
                       :not_same  => [type1, type2, type3, type4],
                       :eql       => [type1, type2],
                       :not_eql   => [type1, type3, type4]
-	end
+  end
 
-	def test_function
-		mod = LLVM::Module.create('test')
+  def test_function
+    mod = LLVM::Module.create('test')
 
-		fn1 = mod.functions.add('test1', LLVM.Void)
+    fn1 = mod.functions.add('test1', LLVM.Void)
     fn2 = LLVM::Function.from_ptr(fn1.to_ptr)
-		fn3 = mod.functions.add('test2', LLVM.Void)
+    fn3 = mod.functions.add('test2', LLVM.Void)
     fn4 = MyFunction.from_ptr(fn1.to_ptr)
 
     assert_equalities :equal     => [fn1, fn2, fn4],
@@ -86,7 +86,7 @@ class EqualityTestCase < Test::Unit::TestCase
                       :not_same  => [fn1, fn2, fn3, fn4],
                       :eql       => [fn1, fn2],
                       :not_eql   => [fn1, fn3, fn4]
-	end
+  end
 
 end
 
