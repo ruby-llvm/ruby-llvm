@@ -1,7 +1,6 @@
 module LLVM
   # The PassManager runs a queue of passes on a module. See
   # http://llvm.org/docs/Passes.html for the list of available passes.
-  # Currently, only scalar transformation passes are supported.
   class PassManager
     def initialize(execution_engine)
       ptr = C.LLVMCreatePassManager()
