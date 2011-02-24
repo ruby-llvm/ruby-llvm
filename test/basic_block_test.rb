@@ -70,7 +70,7 @@ class BasicBlockTestCase < Test::Unit::TestCase
       end
 
       block1.build do |builder|
-				builder.ret(builder.fadd(arg, LLVM.Double(1.0)))
+        builder.ret(builder.fadd(arg, LLVM.Double(1.0)))
       end
 
       [ block1.instructions.to_a, block1.instructions.each.to_a ].each do |insts|
