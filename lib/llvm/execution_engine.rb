@@ -111,6 +111,10 @@ module LLVM
       type = LLVM::Float.type
       new(C.LLVMCreateGenericValueOfFloat(type, f))
     end
+    
+    def self.from_b(b)
+      from_i(b ? 1 : 0, LLVM::Int1, false)
+    end
 
     def self.from_ptr(ptr)
       new(ptr)
@@ -123,6 +127,11 @@ module LLVM
     def to_f(type = LLVM::Float.type)
       C.LLVMGenericValueToFloat(type, self)
     end
+    
+    def to_b
+      to_i(false) != 0
+    end
+    
   end
 
   def GenericValue(val)
@@ -130,6 +139,8 @@ module LLVM
     when GenericValue then val
     when ::Integer then GenericValue.from_i(val)
     when ::Float then GenericValue.from_f(val)
+    when ::TrueClass then GenericValue.from_b(true)
+    when ::FalseClass then GenericValue.from_b(false)
     end
   end
   module_function :GenericValue
