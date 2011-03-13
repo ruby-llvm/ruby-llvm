@@ -71,11 +71,11 @@ module LLVM
       from_ptr(C.LLVMVectorType(LLVM::Type(ty), element_count))
     end
     
-    def self.function(arg_types, result_type)
+    def self.function(arg_types, result_type, options = {})
       arg_types.map! { |ty| LLVM::Type(ty) }
       arg_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_types.size)
       arg_types_ptr.write_array_of_pointer(arg_types)
-      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, 0))
+      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, options[:varargs] ? 1 : 0))
     end
     
     def self.struct(elt_types, is_packed)
@@ -124,8 +124,8 @@ module LLVM
     LLVM::Type.vector(ty, sz)
   end
   
-  def LLVM.Function(argtypes, rettype)
-    LLVM::Type.function(argtypes, rettype)
+  def LLVM.Function(argtypes, rettype, options = {})
+    LLVM::Type.function(argtypes, rettype, options)
   end
   
   def LLVM.Struct(*elt_types)
