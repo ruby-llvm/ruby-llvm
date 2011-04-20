@@ -12,7 +12,6 @@ module LLVM
     attach_function :LLVMAddJumpThreadingPass, [:pointer], :void
     attach_function :LLVMAddLICMPass, [:pointer], :void
     attach_function :LLVMAddLoopDeletionPass, [:pointer], :void
-    attach_function :LLVMAddLoopIndexSplitPass, [:pointer], :void
     attach_function :LLVMAddLoopRotatePass, [:pointer], :void
     attach_function :LLVMAddLoopUnrollPass, [:pointer], :void
     attach_function :LLVMAddLoopUnswitchPass, [:pointer], :void
@@ -62,10 +61,6 @@ module LLVM
     
     def loop_deletion!
       C.LLVMAddLoopDeletionPass(self)
-    end
-    
-    def loop_index_split!
-      C.LLVMAddLoopIndexSplitPass(self)
     end
     
     def loop_rotate!
