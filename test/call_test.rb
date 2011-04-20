@@ -76,7 +76,7 @@ class CallTestCase < Test::Unit::TestCase
         builder.ret(builder.call(external, parameter))
       end
     end
-    assert_equal ENV["PATH"], run_function_on_module(test_module, "test_function").to_ptr.read_pointer.read_string_to_null
+    assert_equal ENV["PATH"], run_function_on_module(test_module, "test_function").to_ptr.read_pointer.read_string
   end
 
 end
