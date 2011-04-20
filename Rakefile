@@ -1,7 +1,11 @@
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rake/testtask'
-require 'rcov/rcovtask'
+begin
+  require 'rcov/rcovtask'
+rescue LoadError
+  warn "Proceeding without Rcov. gem install rcov on supported platforms."
+end
 
 Rake::RDocTask.new do |t|
   t.rdoc_files   = Dir['lib/**/*.rb']
@@ -31,10 +35,12 @@ end
 Rake::GemPackageTask.new(spec) do |t|
 end
 
-Rcov::RcovTask.new do |t|
-  t.libs << "test"
-  t.rcov_opts << "--exclude gems"
-  t.test_files = FileList["test/**/*_test.rb"]
+if defined?(Rcov)
+  Rcov::RcovTask.new do |t|
+    t.libs << "test"
+    t.rcov_opts << "--exclude gems"
+    t.test_files = FileList["test/**/*_test.rb"]
+  end
 end
 
 Rake::TestTask.new do |t|
