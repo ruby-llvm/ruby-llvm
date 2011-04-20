@@ -16,7 +16,7 @@ def spec
     s.platform = Gem::Platform::RUBY
     
     s.name = 'ruby-llvm'
-    s.version = '2.7.0'
+    s.version = '2.9.0'
     s.summary = "LLVM bindings for Ruby"
     
     s.add_dependency('ffi', '>= 0.5.4')
