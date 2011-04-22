@@ -47,12 +47,13 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildRetVoid(self))
     end
 
-    # Builds a return Instruction that returns the given val.
+    # Builds a return Instruction that returns the given Value.
     def ret(val)
       Instruction.from_ptr(C.LLVMBuildRet(self, val))
     end
 
-    # Buidls a aggregated return Instruction that returns the given array of vals.
+    # Buidls a aggregated return Instruction that returns the given array of
+    # Values.
     def aggregate_ret(*vals)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * vals.size) do |vals_ptr|
         vals_ptr.write_array_of_pointer(vals)
@@ -60,27 +61,32 @@ module LLVM
       end
     end
 
-    # Builds a branch Instruction that jumps the program to the given BasicBlock.
+    # Builds a branch Instruction that jumps the program to the given
+    # BasicBlock.
     def br(block)
       Instruction.from_ptr(
         C.LLVMBuildBr(self, block))
     end
 
-    # Builds a condition branch Instruction. Cond is an Instruction, and iftrue and iffalse are BasicBlocks.
+    # Builds a condition branch Instruction. cond is an Value, and
+    # iftrue and iffalse are BasicBlocks.
     def cond(cond, iftrue, iffalse)
       Instruction.from_ptr(
         C.LLVMBuildCondBr(self, cond, iftrue, iffalse))
     end
 
-    # Builds a switch Instruction. Creates a SwitchInst that checks val by as specific number of given cases.
-    # Block is a BasicBlock that occurs if the val doesn't match any case (an else block).
-    def switch(val, block, ncases)
-      SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, block, ncases))
+    # Builds a switch Instruction. Creates a SwitchInst that checks val by
+    # a specific number of given cases. default is a BasicBlock, and
+    # represents the default case in the switch statement.
+    def switch(val, default, ncases)
+      SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, default, ncases))
     end
 
-    # Builds an invoke Instruction with the given name. It invokes the given Function with the given args and
-    # branches depending on the result. If an error arises it goes to the _catch BasicBlock, otherwise it goes
-    # to the _then BasicBlock.
+    # Builds an invoke Instruction with the given name. It invokes the given
+    # Function with the given args and branches depending on the result. If
+    # the called function returns with an unwind instruction, control
+    # is transferred to the _catch block, and if it returns with a ret
+    # instruction, control is transferred to the _then block.
     def invoke(fun, args, _then, _catch, name = "")
       Instruction.from_ptr(
         C.LLVMBuildInvoke(self,
@@ -97,17 +103,17 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildUnreachable(self))
     end
 
-
     # Builds an add Instruction with the given name. Adds the given lhs and rhs.
     def add(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAdd(self, lhs, rhs, name))
     end
 
+    # No signed wrap addition.
     def nsw_add(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildNSWAdd(self, lhs, rhs, name))
     end
 
-    # Builds an fadd Instruction with the given name. Adds the given lhs and rhs as floats.
+    # Builds an fadd Instruction with the given name. Adds the given lhs and rhs as Floats.
     def fadd(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFAdd(self, lhs, rhs, name))
     end
@@ -153,72 +159,83 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildFDiv(self, lhs, rhs, name))
     end
 
+    # Unsigned remainder.
     def urem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildURem(self, lhs, rhs, name))
     end
 
+    # Signed remainder.
     def srem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildSRem(self, lhs, rhs, name))
     end
 
+    # Floating point remainder.
     def frem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFRem(self, lhs, rhs, name))
     end
 
+    # Shift left.
     def shl(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildShl(self, lhs, rhs, name))
     end
 
+    # Logical shift right.
     def lshr(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildLShr(self, lhs, rhs, name))
     end
 
+    # Arithmatic shift right.
     def ashr(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAShr(self, lhs, rhs, name))
     end
 
-    # Builds an and Instruction with the given name. Ands lhs and rhs.
+    # Builds an and Instruction with the given name. ANDs lhs and rhs.
     def and(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAnd(self, lhs, rhs, name))
     end
 
-    # Builds a or Instruction with the given name. Ors lhs and rhs.
+    # Builds a or Instruction with the given name. ORs lhs and rhs.
     def or(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildOr(self, lhs, rhs, name))
     end
 
-    # Builds a xor Instruction with the given name. Xors lhs and rhs.
+    # Builds a xor Instruction with the given name. XORs lhs and rhs.
     def xor(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildXor(self, lhs, rhs, name))
     end
 
-    # Builds a neg Instruction with the given name. Inverses arg numerically (i.e. 1 => -1).
+    # Builds a neg Instruction with the given name. Inverts the sign of arg
+    # (i.e. multiplication by -1.)
     def neg(arg, name = "")
       Instruction.from_ptr(C.LLVMBuildNeg(self, arg, name))
     end
 
-    # Builds a not Instruction with the given name. Nots arg (i.e. true => false).
+    # Builds a not Instruction with the given name. Boolean negation.
     def not(arg, name = "")
       Instruction.from_ptr(C.LLVMBuildNot(self, arg, name))
     end
 
 
-    # Builds a malloc Instruction with the given name. Mallocs bits for the given type.
+    # Builds a malloc Instruction with the given name. Mallocs bits for the
+    # given type.
     def malloc(ty, name = "")
       Instruction.from_ptr(C.LLVMBuildMalloc(self, LLVM::Type(ty), name))
     end
 
-    # Builds a array malloc Instruction with the given. Mallocs bits for the given array type.
+    # Builds a array malloc Instruction with the given. Mallocs bits for the
+    # given array type.
     def array_malloc(ty, val, name = "")
       Instruction.from_ptr(C.LLVMBuildArrayMalloc(self, LLVM::Type(ty), val, name))
     end
 
-    # Builds a alloc Instruction with the given name. Allocates bits for the given type.
+    # Builds a alloc Instruction with the given name. Allocates bits on the
+    # stack for the given type.
     def alloca(ty, name = "")
       Instruction.from_ptr(C.LLVMBuildAlloca(self, LLVM::Type(ty), name))
     end
 
-    # Builds a array alloc Instruction with the given. Allocates bits for the given array type.
+    # Builds a array alloc Instruction with the given. Allocates bits on the
+    # stack for the given array type.
     def array_alloca(ty, val, name = "")
       Instruction.from_ptr(C.LLVMBuildArrayAlloca(self, LLVM::Type(ty), val, name))
     end
@@ -228,18 +245,21 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildFree(self, pointer))
     end
 
-    # Builds a load Instruction with the given name. Loads the value of the given pointer (an Instruction).
+    # Builds a load Instruction with the given name. Loads the value of the
+    # given pointer (an Instruction).
     def load(pointer, name = "")
       Instruction.from_ptr(C.LLVMBuildLoad(self, pointer, name))
     end
 
-    # Builds a store Instruction. Stores the given Value into the given pointer (an Instruction).
+    # Builds a store Instruction. Stores the given Value into the given
+    # pointer (an Instruction).
     def store(val, pointer)
       Instruction.from_ptr(C.LLVMBuildStore(self, val, pointer))
     end
 
-    # Builds a getelementptr Instruction with the given name. Retrieves the element pointer at the given indices
-    # of the pointer (an Instruction). For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
+    # Builds a getelementptr Instruction with the given name. Retrieves the
+    # element pointer at the given indices of the pointer (an Instruction).
+    # See http://llvm.org/docs/GetElementPtr.html for discussion.
     def gep(pointer, indices, name = "")
       indices = Array(indices)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
@@ -249,9 +269,11 @@ module LLVM
       end
     end
 
-    # Builds a inbounds getelementptr Instruction with the given name. Retrieves the element pointer at the given indices
-    # of the pointer (an Instruction). If the indices are outside the allocated pointer the retrieved value is undefined.
-    # For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
+    # Builds a inbounds getelementptr Instruction with the given name.
+    # Retrieves the element pointer at the given indices of the pointer (an
+    # Instruction). If the indices are outside the allocated pointer the
+    # retrieved value is undefined. See http://llvm.org/docs/GetElementPtr.html
+    # for discussion.
     def inbounds_gep(pointer, indices, name = "")
       indices = Array(indices)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
@@ -261,18 +283,22 @@ module LLVM
       end
     end
 
-    # Builds a struct getelementptr Instruction with the given name. Retrieves the element pointer at the given
-    # indices (idx) of the pointer (an Instruction). For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
+    # Builds a struct getelementptr Instruction with the given name.
+    # Retrieves the element pointer at the given indices (idx) of the pointer
+    # (an Instruction). See http://llvm.org/docs/GetElementPtr.html for
+    # discussion.
     def struct_gep(pointer, idx, name = "")
       Instruction.from_ptr(C.LLVMBuildStructGEP(self, pointer, idx, name))
     end
 
-    # Builds a global string Instruction with the given name. Creates a global string.
+    # Builds a global string Instruction with the given name. Creates a global
+    # string.
     def global_string(string, name = "")
       Instruction.from_ptr(C.LLVMBuildGlobalString(self, string, name))
     end
 
-    # Builds a global string Instruction with the given name. Creates a global string pointer.
+    # Builds a global string Instruction with the given name. Creates a global
+    # string pointer.
     def global_string_pointer(string, name = "")
       Instruction.from_ptr(C.LLVMBuildGlobalStringPtr(self, string, name))
     end
@@ -367,25 +393,40 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildFPCast(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds an icmp Instruction. Compares lhs to rhs (Instructions) using the given symbol predicate (pred):
-    #   :eq   - equal to                  :ne  - not equal to
-    #   :ugt  - unsigned greater than     :uge - unsigned greater than or equal to
-    #   :ult  - unsigned less than        :ule - unsigned less than or equal to
-    #   :sgt  - signed greater than       :sge - signed greater than or equal to
-    #   :slt  - signed less than          :sle - signed less than or equal to
+    # Builds an icmp Instruction. Compares lhs to rhs (Instructions)
+    # using the given symbol predicate (pred):
+    #   :eq  - equal to
+    #   :ne  - not equal to
+    #   :ugt - unsigned greater than
+    #   :uge - unsigned greater than or equal to
+    #   :ult - unsigned less than
+    #   :ule - unsigned less than or equal to
+    #   :sgt - signed greater than
+    #   :sge - signed greater than or equal to
+    #   :slt - signed less than
+    #   :sle - signed less than or equal to
     def icmp(pred, lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildICmp(self, pred, lhs, rhs, name))
     end
 
-    # Builds an fcmp Instruction. Compares lhs to rhs (Instructions) as Reals using the given symbol predicate (pred):
-    #   :ord  - ordered                               :uno    - unordered: isnan(X) | isnan(Y)
-    #   :oeq  - ordered and equal to                  :oeq    - unordered and equal to
-    #   :one  - ordered and not equal to              :one    - unordered and not equal to
-    #   :ogt  - ordered and greater than              :uge    - unordered and greater than or equal to
-    #   :olt  - ordered and less than                 :ule    - unordered and less than or equal to
-    #   :oge  - ordered and greater than or equal to  :sge    - unordered and greater than or equal to
-    #   :ole  - ordered and less than or equal to     :sle    - unordered and less than or equal to
-    #   :true - always true and folded                :false  - always false and folded
+    # Builds an fcmp Instruction. Compares lhs to rhs (Instructions) as Reals
+    # using the given symbol predicate (pred):
+    #   :ord   - ordered
+    #   :uno   - unordered: isnan(X) | isnan(Y)
+    #   :oeq   - ordered and equal to
+    #   :oeq   - unordered and equal to
+    #   :one   - ordered and not equal to
+    #   :one   - unordered and not equal to
+    #   :ogt   - ordered and greater than
+    #   :uge   - unordered and greater than or equal to
+    #   :olt   - ordered and less than
+    #   :ule   - unordered and less than or equal to
+    #   :oge   - ordered and greater than or equal to
+    #   :sge   - unordered and greater than or equal to
+    #   :ole   - ordered and less than or equal to
+    #   :sle   - unordered and less than or equal to
+    #   :true  - always true and folded
+    #   :false - always false and folded
     def fcmp(pred, lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFCmp(self, pred, lhs, rhs, name))
     end
@@ -403,7 +444,8 @@ module LLVM
       phi
     end
 
-    # Builds a call Instruction. Calls the given Function with the given args (Instructions).
+    # Builds a call Instruction. Calls the given Function with the given
+    # args (Instructions).
     def call(fun, *args)
       raise "No fun" if fun.nil?
       if args.last.kind_of? String
@@ -427,12 +469,14 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildVAArg(self, list, LLVM::Type(ty), name))
     end
 
-    # Builds an extract element Instruction. Extracts the element at the given index of vector.
+    # Builds an extract element Instruction. Extracts the element at the given
+    # index of vector.
     def extract_element(vector, index, name = "")
       Instruction.from_ptr(C.LLVMBuildExtractElement(self, vector, index, name))
     end
 
-    # Builds an extract element Instruction with the given name. Inserts the given element at the given index of vector.
+    # Builds an extract element Instruction with the given name. Inserts the
+    # given element at the given index of vector.
     def insert_element(vector, elem, index, name = "")
       Instruction.from_ptr(C.LLVMBuildInsertElement(self, vector, elem, index, name))
     end
@@ -462,7 +506,8 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildIsNotNull(self, val, name))
     end
 
-    # Builds a ptr diff Instruction with the given name. Retrieves the pointer difference between the given lhs and rhs.
+    # Builds a ptr diff Instruction with the given name. Retrieves the pointer
+    # difference between the given lhs and rhs.
     def ptr_diff(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildPtrDiff(lhs, rhs, name))
     end
