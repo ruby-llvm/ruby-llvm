@@ -36,7 +36,7 @@ module LLVM
       self
     end
 
-    # The BasicBlock the Builder is currently positioned at.
+    # The BasicBlock at which the Builder is currently positioned.
     def insert_block
       BasicBlock.from_ptr(C.LLVMGetInsertBlock(self))
     end
