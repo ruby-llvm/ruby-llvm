@@ -14,6 +14,7 @@ module LLVM
       @ptr
     end
 
+    # Checks if the value is equal to other.
     def ==(other)
       case other
       when LLVM::Value
@@ -23,10 +24,12 @@ module LLVM
       end
     end
 
+    # Checks if the value is equal to other.
     def eql?(other)
       other.instance_of?(self.class) && self == other
     end
 
+    # Returns the Value type. This is abstract and is overidden by its subclasses.
     def self.type
       raise NotImplementedError, "#{self.name}.type() is abstract."
     end
@@ -35,23 +38,28 @@ module LLVM
       type.to_ptr
     end
 
+    # Returns the value's type.
     def type
       Type.from_ptr(C.LLVMTypeOf(self))
     end
 
+    # Returns the value's name.
     def name
       C.LLVMGetValueName(self)
     end
 
+    # Sets the value's name to str.
     def name=(str)
       C.LLVMSetValueName(self, str)
       str
     end
 
+    # Print the value's IR to stdout.
     def dump
       C.LLVMDumpValue(self)
     end
 
+    # Returns whether the value is constant.
     def constant?
       case C.LLVMIsConstant(self)
       when 0 then false
@@ -59,6 +67,7 @@ module LLVM
       end
     end
 
+    # Returns whether the value is null.
     def null?
       case C.LLVMIsNull(self)
       when 0 then false
@@ -66,6 +75,7 @@ module LLVM
       end
     end
 
+    # Returns whether the value is undefined.
     def undefined?
       case C.LLVMIsUndef(self)
       when 0 then false
@@ -73,6 +83,7 @@ module LLVM
       end
     end
 
+    # Adds attr to this value's attributes.
     def add_attribute(attr)
       C.LLVMAddAttribute(self, attr)
     end
@@ -82,10 +93,12 @@ module LLVM
   end
 
   class BasicBlock < Value
+    # Creates a basic block for the given function with the given name.
     def self.create(fun = nil, name = "")
       self.from_ptr(C.LLVMAppendBasicBlock(fun, name))
     end
 
+    # Build the basic block with the given builder. Creates a new one if nil. Yields the builder.
     def build(builder = nil)
       if builder.nil?
         builder = Builder.create
@@ -99,16 +112,19 @@ module LLVM
       builder.dispose if islocal
     end
 
+    # Returns the parent of this basic block (a Function).
     def parent
       fp = C.LLVMGetBasicBlockParent(self)
       LLVM::Function.from_ptr(fp) unless fp.null?
     end
 
+    # Returns the next basic block in the sequence.
     def next
       ptr = C.LLVMGetNextBasicBlock(self)
       BasicBlock.from_ptr(ptr) unless ptr.null?
     end
 
+    # Returns the previous basic block in the sequence.
     def previous
       ptr = C.LLVMGetPreviousBasicBlock(self)
       BasicBlock.from_ptr(ptr) unless ptr.null?
@@ -122,6 +138,7 @@ module LLVM
       instructions.last
     end
 
+    # Returns an Enumerable of the Instructions in the current block.
     def instructions
       @instructions ||= InstructionCollection.new(self)
     end
@@ -133,6 +150,7 @@ module LLVM
         @block = block
       end
 
+      # Iterates through each Instruction in the collection.
       def each
         return to_enum :each unless block_given?
         inst, last = first, last
@@ -146,11 +164,13 @@ module LLVM
         self
       end
 
+      # Returns the first Instruction in the collection.
       def first
         ptr = C.LLVMGetFirstInstruction(@block)
         LLVM::Instruction.from_ptr(ptr) unless ptr.null?
       end
 
+      # Returns the last Instruction in the collection.
       def last
         ptr = C.LLVMGetLastInstruction(@block)
         LLVM::Instruction.from_ptr(ptr) unless ptr.null?
@@ -159,6 +179,7 @@ module LLVM
   end
 
   class User < Value
+    # Returns an Enumerable of the operands in this user.
     def operands
       @operand_collection ||= OperandCollection.new(self)
     end
@@ -170,19 +191,23 @@ module LLVM
         @user = user
       end
 
+      # Get a reference to an operand by index.
       def [](i)
         ptr = C.LLVMGetOperand(@user, i)
         Value.from_ptr(ptr) unless ptr.null?
       end
 
+      # Set or replace an operand by index.
       def []=(i, v)
         C.LLVMSetOperand(@user, i, v)
       end
 
+      # Returns the number of operands in the collection.
       def size
         C.LLVMGetNumOperands(@user)
       end
 
+      # Iterates through each operand in the collection.
       def each
         return to_enum :each unless block_given?
         0.upto(size-1) { |i| yield self[i] }
@@ -192,22 +217,28 @@ module LLVM
   end
 
   class Constant < User
-    def self.null
+    # Creates a null constant of Type.
+    def self.null(type)
       from_ptr(C.LLVMConstNull(type))
     end
 
-    def self.undef
+    # Creates a undefined constant of Type.
+    def self.undef(type)
       from_ptr(C.LLVMGetUndef(type))
     end
 
-    def self.null_ptr
+    # Creates a null pointer constant of Type.
+    def self.null_ptr(type)
       from_ptr(C.LLVMConstPointerNull(type))
     end
 
+    # Bitcast this constant to Type.
     def bitcast_to(type)
       ConstantExpr.from_ptr(C.LLVMConstBitCast(self, type))
     end
 
+    # Returns the element pointer at the given indices of the constant.
+    # For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
     def gep(*indices)
       indices = Array(indices)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
@@ -255,6 +286,7 @@ module LLVM
       from_ptr(C.LLVMConstAllOnes(type))
     end
 
+    # Creates a ConstantInt from an integer.
     def self.from_i(n, signed = true)
       from_ptr(C.LLVMConstInt(type, n, signed ? 1 : 0))
     end
@@ -263,68 +295,96 @@ module LLVM
       from_ptr(C.LLVMConstIntOfString(type, str, radix))
     end
 
+    # Negation.
     def -@
       self.class.from_ptr(C.LLVMConstNeg(self))
     end
 
+    # Boolean negation.
     def not
       self.class.from_ptr(C.LLVMConstNot(self))
     end
 
+    # Addition.
     def +(rhs)
       self.class.from_ptr(C.LLVMConstAdd(self, rhs))
     end
 
+    # "No signed wrap" addition. See
+    # http://llvm.org/docs/LangRef.html#i_add for discusison.
     def nsw_add(rhs)
       self.class.from_ptr(C.LLVMConstNSWAdd(self, rhs))
     end
 
+    # Multiplication.
     def *(rhs)
       self.class.from_ptr(C.LLVMConstMul(self, rhs))
     end
 
+    # Unsigned division.
     def udiv(rhs)
       self.class.from_ptr(C.LLVMConstUDiv(self, rhs))
     end
 
+    # Signed division.
     def /(rhs)
       self.class.from_ptr(C.LLVMConstSDiv(self, rhs))
     end
 
+    # Unsigned remainder.
     def urem(rhs)
       self.class.from_ptr(C.LLVMConstURem(self, rhs))
     end
 
+    # Signed remainder.
     def rem(rhs)
       self.class.from_ptr(C.LLVMConstSRem(self, rhs))
     end
 
-    def and(rhs) # Ruby's && cannot be overloaded
+    # Integer AND.
+    def and(rhs)
       self.class.from_ptr(C.LLVMConstAnd(self, rhs))
     end
 
-    def or(rhs) # Nor is ||.
+    # Integer OR.
+    def or(rhs)
       self.class.from_ptr(C.LLVMConstOr(self, rhs))
     end
 
-    def xor(rhs) # Nor is ||.
+    # Integer XOR.
+    def xor(rhs)
       self.class.from_ptr(C.LLVMConstXor(self, rhs))
     end
 
+    # Integer comparison using the predicate specified via the first parameter.
+    # Predicate can be any of:
+    #   :eq  - equal to
+    #   :ne  - not equal to
+    #   :ugt - unsigned greater than
+    #   :uge - unsigned greater than or equal to
+    #   :ult - unsigned less than
+    #   :ule - unsigned less than or equal to
+    #   :sgt - signed greater than
+    #   :sge - signed greater than or equal to
+    #   :slt - signed less than
+    #   :sle - signed less than or equal to
     def icmp(pred, rhs)
       self.class.from_ptr(C.LLVMConstICmp(pred, self, rhs))
     end
 
+    # Shift left.
     def <<(bits)
-      self.class.from_ptr(C.LLVMConstShl(self, rhs))
+      self.class.from_ptr(C.LLVMConstShl(self, bits))
     end
 
+    # Shift right.
     def >>(bits)
-      self.class.from_ptr(C.LLVMConstLShr(self, rhs))
+      self.class.from_ptr(C.LLVMConstLShr(self, bits))
     end
 
+    # Arithmatic shift right.
     def ashr(bits)
-      self.class.from_ptr(C.LLVMConstAShr(self, rhs))
+      self.class.from_ptr(C.LLVMConstAShr(self, bits))
     end
   end
 
@@ -349,6 +409,7 @@ module LLVM
   # Native integer type
   ::LLVM::Int = const_get("Int#{NATIVE_INT_SIZE}")
 
+  # Creates a LLVM Int (subclass of ConstantInt) at the NATIVE_INT_SIZE from a integer (val).
   def LLVM.Int(val)
     case val
     when LLVM::ConstantInt then val
@@ -357,45 +418,71 @@ module LLVM
   end
 
   class ConstantReal < Constant
+    # Creates a ConstantReal from a float of Type.
     def self.from_f(n)
       from_ptr(C.LLVMConstReal(type, n))
     end
 
-    def self.parse(str)
+    def self.parse(type, str)
       from_ptr(C.LLVMConstRealOfString(type, str))
     end
 
+    # Negation.
     def -@
       self.class.from_ptr(C.LLVMConstFNeg(self))
     end
 
+    # Returns the result of adding this ConstantReal to rhs.
     def +(rhs)
       self.class.from_ptr(C.LLVMConstFAdd(self, rhs))
     end
 
+    # Returns the result of multiplying this ConstantReal by rhs.
     def *(rhs)
       self.class.from_ptr(C.LLVMConstFMul(self, rhs))
     end
 
+    # Returns the result of dividing this ConstantReal by rhs.
     def /(rhs)
       self.class.from_ptr(C.LLVMConstFDiv(self, rhs))
     end
 
+    # Remainder.
     def rem(rhs)
       self.class.from_ptr(C.LLVMConstFRem(self, rhs))
     end
 
+    # Floating point comparison using the predicate specified via the first
+    # parameter. Predicate can be any of:
+    #   :ord  - ordered
+    #   :uno  - unordered: isnan(X) | isnan(Y)
+    #   :oeq  - ordered and equal to
+    #   :oeq  - unordered and equal to
+    #   :one  - ordered and not equal to
+    #   :one  - unordered and not equal to
+    #   :ogt  - ordered and greater than
+    #   :uge  - unordered and greater than or equal to
+    #   :olt  - ordered and less than
+    #   :ule  - unordered and less than or equal to
+    #   :oge  - ordered and greater than or equal to
+    #   :sge  - unordered and greater than or equal to
+    #   :ole  - ordered and less than or equal to
+    #   :sle  - unordered and less than or equal to
+    #   :true - always true
+    #   :false- always false
     def fcmp(pred, rhs)
       self.class.from_ptr(C.LLMVConstFCmp(pred, self, rhs))
     end
   end
 
   class Float < ConstantReal
+    # Return a Type representation of the float.
     def self.type
       Type.from_ptr(C.LLVMFloatType)
     end
   end
 
+  # Create a LLVM::Float from a Ruby Float (val).
   def LLVM.Float(val)
     Float.from_f(val)
   end
@@ -485,19 +572,23 @@ module LLVM
   end
 
   class Function < GlobalValue
+    # Sets the function's calling convention and returns it.
     def call_conv=(conv)
       C.LLVMSetFunctionCallConv(self, conv)
       conv
     end
 
+    # Adds the given attribute to the function.
     def add_attribute(attr)
       C.LLVMAddFunctionAttr(self, attr)
     end
 
+    # Removes the given attribute from the function.
     def remove_attribute(attr)
       C.LLVMRemoveFunctionAttr(self, attr)
     end
 
+    # Returns an Enumerable of the BasicBlocks in this function.
     def basic_blocks
       @basic_block_collection ||= BasicBlockCollection.new(self)
     end
@@ -509,10 +600,12 @@ module LLVM
         @fun = fun
       end
 
+      # Returns the number of BasicBlocks in the collection.
       def size
         C.LLVMCountBasicBlocks(@fun)
       end
 
+      # Iterates through each BasicBlock in the collection.
       def each
         return to_enum :each unless block_given?
 
@@ -525,25 +618,31 @@ module LLVM
         self
       end
 
+      # Adds a BasicBlock with the given name to the end of the collection.
       def append(name = "")
         BasicBlock.create(@fun, name)
       end
 
+      # Returns the entry BasicBlock in the collection. This is the block the
+      # function starts on.
       def entry
         BasicBlock.from_ptr(C.LLVMGetEntryBasicBlock(@fun))
       end
 
+      # Returns the first BasicBlock in the collection.
       def first
         ptr = C.LLVMGetFirstBasicBlock(@fun)
         BasicBlock.from_ptr(ptr) unless ptr.null?
       end
 
+      # Returns the last BasicBlock in the collection.
       def last
         ptr = C.LLVMGetLastBasicBlock(@fun)
         BasicBlock.from_ptr(ptr) unless ptr.null?
       end
     end
 
+    # Returns an Enumerable of the parameters in the function.
     def params
       @parameter_collection ||= ParameterCollection.new(self)
     end
@@ -553,16 +652,19 @@ module LLVM
         @fun = fun
       end
 
+      # Returns a Value representation of the parameter at the given index.
       def [](i)
         Value.from_ptr(C.LLVMGetParam(@fun, i))
       end
 
+      # Returns the number of paramters in the collection.
       def size
         C.LLVMCountParams(@fun)
       end
 
       include Enumerable
 
+      # Iteraters through each parameter in the collection.
       def each
         return to_enum :each unless block_given?
         0.upto(size-1) { |i| yield self[i] }
@@ -596,16 +698,19 @@ module LLVM
   end
 
   class Instruction < User
+    # Returns the parent of the instruction (a BasicBlock).
     def parent
       ptr = C.LLVMGetInstructionParent(self)
       LLVM::BasicBlock.from_ptr(ptr) unless ptr.null?
     end
 
+    # Returns the next instruction after this one.
     def next
       ptr = C.LLVMGetNextInstruction(self)
       LLVM::Instruction.from_ptr(ptr) unless ptr.null?
     end
 
+    # Returns the previous instruction before this one.
     def previous
       ptr = C.LLVMGetPreviousInstruction(self)
       LLVM::Instruction.from_ptr(ptr) unless ptr.null?
@@ -613,19 +718,21 @@ module LLVM
   end
 
   class CallInst < Instruction
+    # Sets the call convention to conv.
     def call_conv=(conv)
       C.LLVMSetInstructionCallConv(self, conv)
       conv
     end
 
+    # Returns the call insatnce's call convention.
     def call_conv
       C.LLVMGetInstructionCallConv(self)
     end
   end
 
   class Phi < Instruction
-    # Add incoming branches to a phi node by passing an alternating list
-    # of resulting values and basic blocks. e.g.
+    # Add incoming branches to a phi node by passing an alternating list of
+    # resulting values and BasicBlocks. e.g.
     #   phi.add_incoming(val1, block1, val2, block2, ...)
     def add_incoming(*incoming)
       vals, blocks = [], []
@@ -651,8 +758,8 @@ module LLVM
   end
 
   class SwitchInst < Instruction
-    # Adds a case to a switch instruction. First the value to match on,
-    # then the basic block.
+    # Adds a case to a switch instruction. First the value to match on, then
+    # the basic block.
     def add_case(val, block)
       C.LLVMAddCase(self, val, block)
     end

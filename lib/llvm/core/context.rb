@@ -10,16 +10,17 @@ module LLVM
       @ptr
     end
     
-    # Creates a new Context
+    # Creates a new Context.
     def self.create
       new(C.LLVMContextCreate())
     end
     
-    # Obtains a reference to the global Context
+    # Obtains a reference to the global Context.
     def self.global
       new(C.LLVMGetGlobalContext())
     end
     
+    # Diposes the Context.
     def dispose
       C.LLVMContextDispose(@ptr)
     end
