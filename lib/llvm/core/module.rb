@@ -65,7 +65,7 @@ module LLVM
       end
     end
     
-    # Returns a GlobalCollection of all the GlobalVariables in the module.
+    # Returns an Enumerable of all the GlobalVariables in the module.
     def globals
       @globals ||= GlobalCollection.new(self)
     end
