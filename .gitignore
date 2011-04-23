@@ -3,3 +3,5 @@
 pkg
 .rvmrc
 coverage/*
+.yardoc
+doc/*

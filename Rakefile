@@ -1,14 +1,28 @@
 require 'rake/gempackagetask'
-require 'rake/rdoctask'
 require 'rake/testtask'
+
 begin
   require 'rcov/rcovtask'
+
+  Rcov::RcovTask.new do |t|
+    t.libs << "test"
+    t.rcov_opts << "--exclude gems"
+    t.test_files = FileList["test/**/*_test.rb"]
+  end
 rescue LoadError
   warn "Proceeding without Rcov. gem install rcov on supported platforms."
 end
 
-Rake::RDocTask.new do |t|
-  t.rdoc_files   = Dir['lib/**/*.rb']
+begin
+  require 'yard'
+
+  YARD::Rake::YardocTask.new do |t|
+    yardlib = File.join(File.dirname(__FILE__), "yardlib/llvm.rb")
+    t.options = %W[-e #{yardlib}]
+    t.files = Dir['lib/**/*.rb']
+  end
+rescue LoadError
+  warn "Yard is not installed. `gem install yard` to build documentation."
 end
 
 def spec
@@ -33,14 +47,6 @@ def spec
 end
 
 Rake::GemPackageTask.new(spec) do |t|
-end
-
-if defined?(Rcov)
-  Rcov::RcovTask.new do |t|
-    t.libs << "test"
-    t.rcov_opts << "--exclude gems"
-    t.test_files = FileList["test/**/*_test.rb"]
-  end
 end
 
 Rake::TestTask.new do |t|
