@@ -42,18 +42,18 @@ module LLVM
     end
 
 
-    # Builds a void return Instruction.
+    # @LLVMinst ret
     def ret_void
       Instruction.from_ptr(C.LLVMBuildRetVoid(self))
     end
 
-    # Builds a return Instruction that returns the given Value.
+    # @LLVMinst ret
     def ret(val)
       Instruction.from_ptr(C.LLVMBuildRet(self, val))
     end
 
-    # Buidls a aggregated return Instruction that returns the given array of
-    # Values.
+    # Builds a ret instruction returning multiple values.
+    # @LLVMinst ret
     def aggregate_ret(*vals)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * vals.size) do |vals_ptr|
         vals_ptr.write_array_of_pointer(vals)
@@ -61,32 +61,27 @@ module LLVM
       end
     end
 
-    # Builds a branch Instruction that jumps the program to the given
-    # BasicBlock.
+    # Unconditional branching (i.e. goto)
+    # @LLVMinst br
     def br(block)
       Instruction.from_ptr(
         C.LLVMBuildBr(self, block))
     end
 
-    # Builds a condition branch Instruction. cond is an Value, and
-    # iftrue and iffalse are BasicBlocks.
+    # Conditional branching (i.e. if)
+    # @LLVMinst br
     def cond(cond, iftrue, iffalse)
       Instruction.from_ptr(
         C.LLVMBuildCondBr(self, cond, iftrue, iffalse))
     end
 
-    # Builds a switch Instruction. Creates a SwitchInst that checks val by
-    # a specific number of given cases. default is a BasicBlock, and
-    # represents the default case in the switch statement.
+    # @LLVMinst switch
     def switch(val, default, ncases)
       SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, default, ncases))
     end
 
-    # Builds an invoke Instruction with the given name. It invokes the given
-    # Function with the given args and branches depending on the result. If
-    # the called function returns with an unwind instruction, control
-    # is transferred to the _catch block, and if it returns with a ret
-    # instruction, control is transferred to the _then block.
+    # Invoke a function which may potentially unwind
+    # @LLVMinst invoke
     def invoke(fun, args, _then, _catch, name = "")
       Instruction.from_ptr(
         C.LLVMBuildInvoke(self,
@@ -94,148 +89,151 @@ module LLVM
     end
 
     # Builds an unwind Instruction.
+    # @LLVMinst unwind
     def unwind
       Instruction.from_ptr(C.LLVMBuildUnwind(self))
     end
 
-    # Builds an unreachable Instruction.
+    # @LLVMinst unreachable
     def unreachable
       Instruction.from_ptr(C.LLVMBuildUnreachable(self))
     end
 
-    # Builds an add Instruction with the given name. Adds the given lhs and rhs.
+    # @LLVMinst add
     def add(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAdd(self, lhs, rhs, name))
     end
 
     # No signed wrap addition.
+    # @LLVMinst add
     def nsw_add(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildNSWAdd(self, lhs, rhs, name))
     end
 
-    # Builds an fadd Instruction with the given name. Adds the given lhs and rhs as Floats.
+    # @LLVMinst fadd
     def fadd(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFAdd(self, lhs, rhs, name))
     end
 
-    # Builds an sub Instruction with the given name. Subtracts the given rhs from lhs.
+    # @LLVMinst sub
     def sub(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildSub(self, lhs, rhs, name))
     end
 
-    # Builds an fsub Instruction with the given name. Subtracts the given rhs from lhs as floats.
+    # @LLVMinst fsub
     def fsub(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFSub(self, lhs, rhs, name))
     end
 
-    # Builds an mul Instruction with the given name. Multiplies the given lhs by rhs.
+    # @LLVMinst mul
     def mul(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildMul(self, lhs, rhs, name))
     end
 
-    # Builds an mul Instruction with the given name. Multiplies the given lhs by rhs as floats.
+    # @LLVMinst fmul
     def fmul(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFMul(self, lhs, rhs, name))
     end
 
-    # Builds an udiv Instruction with the given name. Divides the given lhs by rhs. Unsigned.
+    # Unsigned integer division
+    # @LLVMinst udiv
     def udiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildUDiv(self, lhs, rhs, name))
     end
 
-    # Builds an sdiv Instruction with the given name. Divides the given lhs by rhs. Signed.
+    # Signed division
+    # @LLVMinst sdiv
     def sdiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildSDiv(self, lhs, rhs, name))
     end
 
-    # Builds an exact_sdiv Instruction with the given name. Divides the given lhs by rhs if it can be
-    # determined and if the remainder is known to be zero. Signed.
+    # Signed exact division
+    # @LLVMinst sdiv
     def exact_sdiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildExactSDiv(self, lhs, rhs, name))
     end
 
-    # Builds an fdiv Instruction with the given name. Divides the given lhs by rhs as floats.
+    # @LLVMinst fdiv
     def fdiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFDiv(self, lhs, rhs, name))
     end
 
-    # Unsigned remainder.
+    # @LLVMinst urem
     def urem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildURem(self, lhs, rhs, name))
     end
 
-    # Signed remainder.
+    # @LLVMinst srem
     def srem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildSRem(self, lhs, rhs, name))
     end
 
-    # Floating point remainder.
+    # @LLVMinst frem
     def frem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFRem(self, lhs, rhs, name))
     end
 
-    # Shift left.
+    # @LLVMinst shl
     def shl(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildShl(self, lhs, rhs, name))
     end
 
-    # Logical shift right.
+    # Shifts right with zero fill.
+    # @LLVMinst lshr
     def lshr(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildLShr(self, lhs, rhs, name))
     end
 
     # Arithmatic shift right.
+    # @LLVMinst ashr
     def ashr(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAShr(self, lhs, rhs, name))
     end
 
-    # Builds an and Instruction with the given name. ANDs lhs and rhs.
+    # @LLVMinst and
     def and(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAnd(self, lhs, rhs, name))
     end
 
-    # Builds a or Instruction with the given name. ORs lhs and rhs.
+    # @LLVMinst or
     def or(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildOr(self, lhs, rhs, name))
     end
 
-    # Builds a xor Instruction with the given name. XORs lhs and rhs.
+    # @LLVMinst xor
     def xor(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildXor(self, lhs, rhs, name))
     end
 
-    # Builds a neg Instruction with the given name. Inverts the sign of arg
-    # (i.e. multiplication by -1.)
+    # Integer negation (i.e. multiplication by -1).
     def neg(arg, name = "")
       Instruction.from_ptr(C.LLVMBuildNeg(self, arg, name))
     end
 
-    # Builds a not Instruction with the given name. Boolean negation.
+    # Boolean negation.
     def not(arg, name = "")
       Instruction.from_ptr(C.LLVMBuildNot(self, arg, name))
     end
 
-
-    # Builds a malloc Instruction with the given name. Mallocs bits for the
-    # given type.
+    # Builds a malloc Instruction for the given type.
     def malloc(ty, name = "")
       Instruction.from_ptr(C.LLVMBuildMalloc(self, LLVM::Type(ty), name))
     end
 
-    # Builds a array malloc Instruction with the given. Mallocs bits for the
-    # given array type.
+    # Builds a malloc Instruction for the given array type.
     def array_malloc(ty, val, name = "")
       Instruction.from_ptr(C.LLVMBuildArrayMalloc(self, LLVM::Type(ty), val, name))
     end
 
-    # Builds a alloc Instruction with the given name. Allocates bits on the
-    # stack for the given type.
+    # Stack allocation.
+    # @LLVMinst alloca
     def alloca(ty, name = "")
       Instruction.from_ptr(C.LLVMBuildAlloca(self, LLVM::Type(ty), name))
     end
 
-    # Builds a array alloc Instruction with the given. Allocates bits on the
-    # stack for the given array type.
+    # Array stack allocation
+    # @param LLVM::Value used to initialize each element.
+    # @LLVMinst alloca
     def array_alloca(ty, val, name = "")
       Instruction.from_ptr(C.LLVMBuildArrayAlloca(self, LLVM::Type(ty), val, name))
     end
@@ -247,19 +245,22 @@ module LLVM
 
     # Builds a load Instruction with the given name. Loads the value of the
     # given pointer (an Instruction).
+    # @LLVMinst load
     def load(pointer, name = "")
       Instruction.from_ptr(C.LLVMBuildLoad(self, pointer, name))
     end
 
     # Builds a store Instruction. Stores the given Value into the given
     # pointer (an Instruction).
+    # @LLVMinst store
     def store(val, pointer)
       Instruction.from_ptr(C.LLVMBuildStore(self, val, pointer))
     end
 
     # Builds a getelementptr Instruction with the given name. Retrieves the
     # element pointer at the given indices of the pointer (an Instruction).
-    # See http://llvm.org/docs/GetElementPtr.html for discussion.
+    # @LLVMinst gep
+    # @see http://llvm.org/docs/GetElementPtr.html
     def gep(pointer, indices, name = "")
       indices = Array(indices)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
@@ -272,8 +273,9 @@ module LLVM
     # Builds a inbounds getelementptr Instruction with the given name.
     # Retrieves the element pointer at the given indices of the pointer (an
     # Instruction). If the indices are outside the allocated pointer the
-    # retrieved value is undefined. See http://llvm.org/docs/GetElementPtr.html
-    # for discussion.
+    # retrieved value is undefined.
+    # @LLVMinst gep
+    # @see http://llvm.org/docs/GetElementPtr.html
     def inbounds_gep(pointer, indices, name = "")
       indices = Array(indices)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
@@ -287,6 +289,8 @@ module LLVM
     # Retrieves the element pointer at the given indices (idx) of the pointer
     # (an Instruction). See http://llvm.org/docs/GetElementPtr.html for
     # discussion.
+    # @LLVMinst gep
+    # @see http://llvm.org/docs/GetElementPtr.html
     def struct_gep(pointer, idx, name = "")
       Instruction.from_ptr(C.LLVMBuildStructGEP(self, pointer, idx, name))
     end
@@ -303,77 +307,81 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildGlobalStringPtr(self, string, name))
     end
 
-    # Builds a trunc Instruction with the given name. Casting.
+    # @LLVMinst trunc
     def trunc(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildTrunc(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a zext Instruction with the given name. Casting.
+    # @LLVMinst zext
     def zext(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildZExt(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a sext Instruction with the given name. Casting.
+    # @LLVMinst sext
     def sext(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildSExt(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a fp2ui Instruction with the given name. Casting.
+    # @LLVMinst fptoui
     def fp2ui(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildFPToUI(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a fp2si Instruction with the given name. Casting.
+    # @LLVMinst fptosi
     def fp2si(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildFPToSI(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a ui2fp Instruction with the given name. Casting.
+    # @LLVMinst uitofp
     def ui2fp(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildUIToFP(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a si2fp Instruction with the given name. Casting.
+    # @LLVMinst sitofp
     def si2fp(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildSIToFP(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a fp trunc Instruction with the given name. Casting.
+    # @LLVMinst fptrunc
     def fp_trunc(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildFPTrunc(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a fp ext Instruction with the given name. Casting.
+    # @LLVMinst fpext
     def fp_ext(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildFPExt(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a ptr2int Instruction with the given name. Casting.
+    # Cast a pointer to an int. Useful for pointer arithmetic.
+    # @LLVMinst ptrtoint
     def ptr2int(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildPtrToInt(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a int2ptr Instruction with the given name. Casting.
+    # @LLVMinst inttoptr
     def int2ptr(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildIntToPtr(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a bit cast Instruction with the given name.
+    # @LLVMinst bitcast
     def bit_cast(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildBitCast(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a zext or bit cast Instruction with the given name.
+    # @LLVMinst zext
+    # @LLVMinst bitcast
     def zext_or_bit_cast(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildZExtOrBitCast(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a sext or bit cast Instruction with the given name.
+    # @LLVMinst sext
+    # @LLVMinst bitcast
     def sext_or_bit_cast(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildSExtOrBitCast(self, val, LLVM::Type(ty), name))
     end
 
-    # Builds a trunc or bit cast Instruction with the given name.
+    # @LLVMinst trunc
+    # @LLVMinst bitcast
     def trunc_or_bit_cast(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildTruncOrBitCast(self, val, LLVM::Type(ty), name))
     end
@@ -405,6 +413,7 @@ module LLVM
     #   :sge - signed greater than or equal to
     #   :slt - signed less than
     #   :sle - signed less than or equal to
+    # @LLVMinst icmp
     def icmp(pred, lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildICmp(self, pred, lhs, rhs, name))
     end
@@ -427,11 +436,13 @@ module LLVM
     #   :sle   - unordered and less than or equal to
     #   :true  - always true and folded
     #   :false - always false and folded
+    # @LLVMinst fcmp
     def fcmp(pred, lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFCmp(self, pred, lhs, rhs, name))
     end
 
     # Builds a Phi node of the given Type with the given incoming branches.
+    # @LLVMinst phi
     def phi(ty, *incoming)
       if incoming.last.kind_of? String
         name = incoming.pop
@@ -446,6 +457,7 @@ module LLVM
 
     # Builds a call Instruction. Calls the given Function with the given
     # args (Instructions).
+    # @LLVMinst call
     def call(fun, *args)
       raise "No fun" if fun.nil?
       if args.last.kind_of? String
@@ -459,55 +471,52 @@ module LLVM
       CallInst.from_ptr(C.LLVMBuildCall(self, fun, args_ptr, args.size, name))
     end
 
-    # Builds a select Instruction.
+    # @LLVMinst select
     def select(_if, _then, _else, name = "")
       Instruction.from_ptr(C.LLVMBuildSelect(self, _if, _then, _else, name))
     end
 
-    # Builds a va arg Instruction with the given name.
+    # @LLVMinst va_arg
     def va_arg(list, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildVAArg(self, list, LLVM::Type(ty), name))
     end
 
-    # Builds an extract element Instruction. Extracts the element at the given
-    # index of vector.
+    # @LLVMinst extractelement
     def extract_element(vector, index, name = "")
       Instruction.from_ptr(C.LLVMBuildExtractElement(self, vector, index, name))
     end
 
-    # Builds an extract element Instruction with the given name. Inserts the
-    # given element at the given index of vector.
+    # @LLVMinst insertelement
     def insert_element(vector, elem, index, name = "")
       Instruction.from_ptr(C.LLVMBuildInsertElement(self, vector, elem, index, name))
     end
 
-    # Builds a shuffle vector Instruction with the given name.
+    # @LLVMinst shufflevector
     def shuffle_vector(vec1, vec2, mask, name = "")
       Instruction.from_ptr(C.LLVMBuildShuffleVector(self, vec1, vec2, mask, name))
     end
 
-    # Builds an extract value arg Instruction with the given name.
+    # LLVMinst extractvalue
     def extract_value(aggregate, index, name = "")
       Instruction.from_ptr(C.LLVMBuildExtractValue(self, aggregate, index, name))
     end
 
-    # Builds an insert value arg Instruction with the given name.
+    # @LLVMinst insertvalue
     def insert_value(aggregate, elem, index, name = "")
       Instruction.from_ptr(C.LLVMBuildInsertValue(self, aggregate, elem, index, name))
     end
 
-    # Builds an is null Instruction. Checks if val is null.
+    # Check if a value is null.
     def is_null(val, name = "")
       Instruction.from_ptr(C.LLVMBuildIsNull(self, val, name))
     end
 
-    # Builds an is not null Instruction. Checks if val is not null.
+    # Check if a value is not null.
     def is_not_null(val, name = "")
       Instruction.from_ptr(C.LLVMBuildIsNotNull(self, val, name))
     end
 
-    # Builds a ptr diff Instruction with the given name. Retrieves the pointer
-    # difference between the given lhs and rhs.
+    # Retrieves the pointer difference between the given lhs and rhs.
     def ptr_diff(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildPtrDiff(lhs, rhs, name))
     end
