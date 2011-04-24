@@ -1,16 +1,25 @@
 class LLVMTagFactory < YARD::Tags::DefaultFactory
   def parse_tag(name, text)
     case name
-    when :LLVMinst, :LLVMpass
-      url = if name == :LLVMinst
-              "http://llvm.org/docs/LangRef.html#i_#{text}"
-            elsif name == :LLVMpass
-              "http://llvm.org/docs/Passes.html##{text}"
-            end
-      YARD::Tags::Tag.new("see", "<a href=\"#{url}\">#{url}</a>")
+    when :LLVMinst then inst_tag(text)
+    when :LLVMpass then pass_tag(text)
     else
       super
     end
+  end
+
+  private
+
+  def inst_tag(text)
+    url = "http://llvm.org/docs/LangRef.html#i_#{text}"
+    markup = "<a href=\"#{url}\">LLVM Instruction: #{text}</a>"
+    YARD::Tags::Tag.new("see", markup)
+  end
+
+  def pass_tag(text)
+    url = "http://llvm.org/docs/Passes.html##{text}"
+    markup = "<a href=\"#{url}\">LLVM Pass: #{text}</a>"
+    YARD::Tags::Tag.new("see", markup)
   end
 end
 
