@@ -18,7 +18,7 @@ begin
 
   YARD::Rake::YardocTask.new do |t|
     yardlib = File.join(File.dirname(__FILE__), "yardlib/llvm.rb")
-    t.options = %W[-e #{yardlib}]
+    t.options = %W[-e #{yardlib} --no-private]
     t.files = Dir['lib/**/*.rb']
   end
 rescue LoadError

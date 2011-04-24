@@ -2,15 +2,18 @@ module LLVM
   class Module
     private_class_method :new
     
+    # @private
     def self.from_ptr(ptr)
       ptr.null? ? nil : new(ptr)
     end
     
-    def initialize(ptr) # :nodoc:
+    # @private
+    def initialize(ptr)
       @ptr = ptr
     end
     
-    def to_ptr # :nodoc:
+    # @private
+    def to_ptr
       @ptr
     end
     

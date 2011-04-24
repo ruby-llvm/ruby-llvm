@@ -2,11 +2,13 @@ module LLVM
   class Context
     private_class_method :new
 
-    def initialize(ptr) # :nodoc:
+    # @private
+    def initialize(ptr)
       @ptr = ptr
     end
     
-    def to_ptr # :nodoc:
+    # @private
+    def to_ptr
       @ptr
     end
     

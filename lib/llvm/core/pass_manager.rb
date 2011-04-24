@@ -10,7 +10,8 @@ module LLVM
       @ptr = ptr
     end
     
-    def to_ptr # :nodoc:
+    # @private
+    def to_ptr
       @ptr
     end
     

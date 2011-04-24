@@ -1,16 +1,19 @@
 module LLVM
   class Value
+    # @private
     def self.from_ptr(ptr)
       new(ptr) unless ptr.null?
     end
 
     private_class_method :new
 
+    # @private
     def initialize(ptr)
       @ptr = ptr
     end
 
-    def to_ptr # :nodoc:
+    # @private
+    def to_ptr
       @ptr
     end
 
@@ -143,6 +146,7 @@ module LLVM
       @instructions ||= InstructionCollection.new(self)
     end
 
+    # @private
     class InstructionCollection
       include Enumerable
 
@@ -184,6 +188,7 @@ module LLVM
       @operand_collection ||= OperandCollection.new(self)
     end
 
+    # @private
     class OperandCollection
       include Enumerable
 
@@ -388,7 +393,7 @@ module LLVM
     end
   end
 
-  def LLVM.const_missing(const) # :nodoc:
+  def LLVM.const_missing(const)
     case const.to_s
     when /Int(\d+)/
       width = $1.to_i
@@ -593,6 +598,7 @@ module LLVM
       @basic_block_collection ||= BasicBlockCollection.new(self)
     end
 
+    # @private
     class BasicBlockCollection
       include Enumerable
 
@@ -647,6 +653,7 @@ module LLVM
       @parameter_collection ||= ParameterCollection.new(self)
     end
 
+    # @private
     class ParameterCollection
       def initialize(fun)
         @fun = fun
