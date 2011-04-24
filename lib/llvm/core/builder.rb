@@ -13,11 +13,15 @@ module LLVM
     end
 
     # Creates a Builder.
+    # @return [LLVM::Builder]
     def self.create
       new(C.LLVMCreateBuilder())
     end
 
-    # Positions the builder at the given Instruction in the given BasicBlock.
+    # Position the builder at the given Instruction within the given BasicBlock.
+    # @param [LLVM::BasicBlock]
+    # @param [LLVM::Instruction]
+    # @return [LLVM::Builder]
     def position(block, instruction)
       raise "Block must not be nil" if block.nil?
       C.LLVMPositionBuilder(self, block, instruction)
@@ -25,6 +29,8 @@ module LLVM
     end
 
     # Positions the builder before the given Instruction.
+    # @param [LLVM::Instruction]
+    # @return [LLVM::Builder]
     def position_before(instruction)
       raise "Instruction must not be nil" if instruction.nil?
       C.LLVMPositionBuilderBefore(self, instruction)
@@ -32,6 +38,8 @@ module LLVM
     end
 
     # Positions the builder at the end of the given BasicBlock.
+    # @param [LLVM::BasicBlock]
+    # @return [LLVM::Builder]
     def position_at_end(block)
       raise "Block must not be nil" if block.nil?
       C.LLVMPositionBuilderAtEnd(self, block)
@@ -39,22 +47,27 @@ module LLVM
     end
 
     # The BasicBlock at which the Builder is currently positioned.
+    # @return [LLVM::BasicBlock]
     def insert_block
       BasicBlock.from_ptr(C.LLVMGetInsertBlock(self))
     end
 
-
+    # @return [LLVM::Instruction]
     # @LLVMinst ret
     def ret_void
       Instruction.from_ptr(C.LLVMBuildRetVoid(self))
     end
 
+    # @param [LLVM::Value] val The value to return
+    # @return [LLVM::Instruction]
     # @LLVMinst ret
     def ret(val)
       Instruction.from_ptr(C.LLVMBuildRet(self, val))
     end
 
     # Builds a ret instruction returning multiple values.
+    # @param [[LLVM::Value]] vals
+    # @return [LLVM::Instruction]
     # @LLVMinst ret
     def aggregate_ret(*vals)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * vals.size) do |vals_ptr|
@@ -64,6 +77,8 @@ module LLVM
     end
 
     # Unconditional branching (i.e. goto)
+    # @param [LLVM::BasicBlock] block Where to jump
+    # @return [LLVM::Instruction]
     # @LLVMinst br
     def br(block)
       Instruction.from_ptr(
@@ -71,6 +86,10 @@ module LLVM
     end
 
     # Conditional branching (i.e. if)
+    # @param [LLVM::Value] cond The condition
+    # @param [LLVM::BasicBlock] iftrue Where to jump if condition is true
+    # @param [LLVM::BasicBlock] iffalse Where to jump if condition is false
+    # @return [LLVM::Instruction]
     # @LLVMinst br
     def cond(cond, iftrue, iffalse)
       Instruction.from_ptr(
@@ -78,11 +97,20 @@ module LLVM
     end
 
     # @LLVMinst switch
+    # @param [LLVM::Value] val The value to switch on
+    # @param [LLVM::BasicBlock] default The default block
+    # @param [Integer] ncases The number of cases in the switch construct
+    # @param [LLVM::SwitchInst]
     def switch(val, default, ncases)
       SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, default, ncases))
     end
 
     # Invoke a function which may potentially unwind
+    # @param [LLVM::Function] fun The function to invoke
+    # @param [[LLVM::Value]] args Arguments passed to fun
+    # @param [LLVM::BasicBlock] _then Where to jump if fun does not unwind
+    # @param [LLVM::BasicBlock] _catch Where to jump if fun unwinds
+    # @param [String] name Name of the result in LLVM IR
     # @LLVMinst invoke
     def invoke(fun, args, _then, _catch, name = "")
       Instruction.from_ptr(
@@ -91,123 +119,217 @@ module LLVM
     end
 
     # Builds an unwind Instruction.
+    # @return [LLVM::Instruction]
     # @LLVMinst unwind
     def unwind
       Instruction.from_ptr(C.LLVMBuildUnwind(self))
     end
 
+    # Generates an instruction with no defined semantics. Can be used to
+    # provide hints to the optimizer.
+    # @return [LLVM::Instruction]
     # @LLVMinst unreachable
     def unreachable
       Instruction.from_ptr(C.LLVMBuildUnreachable(self))
     end
 
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer sum of the two operands
     # @LLVMinst add
     def add(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAdd(self, lhs, rhs, name))
     end
 
     # No signed wrap addition.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer sum of the two operands
     # @LLVMinst add
     def nsw_add(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildNSWAdd(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Floating point or vector of floating points
+    # @param [LLVM::Value] rhs Floating point or vector of floating points
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The floating point sum of the two operands
     # @LLVMinst fadd
     def fadd(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFAdd(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer difference of the two operands
     # @LLVMinst sub
     def sub(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildSub(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Floating point or vector of floating points
+    # @param [LLVM::Value] rhs Floating point or vector of floating points
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The floating point difference of the two
+    #   operands
     # @LLVMinst fsub
     def fsub(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFSub(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer product of the two operands
     # @LLVMinst mul
     def mul(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildMul(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Floating point or vector of floating points
+    # @param [LLVM::Value] rhs Floating point or vector of floating points
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The floating point product of the two
+    #   operands
     # @LLVMinst fmul
     def fmul(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFMul(self, lhs, rhs, name))
     end
 
     # Unsigned integer division
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer quotient of the two operands
     # @LLVMinst udiv
     def udiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildUDiv(self, lhs, rhs, name))
     end
 
     # Signed division
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer quotient of the two operands
     # @LLVMinst sdiv
     def sdiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildSDiv(self, lhs, rhs, name))
     end
 
     # Signed exact division
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer quotient of the two operands
     # @LLVMinst sdiv
     def exact_sdiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildExactSDiv(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Floating point or vector of floating points
+    # @param [LLVM::Value] rhs Floating point or vector of floating points
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The floating point quotient of the two
+    #   operands
     # @LLVMinst fdiv
     def fdiv(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFDiv(self, lhs, rhs, name))
     end
 
+    # Unsigned remainder
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer remainder
     # @LLVMinst urem
     def urem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildURem(self, lhs, rhs, name))
     end
 
+    # Signed remainder
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer remainder
     # @LLVMinst srem
     def srem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildSRem(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Floating point or vector of floating points
+    # @param [LLVM::Value] rhs Floating point or vector of floating points
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The floating point remainder
     # @LLVMinst frem
     def frem(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildFRem(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst shl
     def shl(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildShl(self, lhs, rhs, name))
     end
 
     # Shifts right with zero fill.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst lshr
     def lshr(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildLShr(self, lhs, rhs, name))
     end
 
     # Arithmatic shift right.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst ashr
     def ashr(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAShr(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst and
     def and(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildAnd(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst or
     def or(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildOr(self, lhs, rhs, name))
     end
 
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst xor
     def xor(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildXor(self, lhs, rhs, name))
     end
 
-    # Integer negation (i.e. multiplication by -1).
+    # Integer negation. Implemented as a shortcut to the equivalent sub
+    #   instruction.
+    # @param [LLVM::Value] arg Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The negated operand
+    # @LLVMinst sub
     def neg(arg, name = "")
       Instruction.from_ptr(C.LLVMBuildNeg(self, arg, name))
     end
@@ -498,7 +620,7 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildShuffleVector(self, vec1, vec2, mask, name))
     end
 
-    # LLVMinst extractvalue
+    # @LLVMinst extractvalue
     def extract_value(aggregate, index, name = "")
       Instruction.from_ptr(C.LLVMBuildExtractValue(self, aggregate, index, name))
     end
