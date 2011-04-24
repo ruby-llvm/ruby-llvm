@@ -36,7 +36,17 @@ module LLVM
   end
   
   class Function
-    def verify(action = :abort_process)
+    def verify
+      do_verification(:return_status)
+    end
+
+    def verify!
+      do_verification(:abort_process)
+    end
+
+    private
+
+    def do_verification(action)
       C.LLVMVerifyFunction(self, action) != 0
     end
   end
