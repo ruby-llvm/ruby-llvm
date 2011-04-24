@@ -1,6 +1,7 @@
 require 'llvm'
 
 module LLVM
+  # @private
   module C
     enum :attribute, [
       :ext,               1 <<  0,

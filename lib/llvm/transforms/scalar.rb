@@ -2,6 +2,7 @@ require 'llvm'
 require 'llvm/core'
 
 module LLVM
+  # @private
   module C
     attach_function :LLVMAddAggressiveDCEPass, [:pointer], :void
     attach_function :LLVMAddCFGSimplificationPass, [:pointer], :void

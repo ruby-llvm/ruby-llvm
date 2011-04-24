@@ -3,6 +3,7 @@ require 'llvm/core'
 require 'llvm/target'
 
 module LLVM
+  # @private
   module C
     enum :verifier_failure_action, [
       :abort_process,

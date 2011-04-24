@@ -4,6 +4,7 @@ require 'llvm/target'
 require 'llvm/analysis'
 
 module LLVM
+  # @private
   module C
     # Generic values
     attach_function :LLVMCreateGenericValueOfInt, [:pointer, :long_long, :int], :pointer
