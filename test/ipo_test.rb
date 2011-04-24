@@ -43,9 +43,7 @@ class IPOTestCase < Test::Unit::TestCase
     passm  = LLVM::PassManager.new(engine)
 
     passm.gdce!
-    passm.do_initialization
     passm.run(mod)
-    passm.do_finalization
 
     fns = mod.functions.to_a
     assert fns.include?(fn1)

@@ -8,6 +8,8 @@ module LLVM
       C.LLVMAddTargetData(
         C.LLVMGetExecutionEngineTargetData(execution_engine), ptr)
       @ptr = ptr
+
+      do_initialization
     end
     
     # @private
@@ -23,12 +25,6 @@ module LLVM
       self
     end
 
-    def do_initialization
-    end
-
-    def do_finalization
-    end
-
     # Run the pass queue on the given module.
     # @param [LLVM::Module]
     # @return [true, false] Indicates whether the module was modified.
@@ -38,7 +34,16 @@ module LLVM
     
     # Disposes the pass manager.
     def dispose
+      do_finalization
       C.LLVMDisposePassManager(self)
+    end
+
+    protected
+
+    def do_initialization
+    end
+
+    def do_finalization
     end
   end
 
@@ -51,19 +56,21 @@ module LLVM
       @ptr = ptr
     end
 
+    # Run the pass queue on the given function.
+    # @param [LLVM::Function]
+    # @return [true, false] indicates whether the function was modified.
+    def run(fn)
+      C.LLVMRunFunctionPassManager(self, fn) != 0
+    end
+
+    protected
+
     def do_initialization
       C.LLVMInitializeFunctionPassManager(self) != 0
     end
 
     def do_finalization
       C.LLVMFinalizeFunctionPassManager(self) != 0
-    end
-
-    # Run the pass queue on the given function.
-    # @param [LLVM::Function]
-    # @return [true, false] indicates whether the function was modified.
-    def run(fn)
-      C.LLVMRunFunctionPassManager(self, fn) != 0
     end
   end
 end
