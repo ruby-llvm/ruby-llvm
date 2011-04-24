@@ -121,9 +121,11 @@ module LLVM
       C.LLVMRefineType(self, ty)
     end
   end
+
+  module_function
   
   # Creates a Type from the given object.
-  def LLVM.Type(ty)
+  def Type(ty)
     case ty
     when LLVM::Type then ty
     else ty.type
@@ -131,32 +133,32 @@ module LLVM
   end
   
   # Shortcut to Type.array.
-  def LLVM.Array(ty, sz = 0)
+  def Array(ty, sz = 0)
     LLVM::Type.array(ty, sz)
   end
   
   # Shortcut to Type.pointer.
-  def LLVM.Pointer(ty)
+  def Pointer(ty)
     LLVM::Type.pointer(ty)
   end
   
   # Shortcut to Type.vector.
-  def LLVM.Vector(ty, sz)
+  def Vector(ty, sz)
     LLVM::Type.vector(ty, sz)
   end
   
   # Shortcut to Type.function.
-  def LLVM.Function(argtypes, rettype, options = {})
+  def Function(argtypes, rettype, options = {})
     LLVM::Type.function(argtypes, rettype, options)
   end
   
   # Shortcut to Type.struct.
-  def LLVM.Struct(*elt_types)
+  def Struct(*elt_types)
     LLVM::Type.struct(elt_types, false)
   end
 
   # Shortcut to Type.void.
-  def LLVM.Void
+  def Void
     LLVM::Type.void
   end
 end
