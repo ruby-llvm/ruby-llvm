@@ -8,6 +8,7 @@ module LLVM
   end
 
   class PassManager
+    # @LLVMpass gdce
     def gdce!
       C.LLVMAddGlobalDCEPass(self)
     end
