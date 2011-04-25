@@ -600,11 +600,6 @@ module LLVM
       Instruction.from_ptr(C.LLVMBuildSelect(self, _if, _then, _else, name))
     end
 
-    # @LLVMinst va_arg
-    def va_arg(list, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildVAArg(self, list, LLVM::Type(ty), name))
-    end
-
     # @LLVMinst extractelement
     def extract_element(vector, index, name = "")
       Instruction.from_ptr(C.LLVMBuildExtractElement(self, vector, index, name))
