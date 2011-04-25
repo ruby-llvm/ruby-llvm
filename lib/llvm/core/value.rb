@@ -737,6 +737,7 @@ module LLVM
     end
   end
 
+  # @private
   class Phi < Instruction
     # Add incoming branches to a phi node by passing an alternating list of
     # resulting values and BasicBlocks. e.g.
