@@ -98,11 +98,17 @@ module LLVM
 
     # @LLVMinst switch
     # @param [LLVM::Value] val The value to switch on
-    # @param [LLVM::BasicBlock] default The default block
-    # @param [Integer] ncases The number of cases in the switch construct
-    # @param [LLVM::SwitchInst]
-    def switch(val, default, ncases)
-      SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, default, ncases))
+    # @param [LLVM::BasicBlock] default The default case
+    # @param [Array<Array(LLVM::Value, LLVM::BasicBlock)>]] cases A list of
+    #   pairs of (LLVM::Value, LLVM::BasicBlock) representing a value to
+    #   compare to 'val', and the basic block to jump to if 'val' is matched
+    # @return [LLVM::Instruction]
+    def switch(val, default, *cases)
+      inst = SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, default, cases.size))
+      cases.each do |(val, block)|
+        inst.add_case(val, block)
+      end
+      inst
     end
 
     # Invoke a function which may potentially unwind

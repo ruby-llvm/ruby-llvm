@@ -765,6 +765,7 @@ module LLVM
     end
   end
 
+  # @private
   class SwitchInst < Instruction
     # Adds a case to a switch instruction. First the value to match on, then
     # the basic block.
