@@ -114,14 +114,16 @@ module LLVM
     # Invoke a function which may potentially unwind
     # @param [LLVM::Function] fun The function to invoke
     # @param [Array<LLVM::Value>] args Arguments passed to fun
-    # @param [LLVM::BasicBlock] _then Where to jump if fun does not unwind
-    # @param [LLVM::BasicBlock] _catch Where to jump if fun unwinds
+    # @param [LLVM::BasicBlock] normal Where to jump if fun does not unwind
+    # @param [LLVM::BasicBlock] exception Where to jump if fun unwinds
     # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The value returned by 'fun', unless an
+    #   unwind instruction occurs
     # @LLVMinst invoke
-    def invoke(fun, args, _then, _catch, name = "")
+    def invoke(fun, args, normal, exception, name = "")
       Instruction.from_ptr(
         C.LLVMBuildInvoke(self,
-          fun, args, args.size, _then, _catch, name))
+          fun, args, args.size, normal, exception, name))
     end
 
     # Builds an unwind Instruction.
@@ -416,7 +418,7 @@ module LLVM
     # @param [Array<LLVM::Value>] indices Ruby array of LLVM::Value representing
     #   indices into the aggregate
     # @param [String] name The name of the result in LLVM IR
-    # @param [LLVM::Instruction] The resulting pointer
+    # @return [LLVM::Instruction] The resulting pointer
     # @LLVMinst gep
     # @see http://llvm.org/docs/GetElementPtr.html
     def gep(ptr, indices, name = "")
@@ -572,7 +574,7 @@ module LLVM
     # @param [LLVM::Type, #type] ty Floating point or vector of floating point
     #   type of greater size than val's type
     # @param [String] name The name of the result in LLVM IR
-    # @return The extended value
+    # @return [LLVM::Instruction] The extended value
     # @LLVMinst fpext
     def fp_ext(val, ty, name = "")
       Instruction.from_ptr(C.LLVMBuildFPExt(self, val, LLVM::Type(ty), name))
@@ -738,6 +740,9 @@ module LLVM
 
     # Builds a call Instruction. Calls the given Function with the given
     # args (Instructions).
+    # @param [LLVM::Function] fun
+    # @param [Array<LLVM::Value>] args
+    # @param [LLVM::Instruction]
     # @LLVMinst call
     def call(fun, *args)
       raise "No fun" if fun.nil?
@@ -849,6 +854,7 @@ module LLVM
     end
 
     # Disposes the builder.
+    # @return nil
     def dispose
       C.LLVMDisposeBuilder(@ptr)
     end
