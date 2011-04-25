@@ -742,22 +742,16 @@ module LLVM
     # Add incoming branches to a phi node by passing an alternating list of
     # resulting values and BasicBlocks. e.g.
     #   phi.add_incoming(val1, block1, val2, block2, ...)
-    def add_incoming(*incoming)
-      vals, blocks = [], []
-      incoming.each_with_index do |node, i|
-        (i % 2 == 0 ? vals : blocks) << node
-      end
+    def add_incoming(incoming)
+      vals = incoming.map { |i| i[0] }
+      blks = incoming.map { |i| i[1] }
+      size = incoming.size
 
-      unless vals.size == blocks.size
-        raise ArgumentError, "Expected vals.size and blocks.size to match"
-      end
-
-      size = vals.size
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |vals_ptr|
         vals_ptr.write_array_of_pointer(vals)
-        FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |blocks_ptr|
-          blocks_ptr.write_array_of_pointer(blocks)
-          C.LLVMAddIncoming(self, vals_ptr, blocks_ptr, vals.size)
+        FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |blks_ptr|
+          blks_ptr.write_array_of_pointer(blks)
+          C.LLVMAddIncoming(self, vals_ptr, blks_ptr, vals.size)
         end
       end
 

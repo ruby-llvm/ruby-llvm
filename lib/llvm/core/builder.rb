@@ -720,8 +720,8 @@ module LLVM
 
     # Build a Phi node of the given type with the given incoming branches
     # @param [LLVM::Type] ty Specifies the result type
-    # @param [Array<[LLVM::Value, LLVM::BasicBlock]>] incoming An alternating
-    #   list of values and basic blocks
+    # @param [Array<Array(LLVM::Value, LLVM::BasicBlock)>] incoming An Array
+    #   of (LLVM::Value, LLVM::BasicBlock) pairs
     # @return [LLVM::Instruction] The phi node
     # @LLVMinst phi
     def phi(ty, *incoming)
@@ -732,7 +732,7 @@ module LLVM
       end
 
       phi = Phi.from_ptr(C.LLVMBuildPhi(self, LLVM::Type(ty), name))
-      phi.add_incoming(*incoming) unless incoming.empty?
+      phi.add_incoming(incoming)
       phi
     end
 
