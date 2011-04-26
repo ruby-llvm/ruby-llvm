@@ -26,8 +26,8 @@ mod.functions.add("fac", [LLVM::Int], LLVM::Int) do |fac, p0|
   builder.position_at_end(result)
   builder.ret(
     builder.phi(LLVM::Int,
-      [LLVM::Int(1), entry],
-      [fac_,         recur]))
+      entry => LLVM::Int(1),
+      recur => fac_))
 end
 
 mod.verify

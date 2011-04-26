@@ -743,8 +743,8 @@ module LLVM
     # resulting values and BasicBlocks. e.g.
     #   phi.add_incoming(val1, block1, val2, block2, ...)
     def add_incoming(incoming)
-      vals = incoming.map { |i| i[0] }
-      blks = incoming.map { |i| i[1] }
+      blks = incoming.keys
+      vals = incoming.values_at(*blks)
       size = incoming.size
 
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |vals_ptr|

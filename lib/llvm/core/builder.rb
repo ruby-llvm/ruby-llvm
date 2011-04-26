@@ -99,11 +99,11 @@ module LLVM
     # @LLVMinst switch
     # @param [LLVM::Value] val The value to switch on
     # @param [LLVM::BasicBlock] default The default case
-    # @param [Array<Array(LLVM::Value, LLVM::BasicBlock)>]] cases A list of
-    #   pairs of (LLVM::Value, LLVM::BasicBlock) representing a value to
-    #   compare to 'val', and the basic block to jump to if 'val' is matched
+    # @param [Hash{LLVM::Value => LLVM::BasicBlock}] cases A Hash mapping
+    #   values to basic blocks. When a value is matched, control will jump
+    #   to the corresponding basic block.
     # @return [LLVM::Instruction]
-    def switch(val, default, *cases)
+    def switch(val, default, cases)
       inst = SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, default, cases.size))
       cases.each do |(val, block)|
         inst.add_case(val, block)
@@ -722,16 +722,14 @@ module LLVM
 
     # Build a Phi node of the given type with the given incoming branches
     # @param [LLVM::Type] ty Specifies the result type
-    # @param [Array<Array(LLVM::Value, LLVM::BasicBlock)>] incoming An Array
-    #   of (LLVM::Value, LLVM::BasicBlock) pairs
+    # @param [Hash{LLVM::BasicBlock => LLVM::Value}] incoming A hash mapping
+    #   basic blocks to a corresponding value. If the phi node is jumped to
+    #   from a given basic block, the phi instruction takes on its
+    #   corresponding value.
+    # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] The phi node
     # @LLVMinst phi
-    def phi(ty, *incoming)
-      if incoming.last.kind_of? String
-        name = incoming.pop
-      else
-        name = ""
-      end
+    def phi(ty, incoming, name = "")
 
       phi = Phi.from_ptr(C.LLVMBuildPhi(self, LLVM::Type(ty), name))
       phi.add_incoming(incoming)

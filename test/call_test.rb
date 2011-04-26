@@ -45,7 +45,7 @@ class CallTestCase < Test::Unit::TestCase
         result = builder.call(function, builder.add(arguments.first, LLVM::Int(1)))
         builder.br(exit)
         builder.position_at_end(exit)
-        builder.ret(builder.phi(LLVM::Int, [arguments.first, entry], [result, recurse]))
+        builder.ret(builder.phi(LLVM::Int, entry => arguments.first, recurse => result))
       end
     end
     assert_equal 5, run_function_on_module(test_module, "test_function", 1).to_i
