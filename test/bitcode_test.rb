@@ -1,5 +1,5 @@
 require "test_helper"
-require 'tempfile'
+require "tempfile"
 
 class BitcodeTestCase < Test::Unit::TestCase
   def setup
@@ -17,8 +17,7 @@ class BitcodeTestCase < Test::Unit::TestCase
     end
     Tempfile.open("bitcode") do |tmp|
       assert test_module.write_bitcode(tmp)
-      membuffer = LLVM::MemoryBuffer.from_file(tmp.path)
-      new_module = LLVM::Module.parse_bitcode(membuffer)
+      new_module = LLVM::Module.parse_bitcode(tmp.path)
       result = run_function_on_module(new_module, "test_function").to_i
       assert_equal 1, result
     end
