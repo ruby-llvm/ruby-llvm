@@ -18,12 +18,14 @@ module LLVM
     end
 
     # Write bitcode to the given path, IO object or file descriptor
-    # @param [String, IO, Fixnum] Pathname, IO object or file descriptor
+    # @param [String, IO, Integer] path_or_io Pathname, IO object or file descriptor
     # @return [true, false] Success
     def write_bitcode(path_or_io)
-      status = if path_or_io.respond_to?(:fileno)
+      status = if path_or_io.respond_to?(:path)
+                 C.LLVMWriteBitcodeToFile(self, path_or_io.path)
+               elsif path_or_io.respond_to?(:fileno)
                  C.LLVMWriteBitcodeToFD(self, path_or_io.fileno, 0, 1)
-               elsif path.kind_of?(Integer)
+               elsif path_or_io.kind_of?(Integer)
                  C.LLVMWriteBitcodeToFD(self, path_or_io, 0, 1)
                else
                  C.LLVMWriteBitcodeToFile(self, path_or_io.to_str)
