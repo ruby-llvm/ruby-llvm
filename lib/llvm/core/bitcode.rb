@@ -1,4 +1,5 @@
 module LLVM
+  # @private
   module C
     attach_function :LLVMParseBitcode, [:pointer, :buffer_out, :buffer_out], :int
     attach_function :LLVMParseBitcodeInContext, [:pointer, :pointer, :buffer_out, :buffer_out], :int
@@ -7,12 +8,13 @@ module LLVM
   end
 
   class Module
-    def self.parse_bitcode(memory_buffer)
-      mod_ref = FFI::Buffer.new(:pointer)
-      msg_ref = FFI::Buffer.new(:pointer)
-      status = C.LLVMParseBitcode(memory_buffer, mod_ref, msg_ref)
-      raise msg_ref.get_pointer(0).get_string(0) if status != 0
-      from_ptr(mod_ref.get_pointer(0))
+      FFI::MemoryPointer.new(:pointer) do |mod_ref|
+        FFI::MemoryPointer.new(:pointer) do |msg_ref|
+          status = C.LLVMParseBitcode(memory_buffer, mod_ref, msg_ref)
+          raise msg_ref.get_pointer(0).get_string(0) if status != 0
+          return from_ptr(mod_ref.get_pointer(0))
+        end
+      end
     end
 
     # Write bitcode to the given path, IO object or file descriptor
@@ -47,21 +49,25 @@ module LLVM
     # @param [String] path
     # @return [LLVM::MemoryBuffer]
     def self.from_file(path)
-      buf_ref = FFI::Buffer.new(:pointer)
-      msg_ref = FFI::Buffer.new(:pointer)
-      status = C.LLVMCreateMemoryBufferWithContentsOfFile(path, buf_ref, msg_ref)
-      raise msg_ref.get_pointer(0).get_string(0) if status != 0
-      new(buf_ref.get_pointer(0))
+      FFI::MemoryPointer.new(:pointer) do |buf_ref|
+        FFI::MemoryPointer.new(:pointer) do |msg_ref|
+          status = C.LLVMCreateMemoryBufferWithContentsOfFile(path.to_str, buf_ref, msg_ref)
+          raise msg_ref.get_pointer(0).get_string(0) if status != 0
+          return new(buf_ref.get_pointer(0))
+        end
+      end
     end
 
     # Read STDIN into a memory buffer
     # @return [LLVM::MemoryBuffer]
     def self.from_stdin
-      buf_ref = FFI::Buffer.new(:pointer)
-      msg_ref = FFI::Buffer.new(:pointer)
-      status = C.LLVMCreateMemoryBufferWithSTDIN(buf_ref, msg_ref)
-      raise msg_ref.get_pointer(0).get_string(0) if status != 0
-      new(buf_ref.get_pointer(0))
+      FFI::Buffer.new(:pointer) do |buf_ref|
+        FFI::Buffer.new(:pointer) do |msg_ref|
+          status = C.LLVMCreateMemoryBufferWithSTDIN(buf_ref, msg_ref)
+          raise msg_ref.get_pointer(0).get_string(0) if status != 0
+          return new(buf_ref.get_pointer(0))
+        end
+      end
     end
 
     def dispose
