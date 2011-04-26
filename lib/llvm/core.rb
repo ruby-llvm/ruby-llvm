@@ -594,4 +594,5 @@ module LLVM
   require 'llvm/core/value'
   require 'llvm/core/builder'
   require 'llvm/core/pass_manager'
+  require 'llvm/core/bitcode'
 end
