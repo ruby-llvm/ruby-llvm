@@ -111,6 +111,11 @@ module LLVM
     def to_ptr
       @ptr
     end
+    
+    # Casts an FFI::Pointer pointing to a GenericValue to an instance.
+    def self.from_ptr(ptr)
+      new(ptr)
+    end
 
     # Creates a Generic Value from an integer. Type is the size of integer to
     # create (ex. Int32, Int8, etc.)
@@ -129,9 +134,9 @@ module LLVM
       from_i(b ? 1 : 0, LLVM::Int1, false)
     end
 
-    # Creates a GenericValue from an FFI::Pointer.
-    def self.from_ptr(ptr)
-      new(ptr)
+    # Creates a GenericValue from an FFI::Pointer pointing to some arbitrary value.
+    def self.from_value_ptr(ptr)
+      new(LLVM::C.LLVMCreateGenericValueOfPointer(ptr))
     end
 
     # Converts a GenericValue to a Ruby Integer.
@@ -159,6 +164,7 @@ module LLVM
     when ::Float then GenericValue.from_f(val)
     when ::TrueClass then GenericValue.from_b(true)
     when ::FalseClass then GenericValue.from_b(false)
+    when ::FFI::Pointer then GenericValue.from_value_ptr(val)
     end
   end
 end
