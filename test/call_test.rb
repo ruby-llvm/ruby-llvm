@@ -53,8 +53,8 @@ class CallTestCase < Test::Unit::TestCase
 
   def test_external
     test_module = define_module("test_module") do |host_module|
-      external = host_module.functions.add("abs", [LLVM::Int32], LLVM::Int32)
-      define_function(host_module, "test_function", [LLVM::Int32], LLVM::Int32) do |builder, function, *arguments|
+      external = host_module.functions.add("abs", [LLVM::Int], LLVM::Int)
+      define_function(host_module, "test_function", [LLVM::Int], LLVM::Int) do |builder, function, *arguments|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         builder.ret(builder.call(external, arguments.first))
