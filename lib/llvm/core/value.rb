@@ -26,6 +26,10 @@ module LLVM
         false
       end
     end
+    
+    def hash
+      @ptr.address.hash
+    end
 
     # Checks if the value is equal to other.
     def eql?(other)
