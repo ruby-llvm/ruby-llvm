@@ -153,6 +153,10 @@ module LLVM
     def to_b
       to_i(false) != 0
     end
+    
+    def to_value_ptr
+      C.LLVMGenericValueToPointer(self)
+    end
   end
 
   # Creates a GenericValue from an object (GenericValue, Integer, Float, true,
