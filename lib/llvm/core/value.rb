@@ -26,6 +26,10 @@ module LLVM
         false
       end
     end
+    
+    def hash
+      @ptr.address.hash
+    end
 
     # Checks if the value is equal to other.
     def eql?(other)
@@ -421,6 +425,10 @@ module LLVM
     when Integer then Int.from_i(val)
     end
   end
+  
+  # Boolean values
+  ::LLVM::TRUE = ::LLVM::Int1.from_i(-1)
+  ::LLVM::FALSE = ::LLVM::Int1.from_i(0)
 
   class ConstantReal < Constant
     # Creates a ConstantReal from a float of Type.
