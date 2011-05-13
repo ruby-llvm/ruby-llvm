@@ -34,11 +34,11 @@ module LLVM
 
     # Returns the size of the type.
     def size
-      Int64.from_ptr(C.LLVMSizeOf(self))
+      LLVM::Int64.from_ptr(C.LLVMSizeOf(self))
     end
     
     def align
-      Int64.from_ptr(C.LLVMAlignOf(self))
+      LLVM::Int64.from_ptr(C.LLVMAlignOf(self))
     end
 
     # Returns the type of this types elements (works only for Pointer, Vector, and Array types.)
@@ -89,7 +89,7 @@ module LLVM
       arg_types.map! { |ty| LLVM::Type(ty) }
       arg_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_types.size)
       arg_types_ptr.write_array_of_pointer(arg_types)
-      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, options[:varargs] ? 1 : 0))
+      FunctionType.from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, options[:varargs] ? 1 : 0))
     end
     
     # Creates a struct type with the given array of element types.
@@ -119,6 +119,18 @@ module LLVM
     
     def refine(ty)
       C.LLVMRefineType(self, ty)
+    end
+  end
+
+  class IntType < Type
+    def width
+      C.LLVMGetIntTypeWidth(self)
+    end
+  end
+
+  class FunctionType < Type
+    def return_type
+      LLVM::Type.from_ptr(C.LLVMGetReturnType(self))
     end
   end
 

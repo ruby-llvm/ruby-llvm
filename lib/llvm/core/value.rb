@@ -405,7 +405,7 @@ module LLVM
       eval <<-KLASS
         class #{name} < ConstantInt
           def self.type
-            Type.from_ptr(C.LLVMIntType(#{width}))
+            IntType.from_ptr(C.LLVMIntType(#{width}))
           end
         end
       KLASS
@@ -605,6 +605,10 @@ module LLVM
     # Returns an Enumerable of the BasicBlocks in this function.
     def basic_blocks
       @basic_block_collection ||= BasicBlockCollection.new(self)
+    end
+
+    def type
+      FunctionType.from_ptr(C.LLVMTypeOf(self))
     end
 
     # @private

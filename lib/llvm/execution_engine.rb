@@ -87,7 +87,9 @@ module LLVM
     # GenericValues).
     def run_function(fun, *args)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
-        args_ptr.write_array_of_pointer(args.map { |arg| LLVM.GenericValue(arg).to_ptr })
+        args_ptr.write_array_of_pointer fun.params.zip(args).map { |p, a|
+          LLVM.make_generic_value(p.type, a)
+        }
         return LLVM::GenericValue.from_ptr(
           C.LLVMRunFunction(self, fun, args.size, args_ptr))
       end
@@ -119,14 +121,19 @@ module LLVM
 
     # Creates a Generic Value from an integer. Type is the size of integer to
     # create (ex. Int32, Int8, etc.)
-    def self.from_i(i, type = LLVM::Int, signed = true)
+    def self.from_i(i, options = {})
+      type   = options.fetch(:type, LLVM::Int)
+      signed = options.fetch(:signed, true)
       new(C.LLVMCreateGenericValueOfInt(type, i, signed ? 1 : 0))
     end
 
     # Creates a Generic Value from a Float.
     def self.from_f(f)
-      type = LLVM::Float.type
-      new(C.LLVMCreateGenericValueOfFloat(type, f))
+      new(C.LLVMCreateGenericValueOfFloat(LLVM::Float, f))
+    end
+
+    def self.from_d(val)
+      new(C.LLVMCreateGenericValueOfFloat(LLVM::Double, val))
     end
     
     # Creates a GenericValue from a Ruby boolean.
@@ -159,16 +166,16 @@ module LLVM
     end
   end
 
-  # Creates a GenericValue from an object (GenericValue, Integer, Float, true,
-  # false).
-  def LLVM.GenericValue(val)
-    case val
-    when GenericValue then val
-    when ::Integer then GenericValue.from_i(val)
-    when ::Float then GenericValue.from_f(val)
-    when ::TrueClass then GenericValue.from_b(true)
-    when ::FalseClass then GenericValue.from_b(false)
-    when ::FFI::Pointer then GenericValue.from_value_ptr(val)
+  # @private
+  def make_generic_value(ty, val)
+    case ty.kind
+    when :double  then GenericValue.from_d(val)
+    when :float   then GenericValue.from_f(val)
+    when :pointer then GenericValue.from_value_ptr(val)
+    when :integer then GenericValue.from_i(val, :type => ty)
+    else
+      raise "Unsupported type #{ty.kind}."
     end
   end
+  module_function :make_generic_value
 end
