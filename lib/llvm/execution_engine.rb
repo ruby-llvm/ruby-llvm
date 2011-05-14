@@ -52,21 +52,8 @@ module LLVM
     LLVM::C.LLVMInitializeX86TargetInfo
   end
 
-  class ExecutionEngine
-    private_class_method :new
-
-    # @private
-    def initialize(ptr)
-      @ptr = ptr
-    end
-
-    # @private
-    def to_ptr
-      @ptr
-    end
-
-    # Create a JIT compiler with an LLVM::Module.
-    def self.create_jit_compiler(mod, opt_level = 3)
+  class JITCompiler
+    def initialize(mod, opt_level = 3)
       FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |ptr|
         error   = FFI::MemoryPointer.new(FFI.type_size(:pointer))
         status  = C.LLVMCreateJITCompilerForModule(ptr, mod, opt_level, error)
@@ -74,7 +61,7 @@ module LLVM
         message = errorp.read_string unless errorp.null?
 
         if status.zero?
-          return new(ptr.read_pointer)
+          @ptr = ptr.read_pointer
         else
           C.LLVMDisposeMessage(error)
           error.autorelease=false
@@ -83,12 +70,17 @@ module LLVM
       end
     end
 
+    # @private
+    def to_ptr
+      @ptr
+    end
+
     # Execute the given LLVM::Function with the supplied args (as
     # GenericValues).
     def run_function(fun, *args)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
         args_ptr.write_array_of_pointer fun.params.zip(args).map { |p, a|
-          LLVM.make_generic_value(p.type, a)
+          a.kind_of?(GenericValue) ? a : LLVM.make_generic_value(p.type, a)
         }
         return LLVM::GenericValue.from_ptr(
           C.LLVMRunFunction(self, fun, args.size, args_ptr))
@@ -102,13 +94,6 @@ module LLVM
   end
 
   class GenericValue
-    private_class_method :new
-
-    # @private
-    def initialize(ptr)
-      @ptr = ptr
-    end
-
     # @private
     def to_ptr
       @ptr
@@ -116,7 +101,10 @@ module LLVM
     
     # Casts an FFI::Pointer pointing to a GenericValue to an instance.
     def self.from_ptr(ptr)
-      new(ptr)
+      return if ptr.null?
+      val = allocate
+      val.instance_variable_set(:@ptr, ptr)
+      val
     end
 
     # Creates a Generic Value from an integer. Type is the size of integer to
@@ -124,16 +112,16 @@ module LLVM
     def self.from_i(i, options = {})
       type   = options.fetch(:type, LLVM::Int)
       signed = options.fetch(:signed, true)
-      new(C.LLVMCreateGenericValueOfInt(type, i, signed ? 1 : 0))
+      from_ptr(C.LLVMCreateGenericValueOfInt(type, i, signed ? 1 : 0))
     end
 
     # Creates a Generic Value from a Float.
     def self.from_f(f)
-      new(C.LLVMCreateGenericValueOfFloat(LLVM::Float, f))
+      from_ptr(C.LLVMCreateGenericValueOfFloat(LLVM::Float, f))
     end
 
     def self.from_d(val)
-      new(C.LLVMCreateGenericValueOfFloat(LLVM::Double, val))
+      from_ptr(C.LLVMCreateGenericValueOfFloat(LLVM::Double, val))
     end
     
     # Creates a GenericValue from a Ruby boolean.
@@ -143,7 +131,7 @@ module LLVM
 
     # Creates a GenericValue from an FFI::Pointer pointing to some arbitrary value.
     def self.from_value_ptr(ptr)
-      new(LLVM::C.LLVMCreateGenericValueOfPointer(ptr))
+      from_ptr(LLVM::C.LLVMCreateGenericValueOfPointer(ptr))
     end
 
     # Converts a GenericValue to a Ruby Integer.

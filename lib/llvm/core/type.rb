@@ -1,12 +1,5 @@
 module LLVM  
   class Type
-    private_class_method :new
-    
-    # @private
-    def initialize(ptr)
-      @ptr = ptr
-    end
-    
     # @private
     def to_ptr
       @ptr
@@ -64,8 +57,12 @@ module LLVM
       Type.pointer(self, address_space)
     end
     
+    # @private
     def self.from_ptr(ptr)
-      ptr.null? ? nil : new(ptr)
+      return if ptr.null?
+      ty = allocate
+      ty.instance_variable_set(:@ptr, ptr)
+      ty
     end
     
     # Creates an array type of Type with the given size.

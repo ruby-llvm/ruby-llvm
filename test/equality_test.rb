@@ -2,7 +2,6 @@ require "test_helper"
 require "llvm/core"
 
 class EqualityTestCase < Test::Unit::TestCase
-
   def setup
     LLVM.init_x86
   end
@@ -45,9 +44,9 @@ class EqualityTestCase < Test::Unit::TestCase
   end
 
   def test_module
-    mod1 = LLVM::Module.create('test')
+    mod1 = LLVM::Module.new('test')
     mod2 = LLVM::Module.from_ptr(mod1.to_ptr)
-    mod3 = LLVM::Module.create('dummy')
+    mod3 = LLVM::Module.new('dummy')
     mod4 = MyModule.from_ptr(mod1.to_ptr)
 
     assert_equalities :equal     => [mod1, mod2, mod4],
@@ -73,7 +72,7 @@ class EqualityTestCase < Test::Unit::TestCase
   end
 
   def test_function
-    mod = LLVM::Module.create('test')
+    mod = LLVM::Module.new('test')
 
     fn1 = mod.functions.add('test1', LLVM.Void)
     fn2 = LLVM::Function.from_ptr(fn1.to_ptr)

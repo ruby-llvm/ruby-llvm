@@ -1,10 +1,9 @@
 require "test_helper"
 
 class InstructionTestCase < Test::Unit::TestCase
-
   def setup
     LLVM.init_x86
-    @module = LLVM::Module.create("InstructionTestCase")
+    @module = LLVM::Module.new("InstructionTestCase")
   end
 
   def test_instruction
@@ -28,7 +27,6 @@ class InstructionTestCase < Test::Unit::TestCase
     assert_equal entry, inst1.parent
     assert_equal entry, inst2.parent
   end
-
 end
 
 

@@ -10,7 +10,7 @@ class IPOTestCase < Test::Unit::TestCase
   end
 
   def test_gdce
-    mod = LLVM::Module.create('test')
+    mod = LLVM::Module.new('test')
 
     fn1 = mod.functions.add("fn1", [], LLVM.Void) do |fn|
       fn.linkage = :internal
@@ -39,7 +39,7 @@ class IPOTestCase < Test::Unit::TestCase
     assert fns.include?(main)
 
     # optimize
-    engine = LLVM::ExecutionEngine.create_jit_compiler(mod)
+    engine = LLVM::JITCompiler.new(mod)
     passm  = LLVM::PassManager.new(engine)
 
     passm.gdce!
@@ -50,5 +50,4 @@ class IPOTestCase < Test::Unit::TestCase
     assert !fns.include?(fn2), 'fn2 should be eliminated'
     assert fns.include?(main)
   end
-
 end

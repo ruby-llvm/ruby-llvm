@@ -42,6 +42,7 @@ module LLVM
     end
   end
 
+  # @private
   class MemoryBuffer
     private_class_method :new
 

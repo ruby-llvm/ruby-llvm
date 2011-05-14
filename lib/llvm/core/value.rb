@@ -2,14 +2,10 @@ module LLVM
   class Value
     # @private
     def self.from_ptr(ptr)
-      new(ptr) unless ptr.null?
-    end
-
-    private_class_method :new
-
-    # @private
-    def initialize(ptr)
-      @ptr = ptr
+      return if ptr.null?
+      val = allocate
+      val.instance_variable_set(:@ptr, ptr)
+      val
     end
 
     # @private
@@ -108,7 +104,7 @@ module LLVM
     # Build the basic block with the given builder. Creates a new one if nil. Yields the builder.
     def build(builder = nil)
       if builder.nil?
-        builder = Builder.create
+        builder = Builder.new
         islocal = true
       else
         islocal = false

@@ -1,21 +1,12 @@
 module LLVM
   class Builder
-    private_class_method :new
-
-    # @private
-    def initialize(ptr)
-      @ptr = ptr
+    def initialize
+      @ptr = C.LLVMCreateBuilder()
     end
 
     # @private
     def to_ptr
       @ptr
-    end
-
-    # Creates a Builder.
-    # @return [LLVM::Builder]
-    def self.create
-      new(C.LLVMCreateBuilder())
     end
 
     # Position the builder at the given Instruction within the given BasicBlock.

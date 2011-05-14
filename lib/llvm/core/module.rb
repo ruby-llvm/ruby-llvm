@@ -1,15 +1,15 @@
 module LLVM  
   class Module
-    private_class_method :new
-    
     # @private
     def self.from_ptr(ptr)
-      ptr.null? ? nil : new(ptr)
+      return if ptr.null?
+      mod = allocate
+      mod.instance_variable_set(:@ptr, ptr)
+      mod
     end
     
-    # @private
-    def initialize(ptr)
-      @ptr = ptr
+    def initialize(name)
+      @ptr = C.LLVMModuleCreateWithName(name)
     end
     
     # @private
@@ -32,11 +32,6 @@ module LLVM
       other.instance_of?(self.class) && self == other
     end
 
-    # Creates a module with the given name.
-    def self.create(name)
-      new(C.LLVMModuleCreateWithName(name))
-    end
-    
     # Returns a TypeCollection of all the Types in the module.
     def types
       @types ||= TypeCollection.new(self)
