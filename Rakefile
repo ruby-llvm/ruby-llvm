@@ -1,4 +1,5 @@
-require 'rake/gempackagetask'
+require 'rubygems'
+require 'rubygems/package_task'
 require 'rake/testtask'
 
 begin
@@ -32,7 +33,8 @@ def spec
     s.name = 'ruby-llvm'
     s.version = '2.9.1'
     s.summary = "LLVM bindings for Ruby"
-    
+    s.description = "LLVM bindings for Ruby"
+
     s.add_dependency('ffi', '>= 1.0.0')
     s.files = Dir['lib/**/*rb']
     s.require_path = 'lib'
@@ -46,7 +48,7 @@ def spec
   end
 end
 
-Rake::GemPackageTask.new(spec) do |t|
+Gem::PackageTask.new(spec) do |t|
 end
 
 Rake::TestTask.new do |t|
