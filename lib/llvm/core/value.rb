@@ -661,7 +661,8 @@ module LLVM
 
       # Returns a Value representation of the parameter at the given index.
       def [](i)
-        Value.from_ptr(C.LLVMGetParam(@fun, i))
+        i = size + i if i < 0
+        (0 <= i && i < size) ? Value.from_ptr(C.LLVMGetParam(@fun, i)) : nil
       end
 
       # Returns the number of paramters in the collection.
