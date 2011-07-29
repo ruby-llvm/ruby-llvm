@@ -670,6 +670,9 @@ module LLVM
 
       # Returns a Value representation of the parameter at the given index.
       def [](i)
+        sz = self.size
+        i = sz + i if i < 0
+        return unless 0 <= i && i < sz
         Value.from_ptr(C.LLVMGetParam(@fun, i))
       end
 
