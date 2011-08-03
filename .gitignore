@@ -1,7 +1,12 @@
-*~
+*.dylib
+*.la
+*.lo
+*.o
 *.rbc
-pkg
+*.so
+*~
 .rvmrc
-coverage/*
 .yardoc
+coverage/*
 doc/*
+pkg
