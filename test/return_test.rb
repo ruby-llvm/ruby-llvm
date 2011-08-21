@@ -6,6 +6,7 @@ class ReturnTestCase < Test::Unit::TestCase
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret LLVM::Int(1)
+      builder.ret LLVM::Int(2)
     end
     assert_equal 1, value.to_i
   end
