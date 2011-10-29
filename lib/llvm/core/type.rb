@@ -2,11 +2,13 @@ module LLVM
   class Type
     private_class_method :new
     
-    def initialize(ptr) # :nodoc:
+    # @private
+    def initialize(ptr)
       @ptr = ptr
     end
     
-    def to_ptr # :nodoc:
+    # @private
+    def to_ptr
       @ptr
     end
     
@@ -20,6 +22,17 @@ module LLVM
       end
     end
 
+    # Checks if the type is equal to other.
+    def eql?(other)
+      other.instance_of?(self.class) && self == other
+    end
+
+    # Returns a symbol representation of the types kind (ex. :pointer, :vector, :array.)
+    def kind
+      C.LLVMGetTypeKind(self)
+    end
+
+    # Returns the size of the type.
     def size
       Int64.from_ptr(C.LLVMSizeOf(self))
     end
@@ -28,25 +41,27 @@ module LLVM
       Int64.from_ptr(C.LLVMAlignOf(self))
     end
 
+    # Returns the type of this types elements (works only for Pointer, Vector, and Array types.)
+    def element_type
+      case self.kind
+      when :pointer, :vector, :array
+        Type.from_ptr(C.LLVMGetElementType(self))
+      end
+    end
+
+    # Returns a null pointer ConstantExpr of this type.
     def null_pointer
       ConstantExpr.from_ptr(C.LLVMConstPointerNull(self))
     end
 
+    # Returns a null ConstantExpr of this type.
     def null
       ConstantExpr.from_ptr(C.LLVMConstNull(self))
     end
 
+    # Creates a pointer type with this type and the given address space.
     def pointer(address_space = 0)
       Type.pointer(self, address_space)
-    end
-
-    # produces a symbol from the LLVM::C.type_kind enum
-    def kind
-      C.LLVMGetTypeKind(self)
-    end
-
-    def element_type
-      Type.from_ptr(C.LLVMGetElementType(self))
     end
     
     def self.from_ptr(ptr)
@@ -59,25 +74,31 @@ module LLVM
       end
     end
     
+    # Creates an array type of Type with the given size.
     def self.array(ty, sz = 0)
       from_ptr(C.LLVMArrayType(LLVM::Type(ty), sz))
     end
     
+    # Creates the pointer type of Type with the given address space.
     def self.pointer(ty, address_space = 0)
       from_ptr(C.LLVMPointerType(LLVM::Type(ty), address_space))
     end
     
+    # Creates a vector type of Type with the given element count.
     def self.vector(ty, element_count)
       from_ptr(C.LLVMVectorType(LLVM::Type(ty), element_count))
     end
     
-    def self.function(arg_types, result_type, isvararg=false)
+    # Creates a function type. Takes an array of argument Types and the result Type. The only option is <tt>:varargs</tt>, 
+    # which when set to true makes the function type take a variable number of args.
+    def self.function(arg_types, result_type, options = {})
       arg_types.map! { |ty| LLVM::Type(ty) }
       arg_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_types.size)
       arg_types_ptr.write_array_of_pointer(arg_types)
-      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, isvararg))
+      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, options[:varargs] ? true : false))
     end
     
+    # Creates a struct type with the given array of element types.
     def self.struct(elt_types, is_packed)
       elt_types.map! { |ty| LLVM::Type(ty) }
       elt_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * elt_types.size)
@@ -85,10 +106,12 @@ module LLVM
       from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
     end
 
+    # Creates a void type.
     def self.void
       from_ptr(C.LLVMVoidType)
     end
     
+    # Creates an opaque type.
     def self.opaque
       from_ptr(C.LLVMOpaqueType)
     end
@@ -105,6 +128,7 @@ module LLVM
     end
   end
   
+  # Creates a Type from the given object.
   def LLVM.Type(ty)
     case ty
     when LLVM::Type then ty
@@ -112,26 +136,32 @@ module LLVM
     end
   end
   
+  # Shortcut to Type.array.
   def LLVM.Array(ty, sz = 0)
     LLVM::Type.array(ty, sz)
   end
   
+  # Shortcut to Type.pointer.
   def LLVM.Pointer(ty)
     LLVM::Type.pointer(ty)
   end
   
+  # Shortcut to Type.vector.
   def LLVM.Vector(ty, sz)
     LLVM::Type.vector(ty, sz)
   end
   
-  def LLVM.Function(argtypes, rettype)
-    LLVM::Type.function(argtypes, rettype)
+  # Shortcut to Type.function.
+  def LLVM.Function(argtypes, rettype, options = {})
+    LLVM::Type.function(argtypes, rettype, options)
   end
   
+  # Shortcut to Type.struct.
   def LLVM.Struct(*elt_types)
     LLVM::Type.struct(elt_types, false)
   end
 
+  # Shortcut to Type.void.
   def LLVM.Void
     LLVM::Type.void
   end

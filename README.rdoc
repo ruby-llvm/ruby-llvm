@@ -1,28 +1,30 @@
 = LLVM
 
 Author:: Jeremy Voorhis
-Contributors:: Evan Phoenix
-Copyright:: Copyright (c) 2010 Jeremy Voorhis
+Contributors:: Evan Phoenix, David Holroyd, Takanori Ishikawa, Ronaldo M. Ferraz, Mac Malone
+Copyright:: Copyright (c) 2010-2011 Jeremy Voorhis
 License:: BSD 3-clause (see LICENSE)
 
-This package contains Ruby bindings to the LLVM api, enabling users to make use
-of LLVM's optimization passes and JIT compilation for implementing compiled
-DSLs, callback functions, or fast Ruby method implementations.
+This package contains Ruby bindings to the LLVM api, enabling users to
+make use of LLVM's optimization passes and JIT compilation for
+implementing compiled DSLs, callback functions, or fast Ruby method
+implementations.
 
-ruby-llvm has been tested on the following Ruby interpreters:
+ruby-llvm has been tested on Mac OS X 10.6 using the following Ruby interpreters:
 
-* MRI 1.8.7
-* MRI 1.9.1
+* MRI 1.8.7-p174
+* MRI 1.9.2-p180
 * JRuby 1.4.0
 
-If using MRI, then at least ffi >= 0.5.4 is required.
+If using MRI, ffi >= 1.0.7 is recommended (only ffi >= 1.0.0 is required).
 
 == Requirements
-* LLVM 2.7, compiled with --enable-shared
+* LLVM 2.9, including libLLVM-2.9 (compile LLVM with --enable-shared).
+* In order to ensure the usability of JIT features (i.e. create_jit_compiler), compile LLVM with --enable-jit as well.
 
 == About version numbers
 
-The first two digits of ruby-llvm's version number refer to the required major
-and minor version of LLVM. The third digit refers to the ruby-llvm release
-itself. Because LLVM's api changes often, this coupling between LLVM and
-ruby-llvm versions is necessary.
+The first two digits of ruby-llvm's version number refer to the required
+major and minor version of LLVM. The third digit refers to the ruby-llvm
+release itself. Because LLVM's api changes often, this coupling between
+LLVM and ruby-llvm versions is useful.

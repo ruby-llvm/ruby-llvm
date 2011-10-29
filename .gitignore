@@ -1,3 +1,7 @@
 *~
 *.rbc
 pkg
+.rvmrc
+coverage/*
+.yardoc
+doc/*

@@ -3,6 +3,7 @@ require 'llvm/core'
 require 'llvm/target'
 
 module LLVM
+  # @private
   module C
     enum :verifier_failure_action, [
       :abort_process,
@@ -35,12 +36,8 @@ module LLVM
   end
   
   class Function
-    def verify(action = :abort)
-      str = FFI::MemoryPointer.new(FFI.type_size(:pointer))
-      case status = C.LLVMVerifyFunction(self, action, str)
-        when 1 then str.read_string
-        else nil
-      end
+    def verify(action = :abort_process)
+      C.LLVMVerifyFunction(self, action) != 0
     end
   end
 end
