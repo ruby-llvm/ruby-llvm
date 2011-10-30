@@ -85,9 +85,13 @@ module LLVM
     # Invoke a function which may potentially unwind
     # @LLVMinst invoke
     def invoke(fun, args, _then, _catch, name = "")
-      Instruction.from_ptr(
-        C.LLVMBuildInvoke(self,
-          fun, args, args.size, _then, _catch, name))
+      s = args.size
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * s) do |args_ptr|
+        args_ptr.write_array_of_pointer(args)
+        return Instruction.from_ptr(
+          C.LLVMBuildInvoke(self,
+            fun, args_ptr, s, _then, _catch, name))
+      end
     end
 
     # Builds an unwind Instruction.
