@@ -39,26 +39,9 @@ def spec
     s.homepage = "http://github.com/jvoorhis/ruby-llvm"
 
     s.add_dependency('ffi', '>= 1.0.0')
-    s.files =
-      Dir['lib/**/*rb'] +
-      %w(
-        ext/ruby-llvm-support/Makefile.am
-        ext/ruby-llvm-support/Makefile.in
-        ext/ruby-llvm-support/config.guess
-        ext/ruby-llvm-support/config.sub
-        ext/ruby-llvm-support/configure
-        ext/ruby-llvm-support/configure.ac
-        ext/ruby-llvm-support/depcomp
-        ext/ruby-llvm-support/install-sh
-        ext/ruby-llvm-support/libtool
-        ext/ruby-llvm-support/ltmain.sh
-        ext/ruby-llvm-support/missing
-        ext/ruby-llvm-support/src/Makefile.am
-        ext/ruby-llvm-support/src/Makefile.in
-        ext/ruby-llvm-support/src/support.cpp
-      )
+    s.files = Dir['lib/**/*rb'] + Dir['ext/**/*']
     s.require_path = 'lib'
-    s.extensions << 'ext/ruby-llvm-support/configure'
+    s.extensions << 'ext/ruby-llvm-support/Rakefile'
 
     s.test_files = Dir['test/**/*.rb']
     
