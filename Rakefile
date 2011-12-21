@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'rubygems/package_task'
 require 'rake/testtask'
 
 begin
@@ -24,33 +23,6 @@ begin
   end
 rescue LoadError
   warn "Yard is not installed. `gem install yard` to build documentation."
-end
-
-def spec
-  Gem::Specification.new do |s|
-    s.platform = Gem::Platform::RUBY
-    
-    s.name = 'ruby-llvm'
-    s.version = '2.9.2'
-    s.summary = "LLVM bindings for Ruby"
-    s.description = "LLVM bindings for Ruby"
-    s.author = "Jeremy Voorhis"
-    s.email = "jvoorhis@gmail.com"
-    s.homepage = "http://github.com/jvoorhis/ruby-llvm"
-
-    s.add_dependency('ffi', '>= 1.0.0')
-    s.files = Dir['lib/**/*rb'] + Dir['ext/**/*']
-    s.require_path = 'lib'
-    s.extensions << 'ext/ruby-llvm-support/Rakefile'
-
-    s.test_files = Dir['test/**/*.rb']
-    
-    s.has_rdoc = true
-    s.extra_rdoc_files = 'README.rdoc'
-  end
-end
-
-Gem::PackageTask.new(spec) do |t|
 end
 
 Rake::TestTask.new do |t|

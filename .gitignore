@@ -1,3 +1,4 @@
+*.gem
 *.dylib
 *.la
 *.lo
@@ -9,4 +10,3 @@
 .yardoc
 coverage/*
 doc/*
-pkg
