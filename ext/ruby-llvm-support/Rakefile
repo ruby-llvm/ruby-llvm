@@ -1,8 +1,9 @@
 require 'rake/clean'
+require 'ffi'
 
 CC = "g++"
 LLVM_CONFIG = `llvm-config --cxxflags --ldflags --libs all`.gsub("\n"," ")
-OUTPUT = "libRubyLLVMSupport-2.9.2.so"
+OUTPUT = FFI.map_library_name "RubyLLVMSupport-2.9.2"
 OUTPUT_DIR = "../../lib"
 SRC = "support.cpp"
 CLOBBER.include(OUTPUT)
