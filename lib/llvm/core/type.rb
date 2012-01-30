@@ -57,6 +57,11 @@ module LLVM
       Type.pointer(self, address_space)
     end
     
+    # Returns the name of the struct type.
+    def name
+      C.LLVMGetStructName(self)
+    end
+    
     # @private
     def self.from_ptr(ptr)
       return if ptr.null?
@@ -90,11 +95,17 @@ module LLVM
     end
     
     # Creates a struct type with the given array of element types.
-    def self.struct(elt_types, is_packed)
+    def self.struct(elt_types, is_packed, name = nil)
       elt_types.map! { |ty| LLVM::Type(ty) }
       elt_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * elt_types.size)
       elt_types_ptr.write_array_of_pointer(elt_types)
-      from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
+      if name
+        struct = from_ptr(C.LLVMStructCreateNamed(Context.global, name))
+        C.LLVMStructSetBody(struct, elt_types_ptr, elt_types.size, is_packed ? 1 : 0)
+        struct
+      else
+        from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
+      end
     end
 
     # Creates a void type.
@@ -102,20 +113,11 @@ module LLVM
       from_ptr(C.LLVMVoidType)
     end
     
-    # Creates an opaque type.
-    def self.opaque
-      from_ptr(C.LLVMOpaqueType)
-    end
-    
     def self.rec
       h = opaque
       ty = yield h
       h.refine(ty)
       ty
-    end
-    
-    def refine(ty)
-      C.LLVMRefineType(self, ty)
     end
   end
 
@@ -163,7 +165,12 @@ module LLVM
   
   # Shortcut to Type.struct.
   def Struct(*elt_types)
-    LLVM::Type.struct(elt_types, false)
+    name = if elt_types.last.is_a? String
+      elt_types.pop
+    else
+      nil
+    end
+    LLVM::Type.struct(elt_types, false, name)
   end
 
   # Shortcut to Type.void.

@@ -13,6 +13,12 @@ class StructTestCase < Test::Unit::TestCase
     struct = LLVM::Struct(LLVM::Int, LLVM::Float)
     assert_instance_of LLVM::Type, struct
   end
+  
+  def test_named_struct
+    struct = LLVM::Struct(LLVM::Int, LLVM::Float, "struct100")
+    assert_instance_of LLVM::Type, struct
+    assert_equal "struct100", struct.name
+  end
 
   def test_unpacked_constant_struct_from_size
     struct = LLVM::ConstantStruct.const(2, LLVM_UNPACKED) { |i| LLVM::Int(i) }

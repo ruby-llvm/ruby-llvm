@@ -1,7 +1,7 @@
 module LLVM  
   class Context
-    def initialize
-      @ptr = C.LLVMContextCreate()
+    def initialize(ptr = nil)
+      @ptr = ptr || C.LLVMContextCreate()
     end
 
     # @private
