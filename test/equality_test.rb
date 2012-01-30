@@ -74,9 +74,9 @@ class EqualityTestCase < Test::Unit::TestCase
   def test_function
     mod = LLVM::Module.new('test')
 
-    fn1 = mod.functions.add('test1', LLVM.Void)
+    fn1 = mod.functions.add('test1', [], LLVM.Void)
     fn2 = LLVM::Function.from_ptr(fn1.to_ptr)
-    fn3 = mod.functions.add('test2', LLVM.Void)
+    fn3 = mod.functions.add('test2', [], LLVM.Void)
     fn4 = MyFunction.from_ptr(fn1.to_ptr)
 
     assert_equalities :equal     => [fn1, fn2, fn4],

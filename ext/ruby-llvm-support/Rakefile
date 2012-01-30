@@ -3,7 +3,7 @@ require 'ffi'
 
 CC = "g++"
 LLVM_CONFIG = `llvm-config --cxxflags --ldflags --libs all`.gsub("\n"," ")
-OUTPUT = FFI.map_library_name "RubyLLVMSupport-2.9.2"
+OUTPUT = FFI.map_library_name "RubyLLVMSupport-3.0.0"
 OUTPUT_DIR = "../../lib"
 SRC = "support.cpp"
 CLOBBER.include(OUTPUT)

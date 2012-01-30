@@ -2,6 +2,7 @@
  * Extended bindings for LLVM.
  */
 
+#include <llvm/ADT/StringRef.h>
 #include <llvm/Support/DynamicLibrary.h>
 
 extern "C" {

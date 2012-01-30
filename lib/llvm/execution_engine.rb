@@ -45,11 +45,14 @@ module LLVM
     attach_function :LLVMInitializeX86TargetInfo, [], :void
 
     attach_function :LLVMInitializeX86Target, [], :void
+
+    attach_function :LLVMInitializeX86TargetMC, [], :void
   end
 
   def LLVM.init_x86
     LLVM::C.LLVMInitializeX86Target
     LLVM::C.LLVMInitializeX86TargetInfo
+    LLVM::C.LLVMInitializeX86TargetMC
   end
 
   class JITCompiler

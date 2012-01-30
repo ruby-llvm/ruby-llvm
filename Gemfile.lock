@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-llvm (2.9.2)
+    ruby-llvm (3.0.0)
       ffi (>= 1.0.0)
 
 GEM

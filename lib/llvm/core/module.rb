@@ -42,11 +42,6 @@ module LLVM
         @module = mod
       end
       
-      # Adds the given Type to the collection with the given name (symbol or string).
-      def add(name, type)
-        C.LLVMAddTypeName(@module, name.to_s, type)
-      end
-      
       # Returns the Type with the given name (symbol or string).
       def named(name)
         Type.from_ptr(C.LLVMGetTypeByName(@module, name.to_s))
@@ -149,7 +144,7 @@ module LLVM
       
       # Adds a Function with the given name (symbol or string) and args (Types).
       def add(name, *args)
-        if args.first.kind_of? Type
+        if args.first.kind_of? FunctionType
           type = args.first
         else
           type = Type.function(*args)

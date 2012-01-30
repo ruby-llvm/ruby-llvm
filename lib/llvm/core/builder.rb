@@ -117,13 +117,6 @@ module LLVM
           fun, args, args.size, normal, exception, name))
     end
 
-    # Builds an unwind Instruction.
-    # @return [LLVM::Instruction]
-    # @LLVMinst unwind
-    def unwind
-      Instruction.from_ptr(C.LLVMBuildUnwind(self))
-    end
-
     # Generates an instruction with no defined semantics. Can be used to
     # provide hints to the optimizer.
     # @return [LLVM::Instruction]

@@ -7,7 +7,7 @@ module LLVM
                       File.join(
                         File.dirname(__FILE__),
                         '../',
-                        FFI.map_library_name('RubyLLVMSupport-2.9.2')))
+                        FFI.map_library_name('RubyLLVMSupport-3.0.0')))
       ffi_lib [support_lib]
       attach_function :LLVMLoadLibraryPermanently, [:string], :int
     end

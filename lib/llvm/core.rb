@@ -20,10 +20,16 @@ module LLVM
       :optimize_for_size, 1 << 13,
       :stack_protect,     1 << 14,
       :stack_protect_req, 1 << 15,
+      :alignment,        31 << 16,
       :no_capture,        1 << 21,
       :no_red_zone,       1 << 22,
       :no_implicit_float, 1 << 23,
-      :naked,             1 << 24
+      :naked,             1 << 24,
+      :inline_hint,       1 << 25,
+      :stack_alignment,   7 << 26,
+      :returns_twice,     1 << 29,
+      :uw_table,          1 << 30,
+      :non_lazy_bind,     1 << 31
     ]
 
     enum :opcode, [
@@ -33,7 +39,7 @@ module LLVM
       :switch,          3,
       :indirectbr,      4,
       :invoke,          5,
-      :unwind,          6,
+      # removed 6 due to API changes
       :unreachable,     7,
 
       # Standard Binary Operators
@@ -84,15 +90,24 @@ module LLVM
       :phi,             44,
       :call,            45,
       :select,          46,
-
-      # UserOp1
-      # UserOp2
+      :user_op_1,       47,
+      :user_op_2,       48,
       :vaarg,           49,
       :extractelement,  50,
       :insertelement,   51,
       :shufflevector,   52,
       :extractvalue,    53,
       :insertvalue,     54,
+      
+      # Atomic Operators
+      :fence,           55,
+      :atomic_cmp_xchg, 56,
+      :atomic_rmw,      57,
+      
+      # Exception Handling Operators
+      :resume,          58,
+      :landing_pad,     59,
+      :unwind,          60
     ]
 
     enum :type_kind, [
@@ -108,9 +123,9 @@ module LLVM
       :struct,
       :array,
       :pointer,
-      :opaque,
       :vector,
-      :metadata
+      :metadata,
+      :x86_mmx
     ]
     
     enum :linkage, [
@@ -177,6 +192,11 @@ module LLVM
       :true
     ]
     
+    enum :landing_pad_clause_type, [
+      :catch,
+      :filter
+    ]
+    
     # Error handling
     attach_function :LLVMDisposeMessage, [:pointer], :void
     
@@ -193,13 +213,12 @@ module LLVM
     attach_function :LLVMSetDataLayout, [:pointer, :string], :void
     attach_function :LLVMGetTarget, [:pointer], :string
     attach_function :LLVMSetTarget, [:pointer, :string], :void
-    attach_function :LLVMAddTypeName, [:pointer, :string, :pointer], :int
-    attach_function :LLVMDeleteTypeName, [:pointer, :string], :void
     attach_function :LLVMGetTypeByName, [:pointer, :string], :pointer
     attach_function :LLVMDumpModule, [:pointer], :void
     
     # Types
     attach_function :LLVMGetTypeKind, [:pointer], :type_kind
+    attach_function :LLVMTypeIsSized, [:pointer], :int
     attach_function :LLVMGetTypeContext, [:pointer], :pointer
     
     # Integer types
@@ -241,9 +260,14 @@ module LLVM
     # Struct types
     attach_function :LLVMStructTypeInContext, [:pointer, :pointer, :uint, :int], :pointer
     attach_function :LLVMStructType, [:pointer, :uint, :int], :pointer
+    attach_function :LLVMStructCreateNamed, [:pointer, :string], :pointer
+    attach_function :LLVMGetStructName, [:pointer], :string
+    attach_function :LLVMStructSetBody, [:pointer, :pointer, :uint, :int], :void
     attach_function :LLVMCountStructElementTypes, [:pointer], :uint
     attach_function :LLVMGetStructElementTypes, [:pointer, :pointer], :void
     attach_function :LLVMIsPackedStruct, [:pointer], :int
+    attach_function :LLVMIsOpaqueStruct, [:pointer], :int
+    attach_function :LLVMGetTypeByName, [:pointer, :string], :pointer
     
     # Array, pointer and vector types (sequence types)
     attach_function :LLVMArrayType, [:pointer, :uint], :pointer
@@ -258,17 +282,9 @@ module LLVM
     # All other types
     attach_function :LLVMVoidTypeInContext, [:pointer], :pointer
     attach_function :LLVMLabelTypeInContext, [:pointer], :pointer
-    attach_function :LLVMOpaqueTypeInContext, [:pointer], :pointer
     
     attach_function :LLVMVoidType, [], :pointer
     attach_function :LLVMLabelType, [], :pointer
-    attach_function :LLVMOpaqueType, [], :pointer
-    
-    # Type handles
-    attach_function :LLVMCreateTypeHandle, [:pointer], :pointer
-    attach_function :LLVMRefineType, [:pointer, :pointer], :void
-    attach_function :LLVMResolveTypeHandle, [:pointer], :pointer
-    attach_function :LLVMDisposeTypeHandle, [:pointer], :void
     
     # All values
     attach_function :LLVMTypeOf, [:pointer], :pointer
@@ -485,7 +501,6 @@ module LLVM
     attach_function :LLVMBuildCondBr, [:pointer, :pointer, :pointer, :pointer], :pointer
     attach_function :LLVMBuildSwitch, [:pointer, :pointer, :pointer, :uint], :pointer
     attach_function :LLVMBuildInvoke, [:pointer, :pointer, :pointer, :uint, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildUnwind, [:pointer], :pointer
     attach_function :LLVMBuildUnreachable, [:pointer], :pointer
     
     # Switch instruction
