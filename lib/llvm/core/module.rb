@@ -10,6 +10,11 @@ module LLVM
     
     def initialize(name)
       @ptr = C.LLVMModuleCreateWithName(name)
+      ObjectSpace.define_finalizer self, Module.dispose_module_proc_for(@ptr)
+    end
+    
+    def self.dispose_module_proc_for(ptr)
+      proc { C.LLVMDisposeModule(ptr) }
     end
     
     # @private
@@ -217,11 +222,6 @@ module LLVM
     # Print the module's IR to stdout.
     def dump
       C.LLVMDumpModule(self)
-    end
-    
-    # Dispose the module.
-    def dispose
-      C.LLVMDisposeModule(@ptr)
     end
   end
 end

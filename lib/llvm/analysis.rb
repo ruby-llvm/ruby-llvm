@@ -31,12 +31,13 @@ module LLVM
     
     private
       def do_verification(action)
-        str = FFI::MemoryPointer.new(FFI.type_size(:pointer))
-        status = C.LLVMVerifyModule(self, action, str)
-        case status
-        when 1 then str.read_string
-        else nil
+        result = nil
+        FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |str|
+          status = C.LLVMVerifyModule(self, action, str)
+          result = str.read_string if status == 1
+          C.LLVMDisposeMessage str.read_pointer
         end
+        result
       end
   end
   

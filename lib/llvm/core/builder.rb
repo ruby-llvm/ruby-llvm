@@ -2,6 +2,11 @@ module LLVM
   class Builder
     def initialize
       @ptr = C.LLVMCreateBuilder()
+      ObjectSpace.define_finalizer self, Builder.dispose_builder_proc_for(@ptr)
+    end
+    
+    def self.dispose_builder_proc_for(ptr)
+      proc { C.LLVMDisposeBuilder(ptr) }
     end
 
     # @private
@@ -833,12 +838,6 @@ module LLVM
     #   pointers
     def ptr_diff(lhs, rhs, name = "")
       Instruction.from_ptr(C.LLVMBuildPtrDiff(lhs, rhs, name))
-    end
-
-    # Disposes the builder.
-    # @return nil
-    def dispose
-      C.LLVMDisposeBuilder(@ptr)
     end
   end
 end
