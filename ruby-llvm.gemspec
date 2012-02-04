@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), "lib/llvm/version")
 
 Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
-  
+
   s.name = "ruby-llvm"
   s.version = LLVM::RUBY_LLVM_VERSION
   s.summary = "LLVM bindings for Ruby"
@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.extensions << "ext/ruby-llvm-support/Rakefile"
 
   s.test_files = Dir["test/**/*.rb"]
-  
+
   s.has_rdoc = true
   s.extra_rdoc_files = "README.rdoc"
 end
