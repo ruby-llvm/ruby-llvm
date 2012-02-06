@@ -11,13 +11,22 @@ class StructTestCase < Test::Unit::TestCase
 
   def test_simple_struct
     struct = LLVM::Struct(LLVM::Int, LLVM::Float)
-    assert_instance_of LLVM::Type, struct
+    assert_instance_of LLVM::StructType, struct
+    assert_equal 2, struct.element_types.size
+    assert_equal LLVM::Int.type, struct.element_types[0]
+    assert_equal LLVM::Float.type, struct.element_types[1]
   end
   
   def test_named_struct
     struct = LLVM::Struct(LLVM::Int, LLVM::Float, "struct100")
-    assert_instance_of LLVM::Type, struct
+    assert_instance_of LLVM::StructType, struct
     assert_equal "struct100", struct.name
+  end
+  
+  def test_deferred_element_type_setting
+    struct = LLVM::Struct("struct200")
+    struct.element_types = [LLVM::Int, LLVM::Float]
+    assert_equal 2, struct.element_types.size
   end
 
   def test_unpacked_constant_struct_from_size

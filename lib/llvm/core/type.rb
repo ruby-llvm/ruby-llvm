@@ -14,7 +14,11 @@ module LLVM
         false
       end
     end
-
+    
+    def hash
+      @ptr.address.hash
+    end
+    
     # Checks if the type is equal to other.
     def eql?(other)
       other.instance_of?(self.class) && self == other
@@ -23,6 +27,16 @@ module LLVM
     # Returns a symbol representation of the types kind (ex. :pointer, :vector, :array.)
     def kind
       C.LLVMGetTypeKind(self)
+    end
+    
+    # Returns a new instance of the appropriate type subclass if nesseccary.
+    def cast
+      case kind
+      when :integer  then IntType.from_ptr @ptr
+      when :function then FunctionType.from_ptr @ptr
+      when :struct   then StructType.from_ptr @ptr
+      else self
+      end
     end
 
     # Returns the size of the type.
@@ -38,7 +52,7 @@ module LLVM
     def element_type
       case self.kind
       when :pointer, :vector, :array
-        Type.from_ptr(C.LLVMGetElementType(self))
+        Type.from_ptr(C.LLVMGetElementType(self)).cast
       end
     end
 
@@ -55,11 +69,6 @@ module LLVM
     # Creates a pointer type with this type and the given address space.
     def pointer(address_space = 0)
       Type.pointer(self, address_space)
-    end
-    
-    # Returns the name of the struct type.
-    def name
-      C.LLVMGetStructName(self)
     end
     
     # @private
@@ -100,11 +109,11 @@ module LLVM
       elt_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * elt_types.size)
       elt_types_ptr.write_array_of_pointer(elt_types)
       if name
-        struct = from_ptr(C.LLVMStructCreateNamed(Context.global, name))
-        C.LLVMStructSetBody(struct, elt_types_ptr, elt_types.size, is_packed ? 1 : 0)
+        struct = StructType.from_ptr(C.LLVMStructCreateNamed(Context.global, name))
+        C.LLVMStructSetBody(struct, elt_types_ptr, elt_types.size, is_packed ? 1 : 0) unless elt_types.empty?
         struct
       else
-        from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
+        StructType.from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
       end
     end
 
@@ -130,6 +139,32 @@ module LLVM
   class FunctionType < Type
     def return_type
       LLVM::Type.from_ptr(C.LLVMGetReturnType(self))
+    end
+  end
+  
+  class StructType < Type
+    # Returns the name of the struct.
+    def name
+      C.LLVMGetStructName(self)
+    end
+    
+    # Returns the element types of the struct.
+    def element_types
+      count = C.LLVMCountStructElementTypes(self)
+      elt_types = nil
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * count) do |types_ptr|
+        C.LLVMGetStructElementTypes(self, types_ptr)
+        elt_types = types_ptr.read_array_of_pointer(count).map { |type_ptr| Type.from_ptr(type_ptr).cast }
+      end
+      elt_types
+    end
+    
+    # Sets the struct body.
+    def element_types=(elt_types)
+      elt_types.map! { |ty| LLVM::Type(ty) }
+      elt_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * elt_types.size)
+      elt_types_ptr.write_array_of_pointer(elt_types)
+      C.LLVMStructSetBody(self, elt_types_ptr, elt_types.size, 0)
     end
   end
 
