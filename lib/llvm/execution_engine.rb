@@ -65,12 +65,18 @@ module LLVM
 
         if status.zero?
           @ptr = ptr.read_pointer
+          ObjectSpace.undefine_finalizer mod # do not call LLVMDisposeModule any more
+          ObjectSpace.define_finalizer self, JITCompiler.dispose_execution_engine_proc_for(@ptr, nil)
         else
           C.LLVMDisposeMessage(error)
           error.autorelease=false
           raise RuntimeError, "Error creating JIT compiler: #{message}"
         end
       end
+    end
+    
+    def self.dispose_execution_engine_proc_for(ptr, mod)
+      proc { C.LLVMDisposeExecutionEngine(ptr) }
     end
 
     # @private
@@ -107,7 +113,12 @@ module LLVM
       return if ptr.null?
       val = allocate
       val.instance_variable_set(:@ptr, ptr)
+      ObjectSpace.define_finalizer(val, dispose_generic_value_proc_for(ptr))
       val
+    end
+    
+    def self.dispose_generic_value_proc_for(ptr)
+      proc { C.LLVMDisposeGenericValue(ptr) }
     end
 
     # Creates a Generic Value from an integer. Type is the size of integer to
