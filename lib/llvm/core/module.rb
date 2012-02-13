@@ -49,7 +49,7 @@ module LLVM
       
       # Returns the Type with the given name (symbol or string).
       def named(name)
-        Type.from_ptr(C.LLVMGetTypeByName(@module, name.to_s))
+        Type.from_ptr(C.LLVMGetTypeByName(@module, name.to_s), nil)
       end
       
       # Returns the Type with the a name equal to key (symbol or string).

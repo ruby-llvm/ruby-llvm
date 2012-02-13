@@ -43,7 +43,7 @@ module LLVM
 
     # Returns the value's type.
     def type
-      Type.from_ptr(C.LLVMTypeOf(self))
+      Type.from_ptr(C.LLVMTypeOf(self), nil)
     end
 
     # Returns the value's name.
@@ -394,7 +394,7 @@ module LLVM
       eval <<-KLASS
         class #{name} < ConstantInt
           def self.type
-            IntType.from_ptr(C.LLVMIntType(#{width}))
+            Type.from_ptr(C.LLVMIntType(#{width}), :integer)
           end
         end
       KLASS
@@ -481,7 +481,7 @@ module LLVM
   class Float < ConstantReal
     # Return a Type representation of the float.
     def self.type
-      Type.from_ptr(C.LLVMFloatType)
+      Type.from_ptr(C.LLVMFloatType, :float)
     end
   end
 
@@ -492,7 +492,7 @@ module LLVM
 
   class Double < ConstantReal
     def self.type
-      Type.from_ptr(C.LLVMDoubleType)
+      Type.from_ptr(C.LLVMDoubleType, :double)
     end
   end
 
@@ -597,7 +597,7 @@ module LLVM
     end
 
     def type
-      FunctionType.from_ptr(C.LLVMTypeOf(self))
+      Type.from_ptr(C.LLVMTypeOf(self), :function)
     end
 
     # @private

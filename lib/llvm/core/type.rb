@@ -26,17 +26,7 @@ module LLVM
 
     # Returns a symbol representation of the types kind (ex. :pointer, :vector, :array.)
     def kind
-      C.LLVMGetTypeKind(self)
-    end
-    
-    # Returns a new instance of the appropriate type subclass if nesseccary.
-    def cast
-      case kind
-      when :integer  then IntType.from_ptr @ptr
-      when :function then FunctionType.from_ptr @ptr
-      when :struct   then StructType.from_ptr @ptr
-      else self
-      end
+      @kind
     end
 
     # Returns the size of the type.
@@ -52,7 +42,7 @@ module LLVM
     def element_type
       case self.kind
       when :pointer, :vector, :array
-        Type.from_ptr(C.LLVMGetElementType(self)).cast
+        Type.from_ptr(C.LLVMGetElementType(self), nil)
       end
     end
 
@@ -72,26 +62,33 @@ module LLVM
     end
     
     # @private
-    def self.from_ptr(ptr)
+    def self.from_ptr(ptr, kind)
       return if ptr.null?
-      ty = allocate
+      kind ||= C.LLVMGetTypeKind(ptr)
+      ty = case kind
+      when :integer  then IntType.allocate
+      when :function then FunctionType.allocate
+      when :struct   then StructType.allocate
+      else allocate
+      end
       ty.instance_variable_set(:@ptr, ptr)
+      ty.instance_variable_set(:@kind, kind)
       ty
     end
     
     # Creates an array type of Type with the given size.
     def self.array(ty, sz = 0)
-      from_ptr(C.LLVMArrayType(LLVM::Type(ty), sz))
+      from_ptr(C.LLVMArrayType(LLVM::Type(ty), sz), :array)
     end
     
     # Creates the pointer type of Type with the given address space.
     def self.pointer(ty, address_space = 0)
-      from_ptr(C.LLVMPointerType(LLVM::Type(ty), address_space))
+      from_ptr(C.LLVMPointerType(LLVM::Type(ty), address_space), :pointer)
     end
     
     # Creates a vector type of Type with the given element count.
     def self.vector(ty, element_count)
-      from_ptr(C.LLVMVectorType(LLVM::Type(ty), element_count))
+      from_ptr(C.LLVMVectorType(LLVM::Type(ty), element_count), :vector)
     end
     
     # Creates a function type. Takes an array of argument Types and the result Type. The only option is <tt>:varargs</tt>, 
@@ -100,7 +97,7 @@ module LLVM
       arg_types.map! { |ty| LLVM::Type(ty) }
       arg_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_types.size)
       arg_types_ptr.write_array_of_pointer(arg_types)
-      FunctionType.from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, options[:varargs] ? 1 : 0))
+      from_ptr(C.LLVMFunctionType(LLVM::Type(result_type), arg_types_ptr, arg_types.size, options[:varargs] ? 1 : 0), :function)
     end
     
     # Creates a struct type with the given array of element types.
@@ -109,17 +106,17 @@ module LLVM
       elt_types_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * elt_types.size)
       elt_types_ptr.write_array_of_pointer(elt_types)
       if name
-        struct = StructType.from_ptr(C.LLVMStructCreateNamed(Context.global, name))
+        struct = from_ptr(C.LLVMStructCreateNamed(Context.global, name), :struct)
         C.LLVMStructSetBody(struct, elt_types_ptr, elt_types.size, is_packed ? 1 : 0) unless elt_types.empty?
         struct
       else
-        StructType.from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0))
+        from_ptr(C.LLVMStructType(elt_types_ptr, elt_types.size, is_packed ? 1 : 0), :struct)
       end
     end
 
     # Creates a void type.
     def self.void
-      from_ptr(C.LLVMVoidType)
+      from_ptr(C.LLVMVoidType, :void)
     end
     
     def self.rec
@@ -138,7 +135,7 @@ module LLVM
 
   class FunctionType < Type
     def return_type
-      LLVM::Type.from_ptr(C.LLVMGetReturnType(self))
+      Type.from_ptr(C.LLVMGetReturnType(self), nil)
     end
   end
   
@@ -154,7 +151,7 @@ module LLVM
       elt_types = nil
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * count) do |types_ptr|
         C.LLVMGetStructElementTypes(self, types_ptr)
-        elt_types = types_ptr.read_array_of_pointer(count).map { |type_ptr| Type.from_ptr(type_ptr).cast }
+        elt_types = types_ptr.read_array_of_pointer(count).map { |type_ptr| Type.from_ptr(type_ptr, nil) }
       end
       elt_types
     end
