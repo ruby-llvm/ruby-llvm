@@ -8,13 +8,13 @@ module LLVM
       mod
     end
     
+    # Important: Call #dispose to free backend memory after use, but not when using JITCompiler with this module.
     def initialize(name)
       @ptr = C.LLVMModuleCreateWithName(name)
-      ObjectSpace.define_finalizer self, Module.dispose_module_proc_for(@ptr)
     end
     
-    def self.dispose_module_proc_for(ptr)
-      proc { C.LLVMDisposeModule(ptr) }
+    def dispose
+      C.LLVMDisposeModule(@ptr)
     end
     
     # @private

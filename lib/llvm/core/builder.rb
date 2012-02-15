@@ -1,12 +1,12 @@
 module LLVM
   class Builder
+    # Important: Call #dispose to free backend memory after use.
     def initialize
       @ptr = C.LLVMCreateBuilder()
-      ObjectSpace.define_finalizer self, Builder.dispose_builder_proc_for(@ptr)
     end
     
-    def self.dispose_builder_proc_for(ptr)
-      proc { C.LLVMDisposeBuilder(ptr) }
+    def dispose
+      C.LLVMDisposeBuilder(@ptr)
     end
 
     # @private
