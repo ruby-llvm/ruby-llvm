@@ -16,7 +16,9 @@ module LLVM
 
     # Diposes the Context.
     def dispose
+      return if @ptr.nil?
       C.LLVMContextDispose(@ptr)
+      @ptr = nil
     end
   end
 end

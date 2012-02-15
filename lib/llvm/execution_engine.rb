@@ -56,6 +56,7 @@ module LLVM
   end
 
   class JITCompiler
+    # Important: Call #dispose to free backend memory after use. Do not call #dispose on mod any more.
     def initialize(mod, opt_level = 3)
       FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |ptr|
         error   = FFI::MemoryPointer.new(FFI.type_size(:pointer))
@@ -65,8 +66,6 @@ module LLVM
 
         if status.zero?
           @ptr = ptr.read_pointer
-          ObjectSpace.undefine_finalizer mod # do not call LLVMDisposeModule any more
-          ObjectSpace.define_finalizer self, JITCompiler.dispose_execution_engine_proc_for(@ptr, nil)
         else
           C.LLVMDisposeMessage(error)
           error.autorelease=false
@@ -75,8 +74,10 @@ module LLVM
       end
     end
     
-    def self.dispose_execution_engine_proc_for(ptr, mod)
-      proc { C.LLVMDisposeExecutionEngine(ptr) }
+    def dispose
+      return if @ptr.nil?
+      C.LLVMDisposeExecutionEngine(@ptr)
+      @ptr = nil
     end
 
     # @private
@@ -86,13 +87,24 @@ module LLVM
 
     # Execute the given LLVM::Function with the supplied args (as
     # GenericValues).
+    # Important: Call #dispose on the returned GenericValue to
+    # free backend memory after use.
     def run_function(fun, *args)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
+        new_values = []
         args_ptr.write_array_of_pointer fun.params.zip(args).map { |p, a|
-          a.kind_of?(GenericValue) ? a : LLVM.make_generic_value(p.type, a)
+          if a.kind_of?(GenericValue)
+            a
+          else
+            value = LLVM.make_generic_value(p.type, a)
+            new_values << value
+            value
+          end
         }
-        return LLVM::GenericValue.from_ptr(
+        result = LLVM::GenericValue.from_ptr(
           C.LLVMRunFunction(self, fun, args.size, args_ptr))
+        new_values.each(&:dispose)
+        return result
       end
     end
 
@@ -113,12 +125,13 @@ module LLVM
       return if ptr.null?
       val = allocate
       val.instance_variable_set(:@ptr, ptr)
-      ObjectSpace.define_finalizer(val, dispose_generic_value_proc_for(ptr))
       val
     end
     
-    def self.dispose_generic_value_proc_for(ptr)
-      proc { C.LLVMDisposeGenericValue(ptr) }
+    def dispose
+      return if @ptr.nil?
+      C.LLVMDisposeGenericValue(@ptr)
+      @ptr = nil
     end
 
     # Creates a Generic Value from an integer. Type is the size of integer to

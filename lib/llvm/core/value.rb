@@ -103,9 +103,15 @@ module LLVM
 
     # Build the basic block with the given builder. Creates a new one if nil. Yields the builder.
     def build(builder = nil)
-      builder ||= Builder.new
-      builder.position_at_end(self)
-      yield builder
+      if builder.nil?
+        builder = Builder.new
+        builder.position_at_end(self)
+        yield builder
+        builder.dispose
+      else
+        builder.position_at_end(self)
+        yield builder
+      end
     end
 
     # Returns the parent of this basic block (a Function).
