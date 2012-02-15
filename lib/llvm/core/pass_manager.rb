@@ -34,8 +34,10 @@ module LLVM
     
     # Disposes the pass manager.
     def dispose
+      return if @ptr.nil?
       do_finalization
-      C.LLVMDisposePassManager(self)
+      C.LLVMDisposePassManager(@ptr)
+      @ptr = nil
     end
 
     protected

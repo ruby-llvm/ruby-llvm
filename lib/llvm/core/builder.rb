@@ -6,7 +6,9 @@ module LLVM
     end
     
     def dispose
+      return if @ptr.nil?
       C.LLVMDisposeBuilder(@ptr)
+      @ptr = nil
     end
 
     # @private

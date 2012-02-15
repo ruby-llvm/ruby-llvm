@@ -82,7 +82,9 @@ module LLVM
     end
 
     def dispose
+      return if @ptr.nil?
       C.LLVMDisposeMemoryBuffer(@ptr)
+      @ptr = nil
     end
   end
 end

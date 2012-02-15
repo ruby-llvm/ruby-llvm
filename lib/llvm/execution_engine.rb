@@ -75,7 +75,9 @@ module LLVM
     end
     
     def dispose
+      return if @ptr.nil?
       C.LLVMDisposeExecutionEngine(@ptr)
+      @ptr = nil
     end
 
     # @private
@@ -127,7 +129,9 @@ module LLVM
     end
     
     def dispose
+      return if @ptr.nil?
       C.LLVMDisposeGenericValue(@ptr)
+      @ptr = nil
     end
 
     # Creates a Generic Value from an integer. Type is the size of integer to
