@@ -30,4 +30,31 @@ Rake::TestTask.new do |t|
   t.test_files = FileList["test/**/*_test.rb"]
 end
 
+task :generate_ffi do
+  require 'ffi_gen'
+  
+  mappings = {
+    ["llvm-c/Core.h"] => "core_ffi.rb",
+    ["llvm-c/Analysis.h"] => "analysis_ffi.rb",
+    ["llvm-c/ExecutionEngine.h"] => "execution_engine_ffi.rb",
+    ["llvm-c/Target.h"] => "target_ffi.rb",
+    ["llvm-c/BitReader.h", "llvm-c/BitWriter.h"] => "core/bitcode_ffi.rb",
+    ["llvm-c/Transforms/IPO.h"] => "transforms/ipo_ffi.rb",
+    ["llvm-c/Transforms/Scalar.h"] => "transforms/scalar_ffi.rb",
+  }
+
+  mappings.each do |headers, ruby_file|
+    FFIGen.generate(
+      ruby_module: "LLVM::C",
+      ffi_lib:     "LLVM-3.0",
+      headers:     headers,
+      cflags:      `llvm-config --cflags`.split(" "),
+      prefixes:    ["LLVM"],
+      blacklist:   ["LLVMGetMDNodeNumOperands", "LLVMGetMDNodeOperand",
+                    "LLVMInitializeAllTargetInfos", "LLVMInitializeAllTargets", "LLVMInitializeNativeTarget"],
+      output:      "lib/llvm/#{ruby_file}"
+    )
+  end
+end
+
 task :default => [:test]

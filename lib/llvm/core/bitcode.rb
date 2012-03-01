@@ -1,12 +1,6 @@
-module LLVM
-  # @private
-  module C
-    attach_function :parse_bitcode, :LLVMParseBitcode, [:pointer, :buffer_out, :buffer_out], :int
-    attach_function :parse_bitcode_in_context, :LLVMParseBitcodeInContext, [:pointer, :pointer, :buffer_out, :buffer_out], :int
-    attach_function :write_bitcode_to_file, :LLVMWriteBitcodeToFile, [:pointer, :string], :int
-    attach_function :write_bitcode_to_fd, :LLVMWriteBitcodeToFD, [:pointer, :int, :int, :int], :int
-  end
+require 'llvm/core/bitcode_ffi'
 
+module LLVM
   class Module
     # Parse a module from a memory buffer
     # @param [String, LLVM::MemoryBuffer] path_or_memory_buffer

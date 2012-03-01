@@ -1,14 +1,9 @@
 # Interprocedural optimization (IPO)
 require 'llvm'
 require 'llvm/core'
+require 'llvm/transforms/ipo_ffi'
 
 module LLVM
-  # @private
-  module C
-    attach_function :add_global_dce_pass, :LLVMAddGlobalDCEPass, [:pointer], :void
-    attach_function :add_function_inlining_pass, :LLVMAddFunctionInliningPass, [:pointer], :void
-  end
-
   class PassManager
     # @LLVMpass gdce
     def gdce!

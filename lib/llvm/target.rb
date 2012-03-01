@@ -1,9 +1,7 @@
 require 'llvm'
 require 'llvm/core'
+require 'llvm/target_ffi'
 
 module LLVM
-  # @private
-  module C
-    attach_function :add_target_data, :LLVMAddTargetData, [:pointer, :pointer], :void
-  end
+  # nothing here
 end

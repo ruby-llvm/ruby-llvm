@@ -1,32 +1,8 @@
 require 'llvm'
 require 'llvm/core'
+require 'llvm/transforms/scalar_ffi'
 
 module LLVM
-  # @private
-  module C
-    attach_function :add_aggressive_dce_pass, :LLVMAddAggressiveDCEPass, [:pointer], :void
-    attach_function :add_cfg_simplification_pass, :LLVMAddCFGSimplificationPass, [:pointer], :void
-    attach_function :add_dead_store_elimination_pass, :LLVMAddDeadStoreEliminationPass, [:pointer], :void
-    attach_function :add_gvn_pass, :LLVMAddGVNPass, [:pointer], :void
-    attach_function :add_ind_var_simplify_pass, :LLVMAddIndVarSimplifyPass, [:pointer], :void
-    attach_function :add_instruction_combining_pass, :LLVMAddInstructionCombiningPass, [:pointer], :void
-    attach_function :add_jump_threading_pass, :LLVMAddJumpThreadingPass, [:pointer], :void
-    attach_function :add_licm_pass, :LLVMAddLICMPass, [:pointer], :void
-    attach_function :add_loop_deletion_pass, :LLVMAddLoopDeletionPass, [:pointer], :void
-    attach_function :add_loop_rotate_pass, :LLVMAddLoopRotatePass, [:pointer], :void
-    attach_function :add_loop_unroll_pass, :LLVMAddLoopUnrollPass, [:pointer], :void
-    attach_function :add_loop_unswitch_pass, :LLVMAddLoopUnswitchPass, [:pointer], :void
-    attach_function :add_mem_cpy_opt_pass, :LLVMAddMemCpyOptPass, [:pointer], :void
-    attach_function :add_promote_memory_to_register_pass, :LLVMAddPromoteMemoryToRegisterPass, [:pointer], :void
-    attach_function :add_reassociate_pass, :LLVMAddReassociatePass, [:pointer], :void
-    attach_function :add_sccp_pass, :LLVMAddSCCPPass, [:pointer], :void
-    attach_function :add_scalar_repl_aggregates_pass, :LLVMAddScalarReplAggregatesPass, [:pointer], :void
-    attach_function :add_simplify_lib_calls_pass, :LLVMAddSimplifyLibCallsPass, [:pointer], :void
-    attach_function :add_tail_call_elimination_pass, :LLVMAddTailCallEliminationPass, [:pointer], :void
-    attach_function :add_constant_propagation_pass, :LLVMAddConstantPropagationPass, [:pointer], :void
-    attach_function :add_demote_memory_to_register_pass, :LLVMAddDemoteMemoryToRegisterPass, [:pointer], :void
-  end
-  
   class PassManager
     # @LLVMpass adce
     def adce!

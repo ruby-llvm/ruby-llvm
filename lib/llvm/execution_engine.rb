@@ -2,50 +2,13 @@ require 'llvm'
 require 'llvm/core'
 require 'llvm/target'
 require 'llvm/analysis'
+require 'llvm/execution_engine_ffi'
 
 module LLVM
   # @private
   module C
-    # Generic values
-    attach_function :create_generic_value_of_int, :LLVMCreateGenericValueOfInt, [:pointer, :long_long, :int], :pointer
-    attach_function :create_generic_value_of_pointer, :LLVMCreateGenericValueOfPointer, [:pointer], :pointer
-    attach_function :create_generic_value_of_float, :LLVMCreateGenericValueOfFloat, [:pointer, :double], :pointer
-
-    attach_function :generic_value_int_width, :LLVMGenericValueIntWidth, [:pointer], :uint
-
-    attach_function :generic_value_to_int, :LLVMGenericValueToInt, [:pointer, :int], :long_long
-    attach_function :generic_value_to_pointer, :LLVMGenericValueToPointer, [:pointer], :pointer
-    attach_function :generic_value_to_float, :LLVMGenericValueToFloat, [:pointer, :pointer], :double
-    attach_function :dispose_generic_value, :LLVMDisposeGenericValue, [:pointer], :void
-
-    # Execution engines
-    attach_function :create_execution_engine_for_module, :LLVMCreateExecutionEngineForModule, [:pointer, :pointer, :pointer], :int
-    attach_function :create_interpreter_for_module, :LLVMCreateInterpreterForModule, [:pointer, :pointer, :pointer], :int
-    attach_function :create_jit_compiler_for_module, :LLVMCreateJITCompilerForModule, [:pointer, :pointer, :uint, :pointer], :int
-    attach_function :dispose_execution_engine, :LLVMDisposeExecutionEngine, [:pointer], :void
-
-    attach_function :run_static_constructors, :LLVMRunStaticConstructors, [:pointer], :void
-    attach_function :run_static_destructors, :LLVMRunStaticDestructors, [:pointer], :void
-
-    attach_function :run_function_as_main, :LLVMRunFunctionAsMain, [:pointer, :pointer, :uint, :pointer, :pointer], :int
-    attach_function :run_function, :LLVMRunFunction, [:pointer, :pointer, :uint, :pointer], :pointer
-
-    attach_function :free_machine_code_for_function, :LLVMFreeMachineCodeForFunction, [:pointer, :pointer], :void
-    attach_function :add_module_provider, :LLVMAddModuleProvider, [:pointer, :pointer], :void
-    attach_function :remove_module_provider, :LLVMRemoveModuleProvider, [:pointer, :pointer, :pointer, :pointer], :int
-
-    attach_function :find_function, :LLVMFindFunction, [:pointer, :pointer, :pointer, :pointer], :int
-
-    attach_function :get_execution_engine_target_data, :LLVMGetExecutionEngineTargetData, [:pointer], :pointer
-
-    attach_function :add_global_mapping, :LLVMAddGlobalMapping, [:pointer, :pointer, :pointer], :void
-
-    attach_function :get_pointer_to_global, :LLVMGetPointerToGlobal, [:pointer, :pointer], :pointer
-
     attach_function :initialize_x86_target_info, :LLVMInitializeX86TargetInfo, [], :void
-
     attach_function :initialize_x86_target, :LLVMInitializeX86Target, [], :void
-
     attach_function :initialize_x86_target_mc, :LLVMInitializeX86TargetMC, [], :void
   end
 
@@ -163,7 +126,9 @@ module LLVM
 
     # Converts a GenericValue to a Ruby Integer.
     def to_i(signed = true)
-      C.generic_value_to_int(self, signed ? 1 : 0)
+      v = C.generic_value_to_int(self, signed ? 1 : 0)
+      v -= 2**64 if signed and v >= 2**63
+      v
     end
 
     # Converts a GenericValue to a Ruby Float.
