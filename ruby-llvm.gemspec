@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/jvoorhis/ruby-llvm"
 
   s.add_dependency("ffi", ">= 1.0.0")
+  s.add_development_dependency("ffi_gen")
   s.add_development_dependency("rake")
   s.add_development_dependency("rcov")
   s.add_development_dependency("yard")
