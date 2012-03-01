@@ -2,12 +2,12 @@ module LLVM
   class Builder
     # Important: Call #dispose to free backend memory after use.
     def initialize
-      @ptr = C.LLVMCreateBuilder()
+      @ptr = C.create_builder()
     end
     
     def dispose
       return if @ptr.nil?
-      C.LLVMDisposeBuilder(@ptr)
+      C.dispose_builder(@ptr)
       @ptr = nil
     end
 
@@ -22,7 +22,7 @@ module LLVM
     # @return [LLVM::Builder]
     def position(block, instruction)
       raise "Block must not be nil" if block.nil?
-      C.LLVMPositionBuilder(self, block, instruction)
+      C.position_builder(self, block, instruction)
       self
     end
 
@@ -31,7 +31,7 @@ module LLVM
     # @return [LLVM::Builder]
     def position_before(instruction)
       raise "Instruction must not be nil" if instruction.nil?
-      C.LLVMPositionBuilderBefore(self, instruction)
+      C.position_builder_before(self, instruction)
       self
     end
 
@@ -40,27 +40,27 @@ module LLVM
     # @return [LLVM::Builder]
     def position_at_end(block)
       raise "Block must not be nil" if block.nil?
-      C.LLVMPositionBuilderAtEnd(self, block)
+      C.position_builder_at_end(self, block)
       self
     end
 
     # The BasicBlock at which the Builder is currently positioned.
     # @return [LLVM::BasicBlock]
     def insert_block
-      BasicBlock.from_ptr(C.LLVMGetInsertBlock(self))
+      BasicBlock.from_ptr(C.get_insert_block(self))
     end
 
     # @return [LLVM::Instruction]
     # @LLVMinst ret
     def ret_void
-      Instruction.from_ptr(C.LLVMBuildRetVoid(self))
+      Instruction.from_ptr(C.build_ret_void(self))
     end
 
     # @param [LLVM::Value] val The value to return
     # @return [LLVM::Instruction]
     # @LLVMinst ret
     def ret(val)
-      Instruction.from_ptr(C.LLVMBuildRet(self, val))
+      Instruction.from_ptr(C.build_ret(self, val))
     end
 
     # Builds a ret instruction returning multiple values.
@@ -70,7 +70,7 @@ module LLVM
     def aggregate_ret(*vals)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * vals.size) do |vals_ptr|
         vals_ptr.write_array_of_pointer(vals)
-        Instruction.from_ptr(C.LLVMBuildAggregateRet(self, vals_ptr, vals.size))
+        Instruction.from_ptr(C.build_aggregate_ret(self, vals_ptr, vals.size))
       end
     end
 
@@ -80,7 +80,7 @@ module LLVM
     # @LLVMinst br
     def br(block)
       Instruction.from_ptr(
-        C.LLVMBuildBr(self, block))
+        C.build_br(self, block))
     end
 
     # Conditional branching (i.e. if)
@@ -91,7 +91,7 @@ module LLVM
     # @LLVMinst br
     def cond(cond, iftrue, iffalse)
       Instruction.from_ptr(
-        C.LLVMBuildCondBr(self, cond, iftrue, iffalse))
+        C.build_cond_br(self, cond, iftrue, iffalse))
     end
 
     # @LLVMinst switch
@@ -102,7 +102,7 @@ module LLVM
     #   to the corresponding basic block.
     # @return [LLVM::Instruction]
     def switch(val, default, cases)
-      inst = SwitchInst.from_ptr(C.LLVMBuildSwitch(self, val, default, cases.size))
+      inst = SwitchInst.from_ptr(C.build_switch(self, val, default, cases.size))
       cases.each do |(val, block)|
         inst.add_case(val, block)
       end
@@ -120,7 +120,7 @@ module LLVM
     # @LLVMinst invoke
     def invoke(fun, args, normal, exception, name = "")
       Instruction.from_ptr(
-        C.LLVMBuildInvoke(self,
+        C.build_invoke(self,
           fun, args, args.size, normal, exception, name))
     end
 
@@ -129,7 +129,7 @@ module LLVM
     # @return [LLVM::Instruction]
     # @LLVMinst unreachable
     def unreachable
-      Instruction.from_ptr(C.LLVMBuildUnreachable(self))
+      Instruction.from_ptr(C.build_unreachable(self))
     end
 
     # @param [LLVM::Value] lhs Integer or vector of integers
@@ -138,7 +138,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer sum of the two operands
     # @LLVMinst add
     def add(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildAdd(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_add(self, lhs, rhs, name))
     end
 
     # No signed wrap addition.
@@ -148,7 +148,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer sum of the two operands
     # @LLVMinst add
     def nsw_add(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildNSWAdd(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_nsw_add(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Floating point or vector of floating points
@@ -157,7 +157,7 @@ module LLVM
     # @return [LLVM::Instruction] The floating point sum of the two operands
     # @LLVMinst fadd
     def fadd(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildFAdd(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_f_add(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Integer or vector of integers
@@ -166,7 +166,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer difference of the two operands
     # @LLVMinst sub
     def sub(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildSub(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_sub(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Floating point or vector of floating points
@@ -176,7 +176,7 @@ module LLVM
     #   operands
     # @LLVMinst fsub
     def fsub(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildFSub(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_f_sub(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Integer or vector of integers
@@ -185,7 +185,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer product of the two operands
     # @LLVMinst mul
     def mul(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildMul(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_mul(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Floating point or vector of floating points
@@ -195,7 +195,7 @@ module LLVM
     #   operands
     # @LLVMinst fmul
     def fmul(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildFMul(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_f_mul(self, lhs, rhs, name))
     end
 
     # Unsigned integer division
@@ -205,7 +205,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer quotient of the two operands
     # @LLVMinst udiv
     def udiv(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildUDiv(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_u_div(self, lhs, rhs, name))
     end
 
     # Signed division
@@ -215,7 +215,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer quotient of the two operands
     # @LLVMinst sdiv
     def sdiv(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildSDiv(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_s_div(self, lhs, rhs, name))
     end
 
     # Signed exact division
@@ -225,7 +225,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer quotient of the two operands
     # @LLVMinst sdiv
     def exact_sdiv(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildExactSDiv(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_exact_s_div(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Floating point or vector of floating points
@@ -235,7 +235,7 @@ module LLVM
     #   operands
     # @LLVMinst fdiv
     def fdiv(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildFDiv(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_f_div(self, lhs, rhs, name))
     end
 
     # Unsigned remainder
@@ -245,7 +245,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer remainder
     # @LLVMinst urem
     def urem(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildURem(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_u_rem(self, lhs, rhs, name))
     end
 
     # Signed remainder
@@ -255,7 +255,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer remainder
     # @LLVMinst srem
     def srem(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildSRem(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_s_rem(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Floating point or vector of floating points
@@ -264,7 +264,7 @@ module LLVM
     # @return [LLVM::Instruction] The floating point remainder
     # @LLVMinst frem
     def frem(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildFRem(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_f_rem(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Integer or vector of integers
@@ -273,7 +273,7 @@ module LLVM
     # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst shl
     def shl(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildShl(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_shl(self, lhs, rhs, name))
     end
 
     # Shifts right with zero fill.
@@ -283,7 +283,7 @@ module LLVM
     # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst lshr
     def lshr(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildLShr(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_l_shr(self, lhs, rhs, name))
     end
 
     # Arithmatic shift right.
@@ -293,7 +293,7 @@ module LLVM
     # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst ashr
     def ashr(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildAShr(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_a_shr(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Integer or vector of integers
@@ -302,7 +302,7 @@ module LLVM
     # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst and
     def and(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildAnd(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_and(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Integer or vector of integers
@@ -311,7 +311,7 @@ module LLVM
     # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst or
     def or(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildOr(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_or(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Integer or vector of integers
@@ -320,7 +320,7 @@ module LLVM
     # @return [LLVM::Instruction] An integer instruction
     # @LLVMinst xor
     def xor(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildXor(self, lhs, rhs, name))
+      Instruction.from_ptr(C.build_xor(self, lhs, rhs, name))
     end
 
     # Integer negation. Implemented as a shortcut to the equivalent sub
@@ -330,7 +330,7 @@ module LLVM
     # @return [LLVM::Instruction] The negated operand
     # @LLVMinst sub
     def neg(arg, name = "")
-      Instruction.from_ptr(C.LLVMBuildNeg(self, arg, name))
+      Instruction.from_ptr(C.build_neg(self, arg, name))
     end
 
     # Boolean negation.
@@ -338,7 +338,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] The negated operand
     def not(arg, name = "")
-      Instruction.from_ptr(C.LLVMBuildNot(self, arg, name))
+      Instruction.from_ptr(C.build_not(self, arg, name))
     end
 
     # @param [LLVM::Type, #type] ty The type or value whose type
@@ -346,7 +346,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] A pointer to the malloced bytes
     def malloc(ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildMalloc(self, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_malloc(self, LLVM::Type(ty), name))
     end
 
     # @param [LLVM::Type, #type] ty The type or value whose type will be the
@@ -355,7 +355,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] A pointer to the malloced array
     def array_malloc(ty, sz, name = "")
-      Instruction.from_ptr(C.LLVMBuildArrayMalloc(self, LLVM::Type(ty), sz, name))
+      Instruction.from_ptr(C.build_array_malloc(self, LLVM::Type(ty), sz, name))
     end
 
     # Stack allocation.
@@ -365,7 +365,7 @@ module LLVM
     # @return [LLVM::Instruction] A pointer to the allocad bytes
     # @LLVMinst alloca
     def alloca(ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildAlloca(self, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_alloca(self, LLVM::Type(ty), name))
     end
 
     # Array stack allocation
@@ -376,13 +376,13 @@ module LLVM
     # @return [LLVM::Instruction] A pointer to the allocad array
     # @LLVMinst alloca
     def array_alloca(ty, sz, name = "")
-      Instruction.from_ptr(C.LLVMBuildArrayAlloca(self, LLVM::Type(ty), sz, name))
+      Instruction.from_ptr(C.build_array_alloca(self, LLVM::Type(ty), sz, name))
     end
 
     # @param [LLVM::Value] ptr The pointer to be freed
     # @return [LLVM::Instruction] The result of the free instruction
     def free(ptr)
-      Instruction.from_ptr(C.LLVMBuildFree(self, ptr))
+      Instruction.from_ptr(C.build_free(self, ptr))
     end
 
     # Load the value of a given pointer
@@ -392,7 +392,7 @@ module LLVM
     #   a value of the pointer's type.
     # @LLVMinst load
     def load(ptr, name = "")
-      Instruction.from_ptr(C.LLVMBuildLoad(self, ptr, name))
+      Instruction.from_ptr(C.build_load(self, ptr, name))
     end
 
     # Store a value at a given pointer
@@ -401,7 +401,7 @@ module LLVM
     # @return [LLVM::Instruction] The result of the store operation
     # @LLVMinst store
     def store(val, ptr)
-      Instruction.from_ptr(C.LLVMBuildStore(self, val, ptr))
+      Instruction.from_ptr(C.build_store(self, val, ptr))
     end
 
     # Obtain a pointer to the element at the given indices
@@ -417,7 +417,7 @@ module LLVM
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
         indices_ptr.write_array_of_pointer(indices)
         return Instruction.from_ptr(
-          C.LLVMBuildGEP(self, ptr, indices_ptr, indices.size, name))
+          C.build_gep(self, ptr, indices_ptr, indices.size, name))
       end
     end
 
@@ -435,7 +435,7 @@ module LLVM
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
         indices_ptr.write_array_of_pointer(indices)
         return Instruction.from_ptr(
-          C.LLVMBuildInBoundsGEP(self, ptr, indices_ptr, indices.size, name))
+          C.build_in_bounds_gep(self, ptr, indices_ptr, indices.size, name))
       end
     end
 
@@ -448,7 +448,7 @@ module LLVM
     # @LLVMinst gep
     # @see http://llvm.org/docs/GetElementPtr.html
     def struct_gep(pointer, idx, name = "")
-      Instruction.from_ptr(C.LLVMBuildStructGEP(self, pointer, idx, name))
+      Instruction.from_ptr(C.build_struct_gep(self, pointer, idx, name))
     end
 
     # Creates a global string initialized to a given value.
@@ -456,7 +456,7 @@ module LLVM
     # @param [Name] name Name of the result in LLVM IR
     # @return [LLVM::Instruction] Reference to the global string
     def global_string(string, name = "")
-      Instruction.from_ptr(C.LLVMBuildGlobalString(self, string, name))
+      Instruction.from_ptr(C.build_global_string(self, string, name))
     end
 
     # Creates a pointer to a global string initialized to a given value.
@@ -464,7 +464,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] Reference to the global string pointer
     def global_string_pointer(string, name = "")
-      Instruction.from_ptr(C.LLVMBuildGlobalStringPtr(self, string, name))
+      Instruction.from_ptr(C.build_global_string_ptr(self, string, name))
     end
 
     # Truncates its operand to the given type. The size of the value type must
@@ -476,7 +476,7 @@ module LLVM
     # @return [LLVM::Instruction] The truncated value
     # @LLVMinst trunc
     def trunc(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildTrunc(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_trunc(self, val, LLVM::Type(ty), name))
     end
 
     # Zero extends its operand to the given type. The size of the value type
@@ -488,7 +488,7 @@ module LLVM
     # @return [LLVM::Instruction] The extended value
     # @LLVMinst zext
     def zext(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildZExt(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_z_ext(self, val, LLVM::Type(ty), name))
     end
 
     # Sign extension by copying the sign bit (highest order bit) of the value
@@ -500,7 +500,7 @@ module LLVM
     # @return [LLVM::Instruction] The extended value
     # @LLVMinst sext
     def sext(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildSExt(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_s_ext(self, val, LLVM::Type(ty), name))
     end
 
     # Convert a floating point to an unsigned integer
@@ -511,7 +511,7 @@ module LLVM
     # @return [LLVM::Instruction] The converted value
     # @LLVMinst fptoui
     def fp2ui(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPToUI(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_fp_to_ui(self, val, LLVM::Type(ty), name))
     end
 
     # Convert a floating point to a signed integer
@@ -522,7 +522,7 @@ module LLVM
     # @return [LLVM::Instruction] The converted value
     # @LLVMinst fptosi
     def fp2si(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPToSI(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_fp_to_si(self, val, LLVM::Type(ty), name))
     end
 
     # Convert an unsigned integer to a floating point
@@ -534,7 +534,7 @@ module LLVM
     # @return [LLVM::Instruction] The converted value
     # @LLVMinst uitofp
     def ui2fp(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildUIToFP(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_ui_to_fp(self, val, LLVM::Type(ty), name))
     end
 
     # Convert a signed integer to a floating point
@@ -546,7 +546,7 @@ module LLVM
     # @return [LLVM::Instruction] The converted value
     # @LLVMinst sitofp
     def si2fp(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildSIToFP(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_si_to_fp(self, val, LLVM::Type(ty), name))
     end
 
     # Truncate a floating point value
@@ -557,7 +557,7 @@ module LLVM
     # @return [LLVM::Instruction] The truncated value
     # @LLVMinst fptrunc
     def fp_trunc(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPTrunc(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_fp_trunc(self, val, LLVM::Type(ty), name))
     end
 
     # Extend a floating point value
@@ -568,7 +568,7 @@ module LLVM
     # @return [LLVM::Instruction] The extended value
     # @LLVMinst fpext
     def fp_ext(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPExt(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_fp_ext(self, val, LLVM::Type(ty), name))
     end
 
     # Cast a pointer to an int. Useful for pointer arithmetic.
@@ -579,7 +579,7 @@ module LLVM
     #   the pointer's address
     # @LLVMinst ptrtoint
     def ptr2int(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildPtrToInt(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_ptr_to_int(self, val, LLVM::Type(ty), name))
     end
 
     # Cast an int to a pointer
@@ -590,7 +590,7 @@ module LLVM
     #   held in val
     # @LLVMinst inttoptr
     def int2ptr(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildIntToPtr(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_int_to_ptr(self, val, LLVM::Type(ty), name))
     end
 
     # Cast a value to the given type without changing any bits
@@ -600,7 +600,7 @@ module LLVM
     # @return [LLVM::Instruction] A value of the target type
     # @LLVMinst bitcast
     def bit_cast(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildBitCast(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_bit_cast(self, val, LLVM::Type(ty), name))
     end
 
     # @param [LLVM::Value] val
@@ -610,7 +610,7 @@ module LLVM
     # @LLVMinst zext
     # @LLVMinst bitcast
     def zext_or_bit_cast(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildZExtOrBitCast(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_z_ext_or_bit_cast(self, val, LLVM::Type(ty), name))
     end
 
     # @param [LLVM::Value] val
@@ -620,7 +620,7 @@ module LLVM
     # @LLVMinst sext
     # @LLVMinst bitcast
     def sext_or_bit_cast(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildSExtOrBitCast(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_s_ext_or_bit_cast(self, val, LLVM::Type(ty), name))
     end
 
     # @param [LLVM::Value] val
@@ -630,7 +630,7 @@ module LLVM
     # @LLVMinst trunc
     # @LLVMinst bitcast
     def trunc_or_bit_cast(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildTruncOrBitCast(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_trunc_or_bit_cast(self, val, LLVM::Type(ty), name))
     end
 
     # @param [LLVM::Value] val
@@ -638,7 +638,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction]
     def pointer_cast(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildPointerCast(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_pointer_cast(self, val, LLVM::Type(ty), name))
     end
 
     # @param [LLVM::Value] val
@@ -646,7 +646,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction]
     def int_cast(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildIntCast(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_int_cast(self, val, LLVM::Type(ty), name))
     end
 
     # @param [LLVM::Value] val
@@ -654,7 +654,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction]
     def fp_cast(val, ty, name = "")
-      Instruction.from_ptr(C.LLVMBuildFPCast(self, val, LLVM::Type(ty), name))
+      Instruction.from_ptr(C.build_fp_cast(self, val, LLVM::Type(ty), name))
     end
 
     # Builds an icmp Instruction. Compares lhs to rhs (Instructions)
@@ -678,7 +678,7 @@ module LLVM
     # @return [LLVM::Instruction] A boolean represented as i1
     # @LLVMinst icmp
     def icmp(pred, lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildICmp(self, pred, lhs, rhs, name))
+      Instruction.from_ptr(C.build_i_cmp(self, pred, lhs, rhs, name))
     end
 
     # Builds an fcmp Instruction. Compares lhs to rhs (Instructions) as Reals
@@ -708,7 +708,7 @@ module LLVM
     # @return [LLVM::Instruction] A boolean represented as i1
     # @LLVMinst fcmp
     def fcmp(pred, lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildFCmp(self, pred, lhs, rhs, name))
+      Instruction.from_ptr(C.build_f_cmp(self, pred, lhs, rhs, name))
     end
 
     # Build a Phi node of the given type with the given incoming branches
@@ -722,7 +722,7 @@ module LLVM
     # @LLVMinst phi
     def phi(ty, incoming, name = "")
 
-      phi = Phi.from_ptr(C.LLVMBuildPhi(self, LLVM::Type(ty), name))
+      phi = Phi.from_ptr(C.build_phi(self, LLVM::Type(ty), name))
       phi.add_incoming(incoming)
       phi
     end
@@ -743,7 +743,7 @@ module LLVM
 
       args_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size)
       args_ptr.write_array_of_pointer(args)
-      CallInst.from_ptr(C.LLVMBuildCall(self, fun, args_ptr, args.size, name))
+      CallInst.from_ptr(C.build_call(self, fun, args_ptr, args.size, name))
     end
 
     # Return a value based on a condition. This differs from 'cond' in that
@@ -758,7 +758,7 @@ module LLVM
     #   _else
     # @LLVMinst select
     def select(_if, _then, _else, name = "")
-      Instruction.from_ptr(C.LLVMBuildSelect(self, _if, _then, _else, name))
+      Instruction.from_ptr(C.build_select(self, _if, _then, _else, name))
     end
 
     # Extract an element from a vector
@@ -769,7 +769,7 @@ module LLVM
     # @return [LLVM::Instruction] The extracted element
     # @LLVMinst extractelement
     def extract_element(vector, idx, name = "")
-      Instruction.from_ptr(C.LLVMBuildExtractElement(self, vector, idx, name))
+      Instruction.from_ptr(C.build_extract_element(self, vector, idx, name))
     end
 
     # Insert an element into a vector
@@ -780,7 +780,7 @@ module LLVM
     # @return [LLVM::Instruction] A vector the same type as 'vector'
     # @LLVMinst insertelement
     def insert_element(vector, elem, idx, name = "")
-      Instruction.from_ptr(C.LLVMBuildInsertElement(self, vector, elem, idx, name))
+      Instruction.from_ptr(C.build_insert_element(self, vector, elem, idx, name))
     end
 
     # Shuffle two vectors according to a given mask
@@ -792,7 +792,7 @@ module LLVM
     # @return [LLVM::Instruction] The shuffled vector
     # @LLVMinst shufflevector
     def shuffle_vector(vec1, vec2, mask, name = "")
-      Instruction.from_ptr(C.LLVMBuildShuffleVector(self, vec1, vec2, mask, name))
+      Instruction.from_ptr(C.build_shuffle_vector(self, vec1, vec2, mask, name))
     end
 
     # Extract the value of a member field from an aggregate value
@@ -802,7 +802,7 @@ module LLVM
     # @return [LLVM::Instruction] The extracted value
     # @LLVMinst extractvalue
     def extract_value(aggregate, idx, name = "")
-      Instruction.from_ptr(C.LLVMBuildExtractValue(self, aggregate, idx, name))
+      Instruction.from_ptr(C.build_extract_value(self, aggregate, idx, name))
     end
 
     # Insert a value into an aggregate value's member field
@@ -813,7 +813,7 @@ module LLVM
     # @return [LLVM::Instruction] An aggregate value of the same type as 'aggregate'
     # @LLVMinst insertvalue
     def insert_value(aggregate, elem, idx, name = "")
-      Instruction.from_ptr(C.LLVMBuildInsertValue(self, aggregate, elem, idx, name))
+      Instruction.from_ptr(C.build_insert_value(self, aggregate, elem, idx, name))
     end
 
     # Check if a value is null
@@ -821,7 +821,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] An i1
     def is_null(val, name = "")
-      Instruction.from_ptr(C.LLVMBuildIsNull(self, val, name))
+      Instruction.from_ptr(C.build_is_null(self, val, name))
     end
 
     # Check if a value is not null
@@ -829,7 +829,7 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] An i1
     def is_not_null(val, name = "")
-      Instruction.from_ptr(C.LLVMBuildIsNotNull(self, val, name))
+      Instruction.from_ptr(C.build_is_not_null(self, val, name))
     end
 
     # Calculate the difference between two pointers
@@ -839,7 +839,7 @@ module LLVM
     # @return [LLVM::Instruction] The integer difference between the two
     #   pointers
     def ptr_diff(lhs, rhs, name = "")
-      Instruction.from_ptr(C.LLVMBuildPtrDiff(lhs, rhs, name))
+      Instruction.from_ptr(C.build_ptr_diff(lhs, rhs, name))
     end
   end
 end

@@ -4,9 +4,9 @@ module LLVM
   class PassManager
     # Creates a new pass manager on the given ExecutionEngine.
     def initialize(execution_engine)
-      ptr = C.LLVMCreatePassManager()
-      C.LLVMAddTargetData(
-        C.LLVMGetExecutionEngineTargetData(execution_engine), ptr)
+      ptr = C.create_pass_manager()
+      C.add_target_data(
+        C.get_execution_engine_target_data(execution_engine), ptr)
       @ptr = ptr
 
       do_initialization
@@ -29,14 +29,14 @@ module LLVM
     # @param [LLVM::Module]
     # @return [true, false] Indicates whether the module was modified.
     def run(mod)
-      C.LLVMRunPassManager(self, mod) != 0
+      C.run_pass_manager(self, mod) != 0
     end
     
     # Disposes the pass manager.
     def dispose
       return if @ptr.nil?
       do_finalization
-      C.LLVMDisposePassManager(@ptr)
+      C.dispose_pass_manager(@ptr)
       @ptr = nil
     end
 
@@ -52,9 +52,9 @@ module LLVM
   class FunctionPassManager < PassManager
     # Creates a new pass manager on the given ExecutionEngine and Module.
     def initialize(execution_engine, mod)
-      ptr = C.LLVMCreateFunctionPassManagerForModule(mod)
-      C.LLVMAddTargetData(
-        C.LLVMGetExecutionEngineTargetData(execution_engine), ptr)
+      ptr = C.create_function_pass_manager_for_module(mod)
+      C.add_target_data(
+        C.get_execution_engine_target_data(execution_engine), ptr)
       @ptr = ptr
     end
 
@@ -62,17 +62,17 @@ module LLVM
     # @param [LLVM::Function]
     # @return [true, false] indicates whether the function was modified.
     def run(fn)
-      C.LLVMRunFunctionPassManager(self, fn) != 0
+      C.run_function_pass_manager(self, fn) != 0
     end
 
     protected
 
     def do_initialization
-      C.LLVMInitializeFunctionPassManager(self) != 0
+      C.initialize_function_pass_manager(self) != 0
     end
 
     def do_finalization
-      C.LLVMFinalizeFunctionPassManager(self) != 0
+      C.finalize_function_pass_manager(self) != 0
     end
   end
 end

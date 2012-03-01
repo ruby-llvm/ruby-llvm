@@ -1,7 +1,7 @@
 module LLVM  
   class Context
     def initialize(ptr = nil)
-      @ptr = ptr || C.LLVMContextCreate()
+      @ptr = ptr || C.context_create()
     end
 
     # @private
@@ -11,13 +11,13 @@ module LLVM
 
     # Obtains a reference to the global Context.
     def self.global
-      new(C.LLVMGetGlobalContext())
+      new(C.get_global_context())
     end
 
     # Diposes the Context.
     def dispose
       return if @ptr.nil?
-      C.LLVMContextDispose(@ptr)
+      C.context_dispose(@ptr)
       @ptr = nil
     end
   end

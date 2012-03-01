@@ -9,12 +9,12 @@ module LLVM
                         '../',
                         FFI.map_library_name('RubyLLVMSupport-3.0.0')))
       ffi_lib [support_lib]
-      attach_function :LLVMLoadLibraryPermanently, [:string], :int
+      attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
     end
   end
 
   def load_library(libname)
-    Support::C.LLVMLoadLibraryPermanently(libname)
+    Support::C.load_library_permanently(libname)
     nil
   end
 

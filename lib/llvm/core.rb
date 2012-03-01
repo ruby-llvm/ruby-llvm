@@ -198,409 +198,409 @@ module LLVM
     ]
     
     # Error handling
-    attach_function :LLVMDisposeMessage, [:pointer], :void
+    attach_function :dispose_message, :LLVMDisposeMessage, [:pointer], :void
     
     # Contexts
-    attach_function :LLVMContextCreate, [], :pointer
-    attach_function :LLVMGetGlobalContext, [], :pointer
-    attach_function :LLVMContextDispose, [:pointer], :void
+    attach_function :context_create, :LLVMContextCreate, [], :pointer
+    attach_function :get_global_context, :LLVMGetGlobalContext, [], :pointer
+    attach_function :context_dispose, :LLVMContextDispose, [:pointer], :void
     
     # Modules
-    attach_function :LLVMModuleCreateWithName, [:string], :pointer
-    attach_function :LLVMModuleCreateWithNameInContext, [:string, :pointer], :pointer
-    attach_function :LLVMDisposeModule, [:pointer], :void
-    attach_function :LLVMGetDataLayout, [:pointer], :string
-    attach_function :LLVMSetDataLayout, [:pointer, :string], :void
-    attach_function :LLVMGetTarget, [:pointer], :string
-    attach_function :LLVMSetTarget, [:pointer, :string], :void
-    attach_function :LLVMGetTypeByName, [:pointer, :string], :pointer
-    attach_function :LLVMDumpModule, [:pointer], :void
+    attach_function :module_create_with_name, :LLVMModuleCreateWithName, [:string], :pointer
+    attach_function :module_create_with_name_in_context, :LLVMModuleCreateWithNameInContext, [:string, :pointer], :pointer
+    attach_function :dispose_module, :LLVMDisposeModule, [:pointer], :void
+    attach_function :get_data_layout, :LLVMGetDataLayout, [:pointer], :string
+    attach_function :set_data_layout, :LLVMSetDataLayout, [:pointer, :string], :void
+    attach_function :get_target, :LLVMGetTarget, [:pointer], :string
+    attach_function :set_target, :LLVMSetTarget, [:pointer, :string], :void
+    attach_function :get_type_by_name, :LLVMGetTypeByName, [:pointer, :string], :pointer
+    attach_function :dump_module, :LLVMDumpModule, [:pointer], :void
     
     # Types
-    attach_function :LLVMGetTypeKind, [:pointer], :type_kind
-    attach_function :LLVMTypeIsSized, [:pointer], :int
-    attach_function :LLVMGetTypeContext, [:pointer], :pointer
+    attach_function :get_type_kind, :LLVMGetTypeKind, [:pointer], :type_kind
+    attach_function :type_is_sized, :LLVMTypeIsSized, [:pointer], :int
+    attach_function :get_type_context, :LLVMGetTypeContext, [:pointer], :pointer
     
     # Integer types
-    attach_function :LLVMInt1TypeInContext, [:pointer], :pointer
-    attach_function :LLVMInt8TypeInContext, [:pointer], :pointer
-    attach_function :LLVMInt16TypeInContext, [:pointer], :pointer
-    attach_function :LLVMInt32TypeInContext, [:pointer], :pointer
-    attach_function :LLVMInt64TypeInContext, [:pointer], :pointer
-    attach_function :LLVMIntTypeInContext, [:pointer, :uint], :pointer
+    attach_function :int1_type_in_context, :LLVMInt1TypeInContext, [:pointer], :pointer
+    attach_function :int8_type_in_context, :LLVMInt8TypeInContext, [:pointer], :pointer
+    attach_function :int16_type_in_context, :LLVMInt16TypeInContext, [:pointer], :pointer
+    attach_function :int32_type_in_context, :LLVMInt32TypeInContext, [:pointer], :pointer
+    attach_function :int64_type_in_context, :LLVMInt64TypeInContext, [:pointer], :pointer
+    attach_function :int_type_in_context, :LLVMIntTypeInContext, [:pointer, :uint], :pointer
     
-    attach_function :LLVMInt1Type, [], :pointer
-    attach_function :LLVMInt8Type, [], :pointer
-    attach_function :LLVMInt16Type, [], :pointer
-    attach_function :LLVMInt32Type, [], :pointer
-    attach_function :LLVMInt64Type, [], :pointer
-    attach_function :LLVMIntType, [:uint], :pointer
-    attach_function :LLVMGetIntTypeWidth, [:pointer], :uint
+    attach_function :int1_type, :LLVMInt1Type, [], :pointer
+    attach_function :int8_type, :LLVMInt8Type, [], :pointer
+    attach_function :int16_type, :LLVMInt16Type, [], :pointer
+    attach_function :int32_type, :LLVMInt32Type, [], :pointer
+    attach_function :int64_type, :LLVMInt64Type, [], :pointer
+    attach_function :int_type, :LLVMIntType, [:uint], :pointer
+    attach_function :get_int_type_width, :LLVMGetIntTypeWidth, [:pointer], :uint
     
     # Real types
-    attach_function :LLVMFloatTypeInContext, [:pointer], :pointer
-    attach_function :LLVMDoubleTypeInContext, [:pointer], :pointer
-    attach_function :LLVMX86FP80TypeInContext, [:pointer], :pointer
-    attach_function :LLVMFP128TypeInContext, [:pointer], :pointer
-    attach_function :LLVMPPCFP128TypeInContext, [:pointer], :pointer
+    attach_function :float_type_in_context, :LLVMFloatTypeInContext, [:pointer], :pointer
+    attach_function :double_type_in_context, :LLVMDoubleTypeInContext, [:pointer], :pointer
+    attach_function :x86fp80_type_in_context, :LLVMX86FP80TypeInContext, [:pointer], :pointer
+    attach_function :fp128_type_in_context, :LLVMFP128TypeInContext, [:pointer], :pointer
+    attach_function :ppcfp128_type_in_context, :LLVMPPCFP128TypeInContext, [:pointer], :pointer
     
-    attach_function :LLVMFloatType, [], :pointer
-    attach_function :LLVMDoubleType, [], :pointer
-    attach_function :LLVMX86FP80Type, [], :pointer
-    attach_function :LLVMFP128Type, [], :pointer
-    attach_function :LLVMPPCFP128Type, [], :pointer
+    attach_function :float_type, :LLVMFloatType, [], :pointer
+    attach_function :double_type, :LLVMDoubleType, [], :pointer
+    attach_function :x86fp80_type, :LLVMX86FP80Type, [], :pointer
+    attach_function :fp128_type, :LLVMFP128Type, [], :pointer
+    attach_function :ppcfp128_type, :LLVMPPCFP128Type, [], :pointer
     
     # Function types
-    attach_function :LLVMFunctionType, [:pointer, :pointer, :uint, :int], :pointer
-    attach_function :LLVMIsFunctionVarArg, [:pointer], :int
-    attach_function :LLVMGetReturnType, [:pointer], :pointer
-    attach_function :LLVMCountParamTypes, [:pointer], :uint
-    attach_function :LLVMGetParamTypes, [:pointer, :pointer], :void
+    attach_function :function_type, :LLVMFunctionType, [:pointer, :pointer, :uint, :int], :pointer
+    attach_function :is_function_var_arg, :LLVMIsFunctionVarArg, [:pointer], :int
+    attach_function :get_return_type, :LLVMGetReturnType, [:pointer], :pointer
+    attach_function :count_param_types, :LLVMCountParamTypes, [:pointer], :uint
+    attach_function :get_param_types, :LLVMGetParamTypes, [:pointer, :pointer], :void
     
     # Struct types
-    attach_function :LLVMStructTypeInContext, [:pointer, :pointer, :uint, :int], :pointer
-    attach_function :LLVMStructType, [:pointer, :uint, :int], :pointer
-    attach_function :LLVMStructCreateNamed, [:pointer, :string], :pointer
-    attach_function :LLVMGetStructName, [:pointer], :string
-    attach_function :LLVMStructSetBody, [:pointer, :pointer, :uint, :int], :void
-    attach_function :LLVMCountStructElementTypes, [:pointer], :uint
-    attach_function :LLVMGetStructElementTypes, [:pointer, :pointer], :void
-    attach_function :LLVMIsPackedStruct, [:pointer], :int
-    attach_function :LLVMIsOpaqueStruct, [:pointer], :int
-    attach_function :LLVMGetTypeByName, [:pointer, :string], :pointer
+    attach_function :struct_type_in_context, :LLVMStructTypeInContext, [:pointer, :pointer, :uint, :int], :pointer
+    attach_function :struct_type, :LLVMStructType, [:pointer, :uint, :int], :pointer
+    attach_function :struct_create_named, :LLVMStructCreateNamed, [:pointer, :string], :pointer
+    attach_function :get_struct_name, :LLVMGetStructName, [:pointer], :string
+    attach_function :struct_set_body, :LLVMStructSetBody, [:pointer, :pointer, :uint, :int], :void
+    attach_function :count_struct_element_types, :LLVMCountStructElementTypes, [:pointer], :uint
+    attach_function :get_struct_element_types, :LLVMGetStructElementTypes, [:pointer, :pointer], :void
+    attach_function :is_packed_struct, :LLVMIsPackedStruct, [:pointer], :int
+    attach_function :is_opaque_struct, :LLVMIsOpaqueStruct, [:pointer], :int
+    attach_function :get_type_by_name, :LLVMGetTypeByName, [:pointer, :string], :pointer
     
     # Array, pointer and vector types (sequence types)
-    attach_function :LLVMArrayType, [:pointer, :uint], :pointer
-    attach_function :LLVMPointerType, [:pointer, :uint], :pointer
-    attach_function :LLVMVectorType, [:pointer, :uint], :pointer
+    attach_function :array_type, :LLVMArrayType, [:pointer, :uint], :pointer
+    attach_function :pointer_type, :LLVMPointerType, [:pointer, :uint], :pointer
+    attach_function :vector_type, :LLVMVectorType, [:pointer, :uint], :pointer
     
-    attach_function :LLVMGetElementType, [:pointer], :pointer
-    attach_function :LLVMGetArrayLength, [:pointer], :uint
-    attach_function :LLVMGetPointerAddressSpace, [:pointer], :uint
-    attach_function :LLVMGetVectorSize, [:pointer], :uint
+    attach_function :get_element_type, :LLVMGetElementType, [:pointer], :pointer
+    attach_function :get_array_length, :LLVMGetArrayLength, [:pointer], :uint
+    attach_function :get_pointer_address_space, :LLVMGetPointerAddressSpace, [:pointer], :uint
+    attach_function :get_vector_size, :LLVMGetVectorSize, [:pointer], :uint
     
     # All other types
-    attach_function :LLVMVoidTypeInContext, [:pointer], :pointer
-    attach_function :LLVMLabelTypeInContext, [:pointer], :pointer
+    attach_function :void_type_in_context, :LLVMVoidTypeInContext, [:pointer], :pointer
+    attach_function :label_type_in_context, :LLVMLabelTypeInContext, [:pointer], :pointer
     
-    attach_function :LLVMVoidType, [], :pointer
-    attach_function :LLVMLabelType, [], :pointer
+    attach_function :void_type, :LLVMVoidType, [], :pointer
+    attach_function :label_type, :LLVMLabelType, [], :pointer
     
     # All values
-    attach_function :LLVMTypeOf, [:pointer], :pointer
-    attach_function :LLVMGetValueName, [:pointer], :string
-    attach_function :LLVMSetValueName, [:pointer, :string], :void
-    attach_function :LLVMDumpValue, [:pointer], :void
+    attach_function :type_of, :LLVMTypeOf, [:pointer], :pointer
+    attach_function :get_value_name, :LLVMGetValueName, [:pointer], :string
+    attach_function :set_value_name, :LLVMSetValueName, [:pointer, :string], :void
+    attach_function :dump_value, :LLVMDumpValue, [:pointer], :void
     
     # Operations on Users
-    attach_function :LLVMGetOperand, [:pointer, :int], :pointer
-    attach_function :LLVMSetOperand, [:pointer, :int, :pointer], :void
-    attach_function :LLVMGetNumOperands, [:pointer], :int
+    attach_function :get_operand, :LLVMGetOperand, [:pointer, :int], :pointer
+    attach_function :set_operand, :LLVMSetOperand, [:pointer, :int, :pointer], :void
+    attach_function :get_num_operands, :LLVMGetNumOperands, [:pointer], :int
 
     # Constants of any type
-    attach_function :LLVMConstNull, [:pointer], :pointer
-    attach_function :LLVMConstAllOnes, [:pointer], :pointer
-    attach_function :LLVMGetUndef, [:pointer], :pointer
-    attach_function :LLVMIsConstant, [:pointer], :int
-    attach_function :LLVMIsNull, [:pointer], :int
-    attach_function :LLVMIsUndef, [:pointer], :int
-    attach_function :LLVMConstPointerNull, [:pointer], :pointer
+    attach_function :const_null, :LLVMConstNull, [:pointer], :pointer
+    attach_function :const_all_ones, :LLVMConstAllOnes, [:pointer], :pointer
+    attach_function :get_undef, :LLVMGetUndef, [:pointer], :pointer
+    attach_function :is_constant, :LLVMIsConstant, [:pointer], :int
+    attach_function :is_null, :LLVMIsNull, [:pointer], :int
+    attach_function :is_undef, :LLVMIsUndef, [:pointer], :int
+    attach_function :const_pointer_null, :LLVMConstPointerNull, [:pointer], :pointer
     
     # Scalar constants
-    attach_function :LLVMConstInt, [:pointer, :ulong_long, :int], :pointer
-    attach_function :LLVMConstIntOfString, [:pointer, :string, :uint8], :pointer
-    attach_function :LLVMConstIntOfStringAndSize, [:pointer, :string, :uint, :uint8], :pointer
-    attach_function :LLVMConstReal, [:pointer, :double], :pointer
-    attach_function :LLVMConstRealOfString, [:pointer, :string], :pointer
-    attach_function :LLVMConstRealOfStringAndSize, [:pointer, :string, :uint], :pointer
+    attach_function :const_int, :LLVMConstInt, [:pointer, :ulong_long, :int], :pointer
+    attach_function :const_int_of_string, :LLVMConstIntOfString, [:pointer, :string, :uint8], :pointer
+    attach_function :const_int_of_string_and_size, :LLVMConstIntOfStringAndSize, [:pointer, :string, :uint, :uint8], :pointer
+    attach_function :const_real, :LLVMConstReal, [:pointer, :double], :pointer
+    attach_function :const_real_of_string, :LLVMConstRealOfString, [:pointer, :string], :pointer
+    attach_function :const_real_of_string_and_size, :LLVMConstRealOfStringAndSize, [:pointer, :string, :uint], :pointer
     
     # Composite constants
-    attach_function :LLVMConstStringInContext, [:pointer, :string, :uint, :int], :pointer
-    attach_function :LLVMConstStructInContext, [:pointer, :pointer, :uint, :int], :pointer
+    attach_function :const_string_in_context, :LLVMConstStringInContext, [:pointer, :string, :uint, :int], :pointer
+    attach_function :const_struct_in_context, :LLVMConstStructInContext, [:pointer, :pointer, :uint, :int], :pointer
     
-    attach_function :LLVMConstString, [:string, :uint, :int], :pointer
-    attach_function :LLVMConstArray, [:pointer, :pointer, :uint], :pointer
-    attach_function :LLVMConstStruct, [:pointer, :uint, :int], :pointer
-    attach_function :LLVMConstVector, [:pointer, :uint], :pointer
+    attach_function :const_string, :LLVMConstString, [:string, :uint, :int], :pointer
+    attach_function :const_array, :LLVMConstArray, [:pointer, :pointer, :uint], :pointer
+    attach_function :const_struct, :LLVMConstStruct, [:pointer, :uint, :int], :pointer
+    attach_function :const_vector, :LLVMConstVector, [:pointer, :uint], :pointer
     
     # Constant expressions
-    attach_function :LLVMGetConstOpcode, [:pointer], :opcode
-    attach_function :LLVMAlignOf, [:pointer], :pointer
-    attach_function :LLVMSizeOf, [:pointer], :pointer
-    attach_function :LLVMConstNeg, [:pointer], :pointer
-    attach_function :LLVMConstFNeg, [:pointer], :pointer
-    attach_function :LLVMConstNot, [:pointer], :pointer
-    attach_function :LLVMConstAdd, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstNSWAdd, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFAdd, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstSub, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFSub, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstMul, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFMul, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstUDiv, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstSDiv, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstExactSDiv, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFDiv, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstURem, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstSRem, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFRem, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstAnd, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstOr, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstXor, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstICmp, [:int, :pointer, :pointer], :pointer
-    attach_function :LLVMConstFCmp, [:int, :pointer, :pointer], :pointer
-    attach_function :LLVMConstShl, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstLShr, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstAShr, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstGEP, [:pointer, :pointer, :uint], :pointer
-    attach_function :LLVMConstInBoundsGEP, [:pointer, :pointer, :uint], :pointer
-    attach_function :LLVMConstTrunc, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstSExt, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstZExt, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFPTrunc, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFPExt, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstUIToFP, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstSIToFP, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFPToUI, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstFPToSI, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstPtrToInt, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstIntToPtr, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstBitCast, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstZExtOrBitCast, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstSExtOrBitCast, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstTruncOrBitCast, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstPointerCast, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstIntCast, [:pointer, :pointer, :uint], :pointer
-    attach_function :LLVMConstFPCast, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstSelect, [:pointer, :pointer, :pointer], :pointer
-    attach_function :LLVMConstExtractElement, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstInsertElement, [:pointer, :pointer], :pointer
-    attach_function :LLVMConstShuffleVector, [:pointer, :pointer, :pointer], :pointer
-    attach_function :LLVMConstExtractValue, [:pointer, :pointer, :uint], :pointer
-    attach_function :LLVMConstInsertValue, [:pointer, :pointer, :pointer, :uint], :pointer
-    attach_function :LLVMConstInlineAsm, [:pointer, :string, :string, :int], :pointer
+    attach_function :get_const_opcode, :LLVMGetConstOpcode, [:pointer], :opcode
+    attach_function :align_of, :LLVMAlignOf, [:pointer], :pointer
+    attach_function :size_of, :LLVMSizeOf, [:pointer], :pointer
+    attach_function :const_neg, :LLVMConstNeg, [:pointer], :pointer
+    attach_function :const_f_neg, :LLVMConstFNeg, [:pointer], :pointer
+    attach_function :const_not, :LLVMConstNot, [:pointer], :pointer
+    attach_function :const_add, :LLVMConstAdd, [:pointer, :pointer], :pointer
+    attach_function :const_nsw_add, :LLVMConstNSWAdd, [:pointer, :pointer], :pointer
+    attach_function :const_f_add, :LLVMConstFAdd, [:pointer, :pointer], :pointer
+    attach_function :const_sub, :LLVMConstSub, [:pointer, :pointer], :pointer
+    attach_function :const_f_sub, :LLVMConstFSub, [:pointer, :pointer], :pointer
+    attach_function :const_mul, :LLVMConstMul, [:pointer, :pointer], :pointer
+    attach_function :const_f_mul, :LLVMConstFMul, [:pointer, :pointer], :pointer
+    attach_function :const_u_div, :LLVMConstUDiv, [:pointer, :pointer], :pointer
+    attach_function :const_s_div, :LLVMConstSDiv, [:pointer, :pointer], :pointer
+    attach_function :const_exact_s_div, :LLVMConstExactSDiv, [:pointer, :pointer], :pointer
+    attach_function :const_f_div, :LLVMConstFDiv, [:pointer, :pointer], :pointer
+    attach_function :const_u_rem, :LLVMConstURem, [:pointer, :pointer], :pointer
+    attach_function :const_s_rem, :LLVMConstSRem, [:pointer, :pointer], :pointer
+    attach_function :const_f_rem, :LLVMConstFRem, [:pointer, :pointer], :pointer
+    attach_function :const_and, :LLVMConstAnd, [:pointer, :pointer], :pointer
+    attach_function :const_or, :LLVMConstOr, [:pointer, :pointer], :pointer
+    attach_function :const_xor, :LLVMConstXor, [:pointer, :pointer], :pointer
+    attach_function :const_i_cmp, :LLVMConstICmp, [:int, :pointer, :pointer], :pointer
+    attach_function :const_f_cmp, :LLVMConstFCmp, [:int, :pointer, :pointer], :pointer
+    attach_function :const_shl, :LLVMConstShl, [:pointer, :pointer], :pointer
+    attach_function :const_l_shr, :LLVMConstLShr, [:pointer, :pointer], :pointer
+    attach_function :const_a_shr, :LLVMConstAShr, [:pointer, :pointer], :pointer
+    attach_function :const_gep, :LLVMConstGEP, [:pointer, :pointer, :uint], :pointer
+    attach_function :const_in_bounds_gep, :LLVMConstInBoundsGEP, [:pointer, :pointer, :uint], :pointer
+    attach_function :const_trunc, :LLVMConstTrunc, [:pointer, :pointer], :pointer
+    attach_function :const_s_ext, :LLVMConstSExt, [:pointer, :pointer], :pointer
+    attach_function :const_z_ext, :LLVMConstZExt, [:pointer, :pointer], :pointer
+    attach_function :const_fp_trunc, :LLVMConstFPTrunc, [:pointer, :pointer], :pointer
+    attach_function :const_fp_ext, :LLVMConstFPExt, [:pointer, :pointer], :pointer
+    attach_function :const_ui_to_fp, :LLVMConstUIToFP, [:pointer, :pointer], :pointer
+    attach_function :const_si_to_fp, :LLVMConstSIToFP, [:pointer, :pointer], :pointer
+    attach_function :const_fp_to_ui, :LLVMConstFPToUI, [:pointer, :pointer], :pointer
+    attach_function :const_fp_to_si, :LLVMConstFPToSI, [:pointer, :pointer], :pointer
+    attach_function :const_ptr_to_int, :LLVMConstPtrToInt, [:pointer, :pointer], :pointer
+    attach_function :const_int_to_ptr, :LLVMConstIntToPtr, [:pointer, :pointer], :pointer
+    attach_function :const_bit_cast, :LLVMConstBitCast, [:pointer, :pointer], :pointer
+    attach_function :const_z_ext_or_bit_cast, :LLVMConstZExtOrBitCast, [:pointer, :pointer], :pointer
+    attach_function :const_s_ext_or_bit_cast, :LLVMConstSExtOrBitCast, [:pointer, :pointer], :pointer
+    attach_function :const_trunc_or_bit_cast, :LLVMConstTruncOrBitCast, [:pointer, :pointer], :pointer
+    attach_function :const_pointer_cast, :LLVMConstPointerCast, [:pointer, :pointer], :pointer
+    attach_function :const_int_cast, :LLVMConstIntCast, [:pointer, :pointer, :uint], :pointer
+    attach_function :const_fp_cast, :LLVMConstFPCast, [:pointer, :pointer], :pointer
+    attach_function :const_select, :LLVMConstSelect, [:pointer, :pointer, :pointer], :pointer
+    attach_function :const_extract_element, :LLVMConstExtractElement, [:pointer, :pointer], :pointer
+    attach_function :const_insert_element, :LLVMConstInsertElement, [:pointer, :pointer], :pointer
+    attach_function :const_shuffle_vector, :LLVMConstShuffleVector, [:pointer, :pointer, :pointer], :pointer
+    attach_function :const_extract_value, :LLVMConstExtractValue, [:pointer, :pointer, :uint], :pointer
+    attach_function :const_insert_value, :LLVMConstInsertValue, [:pointer, :pointer, :pointer, :uint], :pointer
+    attach_function :const_inline_asm, :LLVMConstInlineAsm, [:pointer, :string, :string, :int], :pointer
     
     # Global variables, functions and aliases (globals)
-    attach_function :LLVMGetGlobalParent, [:pointer], :pointer
-    attach_function :LLVMIsDeclaration, [:pointer], :int
-    attach_function :LLVMGetLinkage, [:pointer], :linkage
-    attach_function :LLVMSetLinkage, [:pointer, :linkage], :void
-    attach_function :LLVMGetSection, [:pointer], :string
-    attach_function :LLVMSetSection, [:pointer, :string], :void
-    attach_function :LLVMGetVisibility, [:pointer], :visibility
-    attach_function :LLVMSetVisibility, [:pointer, :visibility], :void
-    attach_function :LLVMGetAlignment, [:pointer], :uint
-    attach_function :LLVMSetAlignment, [:pointer, :uint], :void
+    attach_function :get_global_parent, :LLVMGetGlobalParent, [:pointer], :pointer
+    attach_function :is_declaration, :LLVMIsDeclaration, [:pointer], :int
+    attach_function :get_linkage, :LLVMGetLinkage, [:pointer], :linkage
+    attach_function :set_linkage, :LLVMSetLinkage, [:pointer, :linkage], :void
+    attach_function :get_section, :LLVMGetSection, [:pointer], :string
+    attach_function :set_section, :LLVMSetSection, [:pointer, :string], :void
+    attach_function :get_visibility, :LLVMGetVisibility, [:pointer], :visibility
+    attach_function :set_visibility, :LLVMSetVisibility, [:pointer, :visibility], :void
+    attach_function :get_alignment, :LLVMGetAlignment, [:pointer], :uint
+    attach_function :set_alignment, :LLVMSetAlignment, [:pointer, :uint], :void
     
-    attach_function :LLVMAddGlobal, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMGetNamedGlobal, [:pointer, :string], :pointer
-    attach_function :LLVMGetFirstGlobal, [:pointer], :pointer
-    attach_function :LLVMGetLastGlobal, [:pointer], :pointer
-    attach_function :LLVMGetNextGlobal, [:pointer], :pointer
-    attach_function :LLVMGetPreviousGlobal, [:pointer], :pointer
-    attach_function :LLVMDeleteGlobal, [:pointer], :void
-    attach_function :LLVMGetInitializer, [:pointer], :pointer
-    attach_function :LLVMSetInitializer, [:pointer, :pointer], :void
-    attach_function :LLVMIsThreadLocal, [:pointer], :bool
-    attach_function :LLVMSetThreadLocal, [:pointer, :int], :void
-    attach_function :LLVMIsGlobalConstant, [:pointer], :bool
-    attach_function :LLVMSetGlobalConstant, [:pointer, :bool], :void
+    attach_function :add_global, :LLVMAddGlobal, [:pointer, :pointer, :string], :pointer
+    attach_function :get_named_global, :LLVMGetNamedGlobal, [:pointer, :string], :pointer
+    attach_function :get_first_global, :LLVMGetFirstGlobal, [:pointer], :pointer
+    attach_function :get_last_global, :LLVMGetLastGlobal, [:pointer], :pointer
+    attach_function :get_next_global, :LLVMGetNextGlobal, [:pointer], :pointer
+    attach_function :get_previous_global, :LLVMGetPreviousGlobal, [:pointer], :pointer
+    attach_function :delete_global, :LLVMDeleteGlobal, [:pointer], :void
+    attach_function :get_initializer, :LLVMGetInitializer, [:pointer], :pointer
+    attach_function :set_initializer, :LLVMSetInitializer, [:pointer, :pointer], :void
+    attach_function :is_thread_local, :LLVMIsThreadLocal, [:pointer], :bool
+    attach_function :set_thread_local, :LLVMSetThreadLocal, [:pointer, :int], :void
+    attach_function :is_global_constant, :LLVMIsGlobalConstant, [:pointer], :bool
+    attach_function :set_global_constant, :LLVMSetGlobalConstant, [:pointer, :bool], :void
     
     # Aliases
-    attach_function :LLVMAddAlias, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :add_alias, :LLVMAddAlias, [:pointer, :pointer, :pointer, :string], :pointer
     
     # Function operations
-    attach_function :LLVMAddFunction, [:pointer, :string, :pointer], :pointer
-    attach_function :LLVMGetNamedFunction, [:pointer, :string], :pointer
-    attach_function :LLVMGetFirstFunction, [:pointer], :pointer
-    attach_function :LLVMGetLastFunction, [:pointer], :pointer
-    attach_function :LLVMGetNextFunction, [:pointer], :pointer
-    attach_function :LLVMGetPreviousFunction, [:pointer], :pointer
-    attach_function :LLVMDeleteFunction, [:pointer], :void
-    attach_function :LLVMGetIntrinsicID, [:pointer], :uint
-    attach_function :LLVMGetFunctionCallConv, [:pointer], :call_conv
-    attach_function :LLVMSetFunctionCallConv, [:pointer, :call_conv], :void
-    attach_function :LLVMGetGC, [:pointer], :string
-    attach_function :LLVMSetGC, [:pointer, :string], :void
-    attach_function :LLVMAddFunctionAttr, [:pointer, :attribute], :void
-    attach_function :LLVMRemoveFunctionAttr, [:pointer, :attribute], :void
+    attach_function :add_function, :LLVMAddFunction, [:pointer, :string, :pointer], :pointer
+    attach_function :get_named_function, :LLVMGetNamedFunction, [:pointer, :string], :pointer
+    attach_function :get_first_function, :LLVMGetFirstFunction, [:pointer], :pointer
+    attach_function :get_last_function, :LLVMGetLastFunction, [:pointer], :pointer
+    attach_function :get_next_function, :LLVMGetNextFunction, [:pointer], :pointer
+    attach_function :get_previous_function, :LLVMGetPreviousFunction, [:pointer], :pointer
+    attach_function :delete_function, :LLVMDeleteFunction, [:pointer], :void
+    attach_function :get_intrinsic_id, :LLVMGetIntrinsicID, [:pointer], :uint
+    attach_function :get_function_call_conv, :LLVMGetFunctionCallConv, [:pointer], :call_conv
+    attach_function :set_function_call_conv, :LLVMSetFunctionCallConv, [:pointer, :call_conv], :void
+    attach_function :get_gc, :LLVMGetGC, [:pointer], :string
+    attach_function :set_gc, :LLVMSetGC, [:pointer, :string], :void
+    attach_function :add_function_attr, :LLVMAddFunctionAttr, [:pointer, :attribute], :void
+    attach_function :remove_function_attr, :LLVMRemoveFunctionAttr, [:pointer, :attribute], :void
     
     # Parameters
-    attach_function :LLVMCountParams, [:pointer], :uint
-    attach_function :LLVMGetParams, [:pointer, :pointer], :void
-    attach_function :LLVMGetParam, [:pointer, :uint], :pointer
-    attach_function :LLVMGetParamParent, [:pointer], :pointer
-    attach_function :LLVMGetFirstParam, [:pointer], :pointer
-    attach_function :LLVMGetLastParam, [:pointer], :pointer
-    attach_function :LLVMGetNextParam, [:pointer], :pointer
-    attach_function :LLVMGetPreviousParam, [:pointer], :pointer
-    attach_function :LLVMAddAttribute, [:pointer, :attribute], :void
-    attach_function :LLVMRemoveAttribute, [:pointer, :attribute], :void
-    attach_function :LLVMSetParamAlignment, [:pointer, :uint], :void
+    attach_function :count_params, :LLVMCountParams, [:pointer], :uint
+    attach_function :get_params, :LLVMGetParams, [:pointer, :pointer], :void
+    attach_function :get_param, :LLVMGetParam, [:pointer, :uint], :pointer
+    attach_function :get_param_parent, :LLVMGetParamParent, [:pointer], :pointer
+    attach_function :get_first_param, :LLVMGetFirstParam, [:pointer], :pointer
+    attach_function :get_last_param, :LLVMGetLastParam, [:pointer], :pointer
+    attach_function :get_next_param, :LLVMGetNextParam, [:pointer], :pointer
+    attach_function :get_previous_param, :LLVMGetPreviousParam, [:pointer], :pointer
+    attach_function :add_attribute, :LLVMAddAttribute, [:pointer, :attribute], :void
+    attach_function :remove_attribute, :LLVMRemoveAttribute, [:pointer, :attribute], :void
+    attach_function :set_param_alignment, :LLVMSetParamAlignment, [:pointer, :uint], :void
     
     # Basic blocks
-    attach_function :LLVMBasicBlockAsValue, [:pointer], :pointer
-    attach_function :LLVMValueIsBasicBlock, [:pointer], :int
-    attach_function :LLVMValueAsBasicBlock, [:pointer], :pointer
-    attach_function :LLVMGetBasicBlockParent, [:pointer], :pointer
-    attach_function :LLVMCountBasicBlocks, [:pointer], :uint
-    attach_function :LLVMGetBasicBlocks, [:pointer, :pointer], :void
-    attach_function :LLVMGetFirstBasicBlock, [:pointer], :pointer
-    attach_function :LLVMGetLastBasicBlock, [:pointer], :pointer
-    attach_function :LLVMGetNextBasicBlock, [:pointer], :pointer
-    attach_function :LLVMGetPreviousBasicBlock, [:pointer], :pointer
-    attach_function :LLVMGetEntryBasicBlock, [:pointer], :pointer
+    attach_function :basic_block_as_value, :LLVMBasicBlockAsValue, [:pointer], :pointer
+    attach_function :value_is_basic_block, :LLVMValueIsBasicBlock, [:pointer], :int
+    attach_function :value_as_basic_block, :LLVMValueAsBasicBlock, [:pointer], :pointer
+    attach_function :get_basic_block_parent, :LLVMGetBasicBlockParent, [:pointer], :pointer
+    attach_function :count_basic_blocks, :LLVMCountBasicBlocks, [:pointer], :uint
+    attach_function :get_basic_blocks, :LLVMGetBasicBlocks, [:pointer, :pointer], :void
+    attach_function :get_first_basic_block, :LLVMGetFirstBasicBlock, [:pointer], :pointer
+    attach_function :get_last_basic_block, :LLVMGetLastBasicBlock, [:pointer], :pointer
+    attach_function :get_next_basic_block, :LLVMGetNextBasicBlock, [:pointer], :pointer
+    attach_function :get_previous_basic_block, :LLVMGetPreviousBasicBlock, [:pointer], :pointer
+    attach_function :get_entry_basic_block, :LLVMGetEntryBasicBlock, [:pointer], :pointer
     
-    attach_function :LLVMAppendBasicBlockInContext, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMInsertBasicBlockInContext, [:pointer, :pointer, :string], :pointer
+    attach_function :append_basic_block_in_context, :LLVMAppendBasicBlockInContext, [:pointer, :pointer, :string], :pointer
+    attach_function :insert_basic_block_in_context, :LLVMInsertBasicBlockInContext, [:pointer, :pointer, :string], :pointer
     
-    attach_function :LLVMAppendBasicBlock, [:pointer, :string], :pointer
-    attach_function :LLVMDeleteBasicBlock, [:pointer], :void
+    attach_function :append_basic_block, :LLVMAppendBasicBlock, [:pointer, :string], :pointer
+    attach_function :delete_basic_block, :LLVMDeleteBasicBlock, [:pointer], :void
     
     # Instructions
-    attach_function :LLVMGetInstructionParent, [:pointer], :pointer
-    attach_function :LLVMGetFirstInstruction, [:pointer], :pointer
-    attach_function :LLVMGetLastInstruction, [:pointer], :pointer
-    attach_function :LLVMGetNextInstruction, [:pointer], :pointer
-    attach_function :LLVMGetPreviousInstruction, [:pointer], :pointer
+    attach_function :get_instruction_parent, :LLVMGetInstructionParent, [:pointer], :pointer
+    attach_function :get_first_instruction, :LLVMGetFirstInstruction, [:pointer], :pointer
+    attach_function :get_last_instruction, :LLVMGetLastInstruction, [:pointer], :pointer
+    attach_function :get_next_instruction, :LLVMGetNextInstruction, [:pointer], :pointer
+    attach_function :get_previous_instruction, :LLVMGetPreviousInstruction, [:pointer], :pointer
     
     # Call sites
-    attach_function :LLVMSetInstructionCallConv, [:pointer, :call_conv], :void
-    attach_function :LLVMGetInstructionCallConv, [:pointer], :call_conv
-    attach_function :LLVMAddInstrAttribute, [:pointer, :uint, :attribute], :void
-    attach_function :LLVMRemoveInstrAttribute, [:pointer, :uint, :attribute], :void
-    attach_function :LLVMSetInstrParamAlignment, [:pointer, :uint, :uint], :void
+    attach_function :set_instruction_call_conv, :LLVMSetInstructionCallConv, [:pointer, :call_conv], :void
+    attach_function :get_instruction_call_conv, :LLVMGetInstructionCallConv, [:pointer], :call_conv
+    attach_function :add_instr_attribute, :LLVMAddInstrAttribute, [:pointer, :uint, :attribute], :void
+    attach_function :remove_instr_attribute, :LLVMRemoveInstrAttribute, [:pointer, :uint, :attribute], :void
+    attach_function :set_instr_param_alignment, :LLVMSetInstrParamAlignment, [:pointer, :uint, :uint], :void
     
     # Call instructions
-    attach_function :LLVMIsTailCall, [:pointer], :int
-    attach_function :LLVMSetTailCall, [:pointer, :int], :void
+    attach_function :is_tail_call, :LLVMIsTailCall, [:pointer], :int
+    attach_function :set_tail_call, :LLVMSetTailCall, [:pointer, :int], :void
     
     # Phi nodes
-    attach_function :LLVMAddIncoming, [:pointer, :pointer, :pointer, :uint], :void
-    attach_function :LLVMCountIncoming, [:pointer], :uint
-    attach_function :LLVMGetIncomingValue, [:pointer, :uint], :pointer
-    attach_function :LLVMGetIncomingBlock, [:pointer, :uint], :pointer
+    attach_function :add_incoming, :LLVMAddIncoming, [:pointer, :pointer, :pointer, :uint], :void
+    attach_function :count_incoming, :LLVMCountIncoming, [:pointer], :uint
+    attach_function :get_incoming_value, :LLVMGetIncomingValue, [:pointer, :uint], :pointer
+    attach_function :get_incoming_block, :LLVMGetIncomingBlock, [:pointer, :uint], :pointer
     
     # Instruction builders
-    attach_function :LLVMCreateBuilderInContext, [:pointer], :pointer
-    attach_function :LLVMCreateBuilder, [], :pointer
-    attach_function :LLVMPositionBuilder, [:pointer, :pointer, :pointer], :void
-    attach_function :LLVMPositionBuilderBefore, [:pointer, :pointer], :void
-    attach_function :LLVMPositionBuilderAtEnd, [:pointer, :pointer], :void
-    attach_function :LLVMGetInsertBlock, [:pointer], :pointer
-    attach_function :LLVMClearInsertionPosition, [:pointer], :void
-    attach_function :LLVMInsertIntoBuilder, [:pointer, :pointer], :void
-    attach_function :LLVMInsertIntoBuilderWithName, [:pointer, :pointer, :string], :void
-    attach_function :LLVMDisposeBuilder, [:pointer], :void
+    attach_function :create_builder_in_context, :LLVMCreateBuilderInContext, [:pointer], :pointer
+    attach_function :create_builder, :LLVMCreateBuilder, [], :pointer
+    attach_function :position_builder, :LLVMPositionBuilder, [:pointer, :pointer, :pointer], :void
+    attach_function :position_builder_before, :LLVMPositionBuilderBefore, [:pointer, :pointer], :void
+    attach_function :position_builder_at_end, :LLVMPositionBuilderAtEnd, [:pointer, :pointer], :void
+    attach_function :get_insert_block, :LLVMGetInsertBlock, [:pointer], :pointer
+    attach_function :clear_insertion_position, :LLVMClearInsertionPosition, [:pointer], :void
+    attach_function :insert_into_builder, :LLVMInsertIntoBuilder, [:pointer, :pointer], :void
+    attach_function :insert_into_builder_with_name, :LLVMInsertIntoBuilderWithName, [:pointer, :pointer, :string], :void
+    attach_function :dispose_builder, :LLVMDisposeBuilder, [:pointer], :void
     
     # Terminators
-    attach_function :LLVMBuildRetVoid, [:pointer], :pointer
-    attach_function :LLVMBuildRet, [:pointer, :pointer], :pointer
-    attach_function :LLVMBuildAggregateRet, [:pointer, :pointer, :uint], :pointer
-    attach_function :LLVMBuildBr, [:pointer, :pointer], :pointer
-    attach_function :LLVMBuildCondBr, [:pointer, :pointer, :pointer, :pointer], :pointer
-    attach_function :LLVMBuildSwitch, [:pointer, :pointer, :pointer, :uint], :pointer
-    attach_function :LLVMBuildInvoke, [:pointer, :pointer, :pointer, :uint, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildUnreachable, [:pointer], :pointer
+    attach_function :build_ret_void, :LLVMBuildRetVoid, [:pointer], :pointer
+    attach_function :build_ret, :LLVMBuildRet, [:pointer, :pointer], :pointer
+    attach_function :build_aggregate_ret, :LLVMBuildAggregateRet, [:pointer, :pointer, :uint], :pointer
+    attach_function :build_br, :LLVMBuildBr, [:pointer, :pointer], :pointer
+    attach_function :build_cond_br, :LLVMBuildCondBr, [:pointer, :pointer, :pointer, :pointer], :pointer
+    attach_function :build_switch, :LLVMBuildSwitch, [:pointer, :pointer, :pointer, :uint], :pointer
+    attach_function :build_invoke, :LLVMBuildInvoke, [:pointer, :pointer, :pointer, :uint, :pointer, :pointer, :string], :pointer
+    attach_function :build_unreachable, :LLVMBuildUnreachable, [:pointer], :pointer
     
     # Switch instruction
-    attach_function :LLVMAddCase, [:pointer, :pointer, :pointer], :void
+    attach_function :add_case, :LLVMAddCase, [:pointer, :pointer, :pointer], :void
     
     # Arithmetic
-    attach_function :LLVMBuildAdd, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildNSWAdd, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFAdd, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildSub, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFSub, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildMul, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFMul, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildUDiv, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildSDiv, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildExactSDiv, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFDiv, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildURem, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildSRem, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFRem, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildShl, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildLShr, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildAShr, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildAnd, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildOr, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildXor, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildNeg, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildNot, [:pointer, :pointer, :string], :pointer
+    attach_function :build_add, :LLVMBuildAdd, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_nsw_add, :LLVMBuildNSWAdd, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_f_add, :LLVMBuildFAdd, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_sub, :LLVMBuildSub, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_f_sub, :LLVMBuildFSub, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_mul, :LLVMBuildMul, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_f_mul, :LLVMBuildFMul, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_u_div, :LLVMBuildUDiv, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_s_div, :LLVMBuildSDiv, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_exact_s_div, :LLVMBuildExactSDiv, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_f_div, :LLVMBuildFDiv, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_u_rem, :LLVMBuildURem, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_s_rem, :LLVMBuildSRem, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_f_rem, :LLVMBuildFRem, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_shl, :LLVMBuildShl, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_l_shr, :LLVMBuildLShr, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_a_shr, :LLVMBuildAShr, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_and, :LLVMBuildAnd, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_or, :LLVMBuildOr, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_xor, :LLVMBuildXor, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_neg, :LLVMBuildNeg, [:pointer, :pointer, :string], :pointer
+    attach_function :build_not, :LLVMBuildNot, [:pointer, :pointer, :string], :pointer
     
     # Memory
-    attach_function :LLVMBuildMalloc, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildArrayMalloc, [:pointer, :pointer, :pointer, :string], :string
-    attach_function :LLVMBuildAlloca, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildArrayAlloca, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFree, [:pointer, :pointer], :pointer
-    attach_function :LLVMBuildLoad, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildStore, [:pointer, :pointer, :pointer], :pointer
-    attach_function :LLVMBuildGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-    attach_function :LLVMBuildInBoundsGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-    attach_function :LLVMBuildStructGEP, [:pointer, :pointer, :uint, :string], :pointer
-    attach_function :LLVMBuildGlobalString, [:pointer, :string, :string], :pointer
-    attach_function :LLVMBuildGlobalStringPtr, [:pointer, :string, :string], :pointer
+    attach_function :build_malloc, :LLVMBuildMalloc, [:pointer, :pointer, :string], :pointer
+    attach_function :build_array_malloc, :LLVMBuildArrayMalloc, [:pointer, :pointer, :pointer, :string], :string
+    attach_function :build_alloca, :LLVMBuildAlloca, [:pointer, :pointer, :string], :pointer
+    attach_function :build_array_alloca, :LLVMBuildArrayAlloca, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_free, :LLVMBuildFree, [:pointer, :pointer], :pointer
+    attach_function :build_load, :LLVMBuildLoad, [:pointer, :pointer, :string], :pointer
+    attach_function :build_store, :LLVMBuildStore, [:pointer, :pointer, :pointer], :pointer
+    attach_function :build_gep, :LLVMBuildGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
+    attach_function :build_in_bounds_gep, :LLVMBuildInBoundsGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
+    attach_function :build_struct_gep, :LLVMBuildStructGEP, [:pointer, :pointer, :uint, :string], :pointer
+    attach_function :build_global_string, :LLVMBuildGlobalString, [:pointer, :string, :string], :pointer
+    attach_function :build_global_string_ptr, :LLVMBuildGlobalStringPtr, [:pointer, :string, :string], :pointer
     
     # Casts
-    attach_function :LLVMBuildTrunc, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildZExt, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildSExt, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFPToUI, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFPToSI, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildUIToFP, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildSIToFP, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFPTrunc, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFPExt, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildPtrToInt, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildIntToPtr, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildZExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildSExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildTruncOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildPointerCast, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildIntCast, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFPCast, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_trunc, :LLVMBuildTrunc, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_z_ext, :LLVMBuildZExt, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_s_ext, :LLVMBuildSExt, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_fp_to_ui, :LLVMBuildFPToUI, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_fp_to_si, :LLVMBuildFPToSI, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_ui_to_fp, :LLVMBuildUIToFP, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_si_to_fp, :LLVMBuildSIToFP, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_fp_trunc, :LLVMBuildFPTrunc, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_fp_ext, :LLVMBuildFPExt, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_ptr_to_int, :LLVMBuildPtrToInt, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_int_to_ptr, :LLVMBuildIntToPtr, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_bit_cast, :LLVMBuildBitCast, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_z_ext_or_bit_cast, :LLVMBuildZExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_s_ext_or_bit_cast, :LLVMBuildSExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_trunc_or_bit_cast, :LLVMBuildTruncOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_pointer_cast, :LLVMBuildPointerCast, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_int_cast, :LLVMBuildIntCast, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_fp_cast, :LLVMBuildFPCast, [:pointer, :pointer, :pointer, :string], :pointer
     
     # Comparisons
-    attach_function :LLVMBuildICmp, [:pointer, :int_predicate, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildFCmp, [:pointer, :real_predicate, :pointer, :pointer, :string], :pointer
+    attach_function :build_i_cmp, :LLVMBuildICmp, [:pointer, :int_predicate, :pointer, :pointer, :string], :pointer
+    attach_function :build_f_cmp, :LLVMBuildFCmp, [:pointer, :real_predicate, :pointer, :pointer, :string], :pointer
     
     # Misc
-    attach_function :LLVMBuildPhi, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildCall, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-    attach_function :LLVMBuildSelect, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildVAArg, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildExtractElement, [:pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildInsertElement, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildShuffleVector, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildExtractValue, [:pointer, :pointer, :uint, :string], :pointer
-    attach_function :LLVMBuildInsertValue, [:pointer, :pointer, :pointer, :uint, :string], :pointer
+    attach_function :build_phi, :LLVMBuildPhi, [:pointer, :pointer, :string], :pointer
+    attach_function :build_call, :LLVMBuildCall, [:pointer, :pointer, :pointer, :uint, :string], :pointer
+    attach_function :build_select, :LLVMBuildSelect, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_va_arg, :LLVMBuildVAArg, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_extract_element, :LLVMBuildExtractElement, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_insert_element, :LLVMBuildInsertElement, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_shuffle_vector, :LLVMBuildShuffleVector, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_extract_value, :LLVMBuildExtractValue, [:pointer, :pointer, :uint, :string], :pointer
+    attach_function :build_insert_value, :LLVMBuildInsertValue, [:pointer, :pointer, :pointer, :uint, :string], :pointer
     
-    attach_function :LLVMBuildIsNull, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildIsNotNull, [:pointer, :pointer, :string], :pointer
-    attach_function :LLVMBuildPtrDiff, [:pointer, :pointer, :pointer, :string], :pointer
+    attach_function :build_is_null, :LLVMBuildIsNull, [:pointer, :pointer, :string], :pointer
+    attach_function :build_is_not_null, :LLVMBuildIsNotNull, [:pointer, :pointer, :string], :pointer
+    attach_function :build_ptr_diff, :LLVMBuildPtrDiff, [:pointer, :pointer, :pointer, :string], :pointer
     
     # Module providers
-    attach_function :LLVMCreateModuleProviderForExistingModule, [:pointer], :pointer
-    attach_function :LLVMDisposeModuleProvider, [:pointer], :void
+    attach_function :create_module_provider_for_existing_module, :LLVMCreateModuleProviderForExistingModule, [:pointer], :pointer
+    attach_function :dispose_module_provider, :LLVMDisposeModuleProvider, [:pointer], :void
     
     # Memory buffers
-    attach_function :LLVMCreateMemoryBufferWithContentsOfFile, [:string, :pointer, :pointer], :int
-    attach_function :LLVMCreateMemoryBufferWithSTDIN, [:pointer, :pointer], :int
-    attach_function :LLVMDisposeMemoryBuffer, [:pointer], :void
+    attach_function :create_memory_buffer_with_contents_of_file, :LLVMCreateMemoryBufferWithContentsOfFile, [:string, :pointer, :pointer], :int
+    attach_function :create_memory_buffer_with_stdin, :LLVMCreateMemoryBufferWithSTDIN, [:pointer, :pointer], :int
+    attach_function :dispose_memory_buffer, :LLVMDisposeMemoryBuffer, [:pointer], :void
     
     # Pass managers
-    attach_function :LLVMCreatePassManager, [], :pointer
-    attach_function :LLVMCreateFunctionPassManager, [:pointer], :pointer
-    attach_function :LLVMCreateFunctionPassManagerForModule, [:pointer], :pointer
-    attach_function :LLVMRunPassManager, [:pointer, :pointer], :int
-    attach_function :LLVMInitializeFunctionPassManager, [:pointer], :int
-    attach_function :LLVMRunFunctionPassManager, [:pointer, :pointer], :int
-    attach_function :LLVMFinalizeFunctionPassManager, [:pointer], :int
-    attach_function :LLVMDisposePassManager, [:pointer], :void
+    attach_function :create_pass_manager, :LLVMCreatePassManager, [], :pointer
+    attach_function :create_function_pass_manager, :LLVMCreateFunctionPassManager, [:pointer], :pointer
+    attach_function :create_function_pass_manager_for_module, :LLVMCreateFunctionPassManagerForModule, [:pointer], :pointer
+    attach_function :run_pass_manager, :LLVMRunPassManager, [:pointer, :pointer], :int
+    attach_function :initialize_function_pass_manager, :LLVMInitializeFunctionPassManager, [:pointer], :int
+    attach_function :run_function_pass_manager, :LLVMRunFunctionPassManager, [:pointer, :pointer], :int
+    attach_function :finalize_function_pass_manager, :LLVMFinalizeFunctionPassManager, [:pointer], :int
+    attach_function :dispose_pass_manager, :LLVMDisposePassManager, [:pointer], :void
   end
   
   require 'llvm/core/context'

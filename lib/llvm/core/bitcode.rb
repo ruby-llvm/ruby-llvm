@@ -1,10 +1,10 @@
 module LLVM
   # @private
   module C
-    attach_function :LLVMParseBitcode, [:pointer, :buffer_out, :buffer_out], :int
-    attach_function :LLVMParseBitcodeInContext, [:pointer, :pointer, :buffer_out, :buffer_out], :int
-    attach_function :LLVMWriteBitcodeToFile, [:pointer, :string], :int
-    attach_function :LLVMWriteBitcodeToFD, [:pointer, :int, :int, :int], :int
+    attach_function :parse_bitcode, :LLVMParseBitcode, [:pointer, :buffer_out, :buffer_out], :int
+    attach_function :parse_bitcode_in_context, :LLVMParseBitcodeInContext, [:pointer, :pointer, :buffer_out, :buffer_out], :int
+    attach_function :write_bitcode_to_file, :LLVMWriteBitcodeToFile, [:pointer, :string], :int
+    attach_function :write_bitcode_to_fd, :LLVMWriteBitcodeToFD, [:pointer, :int, :int, :int], :int
   end
 
   class Module
@@ -18,7 +18,7 @@ module LLVM
                       end
       FFI::MemoryPointer.new(:pointer) do |mod_ref|
         FFI::MemoryPointer.new(:pointer) do |msg_ref|
-          status = C.LLVMParseBitcode(memory_buffer, mod_ref, msg_ref)
+          status = C.parse_bitcode(memory_buffer, mod_ref, msg_ref)
           raise msg_ref.get_pointer(0).get_string(0) if status != 0
           return from_ptr(mod_ref.get_pointer(0))
         end
@@ -30,13 +30,13 @@ module LLVM
     # @return [true, false] Success
     def write_bitcode(path_or_io)
       status = if path_or_io.respond_to?(:path)
-                 C.LLVMWriteBitcodeToFile(self, path_or_io.path)
+                 C.write_bitcode_to_file(self, path_or_io.path)
                elsif path_or_io.respond_to?(:fileno)
-                 C.LLVMWriteBitcodeToFD(self, path_or_io.fileno, 0, 1)
+                 C.write_bitcode_to_fd(self, path_or_io.fileno, 0, 1)
                elsif path_or_io.kind_of?(Integer)
-                 C.LLVMWriteBitcodeToFD(self, path_or_io, 0, 1)
+                 C.write_bitcode_to_fd(self, path_or_io, 0, 1)
                else
-                 C.LLVMWriteBitcodeToFile(self, path_or_io.to_str)
+                 C.write_bitcode_to_file(self, path_or_io.to_str)
                end
       return status == 0
     end
@@ -62,7 +62,7 @@ module LLVM
     def self.from_file(path)
       FFI::MemoryPointer.new(:pointer) do |buf_ref|
         FFI::MemoryPointer.new(:pointer) do |msg_ref|
-          status = C.LLVMCreateMemoryBufferWithContentsOfFile(path.to_str, buf_ref, msg_ref)
+          status = C.create_memory_buffer_with_contents_of_file(path.to_str, buf_ref, msg_ref)
           raise msg_ref.get_pointer(0).get_string(0) if status != 0
           return new(buf_ref.get_pointer(0))
         end
@@ -74,7 +74,7 @@ module LLVM
     def self.from_stdin
       FFI::Buffer.new(:pointer) do |buf_ref|
         FFI::Buffer.new(:pointer) do |msg_ref|
-          status = C.LLVMCreateMemoryBufferWithSTDIN(buf_ref, msg_ref)
+          status = C.create_memory_buffer_with_stdin(buf_ref, msg_ref)
           raise msg_ref.get_pointer(0).get_string(0) if status != 0
           return new(buf_ref.get_pointer(0))
         end
@@ -83,7 +83,7 @@ module LLVM
 
     def dispose
       return if @ptr.nil?
-      C.LLVMDisposeMemoryBuffer(@ptr)
+      C.dispose_memory_buffer(@ptr)
       @ptr = nil
     end
   end

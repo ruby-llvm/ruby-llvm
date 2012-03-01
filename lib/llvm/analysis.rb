@@ -11,8 +11,8 @@ module LLVM
       :return_status
     ]
     
-    attach_function :LLVMVerifyModule, [:pointer, :verifier_failure_action, :pointer], :int
-    attach_function :LLVMVerifyFunction, [:pointer, :verifier_failure_action], :int
+    attach_function :verify_module, :LLVMVerifyModule, [:pointer, :verifier_failure_action, :pointer], :int
+    attach_function :verify_function, :LLVMVerifyFunction, [:pointer, :verifier_failure_action], :int
   end
   
   class Module
@@ -33,9 +33,9 @@ module LLVM
       def do_verification(action)
         result = nil
         FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |str|
-          status = C.LLVMVerifyModule(self, action, str)
+          status = C.verify_module(self, action, str)
           result = str.read_string if status == 1
-          C.LLVMDisposeMessage str.read_pointer
+          C.dispose_message str.read_pointer
         end
         result
       end
@@ -57,7 +57,7 @@ module LLVM
     private
 
     def do_verification(action)
-      C.LLVMVerifyFunction(self, action) != 0
+      C.verify_function(self, action) != 0
     end
   end
 end
