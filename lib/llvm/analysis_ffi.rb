@@ -6,15 +6,17 @@ module LLVM::C
   extend FFI::Library
   ffi_lib 'LLVM-3.0'
 
+  # (Not documented)
+  # 
   # === Options:
-  # :abort_process::
+  # :abort_process ::
   #   
-  # :print_message::
+  # :print_message ::
   #   verifier will print to stderr and abort()
-  # :return_status::
+  # :return_status ::
   #   verifier will print to stderr and return 1
   #
-  # @return [Array of Symbols]
+  # @return [Array<Symbol>]
   def self.verifier_failure_action_enum
     [:abort_process, :print_message, :return_status]
   end
@@ -29,9 +31,9 @@ module LLVM::C
   #    OutMessage must be disposed with LLVMDisposeMessage.
   # 
   # @method verify_module(m, action, out_message)
-  # @param [FFI::Pointer of ModuleRef] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [Symbol from verifier_failure_action_enum] action 
-  # @param [FFI::Pointer to ] out_message 
+  # @param [FFI::Pointer(**Char_S)] out_message 
   # @return [Integer] 
   # @scope class
   attach_function :verify_module, :LLVMVerifyModule, [:pointer, :verifier_failure_action, :pointer], :int
@@ -40,7 +42,7 @@ module LLVM::C
   #    for debugging.
   # 
   # @method verify_function(fn, action)
-  # @param [FFI::Pointer of ValueRef] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [Symbol from verifier_failure_action_enum] action 
   # @return [Integer] 
   # @scope class
@@ -50,13 +52,15 @@ module LLVM::C
   #    Useful for debugging.
   # 
   # @method view_function_cfg(fn)
-  # @param [FFI::Pointer of ValueRef] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [nil] 
   # @scope class
   attach_function :view_function_cfg, :LLVMViewFunctionCFG, [:pointer], :void
 
+  # (Not documented)
+  # 
   # @method view_function_cfg_only(fn)
-  # @param [FFI::Pointer of ValueRef] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [nil] 
   # @scope class
   attach_function :view_function_cfg_only, :LLVMViewFunctionCFGOnly, [:pointer], :void

@@ -6,8 +6,10 @@ module LLVM::C
   extend FFI::Library
   ffi_lib 'LLVM-3.0'
 
+  # (Not documented)
+  # 
   # @method add_argument_promotion_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_argument_promotion_pass, :LLVMAddArgumentPromotionPass, [:pointer], :void
@@ -15,7 +17,7 @@ module LLVM::C
   # See llvm::createConstantMergePass function.
   # 
   # @method add_constant_merge_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_constant_merge_pass, :LLVMAddConstantMergePass, [:pointer], :void
@@ -23,7 +25,7 @@ module LLVM::C
   # See llvm::createDeadArgEliminationPass function.
   # 
   # @method add_dead_arg_elimination_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_dead_arg_elimination_pass, :LLVMAddDeadArgEliminationPass, [:pointer], :void
@@ -31,7 +33,7 @@ module LLVM::C
   # See llvm::createFunctionAttrsPass function.
   # 
   # @method add_function_attrs_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_function_attrs_pass, :LLVMAddFunctionAttrsPass, [:pointer], :void
@@ -39,7 +41,7 @@ module LLVM::C
   # See llvm::createFunctionInliningPass function.
   # 
   # @method add_function_inlining_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_function_inlining_pass, :LLVMAddFunctionInliningPass, [:pointer], :void
@@ -47,7 +49,7 @@ module LLVM::C
   # See llvm::createAlwaysInlinerPass function.
   # 
   # @method add_always_inliner_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_always_inliner_pass, :LLVMAddAlwaysInlinerPass, [:pointer], :void
@@ -55,7 +57,7 @@ module LLVM::C
   # See llvm::createGlobalDCEPass function.
   # 
   # @method add_global_dce_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_global_dce_pass, :LLVMAddGlobalDCEPass, [:pointer], :void
@@ -63,7 +65,7 @@ module LLVM::C
   # See llvm::createGlobalOptimizerPass function.
   # 
   # @method add_global_optimizer_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_global_optimizer_pass, :LLVMAddGlobalOptimizerPass, [:pointer], :void
@@ -71,7 +73,7 @@ module LLVM::C
   # See llvm::createIPConstantPropagationPass function.
   # 
   # @method add_ip_constant_propagation_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_ip_constant_propagation_pass, :LLVMAddIPConstantPropagationPass, [:pointer], :void
@@ -79,7 +81,7 @@ module LLVM::C
   # See llvm::createPruneEHPass function.
   # 
   # @method add_prune_eh_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_prune_eh_pass, :LLVMAddPruneEHPass, [:pointer], :void
@@ -87,7 +89,7 @@ module LLVM::C
   # See llvm::createIPSCCPPass function.
   # 
   # @method add_ipsccp_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_ipsccp_pass, :LLVMAddIPSCCPPass, [:pointer], :void
@@ -95,7 +97,7 @@ module LLVM::C
   # See llvm::createInternalizePass function.
   # 
   # @method add_internalize_pass(pass_manager_ref, all_but_main)
-  # @param [FFI::Pointer of PassManagerRef] pass_manager_ref 
+  # @param [FFI::Pointer(PassManagerRef)] pass_manager_ref 
   # @param [Integer] all_but_main 
   # @return [nil] 
   # @scope class
@@ -104,7 +106,7 @@ module LLVM::C
   # See llvm::createStripDeadPrototypesPass function.
   # 
   # @method add_strip_dead_prototypes_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_strip_dead_prototypes_pass, :LLVMAddStripDeadPrototypesPass, [:pointer], :void
@@ -112,7 +114,7 @@ module LLVM::C
   # See llvm::createStripSymbolsPass function.
   # 
   # @method add_strip_symbols_pass(pm)
-  # @param [FFI::Pointer of PassManagerRef] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_strip_symbols_pass, :LLVMAddStripSymbolsPass, [:pointer], :void

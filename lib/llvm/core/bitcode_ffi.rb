@@ -6,19 +6,23 @@ module LLVM::C
   extend FFI::Library
   ffi_lib 'LLVM-3.0'
 
+  # (Not documented)
+  # 
   # @method parse_bitcode(mem_buf, out_module, out_message)
-  # @param [FFI::Pointer of MemoryBufferRef] mem_buf 
-  # @param [FFI::Pointer to ] out_module 
-  # @param [FFI::Pointer to ] out_message 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
+  # @param [FFI::Pointer(*ModuleRef)] out_module 
+  # @param [FFI::Pointer(**Char_S)] out_message 
   # @return [Integer] 
   # @scope class
   attach_function :parse_bitcode, :LLVMParseBitcode, [:pointer, :pointer, :pointer], :int
 
+  # (Not documented)
+  # 
   # @method parse_bitcode_in_context(context_ref, mem_buf, out_module, out_message)
-  # @param [FFI::Pointer of ContextRef] context_ref 
-  # @param [FFI::Pointer of MemoryBufferRef] mem_buf 
-  # @param [FFI::Pointer to ] out_module 
-  # @param [FFI::Pointer to ] out_message 
+  # @param [FFI::Pointer(ContextRef)] context_ref 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
+  # @param [FFI::Pointer(*ModuleRef)] out_module 
+  # @param [FFI::Pointer(**Char_S)] out_message 
   # @return [Integer] 
   # @scope class
   attach_function :parse_bitcode_in_context, :LLVMParseBitcodeInContext, [:pointer, :pointer, :pointer, :pointer], :int
@@ -28,18 +32,20 @@ module LLVM::C
   #     Optionally returns a human-readable error message via OutMessage.
   # 
   # @method get_bitcode_module_in_context(context_ref, mem_buf, out_m, out_message)
-  # @param [FFI::Pointer of ContextRef] context_ref 
-  # @param [FFI::Pointer of MemoryBufferRef] mem_buf 
-  # @param [FFI::Pointer to ] out_m 
-  # @param [FFI::Pointer to ] out_message 
+  # @param [FFI::Pointer(ContextRef)] context_ref 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
+  # @param [FFI::Pointer(*ModuleRef)] out_m 
+  # @param [FFI::Pointer(**Char_S)] out_message 
   # @return [Integer] 
   # @scope class
   attach_function :get_bitcode_module_in_context, :LLVMGetBitcodeModuleInContext, [:pointer, :pointer, :pointer, :pointer], :int
 
+  # (Not documented)
+  # 
   # @method get_bitcode_module(mem_buf, out_m, out_message)
-  # @param [FFI::Pointer of MemoryBufferRef] mem_buf 
-  # @param [FFI::Pointer to ] out_m 
-  # @param [FFI::Pointer to ] out_message 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
+  # @param [FFI::Pointer(*ModuleRef)] out_m 
+  # @param [FFI::Pointer(**Char_S)] out_message 
   # @return [Integer] 
   # @scope class
   attach_function :get_bitcode_module, :LLVMGetBitcodeModule, [:pointer, :pointer, :pointer], :int
@@ -47,10 +53,10 @@ module LLVM::C
   # Deprecated: Use LLVMGetBitcodeModuleInContext instead.
   # 
   # @method get_bitcode_module_provider_in_context(context_ref, mem_buf, out_mp, out_message)
-  # @param [FFI::Pointer of ContextRef] context_ref 
-  # @param [FFI::Pointer of MemoryBufferRef] mem_buf 
-  # @param [FFI::Pointer to ] out_mp 
-  # @param [FFI::Pointer to ] out_message 
+  # @param [FFI::Pointer(ContextRef)] context_ref 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
+  # @param [FFI::Pointer(*ModuleProviderRef)] out_mp 
+  # @param [FFI::Pointer(**Char_S)] out_message 
   # @return [Integer] 
   # @scope class
   attach_function :get_bitcode_module_provider_in_context, :LLVMGetBitcodeModuleProviderInContext, [:pointer, :pointer, :pointer, :pointer], :int
@@ -58,15 +64,17 @@ module LLVM::C
   # Deprecated: Use LLVMGetBitcodeModule instead.
   # 
   # @method get_bitcode_module_provider(mem_buf, out_mp, out_message)
-  # @param [FFI::Pointer of MemoryBufferRef] mem_buf 
-  # @param [FFI::Pointer to ] out_mp 
-  # @param [FFI::Pointer to ] out_message 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
+  # @param [FFI::Pointer(*ModuleProviderRef)] out_mp 
+  # @param [FFI::Pointer(**Char_S)] out_message 
   # @return [Integer] 
   # @scope class
   attach_function :get_bitcode_module_provider, :LLVMGetBitcodeModuleProvider, [:pointer, :pointer, :pointer], :int
 
+  # (Not documented)
+  # 
   # @method write_bitcode_to_file(m, path)
-  # @param [FFI::Pointer of ModuleRef] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] path 
   # @return [Integer] 
   # @scope class
@@ -75,7 +83,7 @@ module LLVM::C
   # Writes a module to an open file descriptor. Returns 0 on success.
   # 
   # @method write_bitcode_to_fd(m, fd, should_close, unbuffered)
-  # @param [FFI::Pointer of ModuleRef] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [Integer] fd 
   # @param [Integer] should_close 
   # @param [Integer] unbuffered 
@@ -87,7 +95,7 @@ module LLVM::C
   #     descriptor. Returns 0 on success. Closes the Handle.
   # 
   # @method write_bitcode_to_file_handle(m, handle)
-  # @param [FFI::Pointer of ModuleRef] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [Integer] handle 
   # @return [Integer] 
   # @scope class

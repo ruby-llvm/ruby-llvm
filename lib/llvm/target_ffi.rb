@@ -6,13 +6,15 @@ module LLVM::C
   extend FFI::Library
   ffi_lib 'LLVM-3.0'
 
+  # (Not documented)
+  # 
   # === Options:
-  # :big::
+  # :big ::
   #   
-  # :little::
+  # :little ::
   #   
   #
-  # @return [Array of Symbols]
+  # @return [Array<Symbol>]
   def self.byte_ordering_enum
     [:big, :little]
   end
@@ -21,12 +23,33 @@ module LLVM::C
     :little
   ]
 
+  # (Not documented)
+  # 
+  # = Fields:
+  #
+  class OpaqueTargetData < FFI::Struct
+  end
+
+  # (Not documented)
+  # 
+  # = Fields:
+  #
+  class OpaqueTargetLibraryInfotData < FFI::Struct
+  end
+
+  # (Not documented)
+  # 
+  # = Fields:
+  #
+  class StructLayout < FFI::Struct
+  end
+
   # Creates target data from a target layout string.
   #     See the constructor llvm::TargetData::TargetData.
   # 
   # @method create_target_data(string_rep)
   # @param [String] string_rep 
-  # @return [FFI::Pointer of TargetDataRef] 
+  # @return [FFI::Pointer(TargetDataRef)] 
   # @scope class
   attach_function :create_target_data, :LLVMCreateTargetData, [:string], :pointer
 
@@ -35,8 +58,8 @@ module LLVM::C
   #     See the method llvm::PassManagerBase::add.
   # 
   # @method add_target_data(target_data_ref, pass_manager_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of PassManagerRef] pass_manager_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(PassManagerRef)] pass_manager_ref 
   # @return [nil] 
   # @scope class
   attach_function :add_target_data, :LLVMAddTargetData, [:pointer, :pointer], :void
@@ -46,8 +69,8 @@ module LLVM::C
   #     See the method llvm::PassManagerBase::add.
   # 
   # @method add_target_library_info(target_library_info_ref, pass_manager_ref)
-  # @param [FFI::Pointer of TargetLibraryInfoRef] target_library_info_ref 
-  # @param [FFI::Pointer of PassManagerRef] pass_manager_ref 
+  # @param [FFI::Pointer(TargetLibraryInfoRef)] target_library_info_ref 
+  # @param [FFI::Pointer(PassManagerRef)] pass_manager_ref 
   # @return [nil] 
   # @scope class
   attach_function :add_target_library_info, :LLVMAddTargetLibraryInfo, [:pointer, :pointer], :void
@@ -57,7 +80,7 @@ module LLVM::C
   #     See the constructor llvm::TargetData::TargetData.
   # 
   # @method copy_string_rep_of_target_data(target_data_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
   # @return [String] 
   # @scope class
   attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [:pointer], :string
@@ -67,7 +90,7 @@ module LLVM::C
   #     See the method llvm::TargetData::isLittleEndian.
   # 
   # @method byte_order(target_data_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
   # @return [Symbol from byte_ordering_enum] 
   # @scope class
   attach_function :byte_order, :LLVMByteOrder, [:pointer], :byte_ordering
@@ -76,7 +99,7 @@ module LLVM::C
   #     See the method llvm::TargetData::getPointerSize.
   # 
   # @method pointer_size(target_data_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
   # @return [Integer] 
   # @scope class
   attach_function :pointer_size, :LLVMPointerSize, [:pointer], :uint
@@ -85,8 +108,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getIntPtrType.
   # 
   # @method int_ptr_type(target_data_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @return [FFI::Pointer of TypeRef] 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
   attach_function :int_ptr_type, :LLVMIntPtrType, [:pointer], :pointer
 
@@ -94,8 +117,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getTypeSizeInBits.
   # 
   # @method size_of_type_in_bits(target_data_ref, type_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] type_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
   attach_function :size_of_type_in_bits, :LLVMSizeOfTypeInBits, [:pointer, :pointer], :ulong_long
@@ -104,8 +127,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getTypeStoreSize.
   # 
   # @method store_size_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] type_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
   attach_function :store_size_of_type, :LLVMStoreSizeOfType, [:pointer, :pointer], :ulong_long
@@ -114,8 +137,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getTypeAllocSize.
   # 
   # @method abi_size_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] type_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
   attach_function :abi_size_of_type, :LLVMABISizeOfType, [:pointer, :pointer], :ulong_long
@@ -124,8 +147,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getTypeABISize.
   # 
   # @method abi_alignment_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] type_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
   attach_function :abi_alignment_of_type, :LLVMABIAlignmentOfType, [:pointer, :pointer], :uint
@@ -134,8 +157,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getTypeABISize.
   # 
   # @method call_frame_alignment_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] type_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
   attach_function :call_frame_alignment_of_type, :LLVMCallFrameAlignmentOfType, [:pointer, :pointer], :uint
@@ -144,8 +167,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getTypeABISize.
   # 
   # @method preferred_alignment_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] type_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
   attach_function :preferred_alignment_of_type, :LLVMPreferredAlignmentOfType, [:pointer, :pointer], :uint
@@ -154,8 +177,8 @@ module LLVM::C
   #     See the method llvm::TargetData::getPreferredAlignment.
   # 
   # @method preferred_alignment_of_global(target_data_ref, global_var)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of ValueRef] global_var 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [Integer] 
   # @scope class
   attach_function :preferred_alignment_of_global, :LLVMPreferredAlignmentOfGlobal, [:pointer, :pointer], :uint
@@ -164,8 +187,8 @@ module LLVM::C
   #     See the method llvm::StructLayout::getElementContainingOffset.
   # 
   # @method element_at_offset(target_data_ref, struct_ty, offset)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] struct_ty 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [Integer] offset 
   # @return [Integer] 
   # @scope class
@@ -175,8 +198,8 @@ module LLVM::C
   #     See the method llvm::StructLayout::getElementContainingOffset.
   # 
   # @method offset_of_element(target_data_ref, struct_ty, element)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
-  # @param [FFI::Pointer of TypeRef] struct_ty 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [Integer] element 
   # @return [Integer] 
   # @scope class
@@ -186,7 +209,7 @@ module LLVM::C
   #     See the destructor llvm::TargetData::~TargetData.
   # 
   # @method dispose_target_data(target_data_ref)
-  # @param [FFI::Pointer of TargetDataRef] target_data_ref 
+  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
   # @return [nil] 
   # @scope class
   attach_function :dispose_target_data, :LLVMDisposeTargetData, [:pointer], :void
