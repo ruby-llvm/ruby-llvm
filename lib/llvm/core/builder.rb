@@ -66,6 +66,7 @@ module LLVM
     # Unconditional branching (i.e. goto)
     # @LLVMinst br
     def br(block)
+      raise "Block must not be nil" if block.nil?
       Instruction.from_ptr(
         C.LLVMBuildBr(self, block))
     end
@@ -260,6 +261,7 @@ module LLVM
     # pointer (an Instruction).
     # @LLVMinst store
     def store(val, pointer)
+      raise "val must be a Value, got #{val.class.name}" unless Value === val
       Instruction.from_ptr(C.LLVMBuildStore(self, val, pointer))
     end
 
