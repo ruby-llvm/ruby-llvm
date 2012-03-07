@@ -1,15 +1,22 @@
 module LLVM  
   class Module
-    private_class_method :new
-    
     # @private
     def self.from_ptr(ptr)
-      ptr.null? ? nil : new(ptr)
+      return if ptr.null?
+      mod = allocate
+      mod.instance_variable_set(:@ptr, ptr)
+      mod
     end
     
-    # @private
-    def initialize(ptr)
-      @ptr = ptr
+    # Important: Call #dispose to free backend memory after use, but not when using JITCompiler with this module.
+    def initialize(name)
+      @ptr = C.module_create_with_name(name)
+    end
+    
+    def dispose
+      return if @ptr.nil?
+      C.dispose_module(@ptr)
+      @ptr = nil
     end
     
     # @private
@@ -32,11 +39,6 @@ module LLVM
       other.instance_of?(self.class) && self == other
     end
 
-    # Creates a module with the given name.
-    def self.create(name)
-      new(C.LLVMModuleCreateWithName(name))
-    end
-    
     # Returns a TypeCollection of all the Types in the module.
     def types
       @types ||= TypeCollection.new(self)
@@ -47,14 +49,9 @@ module LLVM
         @module = mod
       end
       
-      # Adds the given Type to the collection with the given name (symbol or string).
-      def add(name, type)
-        C.LLVMAddTypeName(@module, name.to_s, type)
-      end
-      
       # Returns the Type with the given name (symbol or string).
       def named(name)
-        Type.from_ptr(C.LLVMGetTypeByName(@module, name.to_s))
+        Type.from_ptr(C.get_type_by_name(@module, name.to_s), nil)
       end
       
       # Returns the Type with the a name equal to key (symbol or string).
@@ -82,37 +79,37 @@ module LLVM
       
       # Adds a GlobalVariable with the given type and name to the collection (symbol or string).
       def add(ty, name)
-        GlobalVariable.from_ptr(C.LLVMAddGlobal(@module, LLVM::Type(ty), name.to_s))
+        GlobalVariable.from_ptr(C.add_global(@module, LLVM::Type(ty), name.to_s))
       end
       
       # Returns the GlobalVariable with the given name (symbol or string).
       def named(name)
-        GlobalValue.from_ptr(C.LLVMGetNamedGlobal(@module, name.to_s))
+        GlobalValue.from_ptr(C.get_named_global(@module, name.to_s))
       end
       
       # Returns the first GlobalVariable in the collection.
       def first
-        GlobalValue.from_ptr(C.LLVMGetFirstGlobal(@module))
+        GlobalValue.from_ptr(C.get_first_global(@module))
       end
       
       # Returns the last GlobalVariable in the collection.
       def last
-        GlobalValue.from_ptr(C.LLVMGetLastGlobal(@module))
+        GlobalValue.from_ptr(C.get_last_global(@module))
       end
       
       # Returns the next GlobalVariable in the collection after global.
       def next(global)
-        GlobalValue.from_ptr(C.LLVMGetNextGlobal(global))
+        GlobalValue.from_ptr(C.get_next_global(global))
       end
       
       # Returns the previous GlobalVariable in the collection before global.
       def previous(global)
-        GlobalValue.from_ptr(C.LLVMGetPreviousGlobal(global))
+        GlobalValue.from_ptr(C.get_previous_global(global))
       end
       
       # Deletes the GlobalVariable from the collection.
       def delete(global)
-        C.LLVMDeleteGlobal(global)
+        C.delete_global(global)
       end
       
       # Returns the GlobalVariable with a name equal to key (symbol or string) or at key (integer).
@@ -154,12 +151,12 @@ module LLVM
       
       # Adds a Function with the given name (symbol or string) and args (Types).
       def add(name, *args)
-        if args.first.kind_of? Type
+        if args.first.kind_of? FunctionType
           type = args.first
         else
           type = Type.function(*args)
         end
-        function = Function.from_ptr(C.LLVMAddFunction(@module, name.to_s, type))
+        function = Function.from_ptr(C.add_function(@module, name.to_s, type))
         
         if block_given?
           params = (0...function.params.size).map { |i| function.params[i] }
@@ -171,32 +168,32 @@ module LLVM
       
       # Returns the Function with the given name (symbol or string).
       def named(name)
-        Function.from_ptr(C.LLVMGetNamedFunction(@module, name.to_s))
+        Function.from_ptr(C.get_named_function(@module, name.to_s))
       end
       
       # Returns the first Function in the collection.
       def first
-        Function.from_ptr(C.LLVMGetFirstFunction(@module))
+        Function.from_ptr(C.get_first_function(@module))
       end
       
       # Returns the last Function in the collection.
       def last
-        Function.from_ptr(C.LLVMGetLastFunction(@module))
+        Function.from_ptr(C.get_last_function(@module))
       end
       
       # Returns the next Function in the collection after function.
       def next(function)
-        Function.from_ptr(C.LLVMGetNextFunction(function))
+        Function.from_ptr(C.get_next_function(function))
       end
       
       # Returns the previous Function in the collection before function.
       def previous(function)
-        Function.from_ptr(C.LLVMGetPreviousFunction(function))
+        Function.from_ptr(C.get_previous_function(function))
       end
       
       # Deletes the Function from the collection.
       def delete(function)
-        C.LLVMDeleteFunction(function)
+        C.delete_function(function)
       end
       
       # Returns the Function with a name equal to key (symbol or string) or at key (integer).
@@ -226,12 +223,7 @@ module LLVM
     
     # Print the module's IR to stdout.
     def dump
-      C.LLVMDumpModule(self)
-    end
-    
-    # Dispose the module.
-    def dispose
-      C.LLVMDisposeModule(@ptr)
+      C.dump_module(self)
     end
   end
 end

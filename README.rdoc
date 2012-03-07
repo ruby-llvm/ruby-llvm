@@ -1,8 +1,8 @@
 = LLVM
 
 Author:: Jeremy Voorhis
-Contributors:: Evan Phoenix, David Holroyd, Takanori Ishikawa, Ronaldo M. Ferraz, Mac Malone
-Copyright:: Copyright (c) 2010-2011 Jeremy Voorhis
+Contributors:: Evan Phoenix, David Holroyd, Takanori Ishikawa, Ronaldo M. Ferraz, Mac Malone, Chris Wailes, Ary Borenszweig, Richard Musiol
+Copyright:: Copyright (c) 2010-2012 Jeremy Voorhis
 License:: BSD 3-clause (see LICENSE)
 
 This package contains Ruby bindings to the LLVM api, enabling users to
@@ -10,17 +10,21 @@ make use of LLVM's optimization passes and JIT compilation for
 implementing compiled DSLs, callback functions, or fast Ruby method
 implementations.
 
-ruby-llvm has been tested on Mac OS X 10.6 using the following Ruby interpreters:
+ruby-llvm has been tested on OS X 10.7 using the following Ruby interpreters:
 
 * MRI 1.8.7-p174
-* MRI 1.9.2-p180
+* MRI 1.9.2-p290
+* MRI 1.9.3-preview1
 * JRuby 1.4.0
 
 If using MRI, ffi >= 1.0.7 is recommended (only ffi >= 1.0.0 is required).
 
 == Requirements
-* LLVM 2.9, including libLLVM-2.9 (compile LLVM with --enable-shared).
+* LLVM 3.0, including libLLVM-3.0 (compile LLVM with --enable-shared).
 * In order to ensure the usability of JIT features (i.e. create_jit_compiler), compile LLVM with --enable-jit as well.
+
+== Homebrew
+LLVM can be installed with Homebrew by executing `brew install llvm --shared`
 
 == About version numbers
 

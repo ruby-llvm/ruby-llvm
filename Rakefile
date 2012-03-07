@@ -1,4 +1,4 @@
-require 'rake/gempackagetask'
+require 'rubygems'
 require 'rake/testtask'
 
 begin
@@ -25,33 +25,36 @@ rescue LoadError
   warn "Yard is not installed. `gem install yard` to build documentation."
 end
 
-def spec
-  Gem::Specification.new do |s|
-    s.platform = Gem::Platform::RUBY
-    
-    s.name = 'ruby-llvm'
-    s.version = '2.9.1'
-    s.summary = "LLVM bindings for Ruby"
-    
-    s.add_dependency('ffi', '>= 1.0.0')
-    s.files = Dir['lib/**/*rb']
-    s.require_path = 'lib'
-    
-    s.has_rdoc = true
-    s.extra_rdoc_files = 'README.rdoc'
-    
-    s.author = "Jeremy Voorhis"
-    s.email = "jvoorhis@gmail.com"
-    s.homepage = "http://github.com/jvoorhis/ruby-llvm"
-  end
-end
-
-Rake::GemPackageTask.new(spec) do |t|
-end
-
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.test_files = FileList["test/**/*_test.rb"]
+end
+
+task :generate_ffi do
+  require 'ffi_gen'
+  
+  mappings = {
+    ["llvm-c/Core.h"] => "core_ffi.rb",
+    ["llvm-c/Analysis.h"] => "analysis_ffi.rb",
+    ["llvm-c/ExecutionEngine.h"] => "execution_engine_ffi.rb",
+    ["llvm-c/Target.h"] => "target_ffi.rb",
+    ["llvm-c/BitReader.h", "llvm-c/BitWriter.h"] => "core/bitcode_ffi.rb",
+    ["llvm-c/Transforms/IPO.h"] => "transforms/ipo_ffi.rb",
+    ["llvm-c/Transforms/Scalar.h"] => "transforms/scalar_ffi.rb",
+  }
+
+  mappings.each do |headers, ruby_file|
+    FFIGen.generate(
+      :ruby_module => "LLVM::C",
+      :ffi_lib     => "LLVM-3.0",
+      :headers     => headers,
+      :cflags      => `llvm-config --cflags`.split(" "),
+      :prefixes    => ["LLVM"],
+      :blacklist   => ["LLVMGetMDNodeNumOperands", "LLVMGetMDNodeOperand",
+                      "LLVMInitializeAllTargetInfos", "LLVMInitializeAllTargets", "LLVMInitializeNativeTarget"],
+      :output      => "lib/llvm/#{ruby_file}"
+    )
+  end
 end
 
 task :default => [:test]

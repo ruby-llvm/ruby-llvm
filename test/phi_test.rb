@@ -1,7 +1,6 @@
 require "test_helper"
 
 class PhiTest < Test::Unit::TestCase
-
   def setup
     LLVM.init_x86
   end
@@ -26,8 +25,9 @@ class PhiTest < Test::Unit::TestCase
       result2 = builder.sub(arguments.first, LLVM::Int(1))
       builder.br(exit)
       builder.position_at_end(exit)
-      builder.ret(builder.phi(LLVM::Int, result1, block1, result2, block2))
+      builder.ret(builder.phi(LLVM::Int,
+                              block1 => result1,
+                              block2 => result2))
     end
   end
-
 end

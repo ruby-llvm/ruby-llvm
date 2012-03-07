@@ -1,43 +1,52 @@
 require 'llvm'
 require 'llvm/core'
 require 'llvm/target'
+require 'llvm/analysis_ffi'
 
 module LLVM
-  # @private
-  module C
-    enum :verifier_failure_action, [
-      :abort_process,
-      :print_message,
-      :return_status
-    ]
-    
-    attach_function :LLVMVerifyModule, [:pointer, :verifier_failure_action, :pointer], :int
-    attach_function :LLVMVerifyFunction, [:pointer, :verifier_failure_action], :int
-  end
-  
   class Module
+    # Verify that the module is valid.
+    # @return [nil, String] human-readable description of any invalid
+    #   constructs if invalid.
     def verify
       do_verification(:return_status)
     end
     
+    # Verify that a module is valid, and abort the process if not.
+    # @return [nil]
     def verify!
       do_verification(:abort_process)
     end
     
     private
       def do_verification(action)
-        str = FFI::MemoryPointer.new(FFI.type_size(:pointer))
-        status = C.LLVMVerifyModule(self, action, str)
-        case status
-          when 1 then str.read_string
-          else nil
+        result = nil
+        FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |str|
+          status = C.verify_module(self, action, str)
+          result = str.read_string if status == 1
+          C.dispose_message str.read_pointer
         end
+        result
       end
   end
   
   class Function
-    def verify(action = :abort_process)
-      C.LLVMVerifyFunction(self, action) != 0
+    # Verify that a function is valid.
+    # @return [true, false]
+    def verify
+      do_verification(:return_status)
+    end
+
+    # Verify that a function is valid, and abort the process if not.
+    # @return [true, false]
+    def verify!
+      do_verification(:abort_process)
+    end
+
+    private
+
+    def do_verification(action)
+      C.verify_function(self, action) != 0
     end
   end
 end

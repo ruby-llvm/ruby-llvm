@@ -4,7 +4,7 @@ class BasicBlockTestCase < Test::Unit::TestCase
 
   def setup
     LLVM.init_x86
-    @module = LLVM::Module.create("BasicBlockTestCase")
+    @module = LLVM::Module.new("BasicBlockTestCase")
   end
 
   def test_basic_block_collection
