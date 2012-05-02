@@ -139,7 +139,7 @@ module LLVM
     end
 
     def argument_types
-      size = C.LLVMCountParamTypes(self)
+      size = C.count_param_types(self)
       result = nil
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |types_ptr|
 	C.LLVMGetParamTypes(self, types_ptr)
