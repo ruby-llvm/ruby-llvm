@@ -697,6 +697,13 @@ module LLVM
         self
       end
     end
+
+    def gc=(name)
+      C.set_gc(self, name)
+    end
+    def gc
+      C.get_gc(self)
+    end
   end
 
   class GlobalAlias < GlobalValue
