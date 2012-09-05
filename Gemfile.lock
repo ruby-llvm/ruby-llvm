@@ -16,6 +16,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ffi_gen (>= 1.1.0)
   rake
   rcov
   ruby-llvm!

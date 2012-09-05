@@ -45,7 +45,7 @@ task :generate_ffi do
 
   mappings.each do |headers, ruby_file|
     FFIGen.generate(
-      :ruby_module => "LLVM::C",
+      :module_name => "LLVM::C",
       :ffi_lib     => "LLVM-3.0",
       :headers     => headers,
       :cflags      => `llvm-config --cflags`.split(" "),
