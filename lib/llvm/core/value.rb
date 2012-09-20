@@ -22,7 +22,7 @@ module LLVM
         false
       end
     end
-    
+
     def hash
       @ptr.address.hash
     end
@@ -280,6 +280,10 @@ module LLVM
       vals = LLVM::Support.allocate_pointers(size_or_values, &block)
       from_ptr C.const_array(type, vals, vals.size / vals.type_size)
     end
+
+    def size
+      C.get_array_length(type)
+    end
   end
 
   class ConstantExpr < Constant
@@ -421,7 +425,7 @@ module LLVM
     when Integer then Int.from_i(val)
     end
   end
-  
+
   # Boolean values
   ::LLVM::TRUE = ::LLVM::Int1.from_i(-1)
   ::LLVM::FALSE = ::LLVM::Int1.from_i(0)
@@ -523,6 +527,10 @@ module LLVM
     def self.const(size_or_values, &block)
       vals = LLVM::Support.allocate_pointers(size_or_values, &block)
       from_ptr(C.const_vector(vals, vals.size / vals.type_size))
+    end
+
+    def size
+      C.get_vector_size(type)
     end
   end
 

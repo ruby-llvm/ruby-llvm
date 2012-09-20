@@ -15,13 +15,13 @@ class VectorTestCase < Test::Unit::TestCase
   def test_constant_vector_from_size
     vector = LLVM::ConstantVector.const(2) { |i| LLVM::Int(i) }
     assert_instance_of LLVM::ConstantVector, vector
-    assert_equal 2, vector.operands.size
+    assert_equal 2, vector.size
   end
 
   def test_constant_vector_from_array
     vector = LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(1)])
     assert_instance_of LLVM::ConstantVector, vector
-    assert_equal 2, vector.operands.size
+    assert_equal 2, vector.size
   end
 
   def test_vector_elements

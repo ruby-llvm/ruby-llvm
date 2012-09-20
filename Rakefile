@@ -32,7 +32,7 @@ end
 
 task :generate_ffi do
   require 'ffi_gen'
-  
+
   mappings = {
     ["llvm-c/Core.h"] => "core_ffi.rb",
     ["llvm-c/Analysis.h"] => "analysis_ffi.rb",
@@ -45,8 +45,8 @@ task :generate_ffi do
 
   mappings.each do |headers, ruby_file|
     FFIGen.generate(
-      :ruby_module => "LLVM::C",
-      :ffi_lib     => "LLVM-3.0",
+      :module_name => "LLVM::C",
+      :ffi_lib     => "LLVM-3.1",
       :headers     => headers,
       :cflags      => `llvm-config --cflags`.split(" "),
       :prefixes    => ["LLVM"],

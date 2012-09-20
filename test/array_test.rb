@@ -9,13 +9,13 @@ class ArrayTestCase < Test::Unit::TestCase
   def test_constant_array_from_size
     array = LLVM::ConstantArray.const(LLVM::Int, 2) { |i| LLVM::Int(i) }
     assert_instance_of LLVM::ConstantArray, array
-    assert_equal 2, array.operands.size
+    assert_equal 2, array.size
   end
 
   def test_constant_array_from_array
     array = LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int(0), LLVM::Int(1)])
     assert_instance_of LLVM::ConstantArray, array
-    assert_equal 2, array.operands.size
+    assert_equal 2, array.size
   end
 
   def test_array_values

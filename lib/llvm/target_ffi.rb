@@ -4,214 +4,276 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.0'
-
+  ffi_lib 'LLVM-3.1'
+  
+  def self.attach_function(name, *_)
+    begin; super; rescue FFI::NotFoundError => e
+      (class << self; self; end).class_eval { define_method(name) { |*_| raise e } }
+    end
+  end
+  
   # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:byte_ordering).</em>
   # 
   # === Options:
-  # :big ::
+  # :big_endian ::
   #   
-  # :little ::
+  # :little_endian ::
   #   
-  #
-  # @return [Array<Symbol>]
-  def self.byte_ordering_enum
-    [:big, :little]
-  end
+  # 
+  # @method _enum_byte_ordering_
+  # @return [Symbol]
+  # @scope class
   enum :byte_ordering, [
-    :big,
-    :little
+    :big_endian, 0,
+    :little_endian, 1
   ]
-
+  
   # (Not documented)
-  # 
-  # = Fields:
-  #
   class OpaqueTargetData < FFI::Struct
+    layout :dummy, :char
   end
-
+  
   # (Not documented)
-  # 
-  # = Fields:
-  #
   class OpaqueTargetLibraryInfotData < FFI::Struct
+    layout :dummy, :char
   end
-
+  
+  # (Not documented)
+  class StructLayout < FFI::Struct
+    layout :dummy, :char
+  end
+  
   # (Not documented)
   # 
-  # = Fields:
-  #
-  class StructLayout < FFI::Struct
-  end
-
+  # @method initialize_all_target_infos()
+  # @return [nil] 
+  # @scope class
+  attach_function :initialize_all_target_infos, :LLVMInitializeAllTargetInfos, [], :void
+  
+  # LLVMInitializeAllTargets - The main program should call this function if it
+  #     wants to link in all available targets that LLVM is configured to
+  #     support.
+  # 
+  # @method initialize_all_targets()
+  # @return [nil] 
+  # @scope class
+  attach_function :initialize_all_targets, :LLVMInitializeAllTargets, [], :void
+  
+  # LLVMInitializeAllTargetMCs - The main program should call this function if
+  #     it wants access to all available target MC that LLVM is configured to
+  #     support.
+  # 
+  # @method initialize_all_target_m_cs()
+  # @return [nil] 
+  # @scope class
+  attach_function :initialize_all_target_m_cs, :LLVMInitializeAllTargetMCs, [], :void
+  
+  # LLVMInitializeAllAsmPrinters - The main program should call this function if
+  #     it wants all asm printers that LLVM is configured to support, to make them
+  #     available via the TargetRegistry.
+  # 
+  # @method initialize_all_asm_printers()
+  # @return [nil] 
+  # @scope class
+  attach_function :initialize_all_asm_printers, :LLVMInitializeAllAsmPrinters, [], :void
+  
+  # LLVMInitializeAllAsmParsers - The main program should call this function if
+  #     it wants all asm parsers that LLVM is configured to support, to make them
+  #     available via the TargetRegistry.
+  # 
+  # @method initialize_all_asm_parsers()
+  # @return [nil] 
+  # @scope class
+  attach_function :initialize_all_asm_parsers, :LLVMInitializeAllAsmParsers, [], :void
+  
+  # LLVMInitializeAllDisassemblers - The main program should call this function
+  #     if it wants all disassemblers that LLVM is configured to support, to make
+  #     them available via the TargetRegistry.
+  # 
+  # @method initialize_all_disassemblers()
+  # @return [nil] 
+  # @scope class
+  attach_function :initialize_all_disassemblers, :LLVMInitializeAllDisassemblers, [], :void
+  
+  # LLVMInitializeNativeTarget - The main program should call this function to
+  #     initialize the native target corresponding to the host.  This is useful 
+  #     for JIT applications to ensure that the target gets linked in correctly.
+  # 
+  # @method initialize_native_target()
+  # @return [Integer] 
+  # @scope class
+  attach_function :initialize_native_target, :LLVMInitializeNativeTarget, [], :int
+  
   # Creates target data from a target layout string.
   #     See the constructor llvm::TargetData::TargetData.
   # 
   # @method create_target_data(string_rep)
   # @param [String] string_rep 
-  # @return [FFI::Pointer(TargetDataRef)] 
+  # @return [OpaqueTargetData] 
   # @scope class
-  attach_function :create_target_data, :LLVMCreateTargetData, [:string], :pointer
-
+  attach_function :create_target_data, :LLVMCreateTargetData, [:string], OpaqueTargetData
+  
   # Adds target data information to a pass manager. This does not take ownership
   #     of the target data.
   #     See the method llvm::PassManagerBase::add.
   # 
-  # @method add_target_data(target_data_ref, pass_manager_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method add_target_data(opaque_target_data, pass_manager_ref)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(PassManagerRef)] pass_manager_ref 
   # @return [nil] 
   # @scope class
-  attach_function :add_target_data, :LLVMAddTargetData, [:pointer, :pointer], :void
-
+  attach_function :add_target_data, :LLVMAddTargetData, [OpaqueTargetData, :pointer], :void
+  
   # Adds target library information to a pass manager. This does not take
   #     ownership of the target library info.
   #     See the method llvm::PassManagerBase::add.
   # 
-  # @method add_target_library_info(target_library_info_ref, pass_manager_ref)
-  # @param [FFI::Pointer(TargetLibraryInfoRef)] target_library_info_ref 
+  # @method add_target_library_info(opaque_target_library_infot_data, pass_manager_ref)
+  # @param [OpaqueTargetLibraryInfotData] opaque_target_library_infot_data 
   # @param [FFI::Pointer(PassManagerRef)] pass_manager_ref 
   # @return [nil] 
   # @scope class
-  attach_function :add_target_library_info, :LLVMAddTargetLibraryInfo, [:pointer, :pointer], :void
-
+  attach_function :add_target_library_info, :LLVMAddTargetLibraryInfo, [OpaqueTargetLibraryInfotData, :pointer], :void
+  
   # Converts target data to a target layout string. The string must be disposed
   #     with LLVMDisposeMessage.
   #     See the constructor llvm::TargetData::TargetData.
   # 
-  # @method copy_string_rep_of_target_data(target_data_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method copy_string_rep_of_target_data(opaque_target_data)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @return [String] 
   # @scope class
-  attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [:pointer], :string
-
+  attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [OpaqueTargetData], :string
+  
   # Returns the byte order of a target, either LLVMBigEndian or
   #     LLVMLittleEndian.
   #     See the method llvm::TargetData::isLittleEndian.
   # 
-  # @method byte_order(target_data_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
-  # @return [Symbol from byte_ordering_enum] 
+  # @method byte_order(opaque_target_data)
+  # @param [OpaqueTargetData] opaque_target_data 
+  # @return [Symbol from _enum_byte_ordering_] 
   # @scope class
-  attach_function :byte_order, :LLVMByteOrder, [:pointer], :byte_ordering
-
+  attach_function :byte_order, :LLVMByteOrder, [OpaqueTargetData], :byte_ordering
+  
   # Returns the pointer size in bytes for a target.
   #     See the method llvm::TargetData::getPointerSize.
   # 
-  # @method pointer_size(target_data_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method pointer_size(opaque_target_data)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @return [Integer] 
   # @scope class
-  attach_function :pointer_size, :LLVMPointerSize, [:pointer], :uint
-
+  attach_function :pointer_size, :LLVMPointerSize, [OpaqueTargetData], :uint
+  
   # Returns the integer type that is the same size as a pointer on a target.
   #     See the method llvm::TargetData::getIntPtrType.
   # 
-  # @method int_ptr_type(target_data_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method int_ptr_type(opaque_target_data)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int_ptr_type, :LLVMIntPtrType, [:pointer], :pointer
-
+  attach_function :int_ptr_type, :LLVMIntPtrType, [OpaqueTargetData], :pointer
+  
   # Computes the size of a type in bytes for a target.
   #     See the method llvm::TargetData::getTypeSizeInBits.
   # 
-  # @method size_of_type_in_bits(target_data_ref, type_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method size_of_type_in_bits(opaque_target_data, type_ref)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
-  attach_function :size_of_type_in_bits, :LLVMSizeOfTypeInBits, [:pointer, :pointer], :ulong_long
-
+  attach_function :size_of_type_in_bits, :LLVMSizeOfTypeInBits, [OpaqueTargetData, :pointer], :ulong_long
+  
   # Computes the storage size of a type in bytes for a target.
   #     See the method llvm::TargetData::getTypeStoreSize.
   # 
-  # @method store_size_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method store_size_of_type(opaque_target_data, type_ref)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
-  attach_function :store_size_of_type, :LLVMStoreSizeOfType, [:pointer, :pointer], :ulong_long
-
+  attach_function :store_size_of_type, :LLVMStoreSizeOfType, [OpaqueTargetData, :pointer], :ulong_long
+  
   # Computes the ABI size of a type in bytes for a target.
   #     See the method llvm::TargetData::getTypeAllocSize.
   # 
-  # @method abi_size_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method abi_size_of_type(opaque_target_data, type_ref)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
-  attach_function :abi_size_of_type, :LLVMABISizeOfType, [:pointer, :pointer], :ulong_long
-
+  attach_function :abi_size_of_type, :LLVMABISizeOfType, [OpaqueTargetData, :pointer], :ulong_long
+  
   # Computes the ABI alignment of a type in bytes for a target.
   #     See the method llvm::TargetData::getTypeABISize.
   # 
-  # @method abi_alignment_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method abi_alignment_of_type(opaque_target_data, type_ref)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
-  attach_function :abi_alignment_of_type, :LLVMABIAlignmentOfType, [:pointer, :pointer], :uint
-
+  attach_function :abi_alignment_of_type, :LLVMABIAlignmentOfType, [OpaqueTargetData, :pointer], :uint
+  
   # Computes the call frame alignment of a type in bytes for a target.
   #     See the method llvm::TargetData::getTypeABISize.
   # 
-  # @method call_frame_alignment_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method call_frame_alignment_of_type(opaque_target_data, type_ref)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
-  attach_function :call_frame_alignment_of_type, :LLVMCallFrameAlignmentOfType, [:pointer, :pointer], :uint
-
+  attach_function :call_frame_alignment_of_type, :LLVMCallFrameAlignmentOfType, [OpaqueTargetData, :pointer], :uint
+  
   # Computes the preferred alignment of a type in bytes for a target.
   #     See the method llvm::TargetData::getTypeABISize.
   # 
-  # @method preferred_alignment_of_type(target_data_ref, type_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method preferred_alignment_of_type(opaque_target_data, type_ref)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] type_ref 
   # @return [Integer] 
   # @scope class
-  attach_function :preferred_alignment_of_type, :LLVMPreferredAlignmentOfType, [:pointer, :pointer], :uint
-
+  attach_function :preferred_alignment_of_type, :LLVMPreferredAlignmentOfType, [OpaqueTargetData, :pointer], :uint
+  
   # Computes the preferred alignment of a global variable in bytes for a target.
   #     See the method llvm::TargetData::getPreferredAlignment.
   # 
-  # @method preferred_alignment_of_global(target_data_ref, global_var)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method preferred_alignment_of_global(opaque_target_data, global_var)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [Integer] 
   # @scope class
-  attach_function :preferred_alignment_of_global, :LLVMPreferredAlignmentOfGlobal, [:pointer, :pointer], :uint
-
+  attach_function :preferred_alignment_of_global, :LLVMPreferredAlignmentOfGlobal, [OpaqueTargetData, :pointer], :uint
+  
   # Computes the structure element that contains the byte offset for a target.
   #     See the method llvm::StructLayout::getElementContainingOffset.
   # 
-  # @method element_at_offset(target_data_ref, struct_ty, offset)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method element_at_offset(opaque_target_data, struct_ty, offset)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [Integer] offset 
   # @return [Integer] 
   # @scope class
-  attach_function :element_at_offset, :LLVMElementAtOffset, [:pointer, :pointer, :ulong_long], :uint
-
+  attach_function :element_at_offset, :LLVMElementAtOffset, [OpaqueTargetData, :pointer, :ulong_long], :uint
+  
   # Computes the byte offset of the indexed struct element for a target.
   #     See the method llvm::StructLayout::getElementContainingOffset.
   # 
-  # @method offset_of_element(target_data_ref, struct_ty, element)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method offset_of_element(opaque_target_data, struct_ty, element)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [Integer] element 
   # @return [Integer] 
   # @scope class
-  attach_function :offset_of_element, :LLVMOffsetOfElement, [:pointer, :pointer, :uint], :ulong_long
-
+  attach_function :offset_of_element, :LLVMOffsetOfElement, [OpaqueTargetData, :pointer, :uint], :ulong_long
+  
   # Deallocates a TargetData.
   #     See the destructor llvm::TargetData::~TargetData.
   # 
-  # @method dispose_target_data(target_data_ref)
-  # @param [FFI::Pointer(TargetDataRef)] target_data_ref 
+  # @method dispose_target_data(opaque_target_data)
+  # @param [OpaqueTargetData] opaque_target_data 
   # @return [nil] 
   # @scope class
-  attach_function :dispose_target_data, :LLVMDisposeTargetData, [:pointer], :void
-
+  attach_function :dispose_target_data, :LLVMDisposeTargetData, [OpaqueTargetData], :void
+  
 end
