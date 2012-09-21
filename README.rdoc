@@ -1,7 +1,7 @@
 = LLVM
 
 Author:: Jeremy Voorhis
-Contributors:: Evan Phoenix, David Holroyd, Takanori Ishikawa, Ronaldo M. Ferraz, Mac Malone, Chris Wailes, Ary Borenszweig, Richard Musiol
+Contributors:: Evan Phoenix, David Holroyd, Takanori Ishikawa, Ronaldo M. Ferraz, Mac Malone, Chris Wailes, Ary Borenszweig, Richard Musiol, Juan Wajnerman
 Copyright:: Copyright (c) 2010-2012 Jeremy Voorhis
 License:: BSD 3-clause (see LICENSE)
 
