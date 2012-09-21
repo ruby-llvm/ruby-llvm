@@ -79,6 +79,7 @@ module LLVM
     # @return [LLVM::Instruction]
     # @LLVMinst br
     def br(block)
+      raise "Block must not be nil" if block.nil?
       Instruction.from_ptr(
         C.build_br(self, block))
     end
@@ -119,9 +120,19 @@ module LLVM
     #   unwind instruction occurs
     # @LLVMinst invoke
     def invoke(fun, args, normal, exception, name = "")
-      Instruction.from_ptr(
-        C.build_invoke(self,
-          fun, args, args.size, normal, exception, name))
+      s = args.size
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * s) do |args_ptr|
+        args_ptr.write_array_of_pointer(args)
+        return Instruction.from_ptr(
+          C.build_invoke(self,
+            fun, args_ptr, s, normal, exception, name))
+      end
+    end
+
+    # Builds an unwind Instruction.
+    # @LLVMinst unwind
+    def unwind
+      Instruction.from_ptr(C.LLVMBuildUnwind(self))
     end
 
     # Generates an instruction with no defined semantics. Can be used to
@@ -401,6 +412,7 @@ module LLVM
     # @return [LLVM::Instruction] The result of the store operation
     # @LLVMinst store
     def store(val, ptr)
+      raise "val must be a Value, got #{val.class.name}" unless Value === val
       Instruction.from_ptr(C.build_store(self, val, ptr))
     end
 

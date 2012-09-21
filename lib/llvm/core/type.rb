@@ -118,7 +118,7 @@ module LLVM
     def self.void
       from_ptr(C.void_type, :void)
     end
-    
+
     def self.rec
       h = opaque
       ty = yield h
@@ -136,6 +136,20 @@ module LLVM
   class FunctionType < Type
     def return_type
       Type.from_ptr(C.get_return_type(self), nil)
+    end
+
+    def argument_types
+      size = C.count_param_types(self)
+      result = nil
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |types_ptr|
+	C.LLVMGetParamTypes(self, types_ptr)
+	result = types_ptr.read_array_of_pointer(size)
+      end
+      result.map{ |p| Type.from_ptr(p) }
+    end
+
+    def vararg?
+      C.LLVMIsFunctionVarArg(self)
     end
   end
   
@@ -209,4 +223,5 @@ module LLVM
   def Void
     LLVM::Type.void
   end
+
 end

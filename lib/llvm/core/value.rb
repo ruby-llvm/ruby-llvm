@@ -251,6 +251,10 @@ module LLVM
           C.const_gep(self, indices_ptr, indices.size))
       end
     end
+
+    def bit_cast(type)
+      return ConstantExpr.from_ptr(C.const_bit_cast(self, type))
+    end
   end
 
   module Support
@@ -423,6 +427,10 @@ module LLVM
     case val
     when LLVM::ConstantInt then val
     when Integer then Int.from_i(val)
+    when Value
+      return val if val.type.kind == :integer
+      raise "value not of integer type: #{val.type.kind}"
+    else raise "can't make an LLVM::ConstantInt from #{val.class.name}"
     end
   end
 
@@ -696,6 +704,13 @@ module LLVM
         0.upto(size-1) { |i| yield self[i] }
         self
       end
+    end
+
+    def gc=(name)
+      C.set_gc(self, name)
+    end
+    def gc
+      C.get_gc(self)
     end
   end
 
