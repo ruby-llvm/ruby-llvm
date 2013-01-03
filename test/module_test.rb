@@ -18,15 +18,21 @@ class ModuleTestCase < Test::Unit::TestCase
     end
   end
 
-  def test_globals_add
-    gvar = nil
+  def test_global_variable
+    yielded = false
+
     define_module('test_globals_add') do |mod|
       mod.globals.add(LLVM::Int32, 'i') do |var|
-        gvar = var
+        yielded = true
+        assert_not_nil var
+        assert var.kind_of?(LLVM::GlobalVariable)
+
+        assert !var.unnamed_addr?
+        var.unnamed_addr = true
+        assert var.unnamed_addr?
       end
     end
 
-    assert_not_nil gvar
-    assert gvar.kind_of?(LLVM::GlobalVariable)
+    assert yielded, 'LLVM::Module::GlobalCollection#add takes block'
   end
 end

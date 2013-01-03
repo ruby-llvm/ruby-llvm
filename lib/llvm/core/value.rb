@@ -594,6 +594,14 @@ module LLVM
     def global_constant=(flag)
       C.set_global_constant(self, flag)
     end
+
+    def unnamed_addr?
+      Support::C.has_unnamed_addr(self) != 0
+    end
+
+    def unnamed_addr=(flag)
+      Support::C.set_unnamed_addr(self, flag ? 1 : 0)
+    end
   end
 
   class Function < GlobalValue

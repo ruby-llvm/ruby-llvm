@@ -1,5 +1,6 @@
 require 'llvm'
 require 'llvm/core_ffi'
+require 'llvm/support'
 
 module LLVM
   # @private

@@ -1,8 +1,13 @@
 module LLVM
+
   module Support
     # @private
     module C
       extend FFI::Library
+
+      require 'llvm/core_ffi'
+      OpaqueValue = LLVM::C::OpaqueValue
+
       support_lib = File.expand_path(
                       File.join(
                         File.dirname(__FILE__),
@@ -10,6 +15,8 @@ module LLVM
                         FFI.map_library_name('RubyLLVMSupport-3.1.0')))
       ffi_lib [support_lib]
       attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
+      attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
+      attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
     end
   end
 
