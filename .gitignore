@@ -1,5 +1,6 @@
 *.gem
 *.dylib
+*.dSYM
 *.la
 *.lo
 *.o
