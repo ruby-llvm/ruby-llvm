@@ -8,11 +8,11 @@ HELLO_STRING = "Hello, World!"
 mod = LLVM::Module.new('hello')
 
 # Declare the string constant as a global constant.
-hello = mod.globals.add(LLVM.Array(LLVM::Int8, HELLO_STRING.size + 1), '.str').tap do |var|
+hello = mod.globals.add(LLVM.Array(LLVM::Int8, HELLO_STRING.size + 1), '.str') do |var|
   var.linkage = :private
   var.global_constant = 1
+  var.unnamed_addr = true
   var.initializer = LLVM::ConstantArray.string(HELLO_STRING)
-  # TODO LLVM C bindings doesn't support GlobalVariable::setUnnamedAddr(bool)
 end
 
 # External declaration of the `puts` function
