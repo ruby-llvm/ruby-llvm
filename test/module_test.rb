@@ -18,4 +18,15 @@ class ModuleTestCase < Test::Unit::TestCase
     end
   end
 
+  def test_globals_add
+    gvar = nil
+    define_module('test_globals_add') do |mod|
+      mod.globals.add(LLVM::Int32, 'i') do |var|
+        gvar = var
+      end
+    end
+
+    assert_not_nil gvar
+    assert gvar.kind_of?(LLVM::GlobalVariable)
+  end
 end

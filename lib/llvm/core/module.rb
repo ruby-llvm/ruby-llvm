@@ -79,7 +79,9 @@ module LLVM
       
       # Adds a GlobalVariable with the given type and name to the collection (symbol or string).
       def add(ty, name)
-        GlobalVariable.from_ptr(C.add_global(@module, LLVM::Type(ty), name.to_s))
+        GlobalVariable.from_ptr(C.add_global(@module, LLVM::Type(ty), name.to_s)).tap do |gvar|
+          yield gvar if block_given?
+        end
       end
       
       # Returns the GlobalVariable with the given name (symbol or string).
