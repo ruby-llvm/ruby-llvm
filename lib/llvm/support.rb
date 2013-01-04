@@ -5,8 +5,9 @@ module LLVM
     module C
       extend FFI::Library
 
-      require 'llvm/core_ffi'
-      OpaqueValue = LLVM::C::OpaqueValue
+      class OpaqueValue < FFI::Struct
+        layout :dummy, :char
+      end
 
       support_lib = File.expand_path(
                       File.join(
