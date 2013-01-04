@@ -219,5 +219,18 @@ module LLVM
     def dump
       C.dump_module(self)
     end
+
+    # Print the module's IR to the given IO object or integer file descriptor.
+    # The IO object#fileno must not be nil.
+    def print(fd_or_io, should_close=false, unbuffered=false)
+      fd = if fd_or_io.kind_of? ::Integer
+        fd_or_io
+      elsif fd_or_io.respond_to? :fileno
+        fd_or_io.fileno
+      end
+
+      raise ArgumentError, 'Expected IO object or Integer file descriptor' if fd.nil?
+      Support::C.print_module(self, fd, should_close ? 1 : 0, unbuffered ? 1 : 0)
+    end
   end
 end

@@ -1,4 +1,5 @@
 require "test_helper"
+require "tempfile"
 
 class ModuleTestCase < Test::Unit::TestCase
 
@@ -35,4 +36,26 @@ class ModuleTestCase < Test::Unit::TestCase
 
     assert yielded, 'LLVM::Module::GlobalCollection#add takes block'
   end
+
+  def test_print
+    f1 = Tempfile.new('test_print.1')
+    f2 = Tempfile.new('test_print.2')
+
+    begin
+      mod = LLVM::Module.new('test_print')
+      expected_pattern = /^; ModuleID = 'test_print'$/
+
+      # file descriptor
+      mod.print(f1.fileno)
+      assert_match expected_pattern, File.read(f1.path)
+
+      # io object
+      mod.print(f2)
+      assert_match expected_pattern, File.read(f2.path)
+    ensure
+      f1.close(true)
+      f2.close(true)
+    end
+  end
+
 end
