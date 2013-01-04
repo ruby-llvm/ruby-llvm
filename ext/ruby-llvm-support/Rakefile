@@ -3,8 +3,8 @@ require 'rubygems'
 require 'ffi'
 
 CC = "g++"
-LLVM_CONFIG = `llvm-config --cxxflags --ldflags --libs all`.gsub("\n"," ")
-OUTPUT = FFI.map_library_name "RubyLLVMSupport-3.1.0"
+LLVM_CONFIG = `llvm-config-3.2 --cxxflags --ldflags --libs all`.gsub("\n"," ")
+OUTPUT = FFI.map_library_name "RubyLLVMSupport-3.2.0"
 OUTPUT_DIR = "../../lib"
 SRC = "support.cpp"
 CLOBBER.include(OUTPUT)

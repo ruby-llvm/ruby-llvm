@@ -34,9 +34,9 @@ task :generate_ffi do
   mappings.each do |headers, ruby_file|
     FFIGen.generate(
       :module_name => "LLVM::C",
-      :ffi_lib     => "LLVM-3.1",
+      :ffi_lib     => "LLVM-3.2",
       :headers     => headers,
-      :cflags      => `llvm-config --cflags`.split(" "),
+      :cflags      => `llvm-config-3.2 --cflags`.split(" "),
       :prefixes    => ["LLVM"],
       :blacklist   => ["LLVMGetMDNodeNumOperands", "LLVMGetMDNodeOperand",
                        "LLVMInitializeAllTargetInfos", "LLVMInitializeAllTargets",

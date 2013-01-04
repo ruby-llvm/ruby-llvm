@@ -12,7 +12,7 @@ module LLVM
                       File.join(
                         File.dirname(__FILE__),
                         '../',
-                        FFI.map_library_name('RubyLLVMSupport-3.1.0')))
+                        FFI.map_library_name('RubyLLVMSupport-3.2.0')))
       ffi_lib [support_lib]
       attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
       attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
