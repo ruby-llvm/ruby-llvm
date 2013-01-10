@@ -4,7 +4,7 @@ module LLVM
     def initialize
       @ptr = C.create_builder()
     end
-    
+
     def dispose
       return if @ptr.nil?
       C.dispose_builder(@ptr)
@@ -434,7 +434,7 @@ module LLVM
     end
 
     # Builds a inbounds getelementptr instruction. If the indices are outside
-    # the allocated pointer the value is undefined. 
+    # the allocated pointer the value is undefined.
     # @param [LLVM::Value] ptr A pointer to an aggregate value
     # @param [Array<LLVM::Value>] indices Ruby array of LLVM::Value representing
     #   indices into the aggregate
@@ -484,7 +484,7 @@ module LLVM
     # @param [LLVM::Value] val Integer or vector of integers to be truncated
     # @param [LLVM::Type, #type] ty Integer or vector of integers of equal size
     #   to val
-    # @param [String] name The name of the result in LLVM IR 
+    # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] The truncated value
     # @LLVMinst trunc
     def trunc(val, ty, name = "")
@@ -496,7 +496,7 @@ module LLVM
     # @param [LLVM::Value] val Integer or vector of integers to be extended
     # @param [LLVM::Type, #type] ty Integer or vector of integer type of
     #   greater size than val
-    # @param [String] name The name of the result in LLVM IR 
+    # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] The extended value
     # @LLVMinst zext
     def zext(val, ty, name = "")
@@ -508,7 +508,7 @@ module LLVM
     # @param [LLVM::Value] val Integer or vector of integers to be extended
     # @param [LLVM::Type] ty Integer or vector of integer type of greater size
     #   than the size of val
-    # @param [String] name The name of the result in LLVM IR 
+    # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] The extended value
     # @LLVMinst sext
     def sext(val, ty, name = "")
