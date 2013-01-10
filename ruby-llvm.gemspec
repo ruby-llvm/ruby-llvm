@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "ffi_gen", ">= 1.1.0"
   s.add_development_dependency "rake"
-  s.add_development_dependency "rcov"
+  s.add_development_dependency "simplecov"
   s.add_development_dependency "yard"
 end
