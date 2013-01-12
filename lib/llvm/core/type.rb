@@ -1,11 +1,11 @@
-module LLVM  
+module LLVM
   class Type
     # @private
     def to_ptr
       @ptr
     end
-    
-    # LLVM's represents types uniquely, and supports pointer equality. 
+
+    # LLVM's represents types uniquely, and supports pointer equality.
     def ==(type)
       case type
       when LLVM::Type
@@ -14,11 +14,11 @@ module LLVM
         false
       end
     end
-    
+
     def hash
       @ptr.address.hash
     end
-    
+
     # Checks if the type is equal to other.
     def eql?(other)
       other.instance_of?(self.class) && self == other
@@ -33,7 +33,7 @@ module LLVM
     def size
       LLVM::Int64.from_ptr(C.size_of(self))
     end
-    
+
     def align
       LLVM::Int64.from_ptr(C.align_of(self))
     end
@@ -60,7 +60,7 @@ module LLVM
     def pointer(address_space = 0)
       Type.pointer(self, address_space)
     end
-    
+
     # @private
     def self.from_ptr(ptr, kind)
       return if ptr.null?
@@ -75,23 +75,23 @@ module LLVM
       ty.instance_variable_set(:@kind, kind)
       ty
     end
-    
+
     # Creates an array type of Type with the given size.
     def self.array(ty, sz = 0)
       from_ptr(C.array_type(LLVM::Type(ty), sz), :array)
     end
-    
+
     # Creates the pointer type of Type with the given address space.
     def self.pointer(ty, address_space = 0)
       from_ptr(C.pointer_type(LLVM::Type(ty), address_space), :pointer)
     end
-    
+
     # Creates a vector type of Type with the given element count.
     def self.vector(ty, element_count)
       from_ptr(C.vector_type(LLVM::Type(ty), element_count), :vector)
     end
-    
-    # Creates a function type. Takes an array of argument Types and the result Type. The only option is <tt>:varargs</tt>, 
+
+    # Creates a function type. Takes an array of argument Types and the result Type. The only option is <tt>:varargs</tt>,
     # which when set to true makes the function type take a variable number of args.
     def self.function(arg_types, result_type, options = {})
       arg_types.map! { |ty| LLVM::Type(ty) }
@@ -99,7 +99,7 @@ module LLVM
       arg_types_ptr.write_array_of_pointer(arg_types)
       from_ptr(C.function_type(LLVM::Type(result_type), arg_types_ptr, arg_types.size, options[:varargs] ? 1 : 0), :function)
     end
-    
+
     # Creates a struct type with the given array of element types.
     def self.struct(elt_types, is_packed, name = nil)
       elt_types.map! { |ty| LLVM::Type(ty) }
@@ -152,13 +152,13 @@ module LLVM
       C.LLVMIsFunctionVarArg(self)
     end
   end
-  
+
   class StructType < Type
     # Returns the name of the struct.
     def name
       C.get_struct_name(self)
     end
-    
+
     # Returns the element types of the struct.
     def element_types
       count = C.count_struct_element_types(self)
@@ -169,7 +169,7 @@ module LLVM
       end
       elt_types
     end
-    
+
     # Sets the struct body.
     def element_types=(elt_types)
       elt_types.map! { |ty| LLVM::Type(ty) }
@@ -180,7 +180,7 @@ module LLVM
   end
 
   module_function
-  
+
   # Creates a Type from the given object.
   def Type(ty)
     case ty
@@ -188,27 +188,27 @@ module LLVM
     else ty.type
     end
   end
-  
+
   # Shortcut to Type.array.
   def Array(ty, sz = 0)
     LLVM::Type.array(ty, sz)
   end
-  
+
   # Shortcut to Type.pointer.
   def Pointer(ty)
     LLVM::Type.pointer(ty)
   end
-  
+
   # Shortcut to Type.vector.
   def Vector(ty, sz)
     LLVM::Type.vector(ty, sz)
   end
-  
+
   # Shortcut to Type.function.
   def Function(argtypes, rettype, options = {})
     LLVM::Type.function(argtypes, rettype, options)
   end
-  
+
   # Shortcut to Type.struct.
   def Struct(*elt_types)
     name = if elt_types.last.is_a? String

@@ -2,18 +2,6 @@ require 'rubygems'
 require 'rake/testtask'
 
 begin
-  require 'rcov/rcovtask'
-
-  Rcov::RcovTask.new do |t|
-    t.libs << "test"
-    t.rcov_opts << "--exclude gems"
-    t.test_files = FileList["test/**/*_test.rb"]
-  end
-rescue LoadError
-  warn "Proceeding without Rcov. gem install rcov on supported platforms."
-end
-
-begin
   require 'yard'
 
   YARD::Rake::YardocTask.new do |t|
@@ -51,7 +39,8 @@ task :generate_ffi do
       :cflags      => `llvm-config --cflags`.split(" "),
       :prefixes    => ["LLVM"],
       :blacklist   => ["LLVMGetMDNodeNumOperands", "LLVMGetMDNodeOperand",
-                      "LLVMInitializeAllTargetInfos", "LLVMInitializeAllTargets", "LLVMInitializeNativeTarget"],
+                       "LLVMInitializeAllTargetInfos", "LLVMInitializeAllTargets",
+                       "LLVMInitializeNativeTarget"],
       :output      => "lib/llvm/#{ruby_file}"
     )
   end

@@ -6,6 +6,16 @@ rescue LoadError
   # Ignore ruby-debug is case it's not installed
 end
 
+begin
+  require 'simplecov'
+
+  SimpleCov.start do
+    add_filter "/test/"
+  end
+rescue LoadError
+  warn "Proceeding without SimpleCov. gem install simplecov on supported platforms."
+end
+
 require "test/unit"
 
 require "llvm/core"
@@ -47,4 +57,3 @@ def run_function(argument_types, argument_values, return_type, &block)
 
   run_function_on_module(test_module, "test_function", *argument_values)
 end
-

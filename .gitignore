@@ -12,3 +12,4 @@
 coverage/*
 doc/*
 .bundle
+Gemfile.lock

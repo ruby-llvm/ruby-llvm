@@ -313,9 +313,11 @@ module LLVM
     end
 
     # Boolean negation.
-    def not
+    def ~@
       self.class.from_ptr(C.const_not(self))
     end
+
+    alias not ~
 
     # Addition.
     def +(rhs)

@@ -1,8 +1,6 @@
 require 'rubygems'
 require 'ffi'
 
-require 'llvm/support'
-
 module LLVM
   # @private
   module C
