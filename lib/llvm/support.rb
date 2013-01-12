@@ -7,6 +7,7 @@ module LLVM
 
       require 'llvm/core_ffi'
       OpaqueValue = LLVM::C::OpaqueValue
+      OpaqueType  = LLVM::C::OpaqueType
 
       support_lib = File.expand_path(
                       File.join(
@@ -17,6 +18,8 @@ module LLVM
       attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
       attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
       attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
+
+      attach_function :dump_type, :LLVMDumpType, [OpaqueType], :void
     end
   end
 
