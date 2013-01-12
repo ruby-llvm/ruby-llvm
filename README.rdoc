@@ -20,7 +20,7 @@ ruby-llvm has been tested on OS X 10.7 using the following Ruby interpreters:
 If using MRI, ffi >= 1.0.7 is recommended (only ffi >= 1.0.0 is required).
 
 == Requirements
-* LLVM 3.0, including libLLVM-3.0 (compile LLVM with --enable-shared).
+* LLVM 3.2, including libLLVM-3.2 (compile LLVM with --enable-shared).
 * In order to ensure the usability of JIT features (i.e. create_jit_compiler), compile LLVM with --enable-jit as well.
 
 == Homebrew

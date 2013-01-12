@@ -11,25 +11,22 @@ module LLVM
     def verify
       do_verification(:return_status)
     end
-    
+
     # Verify that a module is valid, and abort the process if not.
     # @return [nil]
     def verify!
       do_verification(:abort_process)
     end
-    
+
     private
-      def do_verification(action)
-        result = nil
-        FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |str|
-          status = C.verify_module(self, action, str)
-          result = str.read_string if status == 1
-          C.dispose_message str.read_pointer
-        end
-        result
+
+    def do_verification(action)
+      LLVM.with_message_output do |str|
+        C.verify_module(self, action, str)
       end
+    end
   end
-  
+
   class Function
     # Verify that a function is valid.
     # @return [true, false]

@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.1'
+  ffi_lib 'LLVM-3.2'
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -39,7 +39,7 @@ module LLVM::C
     layout :dummy, :char
   end
   
-  # Represents a basic block of instruction in LLVM IR.
+  # Represents a basic block of instructions in LLVM IR.
   # 
   # This models llvm::BasicBlock.
   class OpaqueBasicBlock < FFI::Struct
@@ -430,9 +430,11 @@ module LLVM::C
   #   
   # :link_once_odr ::
   #   < Keep one copy of function when linking (inline)
-  # :weak_any ::
+  # :link_once_odr_auto_hide ::
   #   < Same, but only replaced by something
   #                               equivalent.
+  # :weak_any ::
+  #   < Like LinkOnceODR, but possibly hidden.
   # :weak_odr ::
   #   < Keep one copy of function when linking (weak)
   # :appending ::
@@ -457,8 +459,6 @@ module LLVM::C
   #   < Tentative definitions
   # :linker_private_weak ::
   #   < Like Private, but linker removes.
-  # :linker_private_weak_def_auto ::
-  #   < Like LinkerPrivate, but is weak.
   # 
   # @method _enum_linkage_
   # @return [Symbol]
@@ -468,19 +468,19 @@ module LLVM::C
     :available_externally, 1,
     :link_once_any, 2,
     :link_once_odr, 3,
-    :weak_any, 4,
-    :weak_odr, 5,
-    :appending, 6,
-    :internal, 7,
-    :private, 8,
-    :dll_import, 9,
-    :dll_export, 10,
-    :external_weak, 11,
-    :ghost, 12,
-    :common, 13,
-    :linker_private, 14,
-    :linker_private_weak, 15,
-    :linker_private_weak_def_auto, 16
+    :link_once_odr_auto_hide, 4,
+    :weak_any, 5,
+    :weak_odr, 6,
+    :appending, 7,
+    :internal, 8,
+    :private, 9,
+    :dll_import, 10,
+    :dll_export, 11,
+    :external_weak, 12,
+    :ghost, 13,
+    :common, 14,
+    :linker_private, 15,
+    :linker_private_weak, 16
   ]
   
   # (Not documented)
@@ -802,6 +802,19 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :dump_module, :LLVMDumpModule, [OpaqueModule], :void
+  
+  # Print a representation of a module to a file. The ErrorMessage needs to be
+  # disposed with LLVMDisposeMessage. Returns 0 on success, 1 otherwise.
+  # 
+  # @see Module::print()
+  # 
+  # @method print_module_to_file(m, filename, error_message)
+  # @param [OpaqueModule] m 
+  # @param [String] filename 
+  # @param [FFI::Pointer(**CharS)] error_message 
+  # @return [Integer] 
+  # @scope class
+  attach_function :print_module_to_file, :LLVMPrintModuleToFile, [OpaqueModule, :string, :pointer], :int
   
   # Set inline assembly for a module.
   # 
@@ -2092,7 +2105,7 @@ module LLVM::C
   # 
   # Uses are obtained in an iterator fashion. First, call this function
   # to obtain a reference to the first use. Then, call LLVMGetNextUse()
-  # on that instance and all subsequently obtained instances untl
+  # on that instance and all subsequently obtained instances until
   # LLVMGetNextUse() returns NULL.
   # 
   # @see llvm::Value::use_begin()
@@ -3465,7 +3478,7 @@ module LLVM::C
   # Set the alignment for a function parameter.
   # 
   # @see llvm::Argument::addAttr()
-  # @see llvm::Attribute::constructAlignmentFromInt()
+  # @see llvm::AttrBuilder::addAlignmentAttr()
   # 
   # @method set_param_alignment(arg, align)
   # @param [OpaqueValue] arg 
@@ -3532,6 +3545,34 @@ module LLVM::C
   # @return [String] 
   # @scope class
   attach_function :get_md_string, :LLVMGetMDString, [OpaqueValue, :pointer], :string
+  
+  # Obtain the number of operands from an MDNode value.
+  # 
+  # @param V MDNode to get number of operands from.
+  # @return Number of operands of the MDNode.
+  # 
+  # @method get_md_node_num_operands(v)
+  # @param [OpaqueValue] v 
+  # @return [Integer] 
+  # @scope class
+  attach_function :get_md_node_num_operands, :LLVMGetMDNodeNumOperands, [OpaqueValue], :uint
+  
+  # Obtain the given MDNode's operands.
+  # 
+  # The passed LLVMValueRef pointer should point to enough memory to hold all of
+  # the operands of the given MDNode (see LLVMGetMDNodeNumOperands) as
+  # LLVMValueRefs. This memory will be populated with the LLVMValueRefs of the
+  # MDNode's operands.
+  # 
+  # @param V MDNode to get the operands from.
+  # @param Dest Destination array for operands.
+  # 
+  # @method get_md_node_operands(v, dest)
+  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(*ValueRef)] dest 
+  # @return [nil] 
+  # @scope class
+  attach_function :get_md_node_operands, :LLVMGetMDNodeOperands, [OpaqueValue, :pointer], :void
   
   # Convert a basic block instance to a value type.
   # 
@@ -3825,7 +3866,7 @@ module LLVM::C
   # @scope class
   attach_function :get_next_instruction, :LLVMGetNextInstruction, [OpaqueValue], OpaqueValue
   
-  # Obtain the instruction that occured before this one.
+  # Obtain the instruction that occurred before this one.
   # 
   # If the instruction is the first instruction in a basic block, NULL
   # will be returned.
