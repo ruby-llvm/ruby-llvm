@@ -29,6 +29,7 @@ task :generate_ffi do
     'core/bitcode_ffi.rb'      => %w(BitReader.h BitWriter.h),
     'transforms/ipo_ffi.rb'    => %w(Transforms/IPO.h),
     'transforms/scalar_ffi.rb' => %w(Transforms/Scalar.h),
+    'linker_ffi.rb'            => %w(Linker.h)
   }
 
   mappings.each do |ruby_file, headers|
