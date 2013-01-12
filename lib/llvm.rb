@@ -2,6 +2,8 @@ require 'rubygems'
 require 'ffi'
 
 module LLVM
+  require 'llvm/support'
+
   # @private
   module C
     extend ::FFI::Library

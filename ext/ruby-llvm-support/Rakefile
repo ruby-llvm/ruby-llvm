@@ -2,11 +2,34 @@ require 'rake/clean'
 require 'rubygems'
 require 'ffi'
 
-CC = "g++"
-LLVM_CONFIG = `llvm-config-3.2 --cxxflags --ldflags --libs all`.gsub("\n"," ")
-OUTPUT = FFI.map_library_name "RubyLLVMSupport-3.2.0"
-OUTPUT_DIR = "../../lib"
-SRC = "support.cpp"
+# Change this when updating for a newer LLVM.
+LLVM_VERSION = '3.2'
+
+def check_llvm_config(name)
+  actual_version = `#{name} --version`
+  actual_version.strip == LLVM_VERSION
+rescue Errno::ENOENT
+  false
+end
+
+def invoke_llvm_config(options)
+  variants = %W(llvm-config-#{LLVM_VERSION} llvm-config)
+
+  variants.each do |name|
+    if check_llvm_config(name)
+      return `#{name} #{options}`.gsub("\n", " ")
+    end
+  end
+
+  raise RuntimeError, "No valid llvm-config found. Tried: #{variants}"
+end
+
+LLVM_CONFIG = invoke_llvm_config('--cxxflags --ldflags --libs all')
+
+CXX    = "g++"
+SRC    = "support.cpp"
+OUTPUT = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
+
 CLOBBER.include(OUTPUT)
 
 task :default => [:build]
@@ -15,5 +38,5 @@ desc "Build the shared library"
 task :build => [OUTPUT]
 
 file OUTPUT => [SRC] do
-  sh "#{CC} -shared #{SRC} #{LLVM_CONFIG} -o #{OUTPUT_DIR}/#{OUTPUT}"
+  sh "#{CXX} -shared #{SRC} #{LLVM_CONFIG} -o #{OUTPUT}"
 end
