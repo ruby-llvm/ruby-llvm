@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage     = "http://github.com/jvoorhis/ruby-llvm"
 
   s.require_path = "lib"
-  s.files        = Dir["lib/**/*rb"] + Dir["ext/**/*"]
+  s.files        = Dir["lib/**/*.rb"] + Dir["ext/**/*"]
   s.test_files   = Dir["test/**/*.rb"]
 
   s.has_rdoc = true
