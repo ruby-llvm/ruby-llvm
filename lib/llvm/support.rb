@@ -5,8 +5,13 @@ module LLVM
     module C
       extend FFI::Library
 
-      require 'llvm/core_ffi'
-      OpaqueValue = LLVM::C::OpaqueValue
+      class OpaqueValue < FFI::Struct
+        layout :dummy, :char
+      end
+
+      class OpaqueModule < FFI::Struct
+        layout :dummy, :char
+      end
 
       support_lib = File.expand_path(
                       File.join(
@@ -17,6 +22,7 @@ module LLVM
       attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
       attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
       attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
+      attach_function :print_module, :LLVMPrintModuleToFD, [OpaqueModule, :int, :int, :int], :void
     end
   end
 
