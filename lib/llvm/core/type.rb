@@ -61,6 +61,11 @@ module LLVM
       Type.pointer(self, address_space)
     end
 
+    # Print the type's representation to stdout.
+    def dump
+      Support::C.dump_type(self)
+    end
+
     # @private
     def self.from_ptr(ptr, kind)
       return if ptr.null?

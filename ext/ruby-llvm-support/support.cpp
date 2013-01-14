@@ -5,6 +5,7 @@
 #include <llvm-c/Core.h>
 #include <llvm/GlobalValue.h>
 #include <llvm/Support/DynamicLibrary.h>
+#include <llvm/Type.h>
 
 extern "C" {
   using namespace llvm;
@@ -19,6 +20,10 @@ extern "C" {
 
   void LLVMSetUnnamedAddr(LLVMValueRef global, LLVMBool val) {
     unwrap<GlobalValue>(global)->setUnnamedAddr(val != 0);
+  }
+
+  void LLVMDumpType(LLVMTypeRef type) {
+    unwrap<Type>(type)->dump();
   }
 }
 
