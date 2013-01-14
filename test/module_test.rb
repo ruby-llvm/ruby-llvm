@@ -37,24 +37,33 @@ class ModuleTestCase < Test::Unit::TestCase
     assert yielded, 'LLVM::Module::GlobalCollection#add takes block'
   end
 
-  def test_print
-    f1 = Tempfile.new('test_print.1')
-    f2 = Tempfile.new('test_print.2')
+  def test_dump
+    mod = LLVM::Module.new('test_print')
+    expected_pattern = /^; ModuleID = 'test_print'$/
 
-    begin
-      mod = LLVM::Module.new('test_print')
-      expected_pattern = /^; ModuleID = 'test_print'$/
+    Tempfile.open('test_dump.1') do |tmpfile|
+      # debug stream (stderr)
+      stderr_old = $stderr.dup
+      $stderr.reopen(tmpfile.path, 'a')
+      begin
+        mod.dump
+        $stderr.flush
+        assert_match expected_pattern, File.read(tmpfile.path)
+      ensure
+        $stderr.reopen(stderr_old)
+      end
+    end
 
+    Tempfile.open('test_dump.2') do |tmpfile|
       # file descriptor
-      mod.print(f1.fileno)
-      assert_match expected_pattern, File.read(f1.path)
+      mod.dump(tmpfile.fileno)
+      assert_match expected_pattern, File.read(tmpfile.path)
+    end
 
+    Tempfile.open('test_dump.3') do |tmpfile|
       # io object
-      mod.print(f2)
-      assert_match expected_pattern, File.read(f2.path)
-    ensure
-      f1.close(true)
-      f2.close(true)
+      mod.dump(tmpfile)
+      assert_match expected_pattern, File.read(tmpfile.path)
     end
   end
 
