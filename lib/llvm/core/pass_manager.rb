@@ -11,14 +11,15 @@ module LLVM
 
       do_initialization
     end
-    
+
     # @private
     def to_ptr
       @ptr
     end
-    
+
     # Append a pass to the pass queue.
-    # @param [Symbol]
+    #
+    # @param  [Symbol] name
     # @return [LLVM::PassManager]
     def <<(name)
       send(:"#{name}!")
@@ -26,12 +27,13 @@ module LLVM
     end
 
     # Run the pass queue on the given module.
-    # @param [LLVM::Module]
+    #
+    # @param  [LLVM::Module] mod
     # @return [true, false] Indicates whether the module was modified.
     def run(mod)
       C.run_pass_manager(self, mod) != 0
     end
-    
+
     # Disposes the pass manager.
     def dispose
       return if @ptr.nil?
@@ -59,7 +61,8 @@ module LLVM
     end
 
     # Run the pass queue on the given function.
-    # @param [LLVM::Function]
+    #
+    # @param  [LLVM::Function] fn
     # @return [true, false] indicates whether the function was modified.
     def run(fn)
       C.run_function_pass_manager(self, fn) != 0
