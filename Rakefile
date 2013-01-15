@@ -25,7 +25,7 @@ task :generate_ffi do
     'core_ffi.rb'                 => %w(Core.h),
     'analysis_ffi.rb'             => %w(Analysis.h),
     'execution_engine_ffi.rb'     => %w(ExecutionEngine.h),
-    'target_ffi.rb'               => %w(Target.h),
+    'target_ffi.rb'               => %w(Target.h TargetMachine.h),
     'core/bitcode_ffi.rb'         => %w(BitReader.h BitWriter.h),
     'transforms/ipo_ffi.rb'       => %w(Transforms/IPO.h),
     'transforms/scalar_ffi.rb'    => %w(Transforms/Scalar.h),

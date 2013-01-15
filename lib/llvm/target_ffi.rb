@@ -298,4 +298,270 @@ module LLVM::C
   # @scope class
   attach_function :dispose_target_data, :LLVMDisposeTargetData, [OpaqueTargetData], :void
   
+  # (Not documented)
+  module TargetMachineWrappers
+    def emit_to_file(m, filename, codegen, error_message)
+      LLVM::C.target_machine_emit_to_file(self, m, filename, codegen, error_message)
+    end
+  end
+  
+  class TargetMachine < FFI::Struct
+    include TargetMachineWrappers
+    layout :dummy, :char
+  end
+  
+  # (Not documented)
+  module TargetWrappers
+    def has_jit()
+      LLVM::C.target_has_jit(self)
+    end
+    
+    def has_target_machine()
+      LLVM::C.target_has_target_machine(self)
+    end
+    
+    def has_asm_backend()
+      LLVM::C.target_has_asm_backend(self)
+    end
+  end
+  
+  class Target < FFI::Struct
+    include TargetWrappers
+    layout :dummy, :char
+  end
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:code_gen_opt_level).</em>
+  # 
+  # === Options:
+  # :none ::
+  #   
+  # :less ::
+  #   
+  # :default ::
+  #   
+  # :aggressive ::
+  #   
+  # 
+  # @method _enum_code_gen_opt_level_
+  # @return [Symbol]
+  # @scope class
+  enum :code_gen_opt_level, [
+    :none, 0,
+    :less, 1,
+    :default, 2,
+    :aggressive, 3
+  ]
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:reloc_mode).</em>
+  # 
+  # === Options:
+  # :default ::
+  #   
+  # :static ::
+  #   
+  # :pic ::
+  #   
+  # :dynamic_no_pic ::
+  #   
+  # 
+  # @method _enum_reloc_mode_
+  # @return [Symbol]
+  # @scope class
+  enum :reloc_mode, [
+    :default, 0,
+    :static, 1,
+    :pic, 2,
+    :dynamic_no_pic, 3
+  ]
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:code_model).</em>
+  # 
+  # === Options:
+  # :default ::
+  #   
+  # :jit_default ::
+  #   
+  # :small ::
+  #   
+  # :kernel ::
+  #   
+  # :medium ::
+  #   
+  # :large ::
+  #   
+  # 
+  # @method _enum_code_model_
+  # @return [Symbol]
+  # @scope class
+  enum :code_model, [
+    :default, 0,
+    :jit_default, 1,
+    :small, 2,
+    :kernel, 3,
+    :medium, 4,
+    :large, 5
+  ]
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:code_gen_file_type).</em>
+  # 
+  # === Options:
+  # :assembly ::
+  #   
+  # :object ::
+  #   
+  # 
+  # @method _enum_code_gen_file_type_
+  # @return [Symbol]
+  # @scope class
+  enum :code_gen_file_type, [
+    :assembly, 0,
+    :object, 1
+  ]
+  
+  # Returns the first llvm::Target in the registered targets list.
+  # 
+  # @method get_first_target()
+  # @return [Target] 
+  # @scope class
+  attach_function :get_first_target, :LLVMGetFirstTarget, [], Target
+  
+  # Returns the next llvm::Target given a previous one (or null if there's none)
+  # 
+  # @method get_next_target(t)
+  # @param [Target] t 
+  # @return [Target] 
+  # @scope class
+  attach_function :get_next_target, :LLVMGetNextTarget, [Target], Target
+  
+  # Returns the name of a target. See llvm::Target::getName
+  # 
+  # @method get_target_name(t)
+  # @param [Target] t 
+  # @return [String] 
+  # @scope class
+  attach_function :get_target_name, :LLVMGetTargetName, [Target], :string
+  
+  # Returns the description  of a target. See llvm::Target::getDescription
+  # 
+  # @method get_target_description(t)
+  # @param [Target] t 
+  # @return [String] 
+  # @scope class
+  attach_function :get_target_description, :LLVMGetTargetDescription, [Target], :string
+  
+  # Returns if the target has a JIT
+  # 
+  # @method target_has_jit(t)
+  # @param [Target] t 
+  # @return [Integer] 
+  # @scope class
+  attach_function :target_has_jit, :LLVMTargetHasJIT, [Target], :int
+  
+  # Returns if the target has a TargetMachine associated
+  # 
+  # @method target_has_target_machine(t)
+  # @param [Target] t 
+  # @return [Integer] 
+  # @scope class
+  attach_function :target_has_target_machine, :LLVMTargetHasTargetMachine, [Target], :int
+  
+  # Returns if the target as an ASM backend (required for emitting output)
+  # 
+  # @method target_has_asm_backend(t)
+  # @param [Target] t 
+  # @return [Integer] 
+  # @scope class
+  attach_function :target_has_asm_backend, :LLVMTargetHasAsmBackend, [Target], :int
+  
+  # Creates a new llvm::TargetMachine. See llvm::Target::createTargetMachine
+  # 
+  # @method create_target_machine(t, triple, cpu, features, level, reloc, code_model)
+  # @param [Target] t 
+  # @param [String] triple 
+  # @param [String] cpu 
+  # @param [String] features 
+  # @param [Symbol from _enum_code_gen_opt_level_] level 
+  # @param [Symbol from _enum_reloc_mode_] reloc 
+  # @param [Symbol from _enum_code_model_] code_model 
+  # @return [TargetMachine] 
+  # @scope class
+  attach_function :create_target_machine, :LLVMCreateTargetMachine, [Target, :string, :string, :string, :code_gen_opt_level, :reloc_mode, :code_model], TargetMachine
+  
+  # Dispose the LLVMTargetMachineRef instance generated by
+  #   LLVMCreateTargetMachine.
+  # 
+  # @method dispose_target_machine(t)
+  # @param [TargetMachine] t 
+  # @return [nil] 
+  # @scope class
+  attach_function :dispose_target_machine, :LLVMDisposeTargetMachine, [TargetMachine], :void
+  
+  # Returns the Target used in a TargetMachine
+  # 
+  # @method get_target_machine_target(t)
+  # @param [TargetMachine] t 
+  # @return [Target] 
+  # @scope class
+  attach_function :get_target_machine_target, :LLVMGetTargetMachineTarget, [TargetMachine], Target
+  
+  # Returns the triple used creating this target machine. See
+  #   llvm::TargetMachine::getTriple. The result needs to be disposed with
+  #   LLVMDisposeMessage.
+  # 
+  # @method get_target_machine_triple(t)
+  # @param [TargetMachine] t 
+  # @return [String] 
+  # @scope class
+  attach_function :get_target_machine_triple, :LLVMGetTargetMachineTriple, [TargetMachine], :string
+  
+  # Returns the cpu used creating this target machine. See
+  #   llvm::TargetMachine::getCPU. The result needs to be disposed with
+  #   LLVMDisposeMessage.
+  # 
+  # @method get_target_machine_cpu(t)
+  # @param [TargetMachine] t 
+  # @return [String] 
+  # @scope class
+  attach_function :get_target_machine_cpu, :LLVMGetTargetMachineCPU, [TargetMachine], :string
+  
+  # Returns the feature string used creating this target machine. See
+  #   llvm::TargetMachine::getFeatureString. The result needs to be disposed with
+  #   LLVMDisposeMessage.
+  # 
+  # @method get_target_machine_feature_string(t)
+  # @param [TargetMachine] t 
+  # @return [String] 
+  # @scope class
+  attach_function :get_target_machine_feature_string, :LLVMGetTargetMachineFeatureString, [TargetMachine], :string
+  
+  # Returns the llvm::DataLayout used for this llvm:TargetMachine.
+  # 
+  # @method get_target_machine_data(t)
+  # @param [TargetMachine] t 
+  # @return [OpaqueTargetData] 
+  # @scope class
+  attach_function :get_target_machine_data, :LLVMGetTargetMachineData, [TargetMachine], OpaqueTargetData
+  
+  # Emits an asm or object file for the given module to the filename. This
+  #   wraps several c++ only classes (among them a file stream). Returns any
+  #   error in ErrorMessage. Use LLVMDisposeMessage to dispose the message.
+  # 
+  # @method target_machine_emit_to_file(t, m, filename, codegen, error_message)
+  # @param [TargetMachine] t 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @param [String] filename 
+  # @param [Symbol from _enum_code_gen_file_type_] codegen 
+  # @param [FFI::Pointer(**CharS)] error_message 
+  # @return [Integer] 
+  # @scope class
+  attach_function :target_machine_emit_to_file, :LLVMTargetMachineEmitToFile, [TargetMachine, :pointer, :string, :code_gen_file_type, :pointer], :int
+  
 end
