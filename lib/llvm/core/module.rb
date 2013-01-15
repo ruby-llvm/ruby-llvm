@@ -1,5 +1,7 @@
 module LLVM
   class Module
+    include PointerIdentity
+
     # @private
     def self.from_ptr(ptr)
       return if ptr.null?
@@ -17,26 +19,6 @@ module LLVM
       return if @ptr.nil?
       C.dispose_module(@ptr)
       @ptr = nil
-    end
-
-    # @private
-    def to_ptr
-      @ptr
-    end
-
-    # Checks if the module is equal to other.
-    def ==(other)
-      case other
-      when LLVM::Module
-        @ptr == other.to_ptr
-      else
-        false
-      end
-    end
-
-    # Checks if the module is equal to other.
-    def eql?(other)
-      other.instance_of?(self.class) && self == other
     end
 
     # Returns a TypeCollection of all the Types in the module.
