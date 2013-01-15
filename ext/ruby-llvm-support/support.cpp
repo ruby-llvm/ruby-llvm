@@ -6,6 +6,7 @@
 #include <llvm/GlobalValue.h>
 #include <llvm/Support/DynamicLibrary.h>
 #include <llvm/Type.h>
+#include <llvm/Support/raw_ostream.h>
 
 extern "C" {
   using namespace llvm;
@@ -24,6 +25,11 @@ extern "C" {
 
   void LLVMDumpType(LLVMTypeRef type) {
     unwrap<Type>(type)->dump();
+  }
+
+  int LLVMPrintModuleToFD(LLVMModuleRef module, int fd, LLVMBool shouldClose, LLVMBool unbuffered) {
+    raw_fd_ostream os(fd, shouldClose, unbuffered);
+    unwrap(module)->print(os, 0);
   }
 }
 

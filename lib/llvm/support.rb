@@ -8,20 +8,19 @@ module LLVM
     module C
       extend FFI::Library
 
-      OpaqueValue = LLVM::C::OpaqueValue
-      OpaqueType  = LLVM::C::OpaqueType
+      OpaqueValue  = LLVM::C::OpaqueValue
+      OpaqueType   = LLVM::C::OpaqueType
+      OpaqueModule = LLVM::C::OpaqueModule
 
       lib_name = FFI.map_library_name('RubyLLVMSupport-3.2')
-      lib_path = File.expand_path('../../../ext/ruby-llvm-support/' + lib_name, __FILE__)
-
+      lib_path = File.expand_path("../../ext/ruby-llvm-support/#{lib_name}", File.dirname(__FILE__))
       ffi_lib [lib_path]
 
       attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
-
       attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
       attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
-
       attach_function :dump_type, :LLVMDumpType, [OpaqueType], :void
+      attach_function :print_module, :LLVMPrintModuleToFD, [OpaqueModule, :int, :int, :int], :void
     end
   end
 
