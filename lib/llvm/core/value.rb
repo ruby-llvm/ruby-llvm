@@ -1,35 +1,13 @@
 module LLVM
   class Value
+    include PointerIdentity
+
     # @private
     def self.from_ptr(ptr)
       return if ptr.null?
       val = allocate
       val.instance_variable_set(:@ptr, ptr)
       val
-    end
-
-    # @private
-    def to_ptr
-      @ptr
-    end
-
-    # Checks if the value is equal to other.
-    def ==(other)
-      case other
-      when LLVM::Value
-        @ptr == other.to_ptr
-      else
-        false
-      end
-    end
-
-    def hash
-      @ptr.address.hash
-    end
-
-    # Checks if the value is equal to other.
-    def eql?(other)
-      other.instance_of?(self.class) && self == other
     end
 
     # Returns the Value type. This is abstract and is overidden by its subclasses.

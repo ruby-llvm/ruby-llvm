@@ -40,7 +40,7 @@ class EqualityTestCase < Test::Unit::TestCase
                       :same      => [int1, int1],
                       :not_same  => [int1, int2, int3, int4],
                       :eql       => [int1, int2],
-                      :not_eql   => [int1, int3, int4]
+                      :not_eql   => [int1, int3]
   end
 
   def test_module
@@ -54,7 +54,7 @@ class EqualityTestCase < Test::Unit::TestCase
                       :same      => [mod1, mod1],
                       :not_same  => [mod1, mod2, mod3, mod4],
                       :eql       => [mod1, mod2],
-                      :not_eql   => [mod1, mod3, mod4]
+                      :not_eql   => [mod1, mod3]
   end
 
   def test_type
@@ -68,7 +68,7 @@ class EqualityTestCase < Test::Unit::TestCase
                       :same      => [type1, type1],
                       :not_same  => [type1, type2, type3, type4],
                       :eql       => [type1, type2],
-                      :not_eql   => [type1, type3, type4]
+                      :not_eql   => [type1, type3]
   end
 
   def test_function
@@ -84,7 +84,7 @@ class EqualityTestCase < Test::Unit::TestCase
                       :same      => [fn1, fn1],
                       :not_same  => [fn1, fn2, fn3, fn4],
                       :eql       => [fn1, fn2],
-                      :not_eql   => [fn1, fn3, fn4]
+                      :not_eql   => [fn1, fn3]
   end
 
 end
