@@ -6,7 +6,7 @@ require 'llvm/core/pass_manager'
 class IPOTestCase < Test::Unit::TestCase
 
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   def test_gdce

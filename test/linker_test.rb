@@ -4,7 +4,7 @@ require 'llvm/linker'
 
 class LinkerTestCase < Test::Unit::TestCase
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   def create_modules

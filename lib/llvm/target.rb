@@ -3,6 +3,17 @@ require 'llvm/core'
 require 'llvm/target_ffi'
 
 module LLVM
+  # A shorthand for {LLVM::Target.init_native}
+  def self.init_jit
+    LLVM::Target.init_native
+  end
+
+  # @deprecated Use LLVM.init_jit or LLVM::Target.init('X86').
+  def self.init_x86
+    warn "LLVM.init_x86 is deprecated. Use LLVM.init_jit or LLVM::Target.init('X86')."
+    LLVM::Target.init('X86')
+  end
+
   # You need to call {Target.init} for a target to be usable.
   class Target
     # Initializes target +target+; in particular, TargetInfo, Target and TargetMC.

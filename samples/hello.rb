@@ -38,7 +38,7 @@ mod.dump
 #mod.dispose
 puts "------------------------------"
 
-LLVM.init_x86
+LLVM.init_jit
 
 engine = LLVM::JITCompiler.new(mod)
 engine.run_function(main)

@@ -2,7 +2,7 @@ require "test_helper"
 
 class InstructionTestCase < Test::Unit::TestCase
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
     @module = LLVM::Module.new("InstructionTestCase")
   end
 

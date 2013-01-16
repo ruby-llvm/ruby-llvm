@@ -2,7 +2,7 @@ require 'llvm/core'
 require 'llvm/execution_engine'
 require 'llvm/transforms/scalar'
 
-LLVM.init_x86
+LLVM.init_jit
 
 mod = LLVM::Module.new("Factorial")
 
