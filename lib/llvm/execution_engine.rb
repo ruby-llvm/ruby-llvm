@@ -35,6 +35,13 @@ module LLVM
       @ptr
     end
 
+    # Get the associated data layout.
+    #
+    # @return [TargetDataLayout]
+    def data_layout
+      TargetDataLayout.from_ptr(C.get_execution_engine_target_data(self))
+    end
+
     # Execute the given LLVM::Function with the supplied args (as
     # GenericValues).
     # Important: Call #dispose on the returned GenericValue to

@@ -2,14 +2,12 @@ module LLVM
   # The PassManager runs a queue of passes on a module. See
   # http://llvm.org/docs/Passes.html for the list of available passes.
   class PassManager
-    # Creates a new pass manager on the given ExecutionEngine.
-    def initialize(execution_engine)
-      ptr = C.create_pass_manager()
-      C.add_target_data(
-        C.get_execution_engine_target_data(execution_engine), ptr)
-      @ptr = ptr
-
-      do_initialization
+    # Creates a new pass manager.
+    #
+    # @param [LLVM::ExecutionEngine, LLVM::TargetMachine] machine
+    def initialize(machine)
+      @ptr = C.create_pass_manager()
+      C.add_target_data(machine.data_layout, @ptr)
     end
 
     # @private
@@ -23,6 +21,7 @@ module LLVM
     # @return [LLVM::PassManager]
     def <<(name)
       send(:"#{name}!")
+
       self
     end
 
@@ -37,27 +36,29 @@ module LLVM
     # Disposes the pass manager.
     def dispose
       return if @ptr.nil?
-      do_finalization
+
+      finalize
+
       C.dispose_pass_manager(@ptr)
       @ptr = nil
     end
 
     protected
 
-    def do_initialization
-    end
-
-    def do_finalization
+    def finalize
     end
   end
 
   class FunctionPassManager < PassManager
-    # Creates a new pass manager on the given ExecutionEngine and Module.
-    def initialize(execution_engine, mod)
-      ptr = C.create_function_pass_manager_for_module(mod)
-      C.add_target_data(
-        C.get_execution_engine_target_data(execution_engine), ptr)
-      @ptr = ptr
+    # Creates a new function pass manager.
+    #
+    # @param [LLVM::ExecutionEngine, LLVM::TargetMachine] machine
+    # @param [LLVM::Module] mod
+    def initialize(machine, mod)
+      @ptr = C.create_function_pass_manager_for_module(mod)
+      C.add_target_data(machine.data_layout, @ptr)
+
+      C.initialize_function_pass_manager(self) != 0
     end
 
     # Run the pass queue on the given function.
@@ -70,11 +71,7 @@ module LLVM
 
     protected
 
-    def do_initialization
-      C.initialize_function_pass_manager(self) != 0
-    end
-
-    def do_finalization
+    def finalize
       C.finalize_function_pass_manager(self) != 0
     end
   end
