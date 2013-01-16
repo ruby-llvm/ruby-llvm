@@ -9,10 +9,20 @@ class TargetTestCase < Test::Unit::TestCase
     @x86 = LLVM::Target.by_name('x86')
   end
 
+  def test_init_native
+    assert_nothing_raised { LLVM::Target.init_native }
+    assert_nothing_raised { LLVM::Target.init_native(true) }
+  end
+
   def test_init
     assert_nothing_raised { LLVM::Target.init('ARM') }
     assert_nothing_raised { LLVM::Target.init('ARM', true) }
     assert_not_nil LLVM::Target.by_name('arm')
+  end
+
+  def test_init_all
+    assert_nothing_raised { LLVM::Target.init_all }
+    assert_nothing_raised { LLVM::Target.init_all(true) }
   end
 
   def test_each

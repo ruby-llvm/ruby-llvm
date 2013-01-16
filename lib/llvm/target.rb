@@ -5,17 +5,11 @@ require 'llvm/target_ffi'
 module LLVM
   # You need to call {Target.init} for a target to be usable.
   class Target
-    # Initializes native target. Useful for JIT applications.
-    def self.init_native
-      C.initialize_native_target
-    end
-
     # Initializes target +target+; in particular, TargetInfo, Target and TargetMC.
     #
-    # @param [String]      target   Target name in LLVM format, e.g. "X86", "ARM" or "PowerPC".
-    # @param [true, false] init_asm Initialize corresponding AsmParser, AsmPrinter
-    #   and Disassembler.
-    def self.init(target, init_asm=false)
+    # @param [String]      target      Target name in LLVM format, e.g. "X86", "ARM" or "PowerPC".
+    # @param [true, false] asm_printer Initialize corresponding AsmPrinter.
+    def self.init(target, asm_printer=false)
       C.module_eval do
         attach_function :"initialize_target_info_#{target}",
             :"LLVMInitialize#{target}TargetInfo", [], :void
@@ -43,13 +37,7 @@ module LLVM
       end
 
       begin
-        if init_asm
-          %W(initialize_#{target}_asm_printer
-             initialize_#{target}_asm_parser
-             initialize_#{target}_disassembler).each do |init|
-            C.send init
-          end
-        end
+        C.send :"initialize_#{target}_asm_printer" if asm_printer
       rescue FFI::NotFoundError => e
         raise ArgumentError, "LLVM target #{target} does not implement an ASM routime: #{e.message}"
       end
@@ -57,18 +45,22 @@ module LLVM
 
     # Initializes all available targets.
     #
-    # @param [true, false] init_asm Initialize corresponding AsmParsers, AsmPrinters
-    #   and Disassemblers.
-    def self.init_all(init_asm=false)
-      C.initialize_all_target_infos
-      C.initialize_all_targets
-      C.initialize_all_target_m_cs
+    # @param [true, false] asm_printer Initialize corresponding AsmPrinters.
+    def self.init_all(asm_printer=false)
+      Support::C.initialize_all_target_infos
+      Support::C.initialize_all_targets
+      Support::C.initialize_all_target_mcs
 
-      if init_asm
-        C.initialize_all_asm_printers
-        C.initialize_all_asm_parsers
-        C.initialize_all_disassemblers
-      end
+      Support::C.initialize_all_asm_printers if asm_printer
+    end
+
+    # Initializes native target. Useful for JIT applications.
+    #
+    # @param [true, false] asm_printer Initialize corresponding AsmPrinter.
+    def self.init_native(asm_printer=false)
+      Support::C.initialize_native_target
+
+      Support::C.initialize_native_target_asm_printer if asm_printer
     end
 
     # Enumerate all initialized targets.
