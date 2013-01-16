@@ -23,15 +23,21 @@ task :generate_ffi do
   require 'ffi_gen'
 
   mappings = {
+    # Core
     'core_ffi.rb'                 => %w(Core.h),
-    'analysis_ffi.rb'             => %w(Analysis.h),
-    'execution_engine_ffi.rb'     => %w(ExecutionEngine.h),
-    'target_ffi.rb'               => %w(Target.h TargetMachine.h),
     'core/bitcode_ffi.rb'         => %w(BitReader.h BitWriter.h),
+
+    # Transformations
+    'analysis_ffi.rb'             => %w(Analysis.h),
     'transforms/ipo_ffi.rb'       => %w(Transforms/IPO.h),
     'transforms/scalar_ffi.rb'    => %w(Transforms/Scalar.h),
     'transforms/vectorize_ffi.rb' => %w(Transforms/Vectorize.h),
-    'linker_ffi.rb'               => %w(Linker.h)
+    'transforms/builder_ffi.rb'   => %w(Transforms/PassManagerBuilder.h),
+
+    # Code generation
+    'target_ffi.rb'               => %w(Target.h TargetMachine.h),
+    'linker_ffi.rb'               => %w(Linker.h),
+    'execution_engine_ffi.rb'     => %w(ExecutionEngine.h),
   }
 
   mappings.each do |ruby_file, headers|
