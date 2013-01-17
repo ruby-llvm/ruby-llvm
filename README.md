@@ -24,6 +24,12 @@ Homebrew
 --------
 LLVM can be installed with Homebrew by executing `brew install llvm --shared`
 
+See Also
+--------
+* [The LLVM project](http://llvm.org)
+* [ffi-gen](https://github.com/neelance/ffi-gen) – Generate
+  [FFI](https://github.com/ffi/ffi) bindings with LLVM and Clang
+
 License
 -------
 Ruby-LLVM is available under the BSD 3-clause (see LICENSE), Copyright (c) 2010-2013 Jeremy Voorhis
