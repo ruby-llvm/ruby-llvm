@@ -1,10 +1,11 @@
 Ruby-LLVM
 =========
 
-This package contains Ruby bindings to the LLVM api, enabling users to
-make use of LLVM's optimization passes and JIT compilation for
-implementing compiled DSLs, callback functions, or fast Ruby method
-implementations.
+Ruby-LLVM is a Ruby language binding to the LLVM compiler infrastructure
+library. LLVM allows users to create just-in-time (JIT) compilers, ahead-of-time
+(AOT) compilers for multiple architectures, code analyzers and more. LLVM
+bindings can also be used to speed up Ruby code by compiling Ruby methods on the
+fly.
 
 Requirements
 ------------
