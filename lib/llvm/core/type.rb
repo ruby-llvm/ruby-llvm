@@ -1,27 +1,20 @@
 module LLVM
   class Type
+    include PointerIdentity
+
     # @private
-    def to_ptr
-      @ptr
-    end
-
-    # LLVM's represents types uniquely, and supports pointer equality.
-    def ==(type)
-      case type
-      when LLVM::Type
-        @ptr == type.to_ptr
-      else
-        false
+    def self.from_ptr(ptr, kind)
+      return if ptr.null?
+      kind ||= C.get_type_kind(ptr)
+      ty = case kind
+      when :integer  then IntType.allocate
+      when :function then FunctionType.allocate
+      when :struct   then StructType.allocate
+      else allocate
       end
-    end
-
-    def hash
-      @ptr.address.hash
-    end
-
-    # Checks if the type is equal to other.
-    def eql?(other)
-      other.instance_of?(self.class) && self == other
+      ty.instance_variable_set(:@ptr, ptr)
+      ty.instance_variable_set(:@kind, kind)
+      ty
     end
 
     # Returns a symbol representation of the types kind (ex. :pointer, :vector, :array.)
@@ -64,21 +57,6 @@ module LLVM
     # Print the type's representation to stdout.
     def dump
       Support::C.dump_type(self)
-    end
-
-    # @private
-    def self.from_ptr(ptr, kind)
-      return if ptr.null?
-      kind ||= C.get_type_kind(ptr)
-      ty = case kind
-      when :integer  then IntType.allocate
-      when :function then FunctionType.allocate
-      when :struct   then StructType.allocate
-      else allocate
-      end
-      ty.instance_variable_set(:@ptr, ptr)
-      ty.instance_variable_set(:@kind, kind)
-      ty
     end
 
     # Creates an array type of Type with the given size.
