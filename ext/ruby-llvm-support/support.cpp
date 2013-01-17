@@ -3,9 +3,10 @@
  */
 
 #include <llvm-c/Core.h>
+#include <llvm/Type.h>
 #include <llvm/GlobalValue.h>
 #include <llvm/Support/DynamicLibrary.h>
-#include <llvm/Type.h>
+#include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/raw_ostream.h>
 
 extern "C" {
@@ -30,6 +31,30 @@ extern "C" {
   int LLVMPrintModuleToFD(LLVMModuleRef module, int fd, LLVMBool shouldClose, LLVMBool unbuffered) {
     raw_fd_ostream os(fd, shouldClose, unbuffered);
     unwrap(module)->print(os, 0);
+  }
+
+  void LLVMInitializeAllTargetInfos() {
+    llvm::InitializeAllTargetInfos();
+  }
+
+  void LLVMInitializeAllTargets() {
+    llvm::InitializeAllTargets();
+  }
+
+  void LLVMInitializeAllTargetMCs() {
+    llvm::InitializeAllTargetMCs();
+  }
+
+  void LLVMInitializeAllAsmPrinters() {
+    llvm::InitializeAllAsmPrinters();
+  }
+
+  void LLVMInitializeNativeTarget() {
+    llvm::InitializeNativeTarget();
+  }
+
+  void LLVMInitializeNativeTargetAsmPrinter() {
+    llvm::InitializeNativeTargetAsmPrinter();
   }
 }
 

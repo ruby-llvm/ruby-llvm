@@ -24,13 +24,13 @@ def invoke_llvm_config(options)
   raise RuntimeError, "No valid llvm-config found. Tried: #{variants}"
 end
 
-LLVM_CONFIG = invoke_llvm_config('--cxxflags --ldflags --libs all')
+LLVM_CONFIG = invoke_llvm_config('--cxxflags --ldflags')
 
 CXX    = "g++"
 SRC    = "support.cpp"
 OUTPUT = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
 
-CLOBBER.include(OUTPUT)
+CLEAN.include(OUTPUT)
 
 task :default => [:build]
 
@@ -38,5 +38,5 @@ desc "Build the shared library"
 task :build => [OUTPUT]
 
 file OUTPUT => [SRC] do
-  sh "#{CXX} -shared #{SRC} #{LLVM_CONFIG} -o #{OUTPUT}"
+  sh "#{CXX} -shared -lLLVM-#{LLVM_VERSION} #{SRC} #{LLVM_CONFIG} -o #{OUTPUT}"
 end

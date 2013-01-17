@@ -9,8 +9,8 @@ module LLVM
   end
 
   # Yields a pointer suitable for storing an LLVM output message.
-  # If the block returns +1+ (an error has happened), converts the
-  # result to a string and returns it. Otherwise, returns +nil+.
+  # If the message pointer is non-NULL (an error has happened), converts
+  # the result to a string and returns it. Otherwise, returns +nil+.
   #
   # @yield  [FFI::MemoryPointer]
   # @return [String, nil]
@@ -18,12 +18,28 @@ module LLVM
     result = nil
 
     FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |str|
-      status = yield str
-      result = str.read_string if status == 1
-      C.dispose_message str.read_pointer
+      yield str
+
+      msg_ptr = str.read_pointer
+
+      unless msg_ptr.null?
+        result = msg_ptr.read_string
+        C.dispose_message msg_ptr
+      end
     end
 
     result
+  end
+
+  # Same as #with_message_output, but raises a RuntimeError with the
+  # resulting message.
+  #
+  # @yield  [FFI::MemoryPointer]
+  # @return [nil]
+  def self.with_error_output(&block)
+    error = with_message_output(&block)
+
+    raise RuntimeError, error unless error.nil?
   end
 
   require 'llvm/core/context'

@@ -3,7 +3,7 @@ require "test_helper"
 class SelectTestCase < Test::Unit::TestCase
 
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   def test_select

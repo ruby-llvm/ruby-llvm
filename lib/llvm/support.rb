@@ -21,6 +21,20 @@ module LLVM
       attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
       attach_function :dump_type, :LLVMDumpType, [OpaqueType], :void
       attach_function :print_module, :LLVMPrintModuleToFD, [OpaqueModule, :int, :int, :int], :void
+
+      attach_function :initialize_all_target_infos,
+          :LLVMInitializeAllTargetInfos, [], :void
+      attach_function :initialize_all_targets,
+          :LLVMInitializeAllTargets, [], :void
+      attach_function :initialize_all_target_mcs,
+          :LLVMInitializeAllTargetMCs, [], :void
+      attach_function :initialize_all_asm_printers,
+          :LLVMInitializeAllAsmPrinters, [], :void
+
+      attach_function :initialize_native_target,
+          :LLVMInitializeNativeTarget, [], :void
+      attach_function :initialize_native_target_asm_printer,
+          :LLVMInitializeNativeTargetAsmPrinter, [], :void
     end
   end
 

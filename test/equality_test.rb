@@ -3,7 +3,7 @@ require "llvm/core"
 
 class EqualityTestCase < Test::Unit::TestCase
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   class MyModule < LLVM::Module; end

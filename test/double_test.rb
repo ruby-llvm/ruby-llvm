@@ -2,7 +2,7 @@ require "test_helper"
 
 class DoubleTestCase < Test::Unit::TestCase
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   def test_double
@@ -16,7 +16,7 @@ class DoubleTestCase < Test::Unit::TestCase
 
       bb = fun.basic_blocks.append
       builder.position_at_end(bb)
-      
+
       builder.ret(builder.fadd(p0, LLVM::Double(1.0)))
     end
 

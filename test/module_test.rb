@@ -4,7 +4,7 @@ require "tempfile"
 class ModuleTestCase < Test::Unit::TestCase
 
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   def test_simple_module

@@ -21,6 +21,34 @@ module LLVM
       @ptr = nil
     end
 
+    # Get module triple.
+    #
+    # @return [String]
+    def triple
+      C.get_target(self)
+    end
+
+    # Set module triple.
+    #
+    # @param [String] triple
+    def triple=(triple)
+      C.set_target(self, triple.to_s)
+    end
+
+    # Get module data layout.
+    #
+    # @return [String]
+    def data_layout
+      C.get_data_layout(self)
+    end
+
+    # Set module data layout.
+    #
+    # @param [String, TargetDataLayout] data_layout
+    def data_layout=(data_layout)
+      C.set_data_layout(self, data_layout.to_s)
+    end
+
     # Returns a TypeCollection of all the Types in the module.
     def types
       @types ||= TypeCollection.new(self)

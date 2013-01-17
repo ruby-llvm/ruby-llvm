@@ -3,7 +3,7 @@ require "test_helper"
 class BasicBlockTestCase < Test::Unit::TestCase
 
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
     @module = LLVM::Module.new("BasicBlockTestCase")
   end
 

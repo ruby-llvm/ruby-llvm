@@ -17,8 +17,9 @@ module LLVM
     end
 
     # Position the builder at the given Instruction within the given BasicBlock.
-    # @param [LLVM::BasicBlock]
-    # @param [LLVM::Instruction]
+    #
+    # @param  [LLVM::BasicBlock]  block
+    # @param  [LLVM::Instruction] instruction
     # @return [LLVM::Builder]
     def position(block, instruction)
       raise "Block must not be nil" if block.nil?
@@ -27,7 +28,8 @@ module LLVM
     end
 
     # Positions the builder before the given Instruction.
-    # @param [LLVM::Instruction]
+    #
+    # @param  [LLVM::Instruction] instruction
     # @return [LLVM::Builder]
     def position_before(instruction)
       raise "Instruction must not be nil" if instruction.nil?
@@ -36,7 +38,8 @@ module LLVM
     end
 
     # Positions the builder at the end of the given BasicBlock.
-    # @param [LLVM::BasicBlock]
+    #
+    # @param  [LLVM::BasicBlock] block
     # @return [LLVM::Builder]
     def position_at_end(block)
       raise "Block must not be nil" if block.nil?
@@ -45,6 +48,7 @@ module LLVM
     end
 
     # The BasicBlock at which the Builder is currently positioned.
+    #
     # @return [LLVM::BasicBlock]
     def insert_block
       BasicBlock.from_ptr(C.get_insert_block(self))
@@ -452,11 +456,12 @@ module LLVM
     end
 
     # Builds a struct getelementptr Instruction.
-    # @param [LLVM::Value] ptr A pointer to a structure
-    # @param [LLVM::Value] idx Unsigned integer representing the index of a
+    #
+    # @param  [LLVM::Value] pointer A pointer to a structure
+    # @param  [LLVM::Value] idx     Unsigned integer representing the index of a
     #   structure member
-    # @param [String] name The name of the result in LLVM IR
-    # @return [LLVM::Instruction] The resulting pointer
+    # @param  [String]      name    The name of the result in LLVM IR
+    # @return [LLVM::Instruction]   The resulting pointer
     # @LLVMinst gep
     # @see http://llvm.org/docs/GetElementPtr.html
     def struct_gep(pointer, idx, name = "")
@@ -741,7 +746,8 @@ module LLVM
 
     # Builds a call Instruction. Calls the given Function with the given
     # args (Instructions).
-    # @param [LLVM::Function] fun
+    #
+    # @param [LLVM::Function]     fun
     # @param [Array<LLVM::Value>] args
     # @param [LLVM::Instruction]
     # @LLVMinst call

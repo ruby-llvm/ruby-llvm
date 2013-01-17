@@ -3,9 +3,9 @@ require "tempfile"
 
 class BitcodeTestCase < Test::Unit::TestCase
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
-  
+
   def test_bitcode
     test_module = define_module("test_module") do |mod|
       define_function(mod, "test_function", [], LLVM::Int) do

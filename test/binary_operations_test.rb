@@ -3,7 +3,7 @@ require "test_helper"
 class BasicOperationsTestCase < Test::Unit::TestCase
 
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   def test_integer_binary_operations

@@ -6,7 +6,7 @@ class StructTestCase < Test::Unit::TestCase
   LLVM_PACKED = true
 
   def setup
-    LLVM.init_x86
+    LLVM.init_jit
   end
 
   def test_simple_struct
@@ -16,13 +16,13 @@ class StructTestCase < Test::Unit::TestCase
     assert_equal LLVM::Int.type, struct.element_types[0]
     assert_equal LLVM::Float.type, struct.element_types[1]
   end
-  
+
   def test_named_struct
     struct = LLVM::Struct(LLVM::Int, LLVM::Float, "struct100")
     assert_instance_of LLVM::StructType, struct
     assert_equal "struct100", struct.name
   end
-  
+
   def test_deferred_element_type_setting
     struct = LLVM::Struct("struct200")
     struct.element_types = [LLVM::Int, LLVM::Float]

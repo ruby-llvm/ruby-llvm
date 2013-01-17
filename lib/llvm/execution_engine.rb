@@ -5,19 +5,6 @@ require 'llvm/analysis'
 require 'llvm/execution_engine_ffi'
 
 module LLVM
-  # @private
-  module C
-    attach_function :initialize_x86_target_info, :LLVMInitializeX86TargetInfo, [], :void
-    attach_function :initialize_x86_target, :LLVMInitializeX86Target, [], :void
-    attach_function :initialize_x86_target_mc, :LLVMInitializeX86TargetMC, [], :void
-  end
-
-  def LLVM.init_x86
-    LLVM::C.initialize_x86_target
-    LLVM::C.initialize_x86_target_info
-    LLVM::C.initialize_x86_target_mc
-  end
-
   class JITCompiler
     # Important: Call #dispose to free backend memory after use. Do not call #dispose on mod any more.
     def initialize(mod, opt_level = 3)
@@ -36,7 +23,7 @@ module LLVM
         end
       end
     end
-    
+
     def dispose
       return if @ptr.nil?
       C.dispose_execution_engine(@ptr)
@@ -46,6 +33,13 @@ module LLVM
     # @private
     def to_ptr
       @ptr
+    end
+
+    # Get the associated data layout.
+    #
+    # @return [TargetDataLayout]
+    def data_layout
+      TargetDataLayout.from_ptr(C.get_execution_engine_target_data(self))
     end
 
     # Execute the given LLVM::Function with the supplied args (as
@@ -82,7 +76,7 @@ module LLVM
     def to_ptr
       @ptr
     end
-    
+
     # Casts an FFI::Pointer pointing to a GenericValue to an instance.
     def self.from_ptr(ptr)
       return if ptr.null?
@@ -90,7 +84,7 @@ module LLVM
       val.instance_variable_set(:@ptr, ptr)
       val
     end
-    
+
     def dispose
       return if @ptr.nil?
       C.dispose_generic_value(@ptr)
@@ -113,7 +107,7 @@ module LLVM
     def self.from_d(val)
       from_ptr(C.create_generic_value_of_float(LLVM::Double, val))
     end
-    
+
     # Creates a GenericValue from a Ruby boolean.
     def self.from_b(b)
       from_i(b ? 1 : 0, LLVM::Int1, false)
@@ -135,12 +129,12 @@ module LLVM
     def to_f(type = LLVM::Float.type)
       C.generic_value_to_float(type, self)
     end
-    
+
     # Converts a GenericValue to a Ruby boolean.
     def to_b
       to_i(false) != 0
     end
-    
+
     def to_value_ptr
       C.generic_value_to_pointer(self)
     end
