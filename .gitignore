@@ -13,3 +13,4 @@ coverage/*
 doc/*
 .bundle
 Gemfile.lock
+lib/llvm/config.rb
