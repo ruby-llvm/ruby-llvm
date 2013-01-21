@@ -4,8 +4,8 @@ Ruby-LLVM
 Ruby-LLVM is a Ruby language binding to the LLVM compiler infrastructure
 library. LLVM allows users to create just-in-time (JIT) compilers, ahead-of-time
 (AOT) compilers for multiple architectures, code analyzers and more. LLVM
-bindings can also be used to speed up Ruby code by compiling Ruby methods on the
-fly.
+bindings can also be used to speed up Ruby code by compiling and loading
+computationally intensive algorithms on the fly.
 
 Requirements
 ------------
