@@ -219,6 +219,9 @@ module LLVM
       ConstantExpr.from_ptr(C.const_bit_cast(self, type))
     end
 
+    # @deprecated
+    alias bit_cast bitcast_to
+
     # Returns the element pointer at the given indices of the constant.
     # For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
     def gep(*indices)
@@ -230,8 +233,9 @@ module LLVM
       end
     end
 
-    def bit_cast(type)
-      return ConstantExpr.from_ptr(C.const_bit_cast(self, type))
+    # Conversion to integer.
+    def ptr_to_int(type)
+      ConstantInt.from_ptr(C.const_ptr_to_int(self, type))
     end
   end
 
@@ -434,6 +438,11 @@ module LLVM
     #   :sle - signed less than or equal to
     def icmp(pred, rhs)
       self.class.from_ptr(C.const_i_cmp(pred, self, rhs))
+    end
+
+    # Conversion to pointer.
+    def int_to_ptr(type)
+      ConstantExpr.from_ptr(C.const_int_to_ptr(self, type))
     end
   end
 
