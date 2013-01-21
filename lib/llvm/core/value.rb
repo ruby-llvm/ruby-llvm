@@ -290,27 +290,67 @@ module LLVM
       self.class.from_ptr(C.const_neg(self))
     end
 
-    # Boolean negation.
-    def ~@
-      self.class.from_ptr(C.const_not(self))
+    alias neg -@
+
+    # "No signed wrap" negation.
+    def nsw_neg
+      self.class.from_ptr(C.const_nsw_neg(self))
     end
 
-    alias not ~
+    # "No unsigned wrap" negation.
+    def nuw_neg
+      self.class.from_ptr(C.const_nuw_neg(self))
+    end
 
     # Addition.
     def +(rhs)
       self.class.from_ptr(C.const_add(self, rhs))
     end
 
-    # "No signed wrap" addition. See
-    # http://llvm.org/docs/LangRef.html#i_add for discusison.
+    alias add +
+
+    # "No signed wrap" addition.
     def nsw_add(rhs)
       self.class.from_ptr(C.const_nsw_add(self, rhs))
+    end
+
+    # "No unsigned wrap" addition.
+    def nuw_add(rhs)
+      self.class.from_ptr(C.const_nuw_add(self, rhs))
+    end
+
+    # Subtraction.
+    def -(rhs)
+      self.class.from_ptr(C.const_sub(self, rhs))
+    end
+
+    alias sub -
+
+    # "No signed wrap" subtraction.
+    def nsw_sub(rhs)
+      self.class.from_ptr(C.const_nsw_sub(self, rhs))
+    end
+
+    # "No unsigned wrap" subtraction.
+    def nuw_sub(rhs)
+      self.class.from_ptr(C.const_nuw_sub(self, rhs))
     end
 
     # Multiplication.
     def *(rhs)
       self.class.from_ptr(C.const_mul(self, rhs))
+    end
+
+    alias mul *
+
+    # "No signed wrap" multiplication.
+    def nsw_mul(rhs)
+      self.class.from_ptr(C.const_nsw_mul(self, rhs))
+    end
+
+    # "No unsigned wrap" multiplication.
+    def nuw_mul(rhs)
+      self.class.from_ptr(C.const_nuw_mul(self, rhs))
     end
 
     # Unsigned division.
@@ -333,19 +373,51 @@ module LLVM
       self.class.from_ptr(C.const_s_rem(self, rhs))
     end
 
+    # Boolean negation.
+    def ~@
+      self.class.from_ptr(C.const_not(self))
+    end
+
+    alias not ~
+
     # Integer AND.
-    def and(rhs)
+    def &(rhs)
       self.class.from_ptr(C.const_and(self, rhs))
     end
 
+    alias and &
+
     # Integer OR.
-    def or(rhs)
+    def |(rhs)
       self.class.from_ptr(C.const_or(self, rhs))
     end
 
+    alias or |
+
     # Integer XOR.
-    def xor(rhs)
+    def ^(rhs)
       self.class.from_ptr(C.const_xor(self, rhs))
+    end
+
+    alias xor ^
+
+    # Shift left.
+    def <<(bits)
+      self.class.from_ptr(C.const_shl(self, bits))
+    end
+
+    alias shl <<
+
+    # Shift right.
+    def >>(bits)
+      self.class.from_ptr(C.const_l_shr(self, bits))
+    end
+
+    alias shr >>
+
+    # Arithmatic shift right.
+    def ashr(bits)
+      self.class.from_ptr(C.const_a_shr(self, bits))
     end
 
     # Integer comparison using the predicate specified via the first parameter.
@@ -362,21 +434,6 @@ module LLVM
     #   :sle - signed less than or equal to
     def icmp(pred, rhs)
       self.class.from_ptr(C.const_i_cmp(pred, self, rhs))
-    end
-
-    # Shift left.
-    def <<(bits)
-      self.class.from_ptr(C.const_shl(self, bits))
-    end
-
-    # Shift right.
-    def >>(bits)
-      self.class.from_ptr(C.const_l_shr(self, bits))
-    end
-
-    # Arithmatic shift right.
-    def ashr(bits)
-      self.class.from_ptr(C.const_a_shr(self, bits))
     end
   end
 
