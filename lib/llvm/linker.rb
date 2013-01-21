@@ -22,8 +22,6 @@ module LLVM
     # @return [nil, String] human-readable error if linking has failed
     def link_into_and_destroy(other)
       result = LLVM.with_message_output do |msg|
-        # HACK ALERT: ffi-gen missed LLVMLinkerPreserveSource enumeration for
-        # some reason. It is inlined as a constant here.
         C.link_modules(other, self, :linker_destroy_source, msg)
       end
 
