@@ -79,7 +79,7 @@ module LLVM
     end
 
     # Unconditional branching (i.e. goto)
-    # @param [LLVM::BasicBlock] block Where to jump
+    # @param  [LLVM::BasicBlock]  block Where to jump
     # @return [LLVM::Instruction]
     # @LLVMinst br
     def br(block)
@@ -88,10 +88,20 @@ module LLVM
         C.build_br(self, block))
     end
 
+    # Indirect branching (i.e. computed goto)
+    # @param  [LLVM::BasicBlock]  addr      Where to jump
+    # @param  [Integer]           num_dests Number of possible destinations to be added
+    # @return [LLVM::Instruction]
+    # @LLVMinst indirectbr
+    def ibr(addr, num_dests)
+      IndirectBr.from_ptr(
+        C.build_indirect_br(self, addr, num_dests))
+    end
+
     # Conditional branching (i.e. if)
-    # @param [LLVM::Value] cond The condition
-    # @param [LLVM::BasicBlock] iftrue Where to jump if condition is true
-    # @param [LLVM::BasicBlock] iffalse Where to jump if condition is false
+    # @param  [LLVM::Value]       cond    The condition
+    # @param  [LLVM::BasicBlock]  iftrue  Where to jump if condition is true
+    # @param  [LLVM::BasicBlock]  iffalse Where to jump if condition is false
     # @return [LLVM::Instruction]
     # @LLVMinst br
     def cond(cond, iftrue, iffalse)

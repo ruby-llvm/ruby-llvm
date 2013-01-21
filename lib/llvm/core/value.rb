@@ -789,4 +789,15 @@ module LLVM
       C.add_case(self, val, block)
     end
   end
+
+
+  # @private
+  class IndirectBr < Instruction
+    # Adds a basic block reference as a destination for this indirect branch.
+    def add_dest(dest)
+      C.add_destination(self, dest)
+    end
+
+    alias :<< :add_dest
+  end
 end
