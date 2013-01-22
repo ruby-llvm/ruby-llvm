@@ -1,5 +1,6 @@
 require "test_helper"
 require 'llvm/version'
+require 'llvm/config'
 
 class TargetTestCase < Test::Unit::TestCase
 
@@ -14,7 +15,7 @@ class TargetTestCase < Test::Unit::TestCase
     assert_nothing_raised { LLVM::Target.init_native(true) }
   end
 
-  if `#{LLVM::LLVM_CONFIG} --targets-built` =~ /ARM/
+  if LLVM::CONFIG::TARGETS_BUILT.include?('ARM')
     def test_init_arm
       assert_nothing_raised { LLVM::Target.init('ARM') }
       assert_nothing_raised { LLVM::Target.init('ARM', true) }
