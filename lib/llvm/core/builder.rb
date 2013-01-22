@@ -79,7 +79,7 @@ module LLVM
     end
 
     # Unconditional branching (i.e. goto)
-    # @param [LLVM::BasicBlock] block Where to jump
+    # @param  [LLVM::BasicBlock]  block Where to jump
     # @return [LLVM::Instruction]
     # @LLVMinst br
     def br(block)
@@ -88,10 +88,20 @@ module LLVM
         C.build_br(self, block))
     end
 
+    # Indirect branching (i.e. computed goto)
+    # @param  [LLVM::BasicBlock]  addr      Where to jump
+    # @param  [Integer]           num_dests Number of possible destinations to be added
+    # @return [LLVM::Instruction]
+    # @LLVMinst indirectbr
+    def ibr(addr, num_dests)
+      IndirectBr.from_ptr(
+        C.build_indirect_br(self, addr, num_dests))
+    end
+
     # Conditional branching (i.e. if)
-    # @param [LLVM::Value] cond The condition
-    # @param [LLVM::BasicBlock] iftrue Where to jump if condition is true
-    # @param [LLVM::BasicBlock] iffalse Where to jump if condition is false
+    # @param  [LLVM::Value]       cond    The condition
+    # @param  [LLVM::BasicBlock]  iftrue  Where to jump if condition is true
+    # @param  [LLVM::BasicBlock]  iffalse Where to jump if condition is false
     # @return [LLVM::Instruction]
     # @LLVMinst br
     def cond(cond, iftrue, iffalse)
@@ -147,6 +157,7 @@ module LLVM
       Instruction.from_ptr(C.build_unreachable(self))
     end
 
+    # Integer addition.
     # @param [LLVM::Value] lhs Integer or vector of integers
     # @param [LLVM::Value] rhs Integer or vector of integers
     # @param [String] name Name of the result in LLVM IR
@@ -156,7 +167,7 @@ module LLVM
       Instruction.from_ptr(C.build_add(self, lhs, rhs, name))
     end
 
-    # No signed wrap addition.
+    # "No signed wrap" integer addition.
     # @param [LLVM::Value] lhs Integer or vector of integers
     # @param [LLVM::Value] rhs Integer or vector of integers
     # @param [String] name Name of the result in LLVM IR
@@ -164,6 +175,16 @@ module LLVM
     # @LLVMinst add
     def nsw_add(lhs, rhs, name = "")
       Instruction.from_ptr(C.build_nsw_add(self, lhs, rhs, name))
+    end
+
+    # "No unsigned wrap" integer addition.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer sum of the two operands
+    # @LLVMinst add
+    def nuw_add(lhs, rhs, name = "")
+      Instruction.from_ptr(C.build_nuw_add(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Floating point or vector of floating points
@@ -175,6 +196,7 @@ module LLVM
       Instruction.from_ptr(C.build_f_add(self, lhs, rhs, name))
     end
 
+    # Integer subtraction.
     # @param [LLVM::Value] lhs Integer or vector of integers
     # @param [LLVM::Value] rhs Integer or vector of integers
     # @param [String] name Name of the result in LLVM IR
@@ -182,6 +204,26 @@ module LLVM
     # @LLVMinst sub
     def sub(lhs, rhs, name = "")
       Instruction.from_ptr(C.build_sub(self, lhs, rhs, name))
+    end
+
+    # No signed wrap integer subtraction.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer difference of the two operands
+    # @LLVMinst sub
+    def nsw_sub(lhs, rhs, name = "")
+      Instruction.from_ptr(C.build_nsw_sub(self, lhs, rhs, name))
+    end
+
+    # No unsigned wrap integer subtraction.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer difference of the two operands
+    # @LLVMinst sub
+    def nuw_sub(lhs, rhs, name = "")
+      Instruction.from_ptr(C.build_nuw_sub(self, lhs, rhs, name))
     end
 
     # @param [LLVM::Value] lhs Floating point or vector of floating points
@@ -194,6 +236,7 @@ module LLVM
       Instruction.from_ptr(C.build_f_sub(self, lhs, rhs, name))
     end
 
+    # Integer multiplication.
     # @param [LLVM::Value] lhs Integer or vector of integers
     # @param [LLVM::Value] rhs Integer or vector of integers
     # @param [String] name Name of the result in LLVM IR
@@ -203,6 +246,27 @@ module LLVM
       Instruction.from_ptr(C.build_mul(self, lhs, rhs, name))
     end
 
+    # "No signed wrap" integer multiplication.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer product of the two operands
+    # @LLVMinst mul
+    def nsw_mul(lhs, rhs, name = "")
+      Instruction.from_ptr(C.build_nsw_mul(self, lhs, rhs, name))
+    end
+
+    # "No unsigned wrap" integer multiplication.
+    # @param [LLVM::Value] lhs Integer or vector of integers
+    # @param [LLVM::Value] rhs Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The integer product of the two operands
+    # @LLVMinst mul
+    def nuw_mul(lhs, rhs, name = "")
+      Instruction.from_ptr(C.build_nuw_mul(self, lhs, rhs, name))
+    end
+
+    # Floating point multiplication
     # @param [LLVM::Value] lhs Floating point or vector of floating points
     # @param [LLVM::Value] rhs Floating point or vector of floating points
     # @param [String] name Name of the result in LLVM IR
@@ -346,6 +410,24 @@ module LLVM
     # @LLVMinst sub
     def neg(arg, name = "")
       Instruction.from_ptr(C.build_neg(self, arg, name))
+    end
+
+    # "No signed wrap" integer negation.
+    # @param [LLVM::Value] arg Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The negated operand
+    # @LLVMinst sub
+    def nsw_neg(arg, name = "")
+      Instruction.from_ptr(C.build_nsw_neg(self, arg, name))
+    end
+
+    # "No unsigned wrap" integer negation.
+    # @param [LLVM::Value] arg Integer or vector of integers
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The negated operand
+    # @LLVMinst sub
+    def nuw_neg(arg, name = "")
+      Instruction.from_ptr(C.build_nuw_neg(self, arg, name))
     end
 
     # Boolean negation.

@@ -15,20 +15,22 @@ module LLVM
   # @yield  [FFI::MemoryPointer]
   # @return [String, nil]
   def self.with_message_output
-    result = nil
+    message = nil
 
     FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |str|
-      yield str
+      result = yield str
 
       msg_ptr = str.read_pointer
 
-      unless msg_ptr.null?
-        result = msg_ptr.read_string
+      if result != 0
+        raise RuntimeError, "Error is signalled, but msg_ptr is null" if msg_ptr.null?
+
+        message = msg_ptr.read_string
         C.dispose_message msg_ptr
       end
     end
 
-    result
+    message
   end
 
   # Same as #with_message_output, but raises a RuntimeError with the

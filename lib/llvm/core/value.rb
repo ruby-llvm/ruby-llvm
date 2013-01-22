@@ -219,6 +219,9 @@ module LLVM
       ConstantExpr.from_ptr(C.const_bit_cast(self, type))
     end
 
+    # @deprecated
+    alias bit_cast bitcast_to
+
     # Returns the element pointer at the given indices of the constant.
     # For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
     def gep(*indices)
@@ -230,8 +233,9 @@ module LLVM
       end
     end
 
-    def bit_cast(type)
-      return ConstantExpr.from_ptr(C.const_bit_cast(self, type))
+    # Conversion to integer.
+    def ptr_to_int(type)
+      ConstantInt.from_ptr(C.const_ptr_to_int(self, type))
     end
   end
 
@@ -290,27 +294,67 @@ module LLVM
       self.class.from_ptr(C.const_neg(self))
     end
 
-    # Boolean negation.
-    def ~@
-      self.class.from_ptr(C.const_not(self))
+    alias neg -@
+
+    # "No signed wrap" negation.
+    def nsw_neg
+      self.class.from_ptr(C.const_nsw_neg(self))
     end
 
-    alias not ~
+    # "No unsigned wrap" negation.
+    def nuw_neg
+      self.class.from_ptr(C.const_nuw_neg(self))
+    end
 
     # Addition.
     def +(rhs)
       self.class.from_ptr(C.const_add(self, rhs))
     end
 
-    # "No signed wrap" addition. See
-    # http://llvm.org/docs/LangRef.html#i_add for discusison.
+    alias add +
+
+    # "No signed wrap" addition.
     def nsw_add(rhs)
       self.class.from_ptr(C.const_nsw_add(self, rhs))
+    end
+
+    # "No unsigned wrap" addition.
+    def nuw_add(rhs)
+      self.class.from_ptr(C.const_nuw_add(self, rhs))
+    end
+
+    # Subtraction.
+    def -(rhs)
+      self.class.from_ptr(C.const_sub(self, rhs))
+    end
+
+    alias sub -
+
+    # "No signed wrap" subtraction.
+    def nsw_sub(rhs)
+      self.class.from_ptr(C.const_nsw_sub(self, rhs))
+    end
+
+    # "No unsigned wrap" subtraction.
+    def nuw_sub(rhs)
+      self.class.from_ptr(C.const_nuw_sub(self, rhs))
     end
 
     # Multiplication.
     def *(rhs)
       self.class.from_ptr(C.const_mul(self, rhs))
+    end
+
+    alias mul *
+
+    # "No signed wrap" multiplication.
+    def nsw_mul(rhs)
+      self.class.from_ptr(C.const_nsw_mul(self, rhs))
+    end
+
+    # "No unsigned wrap" multiplication.
+    def nuw_mul(rhs)
+      self.class.from_ptr(C.const_nuw_mul(self, rhs))
     end
 
     # Unsigned division.
@@ -333,19 +377,51 @@ module LLVM
       self.class.from_ptr(C.const_s_rem(self, rhs))
     end
 
+    # Boolean negation.
+    def ~@
+      self.class.from_ptr(C.const_not(self))
+    end
+
+    alias not ~
+
     # Integer AND.
-    def and(rhs)
+    def &(rhs)
       self.class.from_ptr(C.const_and(self, rhs))
     end
 
+    alias and &
+
     # Integer OR.
-    def or(rhs)
+    def |(rhs)
       self.class.from_ptr(C.const_or(self, rhs))
     end
 
+    alias or |
+
     # Integer XOR.
-    def xor(rhs)
+    def ^(rhs)
       self.class.from_ptr(C.const_xor(self, rhs))
+    end
+
+    alias xor ^
+
+    # Shift left.
+    def <<(bits)
+      self.class.from_ptr(C.const_shl(self, bits))
+    end
+
+    alias shl <<
+
+    # Shift right.
+    def >>(bits)
+      self.class.from_ptr(C.const_l_shr(self, bits))
+    end
+
+    alias shr >>
+
+    # Arithmatic shift right.
+    def ashr(bits)
+      self.class.from_ptr(C.const_a_shr(self, bits))
     end
 
     # Integer comparison using the predicate specified via the first parameter.
@@ -364,19 +440,9 @@ module LLVM
       self.class.from_ptr(C.const_i_cmp(pred, self, rhs))
     end
 
-    # Shift left.
-    def <<(bits)
-      self.class.from_ptr(C.const_shl(self, bits))
-    end
-
-    # Shift right.
-    def >>(bits)
-      self.class.from_ptr(C.const_l_shr(self, bits))
-    end
-
-    # Arithmatic shift right.
-    def ashr(bits)
-      self.class.from_ptr(C.const_a_shr(self, bits))
+    # Conversion to pointer.
+    def int_to_ptr(type)
+      ConstantExpr.from_ptr(C.const_int_to_ptr(self, type))
     end
   end
 
@@ -788,5 +854,16 @@ module LLVM
     def add_case(val, block)
       C.add_case(self, val, block)
     end
+  end
+
+
+  # @private
+  class IndirectBr < Instruction
+    # Adds a basic block reference as a destination for this indirect branch.
+    def add_dest(dest)
+      C.add_destination(self, dest)
+    end
+
+    alias :<< :add_dest
   end
 end
