@@ -11,13 +11,13 @@ class LLVMTagFactory < YARD::Tags::DefaultFactory
   private
 
   def inst_tag(text)
-    url = "http://llvm.org/docs/LangRef.html#i_#{text}"
+    url = "http://llvm.org/docs/LangRef.html##{text}-instruction"
     markup = "<a href=\"#{url}\">LLVM Instruction: #{text}</a>"
     YARD::Tags::Tag.new("see", markup)
   end
 
   def pass_tag(text)
-    url = "http://llvm.org/docs/Passes.html##{text}"
+    url = "http://llvm.org/docs/Passes.html"
     markup = "<a href=\"#{url}\">LLVM Pass: #{text}</a>"
     YARD::Tags::Tag.new("see", markup)
   end
