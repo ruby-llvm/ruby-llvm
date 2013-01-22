@@ -49,7 +49,7 @@ module LLVM
       C.add_loop_deletion_pass(self)
     end
 
-    # @LLVMpass loop-idion
+    # @LLVMpass loop-idiom
     def loop_idiom!
       C.add_loop_idiom_pass(self)
     end
