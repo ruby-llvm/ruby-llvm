@@ -3,15 +3,15 @@ require 'llvm/core'
 require 'llvm/transforms/builder_ffi'
 
 module LLVM
-  attr_reader :size_level
-  attr_reader :opt_level
-  attr_reader :unit_at_a_time
-  attr_reader :unroll_loops
-  attr_reader :simplify_lib_calls
-  attr_reader :inliner_threshold
-
   class PassManagerBuilder
     include PointerIdentity
+
+    attr_reader :size_level
+    attr_reader :opt_level
+    attr_reader :unit_at_a_time
+    attr_reader :unroll_loops
+    attr_reader :simplify_lib_calls
+    attr_reader :inliner_threshold
 
     def initialize
       @ptr = C.pass_manager_builder_create
