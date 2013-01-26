@@ -17,6 +17,7 @@ module LLVM
 
     def dispose
       return if @ptr.nil?
+
       C.dispose_module(@ptr)
       @ptr = nil
     end
