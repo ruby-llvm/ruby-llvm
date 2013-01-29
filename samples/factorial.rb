@@ -1,6 +1,7 @@
 require 'llvm/core'
 require 'llvm/execution_engine'
 require 'llvm/transforms/scalar'
+require "benchmark"
 
 LLVM.init_jit
 
@@ -36,13 +37,39 @@ end
 
 mod.verify
 
-puts
-mod.dump
-
 engine = LLVM::JITCompiler.new(mod)
 
-arg = (ARGV[0] || 6).to_i
-value = engine.run_function(mod.functions["fac"], arg)
+def rec_factorial(n)
+  if n <= 1
+    1
+  else
+    n * rec_factorial(n - 1);
+  end
+end
+def iter_factorial(n)
+  nn = n
+  i = n - 1
+  while(i > 1) do
+    nn *= i
+    i -= 1
+  end
+  return nn;
+end
+def array_factorial(n)
+    (1..n).inject(:*)
+end
+puts "Times show factorial execution times in milliseconds. Both for llvm and ruby iterative and recusive algorithms"
+puts ["Num" , "llvm rec","recursive" ,"iterative","arrar iter."].collect{|u|u.ljust(11)}.join
+res = [ 1, 5 , 20 , 50 , 100 , 200 , 500 , 1000 , 2000 , 5000  ].each do |i|
+  res = [ ]
+  res << Benchmark.realtime {engine.run_function(mod.functions["fac"], i)}
+  res << Benchmark.realtime {rec_factorial(i)}
+  res << Benchmark.realtime {iter_factorial(i) }
+  res << Benchmark.realtime {array_factorial(i) }
+  res = [i] + res.collect {|u| ((u*1000)).round(4) }
+  res = res.collect {|z| z.to_s.ljust(8)}
+  next if i < 10
+  puts res.join("   ")
+end
 
-printf("\nfac(%i) = %i\n\n", arg, value)
 
