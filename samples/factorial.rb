@@ -3,8 +3,12 @@ require 'llvm/execution_engine'
 require 'llvm/transforms/scalar'
 require "benchmark"
 
+# run this with any argument to get a speed comparison between llvm and different ruby implementations
+
+# Start the "engine" before driving
 LLVM.init_jit
 
+# modules hold functions and variables
 mod = LLVM::Module.new("Factorial")
 
 mod.functions.add("fac", [LLVM::Int], LLVM::Int) do |fac, n|
@@ -36,6 +40,7 @@ mod.functions.add("fac", [LLVM::Int], LLVM::Int) do |fac, n|
 end
 
 mod.verify
+mod.dump
 
 engine = LLVM::JITCompiler.new(mod)
 
@@ -57,6 +62,11 @@ def iter_factorial(n)
 end
 def array_factorial(n)
     (1..n).inject(:*)
+end
+
+if( ARGV.length == 0 )
+  puts "Single run with 42 = "  + engine.run_function(mod.functions["fac"], 42).to_i.to_s
+  exit
 end
 puts "Times show factorial execution times in milliseconds. Both for llvm and ruby iterative and recusive algorithms"
 puts ["Num" , "llvm rec","recursive" ,"iterative","arrar iter."].collect{|u|u.ljust(11)}.join
