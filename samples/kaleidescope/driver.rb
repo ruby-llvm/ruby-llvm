@@ -13,7 +13,7 @@ require "parser"
 class Driver
   def initialize fname
     LLVM.init_jit
-    @parser = Parser.new File.open( fname )
+    @parser = Parser.new (fname ? File.open( fname ) : $stdin )
     @module = LLVM::Module.new("Kaleidescope")
     @builder = LLVM::Builder.new
     @engine = LLVM::JITCompiler.new(@module)

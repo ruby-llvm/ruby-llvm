@@ -76,10 +76,23 @@ branch. If you think of a conditional branch (builder.cond) as a fanning out, a 
 incoming blocks and assumes a different value, depending on where the flow comes from. And if that doesn't have
 you baffled, go yonder and find out what a gep or ibr is. 
 
+Running Kaleidoscope scripts
+-----------------------------
+
+You can run Kaleidoscope scripts by:
+
+bundle exec ruby samples/kaleidescope/driver.rb  samples/kaleidescope/maths.kal
+
+If you write your own scripts, you must end with an expression, not a function. This comes naturally since what would a that last function do?
+But if you forget that you'll get an error about function signatures not matching.
+
+You can also omit the file and enter your code interactively. You must ctr-d to get it evaluated though.
+
 Executables
 -----------
 
-Yes, it's possible! Restrictions apply though and no refunds. A c main is generated for the last non-function expression.
+Yes, it's possible! Restrictions apply though and no refunds. A c main is generated for the last expression, and it needs to be an
+expression, not a function (otherwise function signatures don't match).
 But remember, the "Evaluated to" message comes from the ruby driver. The only output you'll see from your program is what 
 your program creates, ie with put.
 
