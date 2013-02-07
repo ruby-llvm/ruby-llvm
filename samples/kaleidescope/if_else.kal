@@ -1,0 +1,13 @@
+# simple if (remember the only type in kaleidoscope is float)
+# ps the tutorial uses this to define a unary negation operator
+
+def not(v)
+  if v 
+  then
+    0.0
+  else
+    1.0
+
+not(1)
+
+not(0)

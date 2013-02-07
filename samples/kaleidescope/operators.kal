@@ -1,0 +1,23 @@
+# simple binary expressions
+# standard operators are defined in simple_ast
+2 * 4
+2 - 5.9
+1 < 2
+
+# but you can also define your own, the binary is a keyword, 
+# the operator has to follow , then the priority and the implementation 
+#def binary> 10 (lhs rhs)
+#  rhs < lhs;
+
+#1 > 2
+
+# Unary negate.
+def unary-(v)
+  0-v;
+
+-3 
+
+# Define ':' for sequencing: as a low-precedence operator that ignores operands
+# and just returns the rhs.
+def binary : 1 (x y) 
+  y;
