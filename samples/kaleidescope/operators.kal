@@ -21,3 +21,5 @@ def unary-(v)
 # and just returns the rhs.
 def binary : 1 (x y) 
   y;
+
+1 : 2
