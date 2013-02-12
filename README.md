@@ -24,6 +24,24 @@ Homebrew
 --------
 LLVM can be installed with Homebrew by executing `brew install llvm --shared`
 
+Caveats:
+
+LLVM 3.2 ships with an unresolved
+[bug](http://llvm.org/bugs/show_bug.cgi?id=14715) in which its version string is
+"3.2svn" rather than "3.2". Some package maintainers have patched the version
+string before building LLVM. The Homebrew maintainers, however, have decided not
+to maintain a patch set (see this
+[thread](https://github.com/mxcl/homebrew/issues/17034).) Unfortunately, the bug
+breaks ruby-llvm's FFI bindings.
+
+A patched formula for LLVM has been created by
+[thoughtpolice](https://github.com/thoughtpolice). This formula is unsupported,
+but if you would like to give it a shot, use the following command.
+
+```bash
+    brew install https://raw.github.com/ruby-llvm/ruby-llvm/650c2636aee00dd17debdf96c03f962f7288bf33/misc/homebrew/llvm-3.2.rb --shared --with-clang
+```
+
 See Also
 --------
 * [The LLVM project](http://llvm.org)
