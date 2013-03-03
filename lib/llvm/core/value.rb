@@ -673,7 +673,7 @@ module LLVM
     end
 
     def type
-      Type.from_ptr(C.type_of(self), :function)
+      Type.from_ptr(C.type_of(self), :pointer)
     end
 
     # @private
