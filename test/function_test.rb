@@ -21,4 +21,13 @@ class FunctionTest < Test::Unit::TestCase
     end
   end
 
+  def test_function_type
+    with_function [], LLVM.Void do |fun|
+      type = fun.function_type
+      assert_not_nil type
+      assert_instance_of LLVM::FunctionType, type
+      assert_equal :function, type.kind
+    end
+  end
+
 end

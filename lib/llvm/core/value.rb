@@ -676,6 +676,10 @@ module LLVM
       Type.from_ptr(C.type_of(self), :pointer)
     end
 
+    def function_type
+      type.element_type
+    end
+
     # @private
     class BasicBlockCollection
       include Enumerable
