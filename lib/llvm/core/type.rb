@@ -125,14 +125,14 @@ module LLVM
       size = C.count_param_types(self)
       result = nil
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |types_ptr|
-	C.LLVMGetParamTypes(self, types_ptr)
-	result = types_ptr.read_array_of_pointer(size)
+        C.get_param_types(self, types_ptr)
+        result = types_ptr.read_array_of_pointer(size)
       end
-      result.map{ |p| Type.from_ptr(p) }
+      result.map{ |p| Type.from_ptr(p, nil) }
     end
 
     def vararg?
-      C.LLVMIsFunctionVarArg(self)
+      C.is_function_var_arg(self) != 0
     end
   end
 
