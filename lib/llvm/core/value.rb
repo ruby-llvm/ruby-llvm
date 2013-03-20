@@ -571,6 +571,11 @@ module LLVM
       vals = LLVM::Support.allocate_pointers(size_or_values, &block)
       from_ptr C.const_struct(vals, vals.size / vals.type_size, packed ? 1 : 0)
     end
+
+    def self.named_const(type, size_or_values, &block)
+      vals = LLVM::Support.allocate_pointers(size_or_values, &block)
+      from_ptr C.const_named_struct(type, vals, vals.size / vals.type_size)
+    end
   end
 
   class ConstantVector < Constant

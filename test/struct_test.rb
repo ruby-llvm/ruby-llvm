@@ -53,6 +53,14 @@ class StructTestCase < Test::Unit::TestCase
     assert_equal 2, struct.operands.size
   end
 
+  def test_constant_named_struct
+    struct_ty = LLVM::Struct(LLVM::Int, "struct300")
+    struct = LLVM::ConstantStruct.named_const(struct_ty, [ LLVM::Int(1) ])
+    assert_instance_of LLVM::ConstantStruct, struct
+    assert_equal 1, struct.operands.size
+    assert_equal struct_ty, struct.type
+  end
+
   def test_struct_values
     assert_equal 2 + 3, run_struct_values(2, 3).to_i
   end
