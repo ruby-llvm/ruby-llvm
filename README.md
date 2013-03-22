@@ -39,7 +39,7 @@ A patched formula for LLVM has been created by
 but if you would like to give it a shot, use the following command.
 
 ```bash
-    brew install https://raw.github.com/ruby-llvm/ruby-llvm/650c2636aee00dd17debdf96c03f962f7288bf33/misc/homebrew/llvm-3.2.rb --shared --with-clang
+    brew install https://raw.github.com/ruby-llvm/ruby-llvm/master/misc/homebrew/llvm.rb --shared --with-clang
 ```
 
 See Also
