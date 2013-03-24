@@ -11,7 +11,7 @@ end
 class Llvm < Formula
   homepage  'http://llvm.org/'
   url       'http://llvm.org/releases/3.2/llvm-3.2.src.tar.gz'
-  sha1      '3ce15bffdca066d8542e011cd1a7e387a134b2d0'
+  sha1      '42d139ab4c9f0c539c60f5ac07486e9d30fc1280'
   head      'http://llvm.org/git/llvm.git'
 
   def patches; DATA; end
