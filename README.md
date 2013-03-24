@@ -66,3 +66,5 @@ Ruby-LLVM is possible because of its contributors:
 * Steven Farlie
 * Peter Zotov
 * Austin Seipp
+* Torsten Rüger
+* Nathaniel Barnes
