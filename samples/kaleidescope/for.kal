@@ -1,0 +1,13 @@
+# for syntax is a little different, but generally familiar
+# no brackets after for, start = value (expression) , condition , optional step 
+# and then "in" and the body
+# the body is actually a single statement. In mandel we define the : operator for chaining
+
+# put is defined in driver to cast to int and print to stdout as a char  
+# ps: this is not possibly in kaeidescope and done in c in the original tutorial.
+
+# print out 0 to 9
+
+for y = 48, y < 57, 1 in put(y)
+
+put(10)

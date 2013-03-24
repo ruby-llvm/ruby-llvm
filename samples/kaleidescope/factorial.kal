@@ -1,0 +1,12 @@
+# just define out chaining operator to get the put to work
+def binary : 1 (x y) y;
+
+def factorial(n)
+  if n < 1.1
+  then
+    1
+  else
+    put( 48 )  :
+    n * factorial(n - 1.0)
+
+factorial(40)
