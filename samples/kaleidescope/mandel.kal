@@ -1,0 +1,72 @@
+# Logical unary not.
+def unary!(v)
+  if v then
+    0
+  else
+    1;
+
+# Unary negate.
+def unary-(v)
+  0-v;
+
+# Define > with the same precedence as <.
+def binary> 10 (lhs rhs)
+  rhs < lhs;
+
+
+# Binary logical or, which does not short circuit.
+def binary| 5 (lhs rhs)
+  if lhs then
+    1
+  else if rhs then
+    1
+  else
+    0;
+
+# Binary logical and, which does not short circuit.
+def binary& 6 (lhs rhs)
+  if !lhs then
+    0
+  else
+    !!rhs;
+
+# Define ':' for sequencing: as a low-precedence operator that ignores operands
+# and just returns the rhs.
+def binary : 1 (x y) y;
+
+def printdensity(d)
+  if d > 8 then
+    put(32)  # ' '
+  else if d > 4 then
+    put(46)  # '.'
+  else if d > 2 then
+    put(43)  # '+'
+  else
+    put(42); # '*'
+
+#printdensity(1): printdensity(2): printdensity(3):printdensity(4): printdensity(5): printdensity(9):put(10);
+
+# Determine whether the specific location diverges.
+# Solve for z = z^2 + c in the complex plane.
+def mandleconverger(real imag iters creal cimag)
+  if iters > 255 | (real*real + imag*imag > 4) then
+    iters
+  else
+    mandleconverger(real*real - imag*imag + creal,
+                    2*real*imag + cimag,
+                    iters+1, creal, cimag);
+
+# Return the number of iterations required for the iteration to escape
+def mandleconverge(real2 imag2)
+  mandleconverger(real2, imag2, 0, real2, imag2);
+
+
+# Compute and plot the mandlebrot set with the specified 2 dimensional range info.
+# parameters are quite self explanatory
+def mandel(xmin xstep xcount   ymin ystep ycount)
+  for y = ymin, y < (ymin + (ycount * ystep)), ystep in ( 
+    (for x = xmin, x < (xmin + (xcount * xstep)), xstep in printdensity(mandleconverge(x,y) ) ) 
+    : put(10) # line carrige
+      )
+
+mandel( -3 , 0.03 , 170 , -2.4 , 0.1, 45)

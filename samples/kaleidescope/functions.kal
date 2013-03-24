@@ -1,0 +1,7 @@
+def kertaa( num )  
+  num * num 
+
+def plusviis(z)
+  z + 5
+  
+kertaa( plusviis( 1 ) )
