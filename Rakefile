@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rake/testtask'
-require_relative 'lib/llvm/version.rb'
+require_relative 'lib/llvm/version'
 
 begin
   require 'yard'
@@ -43,7 +43,7 @@ task :generate_ffi do
   mappings.each do |ruby_file, headers|
     FFIGen.generate(
       module_name: 'LLVM::C',
-      ffi_lib:     'LLVM-3.2',
+      ffi_lib:     'LLVM-3.3',
       headers:     headers.map { |header| "llvm-c/#{header}" },
       cflags:      `#{LLVM::LLVM_CONFIG} --cflags`.split,
       prefixes:    %w(LLVM),

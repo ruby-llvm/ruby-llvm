@@ -9,7 +9,7 @@ computationally intensive algorithms on the fly.
 
 Requirements
 ------------
-* LLVM 3.2, including libLLVM-3.2 (compile LLVM with --enable-shared).
+* LLVM 3.3, including libLLVM-3.3 (compile LLVM with --enable-shared).
 * In order to ensure the usability of JIT features (i.e. create_jit_compiler), compile LLVM with --enable-jit as well.
 
 About version numbers
@@ -23,24 +23,6 @@ LLVM and ruby-llvm versions is useful.
 Homebrew
 --------
 LLVM can be installed with Homebrew by executing `brew install llvm --shared`
-
-Caveats:
-
-LLVM 3.2 ships with an unresolved
-[bug](http://llvm.org/bugs/show_bug.cgi?id=14715) in which its version string is
-"3.2svn" rather than "3.2". Some package maintainers have patched the version
-string before building LLVM. The Homebrew maintainers, however, have decided not
-to maintain a patch set (see this
-[thread](https://github.com/mxcl/homebrew/issues/17034).) Unfortunately, the bug
-breaks ruby-llvm's FFI bindings.
-
-A patched formula for LLVM has been created by
-[thoughtpolice](https://github.com/thoughtpolice). This formula is unsupported,
-but if you would like to give it a shot, use the following command.
-
-```bash
-    brew install https://raw.github.com/ruby-llvm/ruby-llvm/master/misc/homebrew/llvm.rb --shared --with-clang
-```
 
 See Also
 --------
