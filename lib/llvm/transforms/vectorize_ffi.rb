@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.2'
+  ffi_lib 'LLVM-3.3'
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -27,5 +27,13 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :add_loop_vectorize_pass, :LLVMAddLoopVectorizePass, [:pointer], :void
+  
+  # See llvm::createSLPVectorizerPass function.
+  # 
+  # @method add_slp_vectorize_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_slp_vectorize_pass, :LLVMAddSLPVectorizePass, [:pointer], :void
   
 end

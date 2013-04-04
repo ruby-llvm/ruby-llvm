@@ -48,9 +48,6 @@ task :generate_ffi do
       headers:     headers.map { |header| "llvm-c/#{header}" },
       cflags:      LLVM::CONFIG::CFLAGS.split(/\s/),
       prefixes:    %w(LLVM),
-      blacklist:   %w(LLVMGetMDNodeNumOperands LLVMGetMDNodeOperand
-                      LLVMInitializeAllTargetInfos LLVMInitializeAllTargets
-                      LLVMInitializeNativeTarget),
       output:      "lib/llvm/#{ruby_file}"
     )
   end

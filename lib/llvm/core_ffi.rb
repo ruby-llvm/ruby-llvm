@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.2'
+  ffi_lib 'LLVM-3.3'
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -651,6 +651,121 @@ module LLVM::C
     :filter, 1
   ]
   
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:thread_local_mode).</em>
+  # 
+  # === Options:
+  # :not_thread_local ::
+  #   
+  # :general_dynamic_tls_model ::
+  #   
+  # :local_dynamic_tls_model ::
+  #   
+  # :initial_exec_tls_model ::
+  #   
+  # :local_exec_tls_model ::
+  #   
+  # 
+  # @method _enum_thread_local_mode_
+  # @return [Symbol]
+  # @scope class
+  enum :thread_local_mode, [
+    :not_thread_local, 0,
+    :general_dynamic_tls_model, 1,
+    :local_dynamic_tls_model, 2,
+    :initial_exec_tls_model, 3,
+    :local_exec_tls_model, 4
+  ]
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:atomic_ordering).</em>
+  # 
+  # === Options:
+  # :not_atomic ::
+  #   
+  # :unordered ::
+  #   < A load or store which is not atomic
+  # :monotonic ::
+  #   < Lowest level of atomicity, guarantees
+  #                                        somewhat sane results, lock free.
+  # :acquire ::
+  #   < guarantees that if you take all the 
+  #                                        operations affecting a specific address, 
+  #                                        a consistent ordering exists
+  # :release ::
+  #   < Acquire provides a barrier of the sort 
+  #                                      necessary to acquire a lock to access other 
+  #                                      memory with normal loads and stores.
+  # :acquire_release ::
+  #   < Release is similar to Acquire, but with 
+  #                                      a barrier of the sort necessary to release 
+  #                                      a lock.
+  # 
+  # @method _enum_atomic_ordering_
+  # @return [Symbol]
+  # @scope class
+  enum :atomic_ordering, [
+    :not_atomic, 0,
+    :unordered, 1,
+    :monotonic, 2,
+    :acquire, 4,
+    :release, 5,
+    :acquire_release, 6
+  ]
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:atomic_rmw_bin_op).</em>
+  # 
+  # === Options:
+  # :xchg ::
+  #   
+  # :add ::
+  #   < Set the new value and return the one old
+  # :sub ::
+  #   < Add a value and return the old one
+  # :and_ ::
+  #   < Subtract a value and return the old one
+  # :nand ::
+  #   < And a value and return the old one
+  # :or_ ::
+  #   < Not-And a value and return the old one
+  # :xor ::
+  #   < OR a value and return the old one
+  # :max ::
+  #   < Xor a value and return the old one
+  # :min ::
+  #   < Sets the value if it's greater than the
+  #                                original using a signed comparison and return 
+  #                                the old one
+  # :u_max ::
+  #   < Sets the value if it's Smaller than the
+  #                                original using a signed comparison and return 
+  #                                the old one
+  # :u_min ::
+  #   < Sets the value if it's greater than the
+  #                                original using an unsigned comparison and return 
+  #                                the old one
+  # 
+  # @method _enum_atomic_rmw_bin_op_
+  # @return [Symbol]
+  # @scope class
+  enum :atomic_rmw_bin_op, [
+    :xchg, 0,
+    :add, 1,
+    :sub, 2,
+    :and_, 3,
+    :nand, 4,
+    :or_, 5,
+    :xor, 6,
+    :max, 7,
+    :min, 8,
+    :u_max, 9,
+    :u_min, 10
+  ]
+  
   # @}
   # 
   # @method initialize_core(r)
@@ -658,6 +773,15 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :initialize_core, :LLVMInitializeCore, [OpaquePassRegistry], :void
+  
+  # Deallocate and destroy all ManagedStatic variables.
+  #     @see llvm::llvm_shutdown
+  #     @see ManagedStatic
+  # 
+  # @method shutdown()
+  # @return [nil] 
+  # @scope class
+  attach_function :shutdown, :LLVMShutdown, [], :void
   
   # ===-- Error handling ----------------------------------------------------===
   # 
@@ -3234,6 +3358,40 @@ module LLVM::C
   # @scope class
   attach_function :set_global_constant, :LLVMSetGlobalConstant, [OpaqueValue, :int], :void
   
+  # (Not documented)
+  # 
+  # @method get_thread_local_mode(global_var)
+  # @param [OpaqueValue] global_var 
+  # @return [Symbol from _enum_thread_local_mode_] 
+  # @scope class
+  attach_function :get_thread_local_mode, :LLVMGetThreadLocalMode, [OpaqueValue], :thread_local_mode
+  
+  # (Not documented)
+  # 
+  # @method set_thread_local_mode(global_var, mode)
+  # @param [OpaqueValue] global_var 
+  # @param [Symbol from _enum_thread_local_mode_] mode 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_thread_local_mode, :LLVMSetThreadLocalMode, [OpaqueValue, :thread_local_mode], :void
+  
+  # (Not documented)
+  # 
+  # @method is_externally_initialized(global_var)
+  # @param [OpaqueValue] global_var 
+  # @return [Integer] 
+  # @scope class
+  attach_function :is_externally_initialized, :LLVMIsExternallyInitialized, [OpaqueValue], :int
+  
+  # (Not documented)
+  # 
+  # @method set_externally_initialized(global_var, is_ext_init)
+  # @param [OpaqueValue] global_var 
+  # @param [Integer] is_ext_init 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_externally_initialized, :LLVMSetExternallyInitialized, [OpaqueValue, :int], :void
+  
   # @defgroup LLVMCoreValueConstantGlobalAlias Global Aliases
   # 
   # This group contains function that operate on global alias values.
@@ -3329,6 +3487,17 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :add_function_attr, :LLVMAddFunctionAttr, [OpaqueValue, :attribute], :void
+  
+  # Add a target-dependent attribute to a fuction
+  # @see llvm::AttrBuilder::addAttribute()
+  # 
+  # @method add_target_dependent_function_attr(fn, a, v)
+  # @param [OpaqueValue] fn 
+  # @param [String] a 
+  # @param [String] v 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_target_dependent_function_attr, :LLVMAddTargetDependentFunctionAttr, [OpaqueValue, :string, :string], :void
   
   # Obtain an attribute from a function.
   # 
@@ -5158,6 +5327,19 @@ module LLVM::C
   # @scope class
   attach_function :build_ptr_diff, :LLVMBuildPtrDiff, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
   
+  # (Not documented)
+  # 
+  # @method build_atomic_rmw(b, op, ptr, val, ordering, single_thread)
+  # @param [OpaqueBuilder] b 
+  # @param [Symbol from _enum_atomic_rmw_bin_op_] op 
+  # @param [OpaqueValue] ptr 
+  # @param [OpaqueValue] val 
+  # @param [Symbol from _enum_atomic_ordering_] ordering 
+  # @param [Integer] single_thread 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :build_atomic_rmw, :LLVMBuildAtomicRMW, [OpaqueBuilder, :atomic_rmw_bin_op, OpaqueValue, OpaqueValue, :atomic_ordering, :int], OpaqueValue
+  
   # Changes the type of M so it can be passed to FunctionPassManagers and the
   # JIT.  They take ModuleProviders for historical reasons.
   # 
@@ -5195,6 +5377,43 @@ module LLVM::C
   # @return [Integer] 
   # @scope class
   attach_function :create_memory_buffer_with_stdin, :LLVMCreateMemoryBufferWithSTDIN, [:pointer, :pointer], :int
+  
+  # (Not documented)
+  # 
+  # @method create_memory_buffer_with_memory_range(input_data, input_data_length, buffer_name, requires_null_terminator)
+  # @param [String] input_data 
+  # @param [Integer] input_data_length 
+  # @param [String] buffer_name 
+  # @param [Integer] requires_null_terminator 
+  # @return [OpaqueMemoryBuffer] 
+  # @scope class
+  attach_function :create_memory_buffer_with_memory_range, :LLVMCreateMemoryBufferWithMemoryRange, [:string, :ulong, :string, :int], OpaqueMemoryBuffer
+  
+  # (Not documented)
+  # 
+  # @method create_memory_buffer_with_memory_range_copy(input_data, input_data_length, buffer_name)
+  # @param [String] input_data 
+  # @param [Integer] input_data_length 
+  # @param [String] buffer_name 
+  # @return [OpaqueMemoryBuffer] 
+  # @scope class
+  attach_function :create_memory_buffer_with_memory_range_copy, :LLVMCreateMemoryBufferWithMemoryRangeCopy, [:string, :ulong, :string], OpaqueMemoryBuffer
+  
+  # (Not documented)
+  # 
+  # @method get_buffer_start(mem_buf)
+  # @param [OpaqueMemoryBuffer] mem_buf 
+  # @return [String] 
+  # @scope class
+  attach_function :get_buffer_start, :LLVMGetBufferStart, [OpaqueMemoryBuffer], :string
+  
+  # (Not documented)
+  # 
+  # @method get_buffer_size(mem_buf)
+  # @param [OpaqueMemoryBuffer] mem_buf 
+  # @return [Integer] 
+  # @scope class
+  attach_function :get_buffer_size, :LLVMGetBufferSize, [OpaqueMemoryBuffer], :ulong
   
   # (Not documented)
   # 
@@ -5293,5 +5512,33 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :dispose_pass_manager, :LLVMDisposePassManager, [OpaquePassManager], :void
+  
+  # Allocate and initialize structures needed to make LLVM safe for
+  #     multithreading. The return value indicates whether multithreaded
+  #     initialization succeeded. Must be executed in isolation from all
+  #     other LLVM api calls.
+  #     @see llvm::llvm_start_multithreaded
+  # 
+  # @method start_multithreaded()
+  # @return [Integer] 
+  # @scope class
+  attach_function :start_multithreaded, :LLVMStartMultithreaded, [], :int
+  
+  # Deallocate structures necessary to make LLVM safe for multithreading.
+  #     Must be executed in isolation from all other LLVM api calls.
+  #     @see llvm::llvm_stop_multithreaded
+  # 
+  # @method stop_multithreaded()
+  # @return [nil] 
+  # @scope class
+  attach_function :stop_multithreaded, :LLVMStopMultithreaded, [], :void
+  
+  # Check whether LLVM is executing in thread-safe mode or not.
+  #     @see llvm::llvm_is_multithreaded
+  # 
+  # @method is_multithreaded()
+  # @return [Integer] 
+  # @scope class
+  attach_function :is_multithreaded, :LLVMIsMultithreaded, [], :int
   
 end
