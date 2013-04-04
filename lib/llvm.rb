@@ -7,7 +7,7 @@ module LLVM
   # @private
   module C
     extend ::FFI::Library
-    ffi_lib ['LLVM-3.2']
+    ffi_lib ["LLVM-#{LLVM_VERSION}"]
   end
 
   module PointerIdentity

@@ -44,7 +44,7 @@ module LLVM
           C.send init
         end
       rescue FFI::NotFoundError
-        raise ArgumentError, "LLVM target #{target} is not linked in. Try `llvm-config-3.2 --targets-built'."
+        raise ArgumentError, "LLVM target #{target} is not linked in. Try `llvm-config-#{LLVM_VERSION} --targets-built'."
       end
 
       begin
