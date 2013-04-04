@@ -1,3 +1,5 @@
+# encoding: ascii-8bit
+
 require "test_helper"
 require 'llvm/version'
 require 'llvm/config'
@@ -74,7 +76,7 @@ class TargetTestCase < Test::Unit::TestCase
 
     Tempfile.open('emit') do |tmp|
       assert_nothing_raised { mach.emit(mod, tmp.path, :object) }
-      assert_match %r{\x31\xc0\xc3}o, File.read(tmp.path, mode: 'rb')
+      assert_match %r{\x31\xc0\xc3}, File.read(tmp.path, mode: 'rb')
     end
   end
 
