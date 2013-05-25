@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'rake/testtask'
 require_relative 'lib/llvm/version'
+require_relative 'lib/llvm/config'
 
 begin
   require 'yard'
@@ -45,7 +46,7 @@ task :generate_ffi do
       module_name: 'LLVM::C',
       ffi_lib:     'LLVM-3.3',
       headers:     headers.map { |header| "llvm-c/#{header}" },
-      cflags:      `#{LLVM::LLVM_CONFIG} --cflags`.split,
+      cflags:      LLVM::CONFIG::CFLAGS.split(/\s/),
       prefixes:    %w(LLVM),
       blacklist:   %w(LLVMGetMDNodeNumOperands LLVMGetMDNodeOperand
                       LLVMInitializeAllTargetInfos LLVMInitializeAllTargets
