@@ -16,13 +16,13 @@ rescue LoadError
   warn "Proceeding without SimpleCov. gem install simplecov on supported platforms."
 end
 
-require "test/unit"
+require "minitest/autorun"
 
 require "llvm/core"
 require "llvm/execution_engine"
 require "llvm/transforms/scalar"
 
-class Test::Unit::TestCase
+class Minitest::Test
 
   LLVM_SIGNED = true
   LLVM_UNSIGNED = false

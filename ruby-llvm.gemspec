@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency             'rake'
   s.add_dependency             'ffi',      '~> 1.7'
 
+  s.add_development_dependency 'minitest', '~> 5.0'
   s.add_development_dependency 'ffi_gen',  '~> 1.1.0'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard',     '~> 0.8.3'

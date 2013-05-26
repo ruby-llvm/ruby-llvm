@@ -1,6 +1,6 @@
 require "test_helper"
 
-class StructTestCase < Test::Unit::TestCase
+class StructTestCase < Minitest::Test
 
   LLVM_UNPACKED = false
   LLVM_PACKED = true

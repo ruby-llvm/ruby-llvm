@@ -1,7 +1,7 @@
 require "test_helper"
 require "tempfile"
 
-class BitcodeTestCase < Test::Unit::TestCase
+class BitcodeTestCase < Minitest::Test
   def setup
     LLVM.init_jit
   end

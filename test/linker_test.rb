@@ -2,7 +2,7 @@ require 'test_helper'
 require 'llvm/core'
 require 'llvm/linker'
 
-class LinkerTestCase < Test::Unit::TestCase
+class LinkerTestCase < Minitest::Test
   def setup
     LLVM.init_jit
   end

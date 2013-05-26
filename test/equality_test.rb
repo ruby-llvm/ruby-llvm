@@ -1,7 +1,7 @@
 require "test_helper"
 require "llvm/core"
 
-class EqualityTestCase < Test::Unit::TestCase
+class EqualityTestCase < Minitest::Test
   def setup
     LLVM.init_jit
   end
@@ -14,10 +14,10 @@ class EqualityTestCase < Test::Unit::TestCase
   def assert_equalities(options)
     map = {
       :equal     => method(:assert_equal),
-      :not_equal => method(:assert_not_equal),
+      :not_equal => lambda {|n, m, name| assert n != m, name  },
       :same      => method(:assert_same),
-      :not_same  => method(:assert_not_same),
-      :eql       => lambda {|n, m, name| assert n.eql?(m), name },
+      :not_same  => lambda {|n, m, name| assert !n.equal?(m), name  },
+      :eql       => lambda {|n, m, name| assert n.eql?(m), name  },
       :not_eql   => lambda {|n, m, name| assert !n.eql?(m), name },
     }
 

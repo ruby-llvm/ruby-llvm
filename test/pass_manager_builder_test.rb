@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'llvm/transforms/builder'
 
-class PassManagerBuilderTest < Test::Unit::TestCase
+class PassManagerBuilderTest < Minitest::Test
   def setup
     LLVM.init_jit
     @builder = LLVM::PassManagerBuilder.new
