@@ -1,7 +1,7 @@
 require File.expand_path('lib/llvm/version', File.dirname(__FILE__))
 
 Gem::Specification.new do |s|
-  s.platform = Gem::Platform::RUBY
+  s.platform     = Gem::Platform::RUBY
 
   s.name         = 'ruby-llvm'
   s.version      = LLVM::RUBY_LLVM_VERSION
@@ -16,12 +16,12 @@ Gem::Specification.new do |s|
   s.files       += %w(ext/ruby-llvm-support/Rakefile ext/ruby-llvm-support/support.cpp)
   s.test_files   = Dir['test/**/*.rb']
 
-  s.has_rdoc = true
+  s.extensions   = %w(ext/ruby-llvm-support/Rakefile)
+
+  s.has_rdoc         = 'yard'
   s.extra_rdoc_files = %w(README.md LICENSE)
 
-  s.extensions << 'ext/ruby-llvm-support/Rakefile'
-
-  s.add_dependency             'rake'
+  s.add_dependency             'rake',     '~> 0.9'
   s.add_dependency             'ffi',      '~> 1.7'
 
   s.add_development_dependency 'minitest', '~> 5.0'

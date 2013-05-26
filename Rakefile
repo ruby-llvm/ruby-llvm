@@ -1,22 +1,19 @@
-require 'rubygems'
+require 'bundler/setup'
+
 require 'rake/testtask'
-require_relative 'lib/llvm/version'
-require_relative 'lib/llvm/config'
+require 'yard'
 
-begin
-  require 'yard'
+require 'llvm/version'
+require 'llvm/config'
 
-  YARD::Rake::YardocTask.new do |t|
-    yardlib   = File.join(File.dirname(__FILE__), "yardlib/llvm.rb")
-    t.options = %W[-e #{yardlib} --no-private]
-    t.files   = Dir['lib/**/*.rb']
-  end
-rescue LoadError
-  warn "Yard is not installed. `gem install yard' to build documentation."
+YARD::Rake::YardocTask.new do |t|
+  yardlib      = File.join(File.dirname(__FILE__), "yardlib/llvm.rb")
+  t.options    = %W[-e #{yardlib} --no-private]
+  t.files      = Dir['lib/**/*.rb']
 end
 
 Rake::TestTask.new do |t|
-  t.libs << "test"
+  t.libs       = %w(test)
   t.test_files = FileList["test/**/*_test.rb"]
 end
 

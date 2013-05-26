@@ -1,7 +1,7 @@
-require 'rubygems'
 require 'ffi'
 
 module LLVM
+  require 'llvm/version'
   require 'llvm/support'
 
   # @private
