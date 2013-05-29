@@ -9,12 +9,12 @@ def with_function(arguments, retty, &block)
   mod.dispose
 end
 
-class FunctionTest < Test::Unit::TestCase
+class FunctionTest < Minitest::Test
 
   def test_type
     with_function [], LLVM.Void do |fun|
       type = fun.type
-      assert_not_nil type
+
       assert_instance_of LLVM::Type, type
       assert_equal :pointer,  type.kind
       assert_equal :function, type.element_type.kind
@@ -24,7 +24,7 @@ class FunctionTest < Test::Unit::TestCase
   def test_function_type
     with_function [], LLVM.Void do |fun|
       type = fun.function_type
-      assert_not_nil type
+
       assert_instance_of LLVM::FunctionType, type
       assert_equal :function, type.kind
     end
@@ -32,7 +32,7 @@ class FunctionTest < Test::Unit::TestCase
 
 end
 
-class FunctionTypeTest < Test::Unit::TestCase
+class FunctionTypeTest < Minitest::Test
 
   def test_return_type
     with_function [], LLVM.Void do |fun|
@@ -43,7 +43,6 @@ class FunctionTypeTest < Test::Unit::TestCase
     with_function [], LLVM::Int32 do |fun|
       retty = fun.function_type.return_type
 
-      assert_not_nil retty
       assert_kind_of LLVM::IntType, retty
       assert_equal 32, retty.width
     end

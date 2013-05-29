@@ -13,5 +13,10 @@ module LLVM
     def loop_vectorize!
       C.add_loop_vectorize_pass(self)
     end
+
+    # @LLVMpass slp_vectorize
+    def slp_vectorize!
+      C.add_slp_vectorize_pass(self)
+    end
   end
 end

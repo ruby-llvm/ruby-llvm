@@ -5,29 +5,54 @@ require 'ffi'
 require File.expand_path('../../lib/llvm/version', File.dirname(__FILE__))
 include LLVM
 
-def check_llvm_config(name)
-  actual_version = `#{name} --version`
-  actual_version.strip == LLVM_VERSION
-rescue Errno::ENOENT
-  false
-end
+def check_for(what, variants, env_var)
+  variants = [ ENV[env_var], *variants ] if ENV.include?(env_var)
 
-def invoke_llvm_config(options)
-  variants = %W(llvm-config-#{LLVM_VERSION} llvm-config)
+  $stdout.print("checking for #{what}... ")
+  $stdout.flush
 
-  variants.each do |name|
-    if check_llvm_config(name)
-      return `#{name} #{options}`.gsub("\n", " ")
+  result = variants.find do |variant|
+    if yield(variant)
+      $stdout.puts(variant)
+      true
     end
   end
 
-  raise RuntimeError, "No valid llvm-config found. Tried: #{variants}"
+  if result
+    result
+  else
+    raise RuntimeError, "Cannot find #{what}: tried #{variants}"
+  end
 end
 
-LLVM_CONFIG = invoke_llvm_config('--cxxflags --ldflags')
+def find_llvm_config
+  check_for('llvm-config',
+            %W(llvm-config-#{LLVM_VERSION} llvm-config),
+            'LLVM_CONFIG') do |llvm_config|
 
-CXX    = "g++"
-SRC    = "support.cpp"
+    begin
+      actual_version = `#{llvm_config} --version`.strip
+
+      actual_version == LLVM_VERSION
+    rescue Errno::ENOENT
+      false
+    end
+  end
+end
+
+def find_cxx
+  check_for('C++ compiler', %W(clang++ g++), 'CXX') do |cxx|
+    system(cxx, "--version", out: :close, err: :close)
+    $?.success?
+  end
+end
+
+LLVM_CONFIG = find_llvm_config
+CXX         = find_cxx
+
+def invoke_llvm_config(options)
+  `#{LLVM_CONFIG} #{options}`.gsub("\n", " ")
+end
 
 SUPPORT_LIB = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
 CONFIG_MOD  = File.expand_path('../../lib/llvm/config.rb', File.dirname(__FILE__))
@@ -37,8 +62,9 @@ CLEAN.include(SUPPORT_LIB, CONFIG_MOD)
 desc "Build the shared library and config module"
 task :default => [SUPPORT_LIB, CONFIG_MOD]
 
-file SUPPORT_LIB => [SRC] do
-  sh "#{CXX} -shared -lLLVM-#{LLVM_VERSION} #{SRC} #{LLVM_CONFIG} -o #{SUPPORT_LIB}"
+file SUPPORT_LIB => %w(support.cpp) do |task|
+  sh "#{CXX} -shared -lLLVM-#{LLVM_VERSION} #{task.prerequisites.join(' ')} " \
+     "#{invoke_llvm_config('--cxxflags --ldflags')} -o #{SUPPORT_LIB}"
 end
 
 LLVM_CONFIG_OPTS = [
@@ -46,6 +72,7 @@ LLVM_CONFIG_OPTS = [
   ['TARGETS_BUILT', :array,  '--targets-built'],
   ['HOST_TARGET',   :string, '--host-target'],
   ['BUILD_MODE',    :string, '--build-mode'],
+  ['CFLAGS',        :string, '--cflags'],
 ]
 
 file CONFIG_MOD do
@@ -57,10 +84,12 @@ file CONFIG_MOD do
     LLVM_CONFIG_OPTS.each do |(const, fmt, flag)|
       case fmt
       when :string
-        f.puts '    ' << const << ' = ' << invoke_llvm_config(flag).strip.inspect
+        value = invoke_llvm_config(flag)
       when :array
-        f.puts '    ' << const << ' = ' << invoke_llvm_config(flag).strip.split.inspect
+        value = invoke_llvm_config(flag).split
       end
+
+      f.puts "    #{const} = #{value.inspect}"
     end
 
     f.puts '  end'

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class InstructionTestCase < Test::Unit::TestCase
+class InstructionTestCase < Minitest::Test
   def setup
     LLVM.init_jit
     @module = LLVM::Module.new("InstructionTestCase")

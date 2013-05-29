@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.2'
+  ffi_lib 'LLVM-3.3'
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -21,6 +21,13 @@ module LLVM::C
   
   # (Not documented)
   # 
+  # @method link_in_mcjit()
+  # @return [nil] 
+  # @scope class
+  attach_function :link_in_mcjit, :LLVMLinkInMCJIT, [], :void
+  
+  # (Not documented)
+  # 
   # @method link_in_interpreter()
   # @return [nil] 
   # @scope class
@@ -34,6 +41,24 @@ module LLVM::C
   # (Not documented)
   class OpaqueExecutionEngine < FFI::Struct
     layout :dummy, :char
+  end
+  
+  # (Not documented)
+  # 
+  # = Fields:
+  # :opt_level ::
+  #   (Integer) 
+  # :code_model ::
+  #   (unknown) 
+  # :no_frame_pointer_elim ::
+  #   (Integer) 
+  # :enable_fast_i_sel ::
+  #   (Integer) 
+  class MCJITCompilerOptions < FFI::Struct
+    layout :opt_level, :uint,
+           :code_model, :char,
+           :no_frame_pointer_elim, :int,
+           :enable_fast_i_sel, :int
   end
   
   # ===-- Operations on generic values --------------------------------------===
@@ -135,6 +160,41 @@ module LLVM::C
   # @return [Integer] 
   # @scope class
   attach_function :create_jit_compiler_for_module, :LLVMCreateJITCompilerForModule, [:pointer, :pointer, :uint, :pointer], :int
+  
+  # (Not documented)
+  # 
+  # @method initialize_mcjit_compiler_options(options, size_of_options)
+  # @param [MCJITCompilerOptions] options 
+  # @param [Integer] size_of_options 
+  # @return [nil] 
+  # @scope class
+  attach_function :initialize_mcjit_compiler_options, :LLVMInitializeMCJITCompilerOptions, [MCJITCompilerOptions, :ulong], :void
+  
+  # Create an MCJIT execution engine for a module, with the given options. It is
+  # the responsibility of the caller to ensure that all fields in Options up to
+  # the given SizeOfOptions are initialized. It is correct to pass a smaller
+  # value of SizeOfOptions that omits some fields. The canonical way of using
+  # this is:
+  # 
+  # LLVMMCJITCompilerOptions options;
+  # LLVMInitializeMCJITCompilerOptions(&options, sizeof(options));
+  # ... fill in those options you care about
+  # LLVMCreateMCJITCompilerForModule(&jit, mod, &options, sizeof(options),
+  #                                  &error);
+  # 
+  # Note that this is also correct, though possibly suboptimal:
+  # 
+  # LLVMCreateMCJITCompilerForModule(&jit, mod, 0, 0, &error);
+  # 
+  # @method create_mcjit_compiler_for_module(out_jit, m, options, size_of_options, out_error)
+  # @param [FFI::Pointer(*ExecutionEngineRef)] out_jit 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @param [MCJITCompilerOptions] options 
+  # @param [Integer] size_of_options 
+  # @param [FFI::Pointer(**CharS)] out_error 
+  # @return [Integer] 
+  # @scope class
+  attach_function :create_mcjit_compiler_for_module, :LLVMCreateMCJITCompilerForModule, [:pointer, :pointer, MCJITCompilerOptions, :ulong, :pointer], :int
   
   # Deprecated: Use LLVMCreateExecutionEngineForModule instead.
   # 

@@ -1,13 +1,13 @@
 require "test_helper"
 
-class VectorTestCase < Test::Unit::TestCase
+class VectorTestCase < Minitest::Test
 
   def setup
     LLVM.init_jit
   end
 
   def test_all_ones_vector
-    assert_raise(NotImplementedError) do
+    assert_raises(NotImplementedError) do
       LLVM::ConstantVector.all_ones
     end
   end

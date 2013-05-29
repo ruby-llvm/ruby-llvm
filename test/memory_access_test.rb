@@ -1,6 +1,6 @@
 require "test_helper"
 
-class MemoryAccessTestCase < Test::Unit::TestCase
+class MemoryAccessTestCase < Minitest::Test
 
   def setup
     LLVM.init_jit
