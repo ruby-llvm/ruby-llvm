@@ -12,7 +12,7 @@ module LLVM
       OpaqueType   = LLVM::C::OpaqueType
       OpaqueModule = LLVM::C::OpaqueModule
 
-      lib_name = FFI.map_library_name('RubyLLVMSupport-3.2')
+      lib_name = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
       lib_path = File.expand_path("../../ext/ruby-llvm-support/#{lib_name}", File.dirname(__FILE__))
       ffi_lib [lib_path]
 

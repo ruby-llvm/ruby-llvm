@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ParameterCollectionTestCase < Test::Unit::TestCase
+class ParameterCollectionTestCase < Minitest::Test
   def setup
     @mod = LLVM::Module.new('test')
     @fun = @mod.functions.add('fun', [LLVM::Int, LLVM::Int], LLVM::Int)

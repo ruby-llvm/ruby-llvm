@@ -1,6 +1,6 @@
 require "test_helper"
 
-class GenericValueTestCase < Test::Unit::TestCase
+class GenericValueTestCase < Minitest::Test
 
   def setup
     LLVM.init_jit

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class TypeTestCase < Test::Unit::TestCase
+class TypeTestCase < Minitest::Test
 
   def test_element_type
     pointer = LLVM.Pointer(LLVM::Int32.type)

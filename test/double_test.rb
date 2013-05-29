@@ -1,6 +1,6 @@
 require "test_helper"
 
-class DoubleTestCase < Test::Unit::TestCase
+class DoubleTestCase < Minitest::Test
   def setup
     LLVM.init_jit
   end

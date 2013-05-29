@@ -3,7 +3,7 @@ require "llvm/core"
 require 'llvm/transforms/ipo'
 require 'llvm/core/pass_manager'
 
-class IPOTestCase < Test::Unit::TestCase
+class IPOTestCase < Minitest::Test
 
   def setup
     LLVM.init_jit

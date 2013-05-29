@@ -1,10 +1,11 @@
 # encoding: ascii-8bit
 
 require "test_helper"
+require 'tempfile'
 require 'llvm/version'
 require 'llvm/config'
 
-class TargetTestCase < Test::Unit::TestCase
+class TargetTestCase < Minitest::Test
 
   def setup
     LLVM::Target.init('X86', true)
@@ -13,28 +14,30 @@ class TargetTestCase < Test::Unit::TestCase
   end
 
   def test_init_native
-    assert_nothing_raised { LLVM::Target.init_native }
-    assert_nothing_raised { LLVM::Target.init_native(true) }
+    LLVM::Target.init_native
+    LLVM::Target.init_native(true)
   end
 
   if LLVM::CONFIG::TARGETS_BUILT.include?('ARM')
     def test_init_arm
-      assert_nothing_raised { LLVM::Target.init('ARM') }
-      assert_nothing_raised { LLVM::Target.init('ARM', true) }
-      assert_not_nil LLVM::Target.by_name('arm')
+      LLVM::Target.init('ARM')
+      LLVM::Target.init('ARM', true)
+
+      arm_target = LLVM::Target.by_name('arm')
+      assert_equal 'arm', arm_target.name
     end
   end
 
   def test_init_all
-    assert_nothing_raised { LLVM::Target.init_all }
-    assert_nothing_raised { LLVM::Target.init_all(true) }
+    LLVM::Target.init_all
+    LLVM::Target.init_all(true)
   end
 
   def test_each
     targets = LLVM::Target.each
 
     assert_instance_of Enumerator, targets
-    assert_equal 2, targets.count
+    assert targets.count > 0
   end
 
   def test_target
@@ -70,12 +73,12 @@ class TargetTestCase < Test::Unit::TestCase
     end
 
     Tempfile.open('emit') do |tmp|
-      assert_nothing_raised { mach.emit(mod, tmp.path) }
+      mach.emit(mod, tmp.path)
       assert_match %r{xorl\t%eax, %eax}, tmp.read
     end
 
     Tempfile.open('emit') do |tmp|
-      assert_nothing_raised { mach.emit(mod, tmp.path, :object) }
+      mach.emit(mod, tmp.path, :object)
       assert_match %r{\x31\xc0\xc3}, File.read(tmp.path, mode: 'rb')
     end
   end

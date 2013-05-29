@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PhiTest < Test::Unit::TestCase
+class PhiTest < Minitest::Test
   def setup
     LLVM.init_jit
   end
