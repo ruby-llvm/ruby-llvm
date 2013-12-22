@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description  = 'Ruby-LLVM is a Ruby language binding to the LLVM compiler infrastructure library.'
   s.author       = 'Jeremy Voorhis'
   s.email        = 'jvoorhis@gmail.com'
-  s.homepage     = 'http://github.com/jvoorhis/ruby-llvm'
+  s.homepage     = 'http://github.com/ruby-llvm/ruby-llvm'
 
   s.require_path = 'lib'
   s.files        = Dir['lib/**/*.rb']
