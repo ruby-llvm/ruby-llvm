@@ -25,15 +25,6 @@ extern "C" {
     unwrap<GlobalValue>(global)->setUnnamedAddr(val != 0);
   }
 
-  void LLVMDumpType(LLVMTypeRef type) {
-    unwrap<Type>(type)->dump();
-  }
-
-  void LLVMPrintModuleToFD(LLVMModuleRef module, int fd, LLVMBool shouldClose, LLVMBool unbuffered) {
-    raw_fd_ostream os(fd, shouldClose, unbuffered);
-    unwrap(module)->print(os, 0);
-  }
-
   void LLVMInitializeAllTargetInfos() {
     llvm::InitializeAllTargetInfos();
   }
@@ -54,7 +45,7 @@ extern "C" {
     llvm::InitializeNativeTarget();
   }
 
-  void LLVMInitializeNativeTargetAsmPrinter() {
+  void LLVMInitializeNativeAsmPrinter() {
     llvm::InitializeNativeTargetAsmPrinter();
   }
 }

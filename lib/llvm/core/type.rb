@@ -56,7 +56,7 @@ module LLVM
 
     # Print the type's representation to stdout.
     def dump
-      Support::C.dump_type(self)
+      C.dump_type(self)
     end
 
     # Creates an array type of Type with the given size.

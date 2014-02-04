@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.3'
+  ffi_lib 'LLVM-3.4'
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -100,6 +100,14 @@ module LLVM::C
   # @scope class
   attach_function :add_loop_rotate_pass, :LLVMAddLoopRotatePass, [:pointer], :void
   
+  # See llvm::createLoopRerollPass function.
+  # 
+  # @method add_loop_reroll_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_loop_reroll_pass, :LLVMAddLoopRerollPass, [:pointer], :void
+  
   # See llvm::createLoopUnrollPass function.
   # 
   # @method add_loop_unroll_pass(pm)
@@ -123,6 +131,14 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :add_mem_cpy_opt_pass, :LLVMAddMemCpyOptPass, [:pointer], :void
+  
+  # See llvm::createPartiallyInlineLibCallsPass function.
+  # 
+  # @method add_partially_inline_lib_calls_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_partially_inline_lib_calls_pass, :LLVMAddPartiallyInlineLibCallsPass, [:pointer], :void
   
   # See llvm::createPromoteMemoryToRegisterPass function.
   # 

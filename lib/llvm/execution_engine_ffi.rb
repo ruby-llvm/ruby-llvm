@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.3'
+  ffi_lib 'LLVM-3.4'
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -44,6 +44,11 @@ module LLVM::C
   end
   
   # (Not documented)
+  class OpaqueMCJITMemoryManager < FFI::Struct
+    layout :dummy, :char
+  end
+  
+  # (Not documented)
   # 
   # = Fields:
   # :opt_level ::
@@ -54,11 +59,14 @@ module LLVM::C
   #   (Integer) 
   # :enable_fast_i_sel ::
   #   (Integer) 
+  # :mcjmm ::
+  #   (OpaqueMCJITMemoryManager) 
   class MCJITCompilerOptions < FFI::Struct
     layout :opt_level, :uint,
            :code_model, :char,
            :no_frame_pointer_elim, :int,
-           :enable_fast_i_sel, :int
+           :enable_fast_i_sel, :int,
+           :mcjmm, OpaqueMCJITMemoryManager
   end
   
   # ===-- Operations on generic values --------------------------------------===
@@ -368,5 +376,73 @@ module LLVM::C
   # @return [FFI::Pointer(*Void)] 
   # @scope class
   attach_function :get_pointer_to_global, :LLVMGetPointerToGlobal, [OpaqueExecutionEngine, :pointer], :pointer
+  
+  # ===-- Operations on memory managers -------------------------------------===
+  # 
+  # <em>This entry is only for documentation and no real method.</em>
+  # 
+  # @method _callback_memory_manager_allocate_code_section_callback_(opaque, size, alignment, section_id, section_name)
+  # @param [FFI::Pointer(*Void)] opaque 
+  # @param [Integer] size 
+  # @param [Integer] alignment 
+  # @param [Integer] section_id 
+  # @param [String] section_name 
+  # @return [Integer] 
+  # @scope class
+  callback :memory_manager_allocate_code_section_callback, [:pointer, :ulong, :uint, :uint, :string], :uchar
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method.</em>
+  # 
+  # @method _callback_memory_manager_allocate_data_section_callback_(opaque, size, alignment, section_id, section_name, is_read_only)
+  # @param [FFI::Pointer(*Void)] opaque 
+  # @param [Integer] size 
+  # @param [Integer] alignment 
+  # @param [Integer] section_id 
+  # @param [String] section_name 
+  # @param [Integer] is_read_only 
+  # @return [Integer] 
+  # @scope class
+  callback :memory_manager_allocate_data_section_callback, [:pointer, :ulong, :uint, :uint, :string, :int], :uchar
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method.</em>
+  # 
+  # @method _callback_memory_manager_finalize_memory_callback_(opaque, err_msg)
+  # @param [FFI::Pointer(*Void)] opaque 
+  # @param [FFI::Pointer(**CharS)] err_msg 
+  # @return [Integer] 
+  # @scope class
+  callback :memory_manager_finalize_memory_callback, [:pointer, :pointer], :int
+  
+  # Create a simple custom MCJIT memory manager. This memory manager can
+  # intercept allocations in a module-oblivious way. This will return NULL
+  # if any of the passed functions are NULL.
+  # 
+  # @param Opaque An opaque client object to pass back to the callbacks.
+  # @param AllocateCodeSection Allocate a block of memory for executable code.
+  # @param AllocateDataSection Allocate a block of memory for data.
+  # @param FinalizeMemory Set page permissions and flush cache. Return 0 on
+  #   success, 1 on error.
+  # 
+  # @method create_simple_mcjit_memory_manager(opaque, allocate_code_section, allocate_data_section, finalize_memory, destroy)
+  # @param [FFI::Pointer(*Void)] opaque 
+  # @param [Proc(_callback_memory_manager_allocate_code_section_callback_)] allocate_code_section 
+  # @param [Proc(_callback_memory_manager_allocate_data_section_callback_)] allocate_data_section 
+  # @param [Proc(_callback_memory_manager_finalize_memory_callback_)] finalize_memory 
+  # @param [FFI::Pointer(MemoryManagerDestroyCallback)] destroy 
+  # @return [OpaqueMCJITMemoryManager] 
+  # @scope class
+  attach_function :create_simple_mcjit_memory_manager, :LLVMCreateSimpleMCJITMemoryManager, [:pointer, :memory_manager_allocate_code_section_callback, :memory_manager_allocate_data_section_callback, :memory_manager_finalize_memory_callback, :pointer], OpaqueMCJITMemoryManager
+  
+  # (Not documented)
+  # 
+  # @method dispose_mcjit_memory_manager(mm)
+  # @param [OpaqueMCJITMemoryManager] mm 
+  # @return [nil] 
+  # @scope class
+  attach_function :dispose_mcjit_memory_manager, :LLVMDisposeMCJITMemoryManager, [OpaqueMCJITMemoryManager], :void
   
 end

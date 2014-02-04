@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.3'
+  ffi_lib 'LLVM-3.4'
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -37,11 +37,6 @@ module LLVM::C
   
   # (Not documented)
   class OpaqueTargetLibraryInfotData < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # (Not documented)
-  class StructLayout < FFI::Struct
     layout :dummy, :char
   end
   
@@ -98,13 +93,40 @@ module LLVM::C
   attach_function :initialize_all_disassemblers, :LLVMInitializeAllDisassemblers, [], :void
   
   # LLVMInitializeNativeTarget - The main program should call this function to
-  #     initialize the native target corresponding to the host.  This is useful 
+  #     initialize the native target corresponding to the host.  This is useful
   #     for JIT applications to ensure that the target gets linked in correctly.
   # 
   # @method initialize_native_target()
   # @return [Integer] 
   # @scope class
   attach_function :initialize_native_target, :LLVMInitializeNativeTarget, [], :int
+  
+  # LLVMInitializeNativeTargetAsmParser - The main program should call this
+  #     function to initialize the parser for the native target corresponding to the
+  #     host.
+  # 
+  # @method initialize_native_asm_parser()
+  # @return [Integer] 
+  # @scope class
+  attach_function :initialize_native_asm_parser, :LLVMInitializeNativeAsmParser, [], :int
+  
+  # LLVMInitializeNativeTargetAsmPrinter - The main program should call this
+  #     function to initialize the printer for the native target corresponding to
+  #     the host.
+  # 
+  # @method initialize_native_asm_printer()
+  # @return [Integer] 
+  # @scope class
+  attach_function :initialize_native_asm_printer, :LLVMInitializeNativeAsmPrinter, [], :int
+  
+  # LLVMInitializeNativeTargetDisassembler - The main program should call this
+  #     function to initialize the disassembler for the native target corresponding
+  #     to the host.
+  # 
+  # @method initialize_native_disassembler()
+  # @return [Integer] 
+  # @scope class
+  attach_function :initialize_native_disassembler, :LLVMInitializeNativeDisassembler, [], :int
   
   # Creates target data from a target layout string.
   #     See the constructor llvm::DataLayout::DataLayout.
@@ -119,9 +141,9 @@ module LLVM::C
   #     of the target data.
   #     See the method llvm::PassManagerBase::add.
   # 
-  # @method add_target_data(opaque_target_data, pass_manager_ref)
-  # @param [OpaqueTargetData] opaque_target_data 
-  # @param [FFI::Pointer(PassManagerRef)] pass_manager_ref 
+  # @method add_target_data(td, pm)
+  # @param [OpaqueTargetData] td 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_target_data, :LLVMAddTargetData, [OpaqueTargetData, :pointer], :void
@@ -130,9 +152,9 @@ module LLVM::C
   #     ownership of the target library info.
   #     See the method llvm::PassManagerBase::add.
   # 
-  # @method add_target_library_info(opaque_target_library_infot_data, pass_manager_ref)
-  # @param [OpaqueTargetLibraryInfotData] opaque_target_library_infot_data 
-  # @param [FFI::Pointer(PassManagerRef)] pass_manager_ref 
+  # @method add_target_library_info(tli, pm)
+  # @param [OpaqueTargetLibraryInfotData] tli 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
   attach_function :add_target_library_info, :LLVMAddTargetLibraryInfo, [OpaqueTargetLibraryInfotData, :pointer], :void
@@ -141,8 +163,8 @@ module LLVM::C
   #     with LLVMDisposeMessage.
   #     See the constructor llvm::DataLayout::DataLayout.
   # 
-  # @method copy_string_rep_of_target_data(opaque_target_data)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method copy_string_rep_of_target_data(td)
+  # @param [OpaqueTargetData] td 
   # @return [String] 
   # @scope class
   attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [OpaqueTargetData], :string
@@ -151,8 +173,8 @@ module LLVM::C
   #     LLVMLittleEndian.
   #     See the method llvm::DataLayout::isLittleEndian.
   # 
-  # @method byte_order(opaque_target_data)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method byte_order(td)
+  # @param [OpaqueTargetData] td 
   # @return [Symbol from _enum_byte_ordering_] 
   # @scope class
   attach_function :byte_order, :LLVMByteOrder, [OpaqueTargetData], :byte_ordering
@@ -160,8 +182,8 @@ module LLVM::C
   # Returns the pointer size in bytes for a target.
   #     See the method llvm::DataLayout::getPointerSize.
   # 
-  # @method pointer_size(opaque_target_data)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method pointer_size(td)
+  # @param [OpaqueTargetData] td 
   # @return [Integer] 
   # @scope class
   attach_function :pointer_size, :LLVMPointerSize, [OpaqueTargetData], :uint
@@ -170,8 +192,8 @@ module LLVM::C
   #     address space.
   #     See the method llvm::DataLayout::getPointerSize.
   # 
-  # @method pointer_size_for_as(opaque_target_data, as)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method pointer_size_for_as(td, as)
+  # @param [OpaqueTargetData] td 
   # @param [Integer] as 
   # @return [Integer] 
   # @scope class
@@ -180,8 +202,8 @@ module LLVM::C
   # Returns the integer type that is the same size as a pointer on a target.
   #     See the method llvm::DataLayout::getIntPtrType.
   # 
-  # @method int_ptr_type(opaque_target_data)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method int_ptr_type(td)
+  # @param [OpaqueTargetData] td 
   # @return [FFI::Pointer(TypeRef)] 
   # @scope class
   attach_function :int_ptr_type, :LLVMIntPtrType, [OpaqueTargetData], :pointer
@@ -190,19 +212,41 @@ module LLVM::C
   #     This version allows the address space to be specified.
   #     See the method llvm::DataLayout::getIntPtrType.
   # 
-  # @method int_ptr_type_for_as(opaque_target_data, as)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method int_ptr_type_for_as(td, as)
+  # @param [OpaqueTargetData] td 
   # @param [Integer] as 
   # @return [FFI::Pointer(TypeRef)] 
   # @scope class
   attach_function :int_ptr_type_for_as, :LLVMIntPtrTypeForAS, [OpaqueTargetData, :uint], :pointer
   
+  # Returns the integer type that is the same size as a pointer on a target.
+  #     See the method llvm::DataLayout::getIntPtrType.
+  # 
+  # @method int_ptr_type_in_context(c, td)
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @param [OpaqueTargetData] td 
+  # @return [FFI::Pointer(TypeRef)] 
+  # @scope class
+  attach_function :int_ptr_type_in_context, :LLVMIntPtrTypeInContext, [:pointer, OpaqueTargetData], :pointer
+  
+  # Returns the integer type that is the same size as a pointer on a target.
+  #     This version allows the address space to be specified.
+  #     See the method llvm::DataLayout::getIntPtrType.
+  # 
+  # @method int_ptr_type_for_as_in_context(c, td, as)
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @param [OpaqueTargetData] td 
+  # @param [Integer] as 
+  # @return [FFI::Pointer(TypeRef)] 
+  # @scope class
+  attach_function :int_ptr_type_for_as_in_context, :LLVMIntPtrTypeForASInContext, [:pointer, OpaqueTargetData, :uint], :pointer
+  
   # Computes the size of a type in bytes for a target.
   #     See the method llvm::DataLayout::getTypeSizeInBits.
   # 
-  # @method size_of_type_in_bits(opaque_target_data, type_ref)
-  # @param [OpaqueTargetData] opaque_target_data 
-  # @param [FFI::Pointer(TypeRef)] type_ref 
+  # @method size_of_type_in_bits(td, ty)
+  # @param [OpaqueTargetData] td 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Integer] 
   # @scope class
   attach_function :size_of_type_in_bits, :LLVMSizeOfTypeInBits, [OpaqueTargetData, :pointer], :ulong_long
@@ -210,9 +254,9 @@ module LLVM::C
   # Computes the storage size of a type in bytes for a target.
   #     See the method llvm::DataLayout::getTypeStoreSize.
   # 
-  # @method store_size_of_type(opaque_target_data, type_ref)
-  # @param [OpaqueTargetData] opaque_target_data 
-  # @param [FFI::Pointer(TypeRef)] type_ref 
+  # @method store_size_of_type(td, ty)
+  # @param [OpaqueTargetData] td 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Integer] 
   # @scope class
   attach_function :store_size_of_type, :LLVMStoreSizeOfType, [OpaqueTargetData, :pointer], :ulong_long
@@ -220,9 +264,9 @@ module LLVM::C
   # Computes the ABI size of a type in bytes for a target.
   #     See the method llvm::DataLayout::getTypeAllocSize.
   # 
-  # @method abi_size_of_type(opaque_target_data, type_ref)
-  # @param [OpaqueTargetData] opaque_target_data 
-  # @param [FFI::Pointer(TypeRef)] type_ref 
+  # @method abi_size_of_type(td, ty)
+  # @param [OpaqueTargetData] td 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Integer] 
   # @scope class
   attach_function :abi_size_of_type, :LLVMABISizeOfType, [OpaqueTargetData, :pointer], :ulong_long
@@ -230,9 +274,9 @@ module LLVM::C
   # Computes the ABI alignment of a type in bytes for a target.
   #     See the method llvm::DataLayout::getTypeABISize.
   # 
-  # @method abi_alignment_of_type(opaque_target_data, type_ref)
-  # @param [OpaqueTargetData] opaque_target_data 
-  # @param [FFI::Pointer(TypeRef)] type_ref 
+  # @method abi_alignment_of_type(td, ty)
+  # @param [OpaqueTargetData] td 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Integer] 
   # @scope class
   attach_function :abi_alignment_of_type, :LLVMABIAlignmentOfType, [OpaqueTargetData, :pointer], :uint
@@ -240,9 +284,9 @@ module LLVM::C
   # Computes the call frame alignment of a type in bytes for a target.
   #     See the method llvm::DataLayout::getTypeABISize.
   # 
-  # @method call_frame_alignment_of_type(opaque_target_data, type_ref)
-  # @param [OpaqueTargetData] opaque_target_data 
-  # @param [FFI::Pointer(TypeRef)] type_ref 
+  # @method call_frame_alignment_of_type(td, ty)
+  # @param [OpaqueTargetData] td 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Integer] 
   # @scope class
   attach_function :call_frame_alignment_of_type, :LLVMCallFrameAlignmentOfType, [OpaqueTargetData, :pointer], :uint
@@ -250,9 +294,9 @@ module LLVM::C
   # Computes the preferred alignment of a type in bytes for a target.
   #     See the method llvm::DataLayout::getTypeABISize.
   # 
-  # @method preferred_alignment_of_type(opaque_target_data, type_ref)
-  # @param [OpaqueTargetData] opaque_target_data 
-  # @param [FFI::Pointer(TypeRef)] type_ref 
+  # @method preferred_alignment_of_type(td, ty)
+  # @param [OpaqueTargetData] td 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Integer] 
   # @scope class
   attach_function :preferred_alignment_of_type, :LLVMPreferredAlignmentOfType, [OpaqueTargetData, :pointer], :uint
@@ -260,8 +304,8 @@ module LLVM::C
   # Computes the preferred alignment of a global variable in bytes for a target.
   #     See the method llvm::DataLayout::getPreferredAlignment.
   # 
-  # @method preferred_alignment_of_global(opaque_target_data, global_var)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method preferred_alignment_of_global(td, global_var)
+  # @param [OpaqueTargetData] td 
   # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [Integer] 
   # @scope class
@@ -270,8 +314,8 @@ module LLVM::C
   # Computes the structure element that contains the byte offset for a target.
   #     See the method llvm::StructLayout::getElementContainingOffset.
   # 
-  # @method element_at_offset(opaque_target_data, struct_ty, offset)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method element_at_offset(td, struct_ty, offset)
+  # @param [OpaqueTargetData] td 
   # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [Integer] offset 
   # @return [Integer] 
@@ -281,8 +325,8 @@ module LLVM::C
   # Computes the byte offset of the indexed struct element for a target.
   #     See the method llvm::StructLayout::getElementContainingOffset.
   # 
-  # @method offset_of_element(opaque_target_data, struct_ty, element)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method offset_of_element(td, struct_ty, element)
+  # @param [OpaqueTargetData] td 
   # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [Integer] element 
   # @return [Integer] 
@@ -292,8 +336,8 @@ module LLVM::C
   # Deallocates a TargetData.
   #     See the destructor llvm::DataLayout::~DataLayout.
   # 
-  # @method dispose_target_data(opaque_target_data)
-  # @param [OpaqueTargetData] opaque_target_data 
+  # @method dispose_target_data(td)
+  # @param [OpaqueTargetData] td 
   # @return [nil] 
   # @scope class
   attach_function :dispose_target_data, :LLVMDisposeTargetData, [OpaqueTargetData], :void
@@ -434,6 +478,27 @@ module LLVM::C
   # @scope class
   attach_function :get_next_target, :LLVMGetNextTarget, [Target], Target
   
+  # Finds the target corresponding to the given name and stores it in \p T. 
+  #   Returns 0 on success.
+  # 
+  # @method get_target_from_name(name)
+  # @param [String] name 
+  # @return [Target] 
+  # @scope class
+  attach_function :get_target_from_name, :LLVMGetTargetFromName, [:string], Target
+  
+  # Finds the target corresponding to the given triple and stores it in \p T.
+  #   Returns 0 on success. Optionally returns any error in ErrorMessage.
+  #   Use LLVMDisposeMessage to dispose the message.
+  # 
+  # @method get_target_from_triple(triple, t, error_message)
+  # @param [String] triple 
+  # @param [FFI::Pointer(*TargetRef)] t 
+  # @param [FFI::Pointer(**CharS)] error_message 
+  # @return [Integer] 
+  # @scope class
+  attach_function :get_target_from_triple, :LLVMGetTargetFromTriple, [:string, :pointer, :pointer], :int
+  
   # Returns the name of a target. See llvm::Target::getName
   # 
   # @method get_target_name(t)
@@ -543,6 +608,15 @@ module LLVM::C
   # @scope class
   attach_function :get_target_machine_data, :LLVMGetTargetMachineData, [OpaqueTargetMachine], OpaqueTargetData
   
+  # Set the target machine's ASM verbosity.
+  # 
+  # @method set_target_machine_asm_verbosity(t, verbose_asm)
+  # @param [OpaqueTargetMachine] t 
+  # @param [Integer] verbose_asm 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_target_machine_asm_verbosity, :LLVMSetTargetMachineAsmVerbosity, [OpaqueTargetMachine, :int], :void
+  
   # Emits an asm or object file for the given module to the filename. This
   #   wraps several c++ only classes (among them a file stream). Returns any
   #   error in ErrorMessage. Use LLVMDisposeMessage to dispose the message.
@@ -568,5 +642,13 @@ module LLVM::C
   # @return [Integer] 
   # @scope class
   attach_function :target_machine_emit_to_memory_buffer, :LLVMTargetMachineEmitToMemoryBuffer, [OpaqueTargetMachine, :pointer, :code_gen_file_type, :pointer, :pointer], :int
+  
+  # Get a triple for the host machine as a string. The result needs to be
+  #   disposed with LLVMDisposeMessage.
+  # 
+  # @method get_default_target_triple()
+  # @return [String] 
+  # @scope class
+  attach_function :get_default_target_triple, :LLVMGetDefaultTargetTriple, [], :string
   
 end

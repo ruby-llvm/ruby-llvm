@@ -71,7 +71,7 @@ module LLVM
     def self.init_native(asm_printer=false)
       Support::C.initialize_native_target
 
-      Support::C.initialize_native_target_asm_printer if asm_printer
+      Support::C.initialize_native_asm_printer if asm_printer
     end
 
     # Enumerate all initialized targets.

@@ -17,6 +17,7 @@ Rake::TestTask.new do |t|
   t.test_files = FileList["test/**/*_test.rb"]
 end
 
+desc 'Regenerate FFI bindings'
 task :generate_ffi do
   require 'ffi_gen'
 
@@ -41,7 +42,7 @@ task :generate_ffi do
   mappings.each do |ruby_file, headers|
     FFIGen.generate(
       module_name: 'LLVM::C',
-      ffi_lib:     'LLVM-3.3',
+      ffi_lib:     'LLVM-3.4',
       headers:     headers.map { |header| "llvm-c/#{header}" },
       cflags:      LLVM::CONFIG::CFLAGS.split(/\s/),
       prefixes:    %w(LLVM),
