@@ -9,7 +9,7 @@ computationally intensive algorithms on the fly.
 
 Requirements
 ------------
-* LLVM 3.3, including libLLVM-3.3 (compile LLVM with --enable-shared).
+* LLVM 3.4, including libLLVM-3.4 (compile LLVM with --enable-shared).
 * In order to ensure the usability of JIT features (i.e. create_jit_compiler), compile LLVM with --enable-jit as well.
 
 About version numbers
