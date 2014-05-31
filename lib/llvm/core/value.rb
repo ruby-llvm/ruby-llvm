@@ -644,7 +644,7 @@ module LLVM
 
     def global_constant=(flag)
       if flag.kind_of?(Integer)
-        warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is incorrect.'
+        warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
       end
 
       C.set_global_constant(self, flag ? 1 : 0)

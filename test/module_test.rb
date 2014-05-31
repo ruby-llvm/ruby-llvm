@@ -37,7 +37,8 @@ class ModuleTestCase < Minitest::Test
         assert !var.global_constant?
         var.global_constant = true
         assert var.global_constant?
-        assert_output("", "Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is incorrect.\n") do
+
+        assert_output("", "Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.\n") do
           var.global_constant = 0
         end
       end
