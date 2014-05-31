@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.has_rdoc         = 'yard'
   s.extra_rdoc_files = %w(README.md LICENSE)
 
-  s.add_dependency             'rake',     '~> 0.9'
+  s.add_dependency             'rake',     '~> 10.1'
   s.add_dependency             'ffi',      '~> 1.7'
 
   s.add_development_dependency 'minitest', '~> 5.0'
