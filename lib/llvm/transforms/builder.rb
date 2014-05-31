@@ -88,9 +88,8 @@ module LLVM
         raise ArgumentError, "FunctionPassManager does not support LTO"
       end
 
-      # Add flag() when the header gets fixed and has LLVMBool
       C.pass_manager_builder_populate_lto_pass_manager(self,
-            pass_manager, internalize, run_inliner)
+            pass_manager, flag(internalize), flag(run_inliner))
     end
 
     private

@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'llvm/config'
 require 'llvm/transforms/builder'
 
 class PassManagerBuilderTest < Minitest::Test
@@ -29,5 +30,11 @@ class PassManagerBuilderTest < Minitest::Test
     machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
     pass_manager = LLVM::PassManager.new(machine)
     @builder.build(pass_manager)
+  end
+
+  def test_build_with_lto
+    machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
+    pass_manager = LLVM::PassManager.new(machine)
+    @builder.build_with_lto(pass_manager)
   end
 end
