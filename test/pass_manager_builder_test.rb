@@ -6,10 +6,14 @@ class PassManagerBuilderTest < Minitest::Test
   def setup
     LLVM.init_jit
     @builder = LLVM::PassManagerBuilder.new
+
+    machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
+    @pass_manager = LLVM::PassManager.new(machine)
   end
 
   def teardown
     @builder.dispose
+    @pass_manager.dispose
   end
 
   def test_init
@@ -27,14 +31,10 @@ class PassManagerBuilderTest < Minitest::Test
   end
 
   def test_build
-    machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
-    pass_manager = LLVM::PassManager.new(machine)
-    @builder.build(pass_manager)
+    @builder.build(@pass_manager)
   end
 
   def test_build_with_lto
-    machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
-    pass_manager = LLVM::PassManager.new(machine)
-    @builder.build_with_lto(pass_manager)
+    @builder.build_with_lto(@pass_manager)
   end
 end
