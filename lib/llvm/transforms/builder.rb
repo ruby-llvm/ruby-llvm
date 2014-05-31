@@ -88,6 +88,12 @@ module LLVM
         raise ArgumentError, "FunctionPassManager does not support LTO"
       end
 
+      if internalize.kind_of?(Integer) || run_inliner.kind_of?(Integer)
+        warn 'Warning: Passing Integer value to LLVM::PassManagerBuilder#build_with_lto is deprecated.'
+        internalize = !internalize.zero? if internalize.kind_of?(Integer)
+        run_inliner = !run_inliner.zero? if run_inliner.kind_of?(Integer)
+      end
+
       C.pass_manager_builder_populate_lto_pass_manager(self,
             pass_manager, flag(internalize), flag(run_inliner))
     end

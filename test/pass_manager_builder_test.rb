@@ -35,6 +35,20 @@ class PassManagerBuilderTest < Minitest::Test
   end
 
   def test_build_with_lto
-    @builder.build_with_lto(@pass_manager)
+    assert_output('', '') do
+      @builder.build_with_lto(@pass_manager)
+    end
+  end
+
+  def test_build_with_lto_deprecated_internalize_param
+    assert_output("", "Warning: Passing Integer value to LLVM::PassManagerBuilder#build_with_lto is deprecated.\n") do
+      @builder.build_with_lto(@pass_manager, 0)
+    end
+  end
+
+  def test_build_with_lto_deprecated_run_inliner_param
+    assert_output("", "Warning: Passing Integer value to LLVM::PassManagerBuilder#build_with_lto is deprecated.\n") do
+      @builder.build_with_lto(@pass_manager, false, 0)
+    end
   end
 end
