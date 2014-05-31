@@ -639,11 +639,11 @@ module LLVM
     end
 
     def global_constant?
-      C.is_global_constant(self)
+      C.is_global_constant(self) != 0
     end
 
     def global_constant=(flag)
-      C.set_global_constant(self, flag)
+      C.set_global_constant(self, flag ? 1 : 0)
     end
 
     def unnamed_addr?

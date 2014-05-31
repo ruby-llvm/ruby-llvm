@@ -28,9 +28,15 @@ class ModuleTestCase < Minitest::Test
 
         assert var.kind_of?(LLVM::GlobalVariable)
 
+        # unnamed_addr
         assert !var.unnamed_addr?
         var.unnamed_addr = true
         assert var.unnamed_addr?
+
+        # global_constant
+        assert !var.global_constant?
+        var.global_constant = true
+        assert var.global_constant?
       end
     end
 
