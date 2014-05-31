@@ -639,11 +639,16 @@ module LLVM
     end
 
     def global_constant?
-      C.is_global_constant(self)
+      C.is_global_constant(self) != 0
     end
 
     def global_constant=(flag)
-      C.set_global_constant(self, flag)
+      if flag.kind_of?(Integer)
+        warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
+        flag = !flag.zero?
+      end
+
+      C.set_global_constant(self, flag ? 1 : 0)
     end
 
     def unnamed_addr?

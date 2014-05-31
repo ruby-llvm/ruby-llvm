@@ -1,14 +1,19 @@
 require 'test_helper'
+require 'llvm/config'
 require 'llvm/transforms/builder'
 
 class PassManagerBuilderTest < Minitest::Test
   def setup
     LLVM.init_jit
     @builder = LLVM::PassManagerBuilder.new
+
+    machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
+    @pass_manager = LLVM::PassManager.new(machine)
   end
 
   def teardown
     @builder.dispose
+    @pass_manager.dispose
   end
 
   def test_init
@@ -26,8 +31,24 @@ class PassManagerBuilderTest < Minitest::Test
   end
 
   def test_build
-    machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
-    pass_manager = LLVM::PassManager.new(machine)
-    @builder.build(pass_manager)
+    @builder.build(@pass_manager)
+  end
+
+  def test_build_with_lto
+    assert_output('', '') do
+      @builder.build_with_lto(@pass_manager)
+    end
+  end
+
+  def test_build_with_lto_deprecated_internalize_param
+    assert_output("", "Warning: Passing Integer value to LLVM::PassManagerBuilder#build_with_lto is deprecated.\n") do
+      @builder.build_with_lto(@pass_manager, 0)
+    end
+  end
+
+  def test_build_with_lto_deprecated_run_inliner_param
+    assert_output("", "Warning: Passing Integer value to LLVM::PassManagerBuilder#build_with_lto is deprecated.\n") do
+      @builder.build_with_lto(@pass_manager, false, 0)
+    end
   end
 end
