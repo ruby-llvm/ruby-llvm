@@ -7,10 +7,10 @@ require 'llvm/execution_engine_ffi'
 module LLVM
   class JITCompiler
     # Important: Call #dispose to free backend memory after use. Do not call #dispose on mod any more.
-    def initialize(mod, opt_level = 3)
+    def initialize(mod, opt_level = 3, options = {})
       FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |ptr|
         error   = FFI::MemoryPointer.new(FFI.type_size(:pointer))
-        status  = C.create_jit_compiler_for_module(ptr, mod, opt_level, error)
+        status  = create_execution_engine_for_module(ptr, mod, error, :opt_level => opt_level)
         errorp  = error.read_pointer
         message = errorp.read_string unless errorp.null?
 
@@ -68,6 +68,19 @@ module LLVM
     # Obtain an FFI::Pointer to a global within the current module.
     def pointer_to_global(global)
       C.get_pointer_to_global(self, global)
+    end
+
+    protected
+
+    # Create a JIT execution engine for module with the given options.
+    #
+    # @param out_ee    [FFI::Pointer(*ExecutionEngineRef)] execution engine
+    # @param mod       [LLVM::Module] module
+    # @param out_error [FFI::Pointer(**CharS)] error message
+    # @param options   [Hash{Symbol => Object}] options. `:opt_level => 3` for example.
+    # @return [Integer] 0 for success, non- zero to indicate an error
+    def create_execution_engine_for_module(out_ee, mod, out_error, options)
+      C.create_jit_compiler_for_module(out_ee, mod, options[:opt_level], out_error)
     end
   end
 
