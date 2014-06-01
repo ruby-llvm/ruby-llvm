@@ -84,6 +84,17 @@ module LLVM
     end
   end
 
+  class MCJITCompiler < JITCompiler
+    # TODO Add #add_module, #remove_module in JITCompiler, possibly `JITCompiler.modules`.
+
+    protected
+
+    def create_execution_engine_for_module(out_ee, mod, out_error, options)
+      # TODO MCJITCompilerOptions
+      C.create_mcjit_compiler_for_module(out_ee, mod, nil, 0, out_error)
+    end
+  end
+
   class GenericValue
     # @private
     def to_ptr
