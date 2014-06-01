@@ -4,8 +4,8 @@ require 'llvm/target_ffi'
 
 module LLVM
   # A shorthand for {LLVM::Target.init_native}
-  def self.init_jit
-    LLVM::Target.init_native
+  def self.init_jit(*args)
+    LLVM::Target.init_native(*args)
   end
 
   # @deprecated Use LLVM.init_jit or LLVM::Target.init('X86').
