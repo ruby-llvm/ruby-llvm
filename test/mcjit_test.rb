@@ -16,7 +16,7 @@ class MCJITTestCase < Minitest::Test
 
     mod.verify!
 
-    engine = LLVM::MCJITCompiler.new(mod, 0)
+    engine = LLVM::MCJITCompiler.new(mod, :opt_level => 0)
 
     result = engine.run_function(mod.functions['square'], 5)
     assert_equal 25, result.to_i
