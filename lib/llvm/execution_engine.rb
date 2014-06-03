@@ -70,7 +70,38 @@ module LLVM
       C.get_pointer_to_global(self, global)
     end
 
-    # TODO Add #add_module, #remove_module, possibly `JITCompiler.modules`.
+    def modules
+      @modules ||= ModuleCollection.new(self)
+    end
+
+    class ModuleCollection
+      def initialize(engine)
+        @engine = engine
+      end
+
+      def add(mod)
+        C.add_module(@engine, mod)
+      end
+
+      def delete(mod)
+        error   = FFI::MemoryPointer.new(:pointer)
+        out_mod = FFI::MemoryPointer.new(:pointer)
+
+        status = C.remove_module(@engine, mod, out_mod, error)
+
+        unless status.zero?
+          errorp  = error.read_pointer
+          message = errorp.read_string unless errorp.null?
+
+          C.dispose_message(error)
+          error.autorelease=false
+
+          raise "Error removing module: #{message}"
+        end
+      end
+
+      alias_method :<<, :add
+    end
 
     protected
 
