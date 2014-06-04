@@ -27,6 +27,22 @@ class MCJITTestCase < Minitest::Test
     assert_equal 25, result.to_i
   end
 
+  def test_functions_named
+    mod = LLVM::Module.new('foo').tap do |mod|
+      mod.functions.add(:foo, [], LLVM::Int)
+      mod.verify!
+    end
+
+    engine = LLVM::MCJITCompiler.new(mod, :opt_level => 0)
+
+    ['foo', :foo].each do |name|
+      engine.functions[name].tap do |fun|
+        assert fun, "function named #{name.inspect}"
+        assert_equal 'foo', fun.name
+      end
+    end
+  end
+
   def test_add_module
     main_mod = LLVM::Module.new('main')
 
@@ -58,7 +74,8 @@ class MCJITTestCase < Minitest::Test
     engine = LLVM::MCJITCompiler.new(mod1, :opt_level => 0)
     engine.modules << mod2
 
+    assert engine.functions[:bar]
     engine.modules.delete(mod2)
-    # TODO test function 'bar' does not exists
+    assert_nil engine.functions[:bar]
   end
 end

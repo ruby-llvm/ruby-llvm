@@ -74,6 +74,10 @@ module LLVM
       @modules ||= ModuleCollection.new(self)
     end
 
+    def functions
+      @functions ||= FunctionCollection.new(self)
+    end
+
     class ModuleCollection
       def initialize(engine)
         @engine = engine
@@ -101,6 +105,25 @@ module LLVM
       end
 
       alias_method :<<, :add
+    end
+
+    class FunctionCollection
+      include Enumerable
+
+      def initialize(engine)
+        @engine = engine
+      end
+
+      def named(name)
+        out_fun = FFI::MemoryPointer.new(:pointer)
+
+        status = C.find_function(@engine, name.to_s, out_fun)
+        return unless status.zero?
+
+        Function.from_ptr(out_fun.read_pointer)
+      end
+
+      alias_method :[], :named
     end
 
     protected
