@@ -72,10 +72,16 @@ class MCJITTestCase < Minitest::Test
     bar = mod2.functions.add(:bar, [], LLVM::Int)
 
     engine = LLVM::MCJITCompiler.new(mod1, :opt_level => 0)
-    engine.modules << mod2
+
+    (engine.modules << mod2).tap do |ret|
+      assert_equal engine.modules, ret, '#<< returns self'
+    end
 
     assert engine.functions[:bar]
-    engine.modules.delete(mod2)
+    engine.modules.delete(mod2).tap do |ret|
+      assert_instance_of LLVM::Module, ret, '#delete returns module'
+      assert_equal mod2, ret
+    end
     assert_nil engine.functions[:bar]
   end
 end
