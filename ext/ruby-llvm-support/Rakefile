@@ -32,8 +32,11 @@ def find_llvm_config
 
     begin
       actual_version = `#{llvm_config} --version`.strip
+      actual_maj, actual_min, _ = actual_version.split('.')
 
-      actual_version == LLVM_VERSION
+      required_maj, required_min = LLVM_VERSION.split('.')
+
+      actual_maj == required_maj && actual_min == required_min
     rescue Errno::ENOENT
       false
     end
