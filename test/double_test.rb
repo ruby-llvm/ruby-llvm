@@ -20,7 +20,7 @@ class DoubleTestCase < Minitest::Test
       builder.ret(builder.fadd(p0, LLVM::Double(1.0)))
     end
 
-    engine = LLVM::JITCompiler.new(mod, 3)
+    engine = LLVM::JITCompiler.new(mod)
 
     arg	= 5.0
     result = engine.run_function(mod.functions["test"], arg)
