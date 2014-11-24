@@ -5,12 +5,19 @@ require 'llvm/analysis'
 require 'llvm/execution_engine_ffi'
 
 module LLVM
-  class JITCompiler
-    # Important: Call #dispose to free backend memory after use. Do not call #dispose on mod any more.
-    def initialize(mod, opt_level = 3)
+  # @abstract Subclass and override {#create_execution_engine_for_module}.
+  class ExecutionEngine
+    # Create a JIT execution engine for module with the given options.
+    #
+    # @note Important: Call #dispose to free backend memory after use. Do not call #dispose on mod any more.
+    #
+    # @param [LLVM::Module] mod module
+    # @param [Hash{Symbol => Object}] options options
+    # @return [ExecutionEngine] JIT execution engine
+    def initialize(mod, options)
       FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |ptr|
         error   = FFI::MemoryPointer.new(FFI.type_size(:pointer))
-        status  = C.create_jit_compiler_for_module(ptr, mod, opt_level, error)
+        status  = create_execution_engine_for_module(ptr, mod, error, options)
         errorp  = error.read_pointer
         message = errorp.read_string unless errorp.null?
 
@@ -68,6 +75,158 @@ module LLVM
     # Obtain an FFI::Pointer to a global within the current module.
     def pointer_to_global(global)
       C.get_pointer_to_global(self, global)
+    end
+
+    # Returns a ModuleCollection of all the Modules in the engine.
+    # @return [ModuleCollection]
+    def modules
+      @modules ||= ModuleCollection.new(self)
+    end
+
+    # Returns a FunctionCollection of all the Functions in the engine.
+    # @return [FunctionCollection]
+    def functions
+      @functions ||= FunctionCollection.new(self)
+    end
+
+    class ModuleCollection
+      # @param [ExecutionEngine] engine
+      def initialize(engine)
+        @engine = engine
+      end
+
+      # @param [LLVM::Module] mod
+      # @return [ModuleCollection]
+      def add(mod)
+        tap { C.add_module(@engine, mod) }
+      end
+
+      # @param [LLVM::Module] mod
+      # @return [LLVM::Module] deleted module
+      def delete(mod)
+        error   = FFI::MemoryPointer.new(:pointer)
+        out_mod = FFI::MemoryPointer.new(:pointer)
+
+        status = C.remove_module(@engine, mod, out_mod, error)
+
+        if status.zero?
+          LLVM::Module.from_ptr(out_mod.read_pointer)
+        else
+          errorp  = error.read_pointer
+          message = errorp.read_string unless errorp.null?
+
+          C.dispose_message(error)
+          error.autorelease=false
+
+          raise "Error removing module: #{message}"
+        end
+      end
+
+      alias_method :<<, :add
+    end
+
+    class FunctionCollection
+      # @param [ExecutionEngine] engine
+      def initialize(engine)
+        @engine = engine
+      end
+
+      # @param [String, Symbol] name function name
+      # @return [Function]
+      def named(name)
+        out_fun = FFI::MemoryPointer.new(:pointer)
+
+        status = C.find_function(@engine, name.to_s, out_fun)
+        return unless status.zero?
+
+        Function.from_ptr(out_fun.read_pointer)
+      end
+
+      alias_method :[], :named
+    end
+
+    protected
+
+    # Create a JIT execution engine for module with the given options.
+    #
+    # @param [FFI::Pointer(*ExecutionEngineRef)] out_ee execution engine
+    # @param [LLVM::Module] mod module
+    # @param [FFI::Pointer(**CharS)] out_error error message
+    # @param [Hash{Symbol => Object}] options options. `:opt_level => 3` for example.
+    # @return [Integer] 0 for success, non- zero to indicate an error
+    def create_execution_engine_for_module(out_ee, mod, out_error, options)
+      raise NotImplementedError, "override in subclass"
+    end
+  end
+
+  class JITCompiler < ExecutionEngine
+    # Create a JIT execution engine.
+    #
+    # @note You should call `LLVM.init_jit` before creating an execution engine.
+    #
+    # @param [LLVM::Module] mod module
+    # @param [Hash{Symbol => Object}] options options
+    # @option options [Integer] :opt_level (3) Optimization level 
+    # @return [ExecutionEngine] Execution engine
+    def initialize(mod, options = {})
+      # Prior to ruby-llvm 3.4.0, signature is initialize(mod, opt_level = 3)
+      if options.kind_of?(Integer)
+        options = { :opt_level => options }
+      end
+
+      options = {
+        :opt_level => 3,
+      }.merge(options)
+
+      super
+    end
+
+    protected
+
+    def create_execution_engine_for_module(out_ee, mod, out_error, options)
+      C.create_jit_compiler_for_module(out_ee, mod, options[:opt_level], out_error)
+    end
+  end
+
+  class MCJITCompiler < ExecutionEngine
+    # Create a MCJIT execution engine.
+    #
+    # @note You should call `LLVM.init_jit(true)` before creating an execution engine.
+    # @todo Add :mcjmm option (MCJIT memory manager)
+    #
+    # @param [LLVM::Module] mod module
+    # @param [Hash{Symbol => Object}] options options
+    # @option options [Integer] :opt_level (2) Optimization level 
+    # @option options [Integer] :code_model (0) Code model types
+    # @option options [Boolean] :no_frame_pointer_elim (false) Disable frame pointer elimination optimization
+    # @option options [Boolean] :enable_fast_i_sel (false) Enables fast-path instruction selection
+    # @return [ExecutionEngine] Execution engine
+    def initialize(mod, options = {})
+      options = {
+        :opt_level             => 2, # LLVMCodeGenLevelDefault
+        :code_model            => 0, # LLVMCodeModelDefault
+        :no_frame_pointer_elim => false,
+        :enable_fast_i_sel     => false,
+        # TODO
+        #:mcjmm                 => nil,
+      }.merge(options)
+
+      super
+    end
+
+    protected
+
+    def create_execution_engine_for_module(out_ee, mod, out_error, options)
+      mcopts = LLVM::C::MCJITCompilerOptions.new
+
+      LLVM::C.initialize_mcjit_compiler_options(mcopts, mcopts.size)
+
+      mcopts[:opt_level]             = options[:opt_level]
+      mcopts[:code_model]            = options[:code_model]
+      mcopts[:no_frame_pointer_elim] = options[:no_frame_pointer_elim] ? 1 : 0
+      mcopts[:enable_fast_i_sel]     = options[:enable_fast_i_sel] ? 1 : 0
+
+      C.create_mcjit_compiler_for_module(out_ee, mod, mcopts, mcopts.size, out_error)
     end
   end
 
