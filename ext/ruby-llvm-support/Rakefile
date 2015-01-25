@@ -45,7 +45,7 @@ end
 
 def find_cxx
   check_for('C++ compiler', %W(g++ clang++), 'CXX') do |cxx|
-    system(cxx, "--version")
+    system(cxx, "--version", out: File::NULL, err: File::NULL)
     $?.success?
   end
 end
