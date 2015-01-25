@@ -34,13 +34,4 @@ class LinkerTestCase < Minitest::Test
 
     assert_equal 42, run_function_on_module(@mod1, 'main').to_i
   end
-
-  def test_link_into_and_destroy
-    create_modules
-    @mod2.link_into_and_destroy(@mod1)
-
-    assert_nil @mod2.to_ptr
-
-    assert_equal 42, run_function_on_module(@mod1, 'main').to_i
-  end
 end

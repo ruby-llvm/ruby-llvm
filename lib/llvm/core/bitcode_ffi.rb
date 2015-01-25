@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
+  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -104,5 +104,13 @@ module LLVM::C
   # @return [Integer] 
   # @scope class
   attach_function :write_bitcode_to_file_handle, :LLVMWriteBitcodeToFileHandle, [:pointer, :int], :int
+  
+  # Writes a module to a new memory buffer and returns it.
+  # 
+  # @method write_bitcode_to_memory_buffer(m)
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(MemoryBufferRef)] 
+  # @scope class
+  attach_function :write_bitcode_to_memory_buffer, :LLVMWriteBitcodeToMemoryBuffer, [:pointer], :pointer
   
 end

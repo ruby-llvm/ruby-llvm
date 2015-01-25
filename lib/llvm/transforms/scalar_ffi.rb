@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
+  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -19,6 +19,14 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :add_aggressive_dce_pass, :LLVMAddAggressiveDCEPass, [:pointer], :void
+  
+  # See llvm::createAlignmentFromAssumptionsPass function.
+  # 
+  # @method add_alignment_from_assumptions_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_alignment_from_assumptions_pass, :LLVMAddAlignmentFromAssumptionsPass, [:pointer], :void
   
   # See llvm::createCFGSimplificationPass function.
   # 
@@ -156,6 +164,14 @@ module LLVM::C
   # @scope class
   attach_function :add_partially_inline_lib_calls_pass, :LLVMAddPartiallyInlineLibCallsPass, [:pointer], :void
   
+  # See llvm::createLowerSwitchPass function.
+  # 
+  # @method add_lower_switch_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_lower_switch_pass, :LLVMAddLowerSwitchPass, [:pointer], :void
+  
   # See llvm::createPromoteMemoryToRegisterPass function.
   # 
   # @method add_promote_memory_to_register_pass(pm)
@@ -276,6 +292,14 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :add_type_based_alias_analysis_pass, :LLVMAddTypeBasedAliasAnalysisPass, [:pointer], :void
+  
+  # See llvm::createScopedNoAliasAAPass function
+  # 
+  # @method add_scoped_no_alias_aa_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_scoped_no_alias_aa_pass, :LLVMAddScopedNoAliasAAPass, [:pointer], :void
   
   # See llvm::createBasicAliasAnalysisPass function
   # 
