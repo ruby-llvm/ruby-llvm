@@ -4,12 +4,6 @@ module LLVM
   require 'llvm/version'
   require 'llvm/support'
 
-  # @private
-  module C
-    extend ::FFI::Library
-    ffi_lib ["LLVM-#{LLVM_VERSION}"]
-  end
-
   module PointerIdentity
     # @private
     def to_ptr

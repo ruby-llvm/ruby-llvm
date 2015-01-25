@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.4'
+  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -12,7 +12,7 @@ module LLVM::C
     end
   end
   
-  # (Not documented)
+  # See llvm::createAggressiveDCEPass function.
   # 
   # @method add_aggressive_dce_pass(pm)
   # @param [FFI::Pointer(PassManagerRef)] pm 
@@ -35,6 +35,22 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :add_dead_store_elimination_pass, :LLVMAddDeadStoreEliminationPass, [:pointer], :void
+  
+  # See llvm::createScalarizerPass function.
+  # 
+  # @method add_scalarizer_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_scalarizer_pass, :LLVMAddScalarizerPass, [:pointer], :void
+  
+  # See llvm::createMergedLoadStoreMotionPass function.
+  # 
+  # @method add_merged_load_store_motion_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_merged_load_store_motion_pass, :LLVMAddMergedLoadStoreMotionPass, [:pointer], :void
   
   # See llvm::createGVNPass function.
   # 

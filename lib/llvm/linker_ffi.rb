@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.4'
+  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -17,14 +17,17 @@ module LLVM::C
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:linker_mode).</em>
   # 
   # === Options:
-  # :linker_destroy_source ::
+  # :destroy_source ::
   #   
+  # :preserve_source ::
+  #   Allow source module to be destroyed.
   # 
   # @method _enum_linker_mode_
   # @return [Symbol]
   # @scope class
   enum :linker_mode, [
-    :linker_destroy_source, 0
+    :destroy_source, 0,
+    :preserve_source, 1
   ]
   
   # Links the source module into the destination module, taking ownership

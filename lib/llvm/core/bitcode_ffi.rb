@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.4'
+  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -33,9 +33,7 @@ module LLVM::C
   # @scope class
   attach_function :parse_bitcode_in_context, :LLVMParseBitcodeInContext, [:pointer, :pointer, :pointer, :pointer], :int
   
-  # Reads a module from the specified path, returning via the OutMP parameter
-  #     a module provider which performs lazy deserialization. Returns 0 on success.
-  #     Optionally returns a human-readable error message via OutMessage.
+  # (Not documented)
   # 
   # @method get_bitcode_module_in_context(context_ref, mem_buf, out_m, out_message)
   # @param [FFI::Pointer(ContextRef)] context_ref 
@@ -56,7 +54,7 @@ module LLVM::C
   # @scope class
   attach_function :get_bitcode_module, :LLVMGetBitcodeModule, [:pointer, :pointer, :pointer], :int
   
-  # Deprecated: Use LLVMGetBitcodeModuleInContext instead.
+  # (Not documented)
   # 
   # @method get_bitcode_module_provider_in_context(context_ref, mem_buf, out_mp, out_message)
   # @param [FFI::Pointer(ContextRef)] context_ref 
@@ -67,7 +65,7 @@ module LLVM::C
   # @scope class
   attach_function :get_bitcode_module_provider_in_context, :LLVMGetBitcodeModuleProviderInContext, [:pointer, :pointer, :pointer, :pointer], :int
   
-  # Deprecated: Use LLVMGetBitcodeModule instead.
+  # (Not documented)
   # 
   # @method get_bitcode_module_provider(mem_buf, out_mp, out_message)
   # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
@@ -77,7 +75,7 @@ module LLVM::C
   # @scope class
   attach_function :get_bitcode_module_provider, :LLVMGetBitcodeModuleProvider, [:pointer, :pointer, :pointer], :int
   
-  # (Not documented)
+  # Writes a module to the specified path. Returns 0 on success.
   # 
   # @method write_bitcode_to_file(m, path)
   # @param [FFI::Pointer(ModuleRef)] m 

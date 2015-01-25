@@ -58,7 +58,7 @@ class TargetTestCase < Minitest::Test
     assert_equal '', mach.features
 
     layout = mach.data_layout
-    assert_equal 'e-p:32:32:32-S128-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:32:64-f16:16:16-f32:32:32-f64:32:64-f128:128:128-v64:64:64-v128:128:128-a0:0:64-f80:32:32-n8:16:32', layout.to_s
+    assert_equal 'e-m:e-p:32:32-f64:32:64-f80:32-n8:16:32-S128', layout.to_s
   end
 
   def test_emit
@@ -79,7 +79,7 @@ class TargetTestCase < Minitest::Test
 
     Tempfile.open('emit') do |tmp|
       mach.emit(mod, tmp.path, :object)
-      assert_match %r{\x31\xc0\xc3}, File.read(tmp.path, mode: 'rb')
+      assert_match %r{\x66\x31\xc0}, File.read(tmp.path, mode: 'rb')
     end
   end
 
@@ -93,23 +93,23 @@ class TargetTestCase < Minitest::Test
 
     assert_equal '', mod.data_layout
 
-    mod.data_layout = 'e-p:64:64:64'
-    assert_equal 'e-p:64:64:64', mod.data_layout
+    mod.data_layout = 'e-p:32:32'
+    assert_equal 'e-p:32:32', mod.data_layout
   end
 
   def test_data_layout
     layout_be = LLVM::TargetDataLayout.new('E')
     assert_equal :big_endian, layout_be.byte_order
 
-    desc = "e-p:64:64:64-S0-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:32:64-f16:16:16-f32:32:32-f64:64:64-f128:128:128-v64:64:64-v128:128:128-a0:0:64"
+    desc = "e-p:32:32:32-S0-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:32:64-f16:16:16-f32:32:32-f64:64:64-f128:128:128-v64:64:64-v128:128:128-a0:0:64"
     layout = LLVM::TargetDataLayout.new(desc)
 
-    assert_equal desc, layout.to_s
+    assert_equal "e-p:32:32", layout.to_s
     assert_equal :little_endian, layout.byte_order
-    assert_equal 8, layout.pointer_size
-    assert_equal 8, layout.pointer_size(0)
-    assert_equal LLVM::Int64.type, layout.int_ptr_type
-    assert_equal LLVM::Int64.type, layout.int_ptr_type(0)
+    assert_equal 4, layout.pointer_size
+    assert_equal 4, layout.pointer_size(0)
+    assert_equal LLVM::Int32.type, layout.int_ptr_type
+    assert_equal LLVM::Int32.type, layout.int_ptr_type(0)
 
     assert_equal 19, layout.bit_size_of(LLVM::Int19.type)
     assert_equal 3, layout.storage_size_of(LLVM::Int19.type)

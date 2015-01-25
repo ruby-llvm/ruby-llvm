@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.4'
+  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -12,7 +12,10 @@ module LLVM::C
     end
   end
   
-  # (Not documented)
+  # @defgroup LLVMCExecutionEngine Execution Engine
+  # @ingroup LLVMC
+  # 
+  # @{
   # 
   # @method link_in_jit()
   # @return [nil] 
@@ -357,6 +360,14 @@ module LLVM::C
   # @return [FFI::Pointer(TargetDataRef)] 
   # @scope class
   attach_function :get_execution_engine_target_data, :LLVMGetExecutionEngineTargetData, [OpaqueExecutionEngine], :pointer
+  
+  # (Not documented)
+  # 
+  # @method get_execution_engine_target_machine(ee)
+  # @param [OpaqueExecutionEngine] ee 
+  # @return [FFI::Pointer(TargetMachineRef)] 
+  # @scope class
+  attach_function :get_execution_engine_target_machine, :LLVMGetExecutionEngineTargetMachine, [OpaqueExecutionEngine], :pointer
   
   # (Not documented)
   # 

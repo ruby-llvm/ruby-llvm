@@ -24,7 +24,7 @@ task :generate_ffi do
 
   mappings = {
     # Core
-    'core_ffi.rb'                 => %w(Core.h),
+    'core_ffi.rb'                 => %w(Support.h Core.h),
     'core/bitcode_ffi.rb'         => %w(BitReader.h BitWriter.h),
 
     # Transformations
@@ -38,15 +38,12 @@ task :generate_ffi do
     'target_ffi.rb'               => %w(Target.h TargetMachine.h),
     'linker_ffi.rb'               => %w(Linker.h),
     'execution_engine_ffi.rb'     => %w(ExecutionEngine.h),
-
-    # Support
-    'support_ffi.rb'              => %w(Support.h),
   }
 
   mappings.each do |ruby_file, headers|
     FFIGen.generate(
       module_name: 'LLVM::C',
-      ffi_lib:     'LLVM-3.4',
+      ffi_lib:     ['libLLVM-3.5.so.1', 'LLVM-3.5'],
       headers:     headers.map { |header| "llvm-c/#{header}" },
       cflags:      LLVM::CONFIG::CFLAGS.split(/\s/),
       prefixes:    %w(LLVM),

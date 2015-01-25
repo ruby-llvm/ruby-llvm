@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.4'
+  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -12,7 +12,10 @@ module LLVM::C
     end
   end
   
-  # (Not documented)
+  # @defgroup LLVMCAnalysis Analysis
+  # @ingroup LLVMC
+  # 
+  # @{
   # 
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:verifier_failure_action).</em>
   # 

@@ -1,5 +1,4 @@
 require 'llvm/core_ffi'
-require 'llvm/support_ffi'
 
 module LLVM
 
@@ -9,16 +8,9 @@ module LLVM
     module C
       extend FFI::Library
 
-      OpaqueValue  = LLVM::C::OpaqueValue
-      OpaqueType   = LLVM::C::OpaqueType
-      OpaqueModule = LLVM::C::OpaqueModule
-
       lib_name = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
       lib_path = File.expand_path("../../ext/ruby-llvm-support/#{lib_name}", File.dirname(__FILE__))
       ffi_lib [lib_path]
-
-      attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
-      attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
 
       attach_function :initialize_all_target_infos,
           :LLVMInitializeAllTargetInfos, [], :void

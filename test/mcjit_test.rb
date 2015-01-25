@@ -84,4 +84,11 @@ class MCJITTestCase < Minitest::Test
     end
     assert_nil engine.functions[:bar]
   end
+
+  def test_accessors
+    main_mod = LLVM::Module.new('main')
+    engine = LLVM::MCJITCompiler.new(main_mod, :opt_level => 0)
+    assert_match /^e-/, engine.data_layout.to_s
+    assert_match /gnu/, engine.target_machine.triple
+  end
 end

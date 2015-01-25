@@ -49,6 +49,13 @@ module LLVM
       TargetDataLayout.from_ptr(C.get_execution_engine_target_data(self))
     end
 
+    # Get the associated target machine.
+    #
+    # @return [TargetMachine]
+    def target_machine
+      TargetMachine.from_ptr(C.get_execution_engine_target_machine(self))
+    end
+
     # Execute the given LLVM::Function with the supplied args (as
     # GenericValues).
     # Important: Call #dispose on the returned GenericValue to
@@ -166,7 +173,7 @@ module LLVM
     #
     # @param [LLVM::Module] mod module
     # @param [Hash{Symbol => Object}] options options
-    # @option options [Integer] :opt_level (3) Optimization level 
+    # @option options [Integer] :opt_level (3) Optimization level
     # @return [ExecutionEngine] Execution engine
     def initialize(mod, options = {})
       # Prior to ruby-llvm 3.4.0, signature is initialize(mod, opt_level = 3)
@@ -196,7 +203,7 @@ module LLVM
     #
     # @param [LLVM::Module] mod module
     # @param [Hash{Symbol => Object}] options options
-    # @option options [Integer] :opt_level (2) Optimization level 
+    # @option options [Integer] :opt_level (2) Optimization level
     # @option options [Integer] :code_model (0) Code model types
     # @option options [Boolean] :no_frame_pointer_elim (false) Disable frame pointer elimination optimization
     # @option options [Boolean] :enable_fast_i_sel (false) Enables fast-path instruction selection

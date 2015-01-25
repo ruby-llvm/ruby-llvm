@@ -33,6 +33,10 @@ class ModuleTestCase < Minitest::Test
         var.unnamed_addr = true
         assert var.unnamed_addr?
 
+        assert (var.dll_storage_class == :default)
+        var.dll_storage_class = :dll_import
+        assert (var.dll_storage_class == :dll_import)
+
         # global_constant
         assert !var.global_constant?
         var.global_constant = true

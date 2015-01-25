@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib 'LLVM-3.4'
+  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -12,7 +12,29 @@ module LLVM::C
     end
   end
   
-  # The top-level container for all LLVM global data. See the LLVMContext class.
+  def for_each_value_subclass(macro)
+    macroARGUMENTmacroBASIC_BLOCKmacroINLINE_ASMmacroMD_NODEmacroMD_STRINGmacroUSERmacroCONSTANTmacroBLOCK_ADDRESSmacroCONSTANT_AGGREGATE_ZEROmacroCONSTANT_ARRAYmacroCONSTANT_DATA_SEQUENTIALmacroCONSTANT_DATA_ARRAYmacroCONSTANT_DATA_VECTORmacroCONSTANT_EXPRmacroCONSTANT_FPmacroCONSTANT_INTmacroCONSTANT_POINTER_NULLmacroCONSTANT_STRUCTmacroCONSTANT_VECTORmacroGLOBAL_VALUEmacroGLOBAL_ALIASmacroGLOBAL_OBJECTmacroFUNCTIONmacroGLOBAL_VARIABLEmacroUNDEF_VALUEmacroINSTRUCTIONmacroBINARY_OPERATORmacroCALL_INSTmacroINTRINSIC_INSTmacroDBG_INFO_INTRINSICmacroDBG_DECLARE_INSTmacroMEM_INTRINSICmacroMEM_CPY_INSTmacroMEM_MOVE_INSTmacroMEM_SET_INSTmacroCMP_INSTmacroF_CMP_INSTmacroI_CMP_INSTmacroEXTRACT_ELEMENT_INSTmacroGET_ELEMENT_PTR_INSTmacroINSERT_ELEMENT_INSTmacroINSERT_VALUE_INSTmacroLANDING_PAD_INSTmacroPHI_NODEmacroSELECT_INSTmacroSHUFFLE_VECTOR_INSTmacroSTORE_INSTmacroTERMINATOR_INSTmacroBRANCH_INSTmacroINDIRECT_BR_INSTmacroINVOKE_INSTmacroRETURN_INSTmacroSWITCH_INSTmacroUNREACHABLE_INSTmacroRESUME_INSTmacroUNARY_INSTRUCTIONmacroALLOCA_INSTmacroCAST_INSTmacroADDR_SPACE_CAST_INSTmacroBIT_CAST_INSTmacroFP_EXT_INSTmacroFP_TO_SI_INSTmacroFP_TO_UI_INSTmacroFP_TRUNC_INSTmacroINT_TO_PTR_INSTmacroPTR_TO_INT_INSTmacroS_EXT_INSTmacroSI_TO_FP_INSTmacroTRUNC_INSTmacroUI_TO_FP_INSTmacroZ_EXT_INSTmacroEXTRACT_VALUE_INSTmacroLOAD_INSTmacroVA_ARG_INST
+  end
+  
+  # Used to pass regions of memory through LLVM interfaces.
+  # 
+  # @see llvm::MemoryBuffer
+  class OpaqueMemoryBuffer < FFI::Struct
+    layout :dummy, :char
+  end
+  
+  # This function permanently loads the dynamic library at the given path.
+  # It is safe to call this function multiple times for the same library.
+  # 
+  # @see sys::DynamicLibrary::LoadLibraryPermanently()
+  # 
+  # @method load_library_permanently(filename)
+  # @param [String] filename 
+  # @return [Integer] 
+  # @scope class
+  attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
+  
+  # (Not documented)
   class OpaqueContext < FFI::Struct
     layout :dummy, :char
   end
@@ -60,13 +82,6 @@ module LLVM::C
     layout :dummy, :char
   end
   
-  # Used to provide a module to JIT or interpreter.
-  # 
-  # @see llvm::MemoryBuffer
-  class OpaqueMemoryBuffer < FFI::Struct
-    layout :dummy, :char
-  end
-  
   # @see llvm::PassManagerBase
   class OpaquePassManager < FFI::Struct
     layout :dummy, :char
@@ -81,6 +96,11 @@ module LLVM::C
   # 
   # @see llvm::Use
   class OpaqueUse < FFI::Struct
+    layout :dummy, :char
+  end
+  
+  # @see llvm::DiagnosticInfo
+  class OpaqueDiagnosticInfo < FFI::Struct
     layout :dummy, :char
   end
   
@@ -139,6 +159,8 @@ module LLVM::C
   #   
   # :uw_table ::
   #   
+  # :non_lazy_bind ::
+  #   
   # 
   # @method _enum_attribute_
   # @return [Symbol]
@@ -168,7 +190,8 @@ module LLVM::C
     :inline_hint_attribute, 33554432,
     :stack_alignment, 469762048,
     :returns_twice, 536870912,
-    :uw_table, 1073741824
+    :uw_table, 1073741824,
+    :non_lazy_bind, 2147483648
   ]
   
   # (Not documented)
@@ -451,9 +474,9 @@ module LLVM::C
   # :dll_import ::
   #   < Like Internal, but omit from symbol table
   # :dll_export ::
-  #   < Function to be imported from DLL
+  #   < Obsolete
   # :external_weak ::
-  #   < Function to be accessible from DLL
+  #   < Obsolete
   # :ghost ::
   #   < ExternalWeak linkage description
   # :common ::
@@ -505,6 +528,27 @@ module LLVM::C
     :default, 0,
     :hidden, 1,
     :protected, 2
+  ]
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:dll_storage_class).</em>
+  # 
+  # === Options:
+  # :default ::
+  #   
+  # :dll_import ::
+  #   
+  # :dll_export ::
+  #   < Function to be imported from DLL.
+  # 
+  # @method _enum_dll_storage_class_
+  # @return [Symbol]
+  # @scope class
+  enum :dll_storage_class, [
+    :default, 0,
+    :dll_import, 1,
+    :dll_export, 2
   ]
   
   # (Not documented)
@@ -711,6 +755,11 @@ module LLVM::C
   #   < Release is similar to Acquire, but with
   #                                      a barrier of the sort necessary to release
   #                                      a lock.
+  # :sequentially_consistent ::
+  #   < provides both an Acquire and a
+  #                                             Release barrier (for fences and
+  #                                             operations which both read and write
+  #                                              memory).
   # 
   # @method _enum_atomic_ordering_
   # @return [Symbol]
@@ -721,7 +770,8 @@ module LLVM::C
     :monotonic, 2,
     :acquire, 4,
     :release, 5,
-    :acquire_release, 6
+    :acquire_release, 6,
+    :sequentially_consistent, 7
   ]
   
   # (Not documented)
@@ -773,6 +823,30 @@ module LLVM::C
     :min, 8,
     :u_max, 9,
     :u_min, 10
+  ]
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:diagnostic_severity).</em>
+  # 
+  # === Options:
+  # :ds_error ::
+  #   
+  # :ds_warning ::
+  #   
+  # :ds_remark ::
+  #   
+  # :ds_note ::
+  #   
+  # 
+  # @method _enum_diagnostic_severity_
+  # @return [Symbol]
+  # @scope class
+  enum :diagnostic_severity, [
+    :ds_error, 0,
+    :ds_warning, 1,
+    :ds_remark, 2,
+    :ds_note, 3
   ]
   
   # @}
@@ -837,6 +911,34 @@ module LLVM::C
   # @scope class
   attach_function :enable_pretty_stack_trace, :LLVMEnablePrettyStackTrace, [], :void
   
+  # @defgroup LLVMCCoreContext Contexts
+  # 
+  # Contexts are execution states for the core LLVM IR system.
+  # 
+  # Most types are tied to a context instance. Multiple contexts can
+  # exist simultaneously. A single context is not thread safe. However,
+  # different contexts can execute on different threads simultaneously.
+  # 
+  # @{
+  # 
+  # <em>This entry is only for documentation and no real method.</em>
+  # 
+  # @method _callback_diagnostic_handler_(void)
+  # @param [FFI::Pointer(*Void)] void 
+  # @return [OpaqueDiagnosticInfo] 
+  # @scope class
+  callback :diagnostic_handler, [:pointer], OpaqueDiagnosticInfo
+  
+  # (Not documented)
+  # 
+  # <em>This entry is only for documentation and no real method.</em>
+  # 
+  # @method _callback_yield_callback_(void)
+  # @param [FFI::Pointer(*Void)] void 
+  # @return [OpaqueContext] 
+  # @scope class
+  callback :yield_callback, [:pointer], OpaqueContext
+  
   # Create a new context.
   # 
   # Every call to this function should be paired with a call to
@@ -854,6 +956,28 @@ module LLVM::C
   # @scope class
   attach_function :get_global_context, :LLVMGetGlobalContext, [], OpaqueContext
   
+  # Set the diagnostic handler for this context.
+  # 
+  # @method context_set_diagnostic_handler(c, handler, diagnostic_context)
+  # @param [OpaqueContext] c 
+  # @param [Proc(_callback_diagnostic_handler_)] handler 
+  # @param [FFI::Pointer(*Void)] diagnostic_context 
+  # @return [nil] 
+  # @scope class
+  attach_function :context_set_diagnostic_handler, :LLVMContextSetDiagnosticHandler, [OpaqueContext, :diagnostic_handler, :pointer], :void
+  
+  # Set the yield callback function for this context.
+  # 
+  # @see LLVMContext::setYieldCallback()
+  # 
+  # @method context_set_yield_callback(c, callback, opaque_handle)
+  # @param [OpaqueContext] c 
+  # @param [Proc(_callback_yield_callback_)] callback 
+  # @param [FFI::Pointer(*Void)] opaque_handle 
+  # @return [nil] 
+  # @scope class
+  attach_function :context_set_yield_callback, :LLVMContextSetYieldCallback, [OpaqueContext, :yield_callback, :pointer], :void
+  
   # Destroy a context instance.
   # 
   # This should be called for every call to LLVMContextCreate() or memory
@@ -864,6 +988,27 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :context_dispose, :LLVMContextDispose, [OpaqueContext], :void
+  
+  # Return a string representation of the DiagnosticInfo. Use
+  # LLVMDisposeMessage to free the string.
+  # 
+  # @see DiagnosticInfo::print()
+  # 
+  # @method get_diag_info_description(di)
+  # @param [OpaqueDiagnosticInfo] di 
+  # @return [String] 
+  # @scope class
+  attach_function :get_diag_info_description, :LLVMGetDiagInfoDescription, [OpaqueDiagnosticInfo], :string
+  
+  # Return an enum LLVMDiagnosticSeverity.
+  # 
+  # @see DiagnosticInfo::getSeverity()
+  # 
+  # @method get_diag_info_severity(di)
+  # @param [OpaqueDiagnosticInfo] di 
+  # @return [Symbol from _enum_diagnostic_severity_] 
+  # @scope class
+  attach_function :get_diag_info_severity, :LLVMGetDiagInfoSeverity, [OpaqueDiagnosticInfo], :diagnostic_severity
   
   # (Not documented)
   # 
@@ -1762,15 +1907,7 @@ module LLVM::C
   # @scope class
   attach_function :is_undef, :LLVMIsUndef, [OpaqueValue], :int
   
-  # Convert value instances between types.
-  # 
-  # Internally, an LLVMValueRef is "pinned" to a specific type. This
-  # series of functions allows you to cast an instance to a specific
-  # type.
-  # 
-  # If the cast is not valid for the specified type, NULL is returned.
-  # 
-  # @see llvm::dyn_cast_or_null<>
+  # (Not documented)
   # 
   # @method is_a_argument(val)
   # @param [OpaqueValue] val 
@@ -1778,7 +1915,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_argument, :LLVMIsAArgument, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_basic_block(val)
   # @param [OpaqueValue] val 
@@ -1786,7 +1923,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_basic_block, :LLVMIsABasicBlock, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_inline_asm(val)
   # @param [OpaqueValue] val 
@@ -1794,7 +1931,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_inline_asm, :LLVMIsAInlineAsm, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_amd_node(val)
   # @param [OpaqueValue] val 
@@ -1802,7 +1939,7 @@ module LLVM::C
   # @scope class
   attach_function :is_amd_node, :LLVMIsAMDNode, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_amd_string(val)
   # @param [OpaqueValue] val 
@@ -1810,7 +1947,7 @@ module LLVM::C
   # @scope class
   attach_function :is_amd_string, :LLVMIsAMDString, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_user(val)
   # @param [OpaqueValue] val 
@@ -1818,7 +1955,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_user, :LLVMIsAUser, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant(val)
   # @param [OpaqueValue] val 
@@ -1826,7 +1963,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant, :LLVMIsAConstant, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_block_address(val)
   # @param [OpaqueValue] val 
@@ -1834,7 +1971,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_block_address, :LLVMIsABlockAddress, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_aggregate_zero(val)
   # @param [OpaqueValue] val 
@@ -1842,7 +1979,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_aggregate_zero, :LLVMIsAConstantAggregateZero, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_array(val)
   # @param [OpaqueValue] val 
@@ -1850,7 +1987,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_array, :LLVMIsAConstantArray, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_data_sequential(val)
   # @param [OpaqueValue] val 
@@ -1858,7 +1995,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_data_sequential, :LLVMIsAConstantDataSequential, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_data_array(val)
   # @param [OpaqueValue] val 
@@ -1866,7 +2003,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_data_array, :LLVMIsAConstantDataArray, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_data_vector(val)
   # @param [OpaqueValue] val 
@@ -1874,7 +2011,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_data_vector, :LLVMIsAConstantDataVector, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_expr(val)
   # @param [OpaqueValue] val 
@@ -1882,7 +2019,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_expr, :LLVMIsAConstantExpr, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_fp(val)
   # @param [OpaqueValue] val 
@@ -1890,7 +2027,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_fp, :LLVMIsAConstantFP, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_int(val)
   # @param [OpaqueValue] val 
@@ -1898,7 +2035,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_int, :LLVMIsAConstantInt, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_pointer_null(val)
   # @param [OpaqueValue] val 
@@ -1906,7 +2043,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_pointer_null, :LLVMIsAConstantPointerNull, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_struct(val)
   # @param [OpaqueValue] val 
@@ -1914,7 +2051,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_struct, :LLVMIsAConstantStruct, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_constant_vector(val)
   # @param [OpaqueValue] val 
@@ -1922,7 +2059,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_constant_vector, :LLVMIsAConstantVector, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_global_value(val)
   # @param [OpaqueValue] val 
@@ -1930,15 +2067,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_global_value, :LLVMIsAGlobalValue, [OpaqueValue], OpaqueValue
   
-  # @}
-  # 
-  # @method is_a_function(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
-  # @scope class
-  attach_function :is_a_function, :LLVMIsAFunction, [OpaqueValue], OpaqueValue
-  
-  # @}
+  # (Not documented)
   # 
   # @method is_a_global_alias(val)
   # @param [OpaqueValue] val 
@@ -1946,7 +2075,23 @@ module LLVM::C
   # @scope class
   attach_function :is_a_global_alias, :LLVMIsAGlobalAlias, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
+  # 
+  # @method is_a_global_object(val)
+  # @param [OpaqueValue] val 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :is_a_global_object, :LLVMIsAGlobalObject, [OpaqueValue], OpaqueValue
+  
+  # (Not documented)
+  # 
+  # @method is_a_function(val)
+  # @param [OpaqueValue] val 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :is_a_function, :LLVMIsAFunction, [OpaqueValue], OpaqueValue
+  
+  # (Not documented)
   # 
   # @method is_a_global_variable(val)
   # @param [OpaqueValue] val 
@@ -1954,7 +2099,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_global_variable, :LLVMIsAGlobalVariable, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_undef_value(val)
   # @param [OpaqueValue] val 
@@ -1962,7 +2107,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_undef_value, :LLVMIsAUndefValue, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_instruction(val)
   # @param [OpaqueValue] val 
@@ -1970,7 +2115,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_instruction, :LLVMIsAInstruction, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_binary_operator(val)
   # @param [OpaqueValue] val 
@@ -1978,7 +2123,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_binary_operator, :LLVMIsABinaryOperator, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_call_inst(val)
   # @param [OpaqueValue] val 
@@ -1986,7 +2131,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_call_inst, :LLVMIsACallInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_intrinsic_inst(val)
   # @param [OpaqueValue] val 
@@ -1994,7 +2139,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_intrinsic_inst, :LLVMIsAIntrinsicInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_dbg_info_intrinsic(val)
   # @param [OpaqueValue] val 
@@ -2002,7 +2147,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_dbg_info_intrinsic, :LLVMIsADbgInfoIntrinsic, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_dbg_declare_inst(val)
   # @param [OpaqueValue] val 
@@ -2010,7 +2155,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_dbg_declare_inst, :LLVMIsADbgDeclareInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_mem_intrinsic(val)
   # @param [OpaqueValue] val 
@@ -2018,7 +2163,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_mem_intrinsic, :LLVMIsAMemIntrinsic, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_mem_cpy_inst(val)
   # @param [OpaqueValue] val 
@@ -2026,7 +2171,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_mem_cpy_inst, :LLVMIsAMemCpyInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_mem_move_inst(val)
   # @param [OpaqueValue] val 
@@ -2034,7 +2179,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_mem_move_inst, :LLVMIsAMemMoveInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_mem_set_inst(val)
   # @param [OpaqueValue] val 
@@ -2042,7 +2187,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_mem_set_inst, :LLVMIsAMemSetInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_cmp_inst(val)
   # @param [OpaqueValue] val 
@@ -2050,7 +2195,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_cmp_inst, :LLVMIsACmpInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_af_cmp_inst(val)
   # @param [OpaqueValue] val 
@@ -2058,7 +2203,7 @@ module LLVM::C
   # @scope class
   attach_function :is_af_cmp_inst, :LLVMIsAFCmpInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_ai_cmp_inst(val)
   # @param [OpaqueValue] val 
@@ -2066,7 +2211,7 @@ module LLVM::C
   # @scope class
   attach_function :is_ai_cmp_inst, :LLVMIsAICmpInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_extract_element_inst(val)
   # @param [OpaqueValue] val 
@@ -2074,7 +2219,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_extract_element_inst, :LLVMIsAExtractElementInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_get_element_ptr_inst(val)
   # @param [OpaqueValue] val 
@@ -2082,7 +2227,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_get_element_ptr_inst, :LLVMIsAGetElementPtrInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_insert_element_inst(val)
   # @param [OpaqueValue] val 
@@ -2090,7 +2235,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_insert_element_inst, :LLVMIsAInsertElementInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_insert_value_inst(val)
   # @param [OpaqueValue] val 
@@ -2098,7 +2243,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_insert_value_inst, :LLVMIsAInsertValueInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_landing_pad_inst(val)
   # @param [OpaqueValue] val 
@@ -2106,7 +2251,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_landing_pad_inst, :LLVMIsALandingPadInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_aphi_node(val)
   # @param [OpaqueValue] val 
@@ -2114,7 +2259,7 @@ module LLVM::C
   # @scope class
   attach_function :is_aphi_node, :LLVMIsAPHINode, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_select_inst(val)
   # @param [OpaqueValue] val 
@@ -2122,7 +2267,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_select_inst, :LLVMIsASelectInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_shuffle_vector_inst(val)
   # @param [OpaqueValue] val 
@@ -2130,7 +2275,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_shuffle_vector_inst, :LLVMIsAShuffleVectorInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_store_inst(val)
   # @param [OpaqueValue] val 
@@ -2138,7 +2283,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_store_inst, :LLVMIsAStoreInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_terminator_inst(val)
   # @param [OpaqueValue] val 
@@ -2146,7 +2291,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_terminator_inst, :LLVMIsATerminatorInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_branch_inst(val)
   # @param [OpaqueValue] val 
@@ -2154,7 +2299,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_branch_inst, :LLVMIsABranchInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_indirect_br_inst(val)
   # @param [OpaqueValue] val 
@@ -2162,7 +2307,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_indirect_br_inst, :LLVMIsAIndirectBrInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_invoke_inst(val)
   # @param [OpaqueValue] val 
@@ -2170,7 +2315,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_invoke_inst, :LLVMIsAInvokeInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_return_inst(val)
   # @param [OpaqueValue] val 
@@ -2178,7 +2323,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_return_inst, :LLVMIsAReturnInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_switch_inst(val)
   # @param [OpaqueValue] val 
@@ -2186,7 +2331,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_switch_inst, :LLVMIsASwitchInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_unreachable_inst(val)
   # @param [OpaqueValue] val 
@@ -2194,7 +2339,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_unreachable_inst, :LLVMIsAUnreachableInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_resume_inst(val)
   # @param [OpaqueValue] val 
@@ -2202,7 +2347,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_resume_inst, :LLVMIsAResumeInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_unary_instruction(val)
   # @param [OpaqueValue] val 
@@ -2210,7 +2355,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_unary_instruction, :LLVMIsAUnaryInstruction, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_alloca_inst(val)
   # @param [OpaqueValue] val 
@@ -2218,7 +2363,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_alloca_inst, :LLVMIsAAllocaInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_cast_inst(val)
   # @param [OpaqueValue] val 
@@ -2226,7 +2371,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_cast_inst, :LLVMIsACastInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_addr_space_cast_inst(val)
   # @param [OpaqueValue] val 
@@ -2234,7 +2379,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_addr_space_cast_inst, :LLVMIsAAddrSpaceCastInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_bit_cast_inst(val)
   # @param [OpaqueValue] val 
@@ -2242,7 +2387,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_bit_cast_inst, :LLVMIsABitCastInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_afp_ext_inst(val)
   # @param [OpaqueValue] val 
@@ -2250,7 +2395,7 @@ module LLVM::C
   # @scope class
   attach_function :is_afp_ext_inst, :LLVMIsAFPExtInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_afp_to_si_inst(val)
   # @param [OpaqueValue] val 
@@ -2258,7 +2403,7 @@ module LLVM::C
   # @scope class
   attach_function :is_afp_to_si_inst, :LLVMIsAFPToSIInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_afp_to_ui_inst(val)
   # @param [OpaqueValue] val 
@@ -2266,7 +2411,7 @@ module LLVM::C
   # @scope class
   attach_function :is_afp_to_ui_inst, :LLVMIsAFPToUIInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_afp_trunc_inst(val)
   # @param [OpaqueValue] val 
@@ -2274,7 +2419,7 @@ module LLVM::C
   # @scope class
   attach_function :is_afp_trunc_inst, :LLVMIsAFPTruncInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_int_to_ptr_inst(val)
   # @param [OpaqueValue] val 
@@ -2282,7 +2427,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_int_to_ptr_inst, :LLVMIsAIntToPtrInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_ptr_to_int_inst(val)
   # @param [OpaqueValue] val 
@@ -2290,7 +2435,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_ptr_to_int_inst, :LLVMIsAPtrToIntInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_as_ext_inst(val)
   # @param [OpaqueValue] val 
@@ -2298,7 +2443,7 @@ module LLVM::C
   # @scope class
   attach_function :is_as_ext_inst, :LLVMIsASExtInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_asi_to_fp_inst(val)
   # @param [OpaqueValue] val 
@@ -2306,7 +2451,7 @@ module LLVM::C
   # @scope class
   attach_function :is_asi_to_fp_inst, :LLVMIsASIToFPInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_trunc_inst(val)
   # @param [OpaqueValue] val 
@@ -2314,7 +2459,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_trunc_inst, :LLVMIsATruncInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_aui_to_fp_inst(val)
   # @param [OpaqueValue] val 
@@ -2322,7 +2467,7 @@ module LLVM::C
   # @scope class
   attach_function :is_aui_to_fp_inst, :LLVMIsAUIToFPInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_az_ext_inst(val)
   # @param [OpaqueValue] val 
@@ -2330,7 +2475,7 @@ module LLVM::C
   # @scope class
   attach_function :is_az_ext_inst, :LLVMIsAZExtInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_extract_value_inst(val)
   # @param [OpaqueValue] val 
@@ -2338,7 +2483,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_extract_value_inst, :LLVMIsAExtractValueInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_a_load_inst(val)
   # @param [OpaqueValue] val 
@@ -2346,7 +2491,7 @@ module LLVM::C
   # @scope class
   attach_function :is_a_load_inst, :LLVMIsALoadInst, [OpaqueValue], OpaqueValue
   
-  # @}
+  # (Not documented)
   # 
   # @method is_ava_arg_inst(val)
   # @param [OpaqueValue] val 
@@ -2512,10 +2657,10 @@ module LLVM::C
   # @method const_int_of_arbitrary_precision(int_ty, num_words, words)
   # @param [OpaqueType] int_ty 
   # @param [Integer] num_words 
-  # @param [unexposed] words 
+  # @param [FFI::Pointer(*U_long)] words 
   # @return [OpaqueValue] 
   # @scope class
-  attach_function :const_int_of_arbitrary_precision, :LLVMConstIntOfArbitraryPrecision, [OpaqueType, :uint, :char], OpaqueValue
+  attach_function :const_int_of_arbitrary_precision, :LLVMConstIntOfArbitraryPrecision, [OpaqueType, :uint, :pointer], OpaqueValue
   
   # Obtain a constant value for an integer parsed from a string.
   # 
@@ -3352,7 +3497,42 @@ module LLVM::C
   # @scope class
   attach_function :set_visibility, :LLVMSetVisibility, [OpaqueValue, :visibility], :void
   
+  # (Not documented)
+  # 
+  # @method get_dll_storage_class(global)
+  # @param [OpaqueValue] global 
+  # @return [Symbol from _enum_dll_storage_class_] 
+  # @scope class
+  attach_function :get_dll_storage_class, :LLVMGetDLLStorageClass, [OpaqueValue], :dll_storage_class
+  
+  # (Not documented)
+  # 
+  # @method set_dll_storage_class(global, class_)
+  # @param [OpaqueValue] global 
+  # @param [Symbol from _enum_dll_storage_class_] class_ 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_dll_storage_class, :LLVMSetDLLStorageClass, [OpaqueValue, :dll_storage_class], :void
+  
+  # (Not documented)
+  # 
+  # @method has_unnamed_addr(global)
+  # @param [OpaqueValue] global 
+  # @return [Integer] 
+  # @scope class
+  attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
+  
+  # (Not documented)
+  # 
+  # @method set_unnamed_addr(global, has_unnamed_addr)
+  # @param [OpaqueValue] global 
+  # @param [Integer] has_unnamed_addr 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
+  
   # Obtain the preferred alignment of the value.
+  # @see llvm::AllocaInst::getAlignment()
   # @see llvm::LoadInst::getAlignment()
   # @see llvm::StoreInst::getAlignment()
   # @see llvm::GlobalValue::getAlignment()
@@ -3364,6 +3544,7 @@ module LLVM::C
   attach_function :get_alignment, :LLVMGetAlignment, [OpaqueValue], :uint
   
   # Set the preferred alignment of the value.
+  # @see llvm::AllocaInst::setAlignment()
   # @see llvm::LoadInst::setAlignment()
   # @see llvm::StoreInst::setAlignment()
   # @see llvm::GlobalValue::setAlignment()
@@ -5484,6 +5665,17 @@ module LLVM::C
   
   # (Not documented)
   # 
+  # @method build_fence(b, ordering, single_thread, name)
+  # @param [OpaqueBuilder] b 
+  # @param [Symbol from _enum_atomic_ordering_] ordering 
+  # @param [Integer] single_thread 
+  # @param [String] name 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :build_fence, :LLVMBuildFence, [OpaqueBuilder, :atomic_ordering, :int, :string], OpaqueValue
+  
+  # (Not documented)
+  # 
   # @method build_atomic_rmw(b, op, ptr, val, ordering, single_thread)
   # @param [OpaqueBuilder] b 
   # @param [Symbol from _enum_atomic_rmw_bin_op_] op 
@@ -5668,20 +5860,17 @@ module LLVM::C
   # @scope class
   attach_function :dispose_pass_manager, :LLVMDisposePassManager, [OpaquePassManager], :void
   
-  # Allocate and initialize structures needed to make LLVM safe for
-  #     multithreading. The return value indicates whether multithreaded
-  #     initialization succeeded. Must be executed in isolation from all
-  #     other LLVM api calls.
-  #     @see llvm::llvm_start_multithreaded
+  # Deprecated: Multi-threading can only be enabled/disabled with the compile
+  #     time define LLVM_ENABLE_THREADS.  This function always returns
+  #     LLVMIsMultithreaded().
   # 
   # @method start_multithreaded()
   # @return [Integer] 
   # @scope class
   attach_function :start_multithreaded, :LLVMStartMultithreaded, [], :int
   
-  # Deallocate structures necessary to make LLVM safe for multithreading.
-  #     Must be executed in isolation from all other LLVM api calls.
-  #     @see llvm::llvm_stop_multithreaded
+  # Deprecated: Multi-threading can only be enabled/disabled with the compile
+  #     time define LLVM_ENABLE_THREADS.
   # 
   # @method stop_multithreaded()
   # @return [nil] 

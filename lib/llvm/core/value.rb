@@ -652,11 +652,19 @@ module LLVM
     end
 
     def unnamed_addr?
-      Support::C.has_unnamed_addr(self) != 0
+      C.has_unnamed_addr(self) != 0
     end
 
     def unnamed_addr=(flag)
-      Support::C.set_unnamed_addr(self, flag ? 1 : 0)
+      C.set_unnamed_addr(self, flag ? 1 : 0)
+    end
+
+    def dll_storage_class
+      C.get_dll_storage_class(self)
+    end
+
+    def dll_storage_class=(klass)
+      C.set_dll_storage_class(self, klass)
     end
   end
 
