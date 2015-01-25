@@ -3,19 +3,11 @@
  */
 
 #include <llvm-c/Core.h>
-#include <llvm/IR/Type.h>
-#include <llvm/IR/Module.h>
 #include <llvm/IR/GlobalValue.h>
-#include <llvm/Support/DynamicLibrary.h>
 #include <llvm/Support/TargetSelect.h>
-#include <llvm/Support/raw_ostream.h>
 
 extern "C" {
   using namespace llvm;
-
-  int LLVMLoadLibraryPermanently(const char* filename) {
-    return llvm::sys::DynamicLibrary::LoadLibraryPermanently(filename);
-  }
 
   LLVMBool LLVMHasUnnamedAddr(LLVMValueRef global) {
     return unwrap<GlobalValue>(global)->hasUnnamedAddr();

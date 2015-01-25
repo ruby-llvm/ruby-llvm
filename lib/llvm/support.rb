@@ -1,4 +1,5 @@
 require 'llvm/core_ffi'
+require 'llvm/support_ffi'
 
 module LLVM
 
@@ -16,7 +17,6 @@ module LLVM
       lib_path = File.expand_path("../../ext/ruby-llvm-support/#{lib_name}", File.dirname(__FILE__))
       ffi_lib [lib_path]
 
-      attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
       attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
       attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
 
@@ -36,11 +36,11 @@ module LLVM
     end
   end
 
-  def load_library(libname)
-    Support::C.load_library_permanently(libname)
+  def self.load_library(libname)
+    if C.load_library_permanently(libname) != 0
+      raise "LLVM::Support.load_library failed"
+    end
 
     nil
   end
-
-  module_function :load_library
 end

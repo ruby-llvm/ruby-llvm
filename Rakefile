@@ -38,6 +38,9 @@ task :generate_ffi do
     'target_ffi.rb'               => %w(Target.h TargetMachine.h),
     'linker_ffi.rb'               => %w(Linker.h),
     'execution_engine_ffi.rb'     => %w(ExecutionEngine.h),
+
+    # Support
+    'support_ffi.rb'              => %w(Support.h),
   }
 
   mappings.each do |ruby_file, headers|
