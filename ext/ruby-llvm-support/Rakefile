@@ -66,7 +66,7 @@ desc "Build the shared library and config module"
 task :default => [SUPPORT_LIB, CONFIG_MOD]
 
 file SUPPORT_LIB => %w(support.cpp) do |task|
-  sh "#{CXX} -shared -lLLVM-#{LLVM_VERSION} #{task.prerequisites.join(' ')} " \
+  sh "#{CXX} -shared #{task.prerequisites.join(' ')} -lLLVM-#{LLVM_VERSION} " \
      "#{invoke_llvm_config('--cxxflags --ldflags')} -o #{SUPPORT_LIB}"
 end
 
