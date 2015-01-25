@@ -68,7 +68,8 @@ module LLVM
     # Initializes native target. Useful for JIT applications.
     #
     # @param [true, false] asm_printer Initialize corresponding AsmPrinter.
-    def self.init_native(asm_printer=false)
+    #   True by default, as this is required for MCJIT to function.
+    def self.init_native(asm_printer=true)
       Support::C.initialize_native_target
 
       Support::C.initialize_native_asm_printer if asm_printer

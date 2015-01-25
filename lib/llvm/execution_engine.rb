@@ -166,35 +166,6 @@ module LLVM
     end
   end
 
-  class JITCompiler < ExecutionEngine
-    # Create a JIT execution engine.
-    #
-    # @note You should call `LLVM.init_jit` before creating an execution engine.
-    #
-    # @param [LLVM::Module] mod module
-    # @param [Hash{Symbol => Object}] options options
-    # @option options [Integer] :opt_level (3) Optimization level
-    # @return [ExecutionEngine] Execution engine
-    def initialize(mod, options = {})
-      # Prior to ruby-llvm 3.4.0, signature is initialize(mod, opt_level = 3)
-      if options.kind_of?(Integer)
-        options = { :opt_level => options }
-      end
-
-      options = {
-        :opt_level => 3,
-      }.merge(options)
-
-      super
-    end
-
-    protected
-
-    def create_execution_engine_for_module(out_ee, mod, out_error, options)
-      C.create_jit_compiler_for_module(out_ee, mod, options[:opt_level], out_error)
-    end
-  end
-
   class MCJITCompiler < ExecutionEngine
     # Create a MCJIT execution engine.
     #
