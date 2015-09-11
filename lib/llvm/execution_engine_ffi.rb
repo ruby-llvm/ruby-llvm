@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
+  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -16,13 +16,6 @@ module LLVM::C
   # @ingroup LLVMC
   # 
   # @{
-  # 
-  # @method link_in_jit()
-  # @return [nil] 
-  # @scope class
-  attach_function :link_in_jit, :LLVMLinkInJIT, [], :void
-  
-  # (Not documented)
   # 
   # @method link_in_mcjit()
   # @return [nil] 
@@ -387,6 +380,24 @@ module LLVM::C
   # @return [FFI::Pointer(*Void)] 
   # @scope class
   attach_function :get_pointer_to_global, :LLVMGetPointerToGlobal, [OpaqueExecutionEngine, :pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method get_global_value_address(ee, name)
+  # @param [OpaqueExecutionEngine] ee 
+  # @param [String] name 
+  # @return [Integer] 
+  # @scope class
+  attach_function :get_global_value_address, :LLVMGetGlobalValueAddress, [OpaqueExecutionEngine, :string], :ulong
+  
+  # (Not documented)
+  # 
+  # @method get_function_address(ee, name)
+  # @param [OpaqueExecutionEngine] ee 
+  # @param [String] name 
+  # @return [Integer] 
+  # @scope class
+  attach_function :get_function_address, :LLVMGetFunctionAddress, [OpaqueExecutionEngine, :string], :ulong
   
   # ===-- Operations on memory managers -------------------------------------===
   # 

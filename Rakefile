@@ -43,7 +43,8 @@ task :generate_ffi do
   mappings.each do |ruby_file, headers|
     FFIGen.generate(
       module_name: 'LLVM::C',
-      ffi_lib:     ['libLLVM-3.5.so.1', 'LLVM-3.5'],
+      ffi_lib:     ["libLLVM-#{LLVM::LLVM_VERSION}.so.1",
+                    "LLVM-#{LLVM::LLVM_VERSION}"],
       headers:     headers.map { |header| "llvm-c/#{header}" },
       cflags:      LLVM::CONFIG::CFLAGS.split(/\s/),
       prefixes:    %w(LLVM),

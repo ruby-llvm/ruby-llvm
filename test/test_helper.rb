@@ -46,7 +46,7 @@ def define_function(host_module, function_name, argument_types, return_type)
 end
 
 def run_function_on_module(host_module, function_name, *argument_values)
-  LLVM::JITCompiler.new(host_module).
+  LLVM::MCJITCompiler.new(host_module).
     run_function(host_module.functions[function_name], *argument_values)
 end
 

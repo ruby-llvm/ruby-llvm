@@ -11,7 +11,7 @@ mod = LLVM::Module.new('hello')
 # Declare the string constant as a global constant.
 hello = mod.globals.add(LLVM::ConstantArray.string(HELLO_STRING) , :hello) do |var|
   var.linkage = :private
-  var.global_constant = 1
+  var.global_constant = true
   var.unnamed_addr = true
   var.initializer = LLVM::ConstantArray.string(HELLO_STRING)
 end

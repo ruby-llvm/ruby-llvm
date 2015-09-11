@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
+  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -13,7 +13,7 @@ module LLVM::C
   end
   
   def for_each_value_subclass(macro)
-    macroARGUMENTmacroBASIC_BLOCKmacroINLINE_ASMmacroMD_NODEmacroMD_STRINGmacroUSERmacroCONSTANTmacroBLOCK_ADDRESSmacroCONSTANT_AGGREGATE_ZEROmacroCONSTANT_ARRAYmacroCONSTANT_DATA_SEQUENTIALmacroCONSTANT_DATA_ARRAYmacroCONSTANT_DATA_VECTORmacroCONSTANT_EXPRmacroCONSTANT_FPmacroCONSTANT_INTmacroCONSTANT_POINTER_NULLmacroCONSTANT_STRUCTmacroCONSTANT_VECTORmacroGLOBAL_VALUEmacroGLOBAL_ALIASmacroGLOBAL_OBJECTmacroFUNCTIONmacroGLOBAL_VARIABLEmacroUNDEF_VALUEmacroINSTRUCTIONmacroBINARY_OPERATORmacroCALL_INSTmacroINTRINSIC_INSTmacroDBG_INFO_INTRINSICmacroDBG_DECLARE_INSTmacroMEM_INTRINSICmacroMEM_CPY_INSTmacroMEM_MOVE_INSTmacroMEM_SET_INSTmacroCMP_INSTmacroF_CMP_INSTmacroI_CMP_INSTmacroEXTRACT_ELEMENT_INSTmacroGET_ELEMENT_PTR_INSTmacroINSERT_ELEMENT_INSTmacroINSERT_VALUE_INSTmacroLANDING_PAD_INSTmacroPHI_NODEmacroSELECT_INSTmacroSHUFFLE_VECTOR_INSTmacroSTORE_INSTmacroTERMINATOR_INSTmacroBRANCH_INSTmacroINDIRECT_BR_INSTmacroINVOKE_INSTmacroRETURN_INSTmacroSWITCH_INSTmacroUNREACHABLE_INSTmacroRESUME_INSTmacroUNARY_INSTRUCTIONmacroALLOCA_INSTmacroCAST_INSTmacroADDR_SPACE_CAST_INSTmacroBIT_CAST_INSTmacroFP_EXT_INSTmacroFP_TO_SI_INSTmacroFP_TO_UI_INSTmacroFP_TRUNC_INSTmacroINT_TO_PTR_INSTmacroPTR_TO_INT_INSTmacroS_EXT_INSTmacroSI_TO_FP_INSTmacroTRUNC_INSTmacroUI_TO_FP_INSTmacroZ_EXT_INSTmacroEXTRACT_VALUE_INSTmacroLOAD_INSTmacroVA_ARG_INST
+    macroARGUMENTmacroBASIC_BLOCKmacroINLINE_ASMmacroUSERmacroCONSTANTmacroBLOCK_ADDRESSmacroCONSTANT_AGGREGATE_ZEROmacroCONSTANT_ARRAYmacroCONSTANT_DATA_SEQUENTIALmacroCONSTANT_DATA_ARRAYmacroCONSTANT_DATA_VECTORmacroCONSTANT_EXPRmacroCONSTANT_FPmacroCONSTANT_INTmacroCONSTANT_POINTER_NULLmacroCONSTANT_STRUCTmacroCONSTANT_VECTORmacroGLOBAL_VALUEmacroGLOBAL_ALIASmacroGLOBAL_OBJECTmacroFUNCTIONmacroGLOBAL_VARIABLEmacroUNDEF_VALUEmacroINSTRUCTIONmacroBINARY_OPERATORmacroCALL_INSTmacroINTRINSIC_INSTmacroDBG_INFO_INTRINSICmacroDBG_DECLARE_INSTmacroMEM_INTRINSICmacroMEM_CPY_INSTmacroMEM_MOVE_INSTmacroMEM_SET_INSTmacroCMP_INSTmacroF_CMP_INSTmacroI_CMP_INSTmacroEXTRACT_ELEMENT_INSTmacroGET_ELEMENT_PTR_INSTmacroINSERT_ELEMENT_INSTmacroINSERT_VALUE_INSTmacroLANDING_PAD_INSTmacroPHI_NODEmacroSELECT_INSTmacroSHUFFLE_VECTOR_INSTmacroSTORE_INSTmacroTERMINATOR_INSTmacroBRANCH_INSTmacroINDIRECT_BR_INSTmacroINVOKE_INSTmacroRETURN_INSTmacroSWITCH_INSTmacroUNREACHABLE_INSTmacroRESUME_INSTmacroUNARY_INSTRUCTIONmacroALLOCA_INSTmacroCAST_INSTmacroADDR_SPACE_CAST_INSTmacroBIT_CAST_INSTmacroFP_EXT_INSTmacroFP_TO_SI_INSTmacroFP_TO_UI_INSTmacroFP_TRUNC_INSTmacroINT_TO_PTR_INSTmacroPTR_TO_INT_INSTmacroS_EXT_INSTmacroSI_TO_FP_INSTmacroTRUNC_INSTmacroUI_TO_FP_INSTmacroZ_EXT_INSTmacroEXTRACT_VALUE_INSTmacroLOAD_INSTmacroVA_ARG_INST
   end
   
   # Used to pass regions of memory through LLVM interfaces.
@@ -33,6 +33,21 @@ module LLVM::C
   # @return [Integer] 
   # @scope class
   attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
+  
+  # This function parses the given arguments using the LLVM command line parser.
+  # Note that the only stable thing about this function is its signature; you
+  # cannot rely on any particular set of command line arguments being interpreted
+  # the same way across LLVM versions.
+  # 
+  # @see llvm::cl::ParseCommandLineOptions()
+  # 
+  # @method parse_command_line_options(argc, argv, overview)
+  # @param [Integer] argc 
+  # @param [FFI::Pointer(**CharS)] argv 
+  # @param [String] overview 
+  # @return [nil] 
+  # @scope class
+  attach_function :parse_command_line_options, :LLVMParseCommandLineOptions, [:int, :pointer, :string], :void
   
   # (Not documented)
   class OpaqueContext < FFI::Struct
@@ -1055,6 +1070,14 @@ module LLVM::C
   # @scope class
   attach_function :module_create_with_name_in_context, :LLVMModuleCreateWithNameInContext, [:string, OpaqueContext], OpaqueModule
   
+  # Return an exact copy of the specified module.
+  # 
+  # @method clone_module(m)
+  # @param [OpaqueModule] m 
+  # @return [OpaqueModule] 
+  # @scope class
+  attach_function :clone_module, :LLVMCloneModule, [OpaqueModule], OpaqueModule
+  
   # Destroy a module instance.
   # 
   # This must be called for every created module or memory will be
@@ -1933,22 +1956,6 @@ module LLVM::C
   
   # (Not documented)
   # 
-  # @method is_amd_node(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
-  # @scope class
-  attach_function :is_amd_node, :LLVMIsAMDNode, [OpaqueValue], OpaqueValue
-  
-  # (Not documented)
-  # 
-  # @method is_amd_string(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
-  # @scope class
-  attach_function :is_amd_string, :LLVMIsAMDString, [OpaqueValue], OpaqueValue
-  
-  # (Not documented)
-  # 
   # @method is_a_user(val)
   # @param [OpaqueValue] val 
   # @return [OpaqueValue] 
@@ -2499,6 +2506,22 @@ module LLVM::C
   # @scope class
   attach_function :is_ava_arg_inst, :LLVMIsAVAArgInst, [OpaqueValue], OpaqueValue
   
+  # (Not documented)
+  # 
+  # @method is_amd_node(val)
+  # @param [OpaqueValue] val 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :is_amd_node, :LLVMIsAMDNode, [OpaqueValue], OpaqueValue
+  
+  # (Not documented)
+  # 
+  # @method is_amd_string(val)
+  # @param [OpaqueValue] val 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :is_amd_string, :LLVMIsAMDString, [OpaqueValue], OpaqueValue
+  
   # Obtain the first use of a value.
   # 
   # Uses are obtained in an iterator fashion. First, call this function
@@ -2557,6 +2580,17 @@ module LLVM::C
   # @return [OpaqueValue] 
   # @scope class
   attach_function :get_operand, :LLVMGetOperand, [OpaqueValue, :uint], OpaqueValue
+  
+  # Obtain the use of an operand at a specific index in a llvm::User value.
+  # 
+  # @see llvm::User::getOperandUse()
+  # 
+  # @method get_operand_use(val, index)
+  # @param [OpaqueValue] val 
+  # @param [Integer] index 
+  # @return [OpaqueUse] 
+  # @scope class
+  attach_function :get_operand_use, :LLVMGetOperandUse, [OpaqueValue, :uint], OpaqueUse
   
   # Set an operand at a specific index in a llvm::User value.
   # 
@@ -2743,6 +2777,18 @@ module LLVM::C
   # @scope class
   attach_function :const_int_get_s_ext_value, :LLVMConstIntGetSExtValue, [OpaqueValue], :long_long
   
+  # Obtain the double value for an floating point constant value.
+  # losesInfo indicates if some precision was lost in the conversion.
+  # 
+  # @see llvm::ConstantFP::getDoubleValue
+  # 
+  # @method const_real_get_double(constant_val, loses_info)
+  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(*Bool)] loses_info 
+  # @return [Float] 
+  # @scope class
+  attach_function :const_real_get_double, :LLVMConstRealGetDouble, [OpaqueValue, :pointer], :double
+  
   # Create a ConstantDataSequential and initialize it with a string.
   # 
   # @see llvm::ConstantDataArray::getString()
@@ -2771,6 +2817,27 @@ module LLVM::C
   # @return [OpaqueValue] 
   # @scope class
   attach_function :const_string, :LLVMConstString, [:string, :uint, :int], OpaqueValue
+  
+  # Returns true if the specified constant is an array of i8.
+  # 
+  # @see ConstantDataSequential::getAsString()
+  # 
+  # @method is_constant_string(c)
+  # @param [OpaqueValue] c 
+  # @return [Integer] 
+  # @scope class
+  attach_function :is_constant_string, :LLVMIsConstantString, [OpaqueValue], :int
+  
+  # Get the given constant data sequential as a string.
+  # 
+  # @see ConstantDataSequential::getAsString()
+  # 
+  # @method get_as_string(c, out)
+  # @param [OpaqueValue] c 
+  # @param [FFI::Pointer(*SizeT)] out 
+  # @return [String] 
+  # @scope class
+  attach_function :get_as_string, :LLVMGetAsString, [OpaqueValue, :pointer], :string
   
   # Create an anonymous ConstantStruct with the specified values.
   # 
@@ -2823,6 +2890,17 @@ module LLVM::C
   # @return [OpaqueValue] 
   # @scope class
   attach_function :const_named_struct, :LLVMConstNamedStruct, [OpaqueType, :pointer, :uint], OpaqueValue
+  
+  # Get an element at specified index as a constant.
+  # 
+  # @see ConstantDataSequential::getElementAsConstant()
+  # 
+  # @method get_element_as_constant(c, idx)
+  # @param [OpaqueValue] c 
+  # @param [Integer] idx 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :get_element_as_constant, :LLVMGetElementAsConstant, [OpaqueValue, :uint], OpaqueValue
   
   # Create a ConstantVector from values.
   # 
@@ -4407,6 +4485,32 @@ module LLVM::C
   # @scope class
   attach_function :get_i_cmp_predicate, :LLVMGetICmpPredicate, [OpaqueValue], :int_predicate
   
+  # Obtain the float predicate of an instruction.
+  # 
+  # This is only valid for instructions that correspond to llvm::FCmpInst
+  # or llvm::ConstantExpr whose opcode is llvm::Instruction::FCmp.
+  # 
+  # @see llvm::FCmpInst::getPredicate()
+  # 
+  # @method get_f_cmp_predicate(inst)
+  # @param [OpaqueValue] inst 
+  # @return [Symbol from _enum_real_predicate_] 
+  # @scope class
+  attach_function :get_f_cmp_predicate, :LLVMGetFCmpPredicate, [OpaqueValue], :real_predicate
+  
+  # Create a copy of 'this' instruction that is identical in all ways
+  # except the following:
+  #   * The instruction has no parent
+  #   * The instruction has no name
+  # 
+  # @see llvm::Instruction::clone()
+  # 
+  # @method instruction_clone(inst)
+  # @param [OpaqueValue] inst 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :instruction_clone, :LLVMInstructionClone, [OpaqueValue], OpaqueValue
+  
   # Set the calling convention for a call instruction.
   # 
   # This expects an LLVMValueRef that corresponds to a llvm::CallInst or
@@ -4489,6 +4593,76 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :set_tail_call, :LLVMSetTailCall, [OpaqueValue, :int], :void
+  
+  # Return the number of successors that this terminator has.
+  # 
+  # @see llvm::TerminatorInst::getNumSuccessors
+  # 
+  # @method get_num_successors(term)
+  # @param [OpaqueValue] term 
+  # @return [Integer] 
+  # @scope class
+  attach_function :get_num_successors, :LLVMGetNumSuccessors, [OpaqueValue], :uint
+  
+  # Return the specified successor.
+  # 
+  # @see llvm::TerminatorInst::getSuccessor
+  # 
+  # @method get_successor(term, i)
+  # @param [OpaqueValue] term 
+  # @param [Integer] i 
+  # @return [OpaqueBasicBlock] 
+  # @scope class
+  attach_function :get_successor, :LLVMGetSuccessor, [OpaqueValue, :uint], OpaqueBasicBlock
+  
+  # Update the specified successor to point at the provided block.
+  # 
+  # @see llvm::TerminatorInst::setSuccessor
+  # 
+  # @method set_successor(term, i, block)
+  # @param [OpaqueValue] term 
+  # @param [Integer] i 
+  # @param [OpaqueBasicBlock] block 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_successor, :LLVMSetSuccessor, [OpaqueValue, :uint, OpaqueBasicBlock], :void
+  
+  # Return if a branch is conditional.
+  # 
+  # This only works on llvm::BranchInst instructions.
+  # 
+  # @see llvm::BranchInst::isConditional
+  # 
+  # @method is_conditional(branch)
+  # @param [OpaqueValue] branch 
+  # @return [Integer] 
+  # @scope class
+  attach_function :is_conditional, :LLVMIsConditional, [OpaqueValue], :int
+  
+  # Return the condition of a branch instruction.
+  # 
+  # This only works on llvm::BranchInst instructions.
+  # 
+  # @see llvm::BranchInst::getCondition
+  # 
+  # @method get_condition(branch)
+  # @param [OpaqueValue] branch 
+  # @return [OpaqueValue] 
+  # @scope class
+  attach_function :get_condition, :LLVMGetCondition, [OpaqueValue], OpaqueValue
+  
+  # Set the condition of a branch instruction.
+  # 
+  # This only works on llvm::BranchInst instructions.
+  # 
+  # @see llvm::BranchInst::setCondition
+  # 
+  # @method set_condition(branch, cond)
+  # @param [OpaqueValue] branch 
+  # @param [OpaqueValue] cond 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_condition, :LLVMSetCondition, [OpaqueValue, OpaqueValue], :void
   
   # Obtain the default destination basic block of a switch instruction.
   # 

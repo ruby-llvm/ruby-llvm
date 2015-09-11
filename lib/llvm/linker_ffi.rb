@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.5.so.1", "LLVM-3.5"]
+  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -12,37 +12,19 @@ module LLVM::C
     end
   end
   
-  # (Not documented)
-  # 
-  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:linker_mode).</em>
-  # 
-  # === Options:
-  # :destroy_source ::
-  #   
-  # :preserve_source ::
-  #   Allow source module to be destroyed.
-  # 
-  # @method _enum_linker_mode_
-  # @return [Symbol]
-  # @scope class
-  enum :linker_mode, [
-    :destroy_source, 0,
-    :preserve_source, 1
-  ]
-  
   # Links the source module into the destination module, taking ownership
   # of the source module away from the caller. Optionally returns a
   # human-readable description of any errors that occurred in linking.
   # OutMessage must be disposed with LLVMDisposeMessage. The return value
   # is true if an error occurred, false otherwise.
   # 
-  # @method link_modules(dest, src, mode, out_message)
+  # @method link_modules(dest, src, unused, out_message)
   # @param [FFI::Pointer(ModuleRef)] dest 
   # @param [FFI::Pointer(ModuleRef)] src 
-  # @param [Symbol from _enum_linker_mode_] mode 
+  # @param [Integer] unused 
   # @param [FFI::Pointer(**CharS)] out_message 
   # @return [Integer] 
   # @scope class
-  attach_function :link_modules, :LLVMLinkModules, [:pointer, :pointer, :linker_mode, :pointer], :int
+  attach_function :link_modules, :LLVMLinkModules, [:pointer, :pointer, :uint, :pointer], :int
   
 end
