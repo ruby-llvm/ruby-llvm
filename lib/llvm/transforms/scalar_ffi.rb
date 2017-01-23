@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
+  ffi_lib ["libLLVM-3.8.so.1", "LLVM-3.8"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -19,6 +19,14 @@ module LLVM::C
   # @return [nil] 
   # @scope class
   attach_function :add_aggressive_dce_pass, :LLVMAddAggressiveDCEPass, [:pointer], :void
+  
+  # See llvm::createBitTrackingDCEPass function.
+  # 
+  # @method add_bit_tracking_dce_pass(pm)
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_bit_tracking_dce_pass, :LLVMAddBitTrackingDCEPass, [:pointer], :void
   
   # See llvm::createAlignmentFromAssumptionsPass function.
   # 
