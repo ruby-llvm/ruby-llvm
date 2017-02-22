@@ -39,7 +39,7 @@ class IPOTestCase < Minitest::Test
     assert fns.include?(main)
 
     # optimize
-    engine = LLVM::JITCompiler.new(mod)
+    engine = LLVM::MCJITCompiler.new(mod)
     passm  = LLVM::PassManager.new(engine)
 
     passm.gdce!
