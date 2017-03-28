@@ -84,6 +84,10 @@ module LLVM
       C.get_pointer_to_global(self, global)
     end
 
+    def function_address(name)
+      C.get_function_address(self, name)
+    end
+
     # Returns a ModuleCollection of all the Modules in the engine.
     # @return [ModuleCollection]
     def modules
@@ -192,6 +196,31 @@ module LLVM
       }.merge(options)
 
       super
+    end
+
+    def convert_type(type)
+      case type.kind
+      when :integer
+        if type.width <= 8
+          :int8
+        else
+          "int#{type.width}".to_sym
+        end
+      else
+        type.kind
+      end
+    end
+
+    def run_function(fun, *args)
+      args2 = fun.params.map{|e| convert_type(e.type)}
+      ptr = FFI::Pointer.new(function_address(fun.name))
+      raise "Couldn't find function" if ptr.null?
+
+      return_type = convert_type(fun.function_type.return_type)
+      f = FFI::Function.new(return_type, args2, ptr)
+      ret1 = f.call(*args)
+      ret2 = LLVM.make_generic_value(fun.function_type.return_type, ret1)
+      return ret2
     end
 
     protected
