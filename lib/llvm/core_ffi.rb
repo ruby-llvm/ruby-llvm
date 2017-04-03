@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
+  ffi_lib ["libLLVM-3.8.so.1", "LLVM-3.8"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -13,20 +13,10 @@ module LLVM::C
   end
   
   def for_each_value_subclass(macro)
-    macroARGUMENTmacroBASIC_BLOCKmacroINLINE_ASMmacroUSERmacroCONSTANTmacroBLOCK_ADDRESSmacroCONSTANT_AGGREGATE_ZEROmacroCONSTANT_ARRAYmacroCONSTANT_DATA_SEQUENTIALmacroCONSTANT_DATA_ARRAYmacroCONSTANT_DATA_VECTORmacroCONSTANT_EXPRmacroCONSTANT_FPmacroCONSTANT_INTmacroCONSTANT_POINTER_NULLmacroCONSTANT_STRUCTmacroCONSTANT_VECTORmacroGLOBAL_VALUEmacroGLOBAL_ALIASmacroGLOBAL_OBJECTmacroFUNCTIONmacroGLOBAL_VARIABLEmacroUNDEF_VALUEmacroINSTRUCTIONmacroBINARY_OPERATORmacroCALL_INSTmacroINTRINSIC_INSTmacroDBG_INFO_INTRINSICmacroDBG_DECLARE_INSTmacroMEM_INTRINSICmacroMEM_CPY_INSTmacroMEM_MOVE_INSTmacroMEM_SET_INSTmacroCMP_INSTmacroF_CMP_INSTmacroI_CMP_INSTmacroEXTRACT_ELEMENT_INSTmacroGET_ELEMENT_PTR_INSTmacroINSERT_ELEMENT_INSTmacroINSERT_VALUE_INSTmacroLANDING_PAD_INSTmacroPHI_NODEmacroSELECT_INSTmacroSHUFFLE_VECTOR_INSTmacroSTORE_INSTmacroTERMINATOR_INSTmacroBRANCH_INSTmacroINDIRECT_BR_INSTmacroINVOKE_INSTmacroRETURN_INSTmacroSWITCH_INSTmacroUNREACHABLE_INSTmacroRESUME_INSTmacroUNARY_INSTRUCTIONmacroALLOCA_INSTmacroCAST_INSTmacroADDR_SPACE_CAST_INSTmacroBIT_CAST_INSTmacroFP_EXT_INSTmacroFP_TO_SI_INSTmacroFP_TO_UI_INSTmacroFP_TRUNC_INSTmacroINT_TO_PTR_INSTmacroPTR_TO_INT_INSTmacroS_EXT_INSTmacroSI_TO_FP_INSTmacroTRUNC_INSTmacroUI_TO_FP_INSTmacroZ_EXT_INSTmacroEXTRACT_VALUE_INSTmacroLOAD_INSTmacroVA_ARG_INST
+    macroARGUMENTmacroBASIC_BLOCKmacroINLINE_ASMmacroUSERmacroCONSTANTmacroBLOCK_ADDRESSmacroCONSTANT_AGGREGATE_ZEROmacroCONSTANT_ARRAYmacroCONSTANT_DATA_SEQUENTIALmacroCONSTANT_DATA_ARRAYmacroCONSTANT_DATA_VECTORmacroCONSTANT_EXPRmacroCONSTANT_FPmacroCONSTANT_INTmacroCONSTANT_POINTER_NULLmacroCONSTANT_STRUCTmacroCONSTANT_TOKEN_NONEmacroCONSTANT_VECTORmacroGLOBAL_VALUEmacroGLOBAL_ALIASmacroGLOBAL_OBJECTmacroFUNCTIONmacroGLOBAL_VARIABLEmacroUNDEF_VALUEmacroINSTRUCTIONmacroBINARY_OPERATORmacroCALL_INSTmacroINTRINSIC_INSTmacroDBG_INFO_INTRINSICmacroDBG_DECLARE_INSTmacroMEM_INTRINSICmacroMEM_CPY_INSTmacroMEM_MOVE_INSTmacroMEM_SET_INSTmacroCMP_INSTmacroF_CMP_INSTmacroI_CMP_INSTmacroEXTRACT_ELEMENT_INSTmacroGET_ELEMENT_PTR_INSTmacroINSERT_ELEMENT_INSTmacroINSERT_VALUE_INSTmacroLANDING_PAD_INSTmacroPHI_NODEmacroSELECT_INSTmacroSHUFFLE_VECTOR_INSTmacroSTORE_INSTmacroTERMINATOR_INSTmacroBRANCH_INSTmacroINDIRECT_BR_INSTmacroINVOKE_INSTmacroRETURN_INSTmacroSWITCH_INSTmacroUNREACHABLE_INSTmacroRESUME_INSTmacroCLEANUP_RETURN_INSTmacroCATCH_RETURN_INSTmacroFUNCLET_PAD_INSTmacroCATCH_PAD_INSTmacroCLEANUP_PAD_INSTmacroUNARY_INSTRUCTIONmacroALLOCA_INSTmacroCAST_INSTmacroADDR_SPACE_CAST_INSTmacroBIT_CAST_INSTmacroFP_EXT_INSTmacroFP_TO_SI_INSTmacroFP_TO_UI_INSTmacroFP_TRUNC_INSTmacroINT_TO_PTR_INSTmacroPTR_TO_INT_INSTmacroS_EXT_INSTmacroSI_TO_FP_INSTmacroTRUNC_INSTmacroUI_TO_FP_INSTmacroZ_EXT_INSTmacroEXTRACT_VALUE_INSTmacroLOAD_INSTmacroVA_ARG_INST
   end
   
-  # Used to pass regions of memory through LLVM interfaces.
-  # 
-  # @see llvm::MemoryBuffer
-  class OpaqueMemoryBuffer < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # This function permanently loads the dynamic library at the given path.
-  # It is safe to call this function multiple times for the same library.
-  # 
-  # @see sys::DynamicLibrary::LoadLibraryPermanently()
+  # (Not documented)
   # 
   # @method load_library_permanently(filename)
   # @param [String] filename 
@@ -50,74 +40,21 @@ module LLVM::C
   attach_function :parse_command_line_options, :LLVMParseCommandLineOptions, [:int, :pointer, :string], :void
   
   # (Not documented)
-  class OpaqueContext < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # The top-level container for all other LLVM Intermediate Representation (IR)
-  # objects.
   # 
-  # @see llvm::Module
-  class OpaqueModule < FFI::Struct
-    layout :dummy, :char
-  end
+  # @method search_for_address_of_symbol(symbol_name)
+  # @param [String] symbol_name 
+  # @return [FFI::Pointer(*Void)] 
+  # @scope class
+  attach_function :search_for_address_of_symbol, :LLVMSearchForAddressOfSymbol, [:string], :pointer
   
-  # Each value in the LLVM IR has a type, an LLVMTypeRef.
+  # (Not documented)
   # 
-  # @see llvm::Type
-  class OpaqueType < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # Represents an individual value in LLVM IR.
-  # 
-  # This models llvm::Value.
-  class OpaqueValue < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # Represents a basic block of instructions in LLVM IR.
-  # 
-  # This models llvm::BasicBlock.
-  class OpaqueBasicBlock < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # Represents an LLVM basic block builder.
-  # 
-  # This models llvm::IRBuilder.
-  class OpaqueBuilder < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # Interface used to provide a module to JIT or interpreter.
-  # This is now just a synonym for llvm::Module, but we have to keep using the
-  # different type to keep binary compatibility.
-  class OpaqueModuleProvider < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # @see llvm::PassManagerBase
-  class OpaquePassManager < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # @see llvm::PassRegistry
-  class OpaquePassRegistry < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # Used to get the users and usees of a Value.
-  # 
-  # @see llvm::Use
-  class OpaqueUse < FFI::Struct
-    layout :dummy, :char
-  end
-  
-  # @see llvm::DiagnosticInfo
-  class OpaqueDiagnosticInfo < FFI::Struct
-    layout :dummy, :char
-  end
+  # @method add_symbol(symbol_name, symbol_value)
+  # @param [String] symbol_name 
+  # @param [FFI::Pointer(*Void)] symbol_value 
+  # @return [nil] 
+  # @scope class
+  attach_function :add_symbol, :LLVMAddSymbol, [:string, :pointer], :void
   
   # (Not documented)
   # 
@@ -332,6 +269,16 @@ module LLVM::C
   #   Exception Handling Operators
   # :landing_pad ::
   #   
+  # :cleanup_ret ::
+  #   
+  # :catch_ret ::
+  #   
+  # :catch_pad ::
+  #   
+  # :cleanup_pad ::
+  #   
+  # :catch_switch ::
+  #   
   # 
   # @method _enum_opcode_
   # @return [Symbol]
@@ -395,7 +342,12 @@ module LLVM::C
     :atomic_cmp_xchg, 56,
     :atomic_rmw, 57,
     :resume, 58,
-    :landing_pad, 59
+    :landing_pad, 59,
+    :cleanup_ret, 61,
+    :catch_ret, 62,
+    :catch_pad, 63,
+    :cleanup_pad, 64,
+    :catch_switch, 65
   ]
   
   # (Not documented)
@@ -435,6 +387,8 @@ module LLVM::C
   #   < SIMD 'packed' format, or other vector type
   # :x86_mmx ::
   #   < Metadata
+  # :token ::
+  #   < X86 MMX
   # 
   # @method _enum_type_kind_
   # @return [Symbol]
@@ -455,7 +409,8 @@ module LLVM::C
     :pointer, 12,
     :vector, 13,
     :metadata, 14,
-    :x86_mmx, 15
+    :x86_mmx, 15,
+    :token, 16
   ]
   
   # (Not documented)
@@ -867,10 +822,10 @@ module LLVM::C
   # @}
   # 
   # @method initialize_core(r)
-  # @param [OpaquePassRegistry] r 
+  # @param [FFI::Pointer(PassRegistryRef)] r 
   # @return [nil] 
   # @scope class
-  attach_function :initialize_core, :LLVMInitializeCore, [OpaquePassRegistry], :void
+  attach_function :initialize_core, :LLVMInitializeCore, [:pointer], :void
   
   # Deallocate and destroy all ManagedStatic variables.
   #     @see llvm::llvm_shutdown
@@ -897,35 +852,6 @@ module LLVM::C
   # @scope class
   attach_function :dispose_message, :LLVMDisposeMessage, [:string], :void
   
-  # Install a fatal error handler. By default, if LLVM detects a fatal error, it
-  # will call exit(1). This may not be appropriate in many contexts. For example,
-  # doing exit(1) will bypass many crash reporting/tracing system tools. This
-  # function allows you to install a callback that will be invoked prior to the
-  # call to exit(1).
-  # 
-  # @method install_fatal_error_handler(handler)
-  # @param [FFI::Pointer(FatalErrorHandler)] handler 
-  # @return [nil] 
-  # @scope class
-  attach_function :install_fatal_error_handler, :LLVMInstallFatalErrorHandler, [:pointer], :void
-  
-  # Reset the fatal error handler. This resets LLVM's fatal error handling
-  # behavior to the default.
-  # 
-  # @method reset_fatal_error_handler()
-  # @return [nil] 
-  # @scope class
-  attach_function :reset_fatal_error_handler, :LLVMResetFatalErrorHandler, [], :void
-  
-  # Enable LLVM's built-in stack trace code. This intercepts the OS's crash
-  # signals and prints which component of LLVM you were in at the time if the
-  # crash.
-  # 
-  # @method enable_pretty_stack_trace()
-  # @return [nil] 
-  # @scope class
-  attach_function :enable_pretty_stack_trace, :LLVMEnablePrettyStackTrace, [], :void
-  
   # @defgroup LLVMCCoreContext Contexts
   # 
   # Contexts are execution states for the core LLVM IR system.
@@ -938,21 +864,23 @@ module LLVM::C
   # 
   # <em>This entry is only for documentation and no real method.</em>
   # 
-  # @method _callback_diagnostic_handler_(void)
+  # @method _callback_diagnostic_handler_(diagnostic_info_ref, void)
+  # @param [FFI::Pointer(DiagnosticInfoRef)] diagnostic_info_ref 
   # @param [FFI::Pointer(*Void)] void 
-  # @return [OpaqueDiagnosticInfo] 
+  # @return [FFI::Pointer(DiagnosticInfoRef)] 
   # @scope class
-  callback :diagnostic_handler, [:pointer], OpaqueDiagnosticInfo
+  callback :diagnostic_handler, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # <em>This entry is only for documentation and no real method.</em>
   # 
-  # @method _callback_yield_callback_(void)
+  # @method _callback_yield_callback_(context_ref, void)
+  # @param [FFI::Pointer(ContextRef)] context_ref 
   # @param [FFI::Pointer(*Void)] void 
-  # @return [OpaqueContext] 
+  # @return [FFI::Pointer(ContextRef)] 
   # @scope class
-  callback :yield_callback, [:pointer], OpaqueContext
+  callback :yield_callback, [:pointer, :pointer], :pointer
   
   # Create a new context.
   # 
@@ -960,38 +888,38 @@ module LLVM::C
   # LLVMContextDispose() or the context will leak memory.
   # 
   # @method context_create()
-  # @return [OpaqueContext] 
+  # @return [FFI::Pointer(ContextRef)] 
   # @scope class
-  attach_function :context_create, :LLVMContextCreate, [], OpaqueContext
+  attach_function :context_create, :LLVMContextCreate, [], :pointer
   
   # Obtain the global context instance.
   # 
   # @method get_global_context()
-  # @return [OpaqueContext] 
+  # @return [FFI::Pointer(ContextRef)] 
   # @scope class
-  attach_function :get_global_context, :LLVMGetGlobalContext, [], OpaqueContext
+  attach_function :get_global_context, :LLVMGetGlobalContext, [], :pointer
   
   # Set the diagnostic handler for this context.
   # 
   # @method context_set_diagnostic_handler(c, handler, diagnostic_context)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [Proc(_callback_diagnostic_handler_)] handler 
   # @param [FFI::Pointer(*Void)] diagnostic_context 
   # @return [nil] 
   # @scope class
-  attach_function :context_set_diagnostic_handler, :LLVMContextSetDiagnosticHandler, [OpaqueContext, :diagnostic_handler, :pointer], :void
+  attach_function :context_set_diagnostic_handler, :LLVMContextSetDiagnosticHandler, [:pointer, :diagnostic_handler, :pointer], :void
   
   # Set the yield callback function for this context.
   # 
   # @see LLVMContext::setYieldCallback()
   # 
   # @method context_set_yield_callback(c, callback, opaque_handle)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [Proc(_callback_yield_callback_)] callback 
   # @param [FFI::Pointer(*Void)] opaque_handle 
   # @return [nil] 
   # @scope class
-  attach_function :context_set_yield_callback, :LLVMContextSetYieldCallback, [OpaqueContext, :yield_callback, :pointer], :void
+  attach_function :context_set_yield_callback, :LLVMContextSetYieldCallback, [:pointer, :yield_callback, :pointer], :void
   
   # Destroy a context instance.
   # 
@@ -999,10 +927,10 @@ module LLVM::C
   # will be leaked.
   # 
   # @method context_dispose(c)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @return [nil] 
   # @scope class
-  attach_function :context_dispose, :LLVMContextDispose, [OpaqueContext], :void
+  attach_function :context_dispose, :LLVMContextDispose, [:pointer], :void
   
   # Return a string representation of the DiagnosticInfo. Use
   # LLVMDisposeMessage to free the string.
@@ -1010,30 +938,30 @@ module LLVM::C
   # @see DiagnosticInfo::print()
   # 
   # @method get_diag_info_description(di)
-  # @param [OpaqueDiagnosticInfo] di 
+  # @param [FFI::Pointer(DiagnosticInfoRef)] di 
   # @return [String] 
   # @scope class
-  attach_function :get_diag_info_description, :LLVMGetDiagInfoDescription, [OpaqueDiagnosticInfo], :string
+  attach_function :get_diag_info_description, :LLVMGetDiagInfoDescription, [:pointer], :string
   
   # Return an enum LLVMDiagnosticSeverity.
   # 
   # @see DiagnosticInfo::getSeverity()
   # 
   # @method get_diag_info_severity(di)
-  # @param [OpaqueDiagnosticInfo] di 
+  # @param [FFI::Pointer(DiagnosticInfoRef)] di 
   # @return [Symbol from _enum_diagnostic_severity_] 
   # @scope class
-  attach_function :get_diag_info_severity, :LLVMGetDiagInfoSeverity, [OpaqueDiagnosticInfo], :diagnostic_severity
+  attach_function :get_diag_info_severity, :LLVMGetDiagInfoSeverity, [:pointer], :diagnostic_severity
   
   # (Not documented)
   # 
   # @method get_md_kind_id_in_context(c, name, s_len)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [String] name 
   # @param [Integer] s_len 
   # @return [Integer] 
   # @scope class
-  attach_function :get_md_kind_id_in_context, :LLVMGetMDKindIDInContext, [OpaqueContext, :string, :uint], :uint
+  attach_function :get_md_kind_id_in_context, :LLVMGetMDKindIDInContext, [:pointer, :string, :uint], :uint
   
   # (Not documented)
   # 
@@ -1054,9 +982,9 @@ module LLVM::C
   # 
   # @method module_create_with_name(module_id)
   # @param [String] module_id 
-  # @return [OpaqueModule] 
+  # @return [FFI::Pointer(ModuleRef)] 
   # @scope class
-  attach_function :module_create_with_name, :LLVMModuleCreateWithName, [:string], OpaqueModule
+  attach_function :module_create_with_name, :LLVMModuleCreateWithName, [:string], :pointer
   
   # Create a new, empty module in a specific context.
   # 
@@ -1065,18 +993,18 @@ module LLVM::C
   # 
   # @method module_create_with_name_in_context(module_id, c)
   # @param [String] module_id 
-  # @param [OpaqueContext] c 
-  # @return [OpaqueModule] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(ModuleRef)] 
   # @scope class
-  attach_function :module_create_with_name_in_context, :LLVMModuleCreateWithNameInContext, [:string, OpaqueContext], OpaqueModule
+  attach_function :module_create_with_name_in_context, :LLVMModuleCreateWithNameInContext, [:string, :pointer], :pointer
   
   # Return an exact copy of the specified module.
   # 
   # @method clone_module(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaqueModule] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(ModuleRef)] 
   # @scope class
-  attach_function :clone_module, :LLVMCloneModule, [OpaqueModule], OpaqueModule
+  attach_function :clone_module, :LLVMCloneModule, [:pointer], :pointer
   
   # Destroy a module instance.
   # 
@@ -1084,62 +1012,62 @@ module LLVM::C
   # leaked.
   # 
   # @method dispose_module(m)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @return [nil] 
   # @scope class
-  attach_function :dispose_module, :LLVMDisposeModule, [OpaqueModule], :void
+  attach_function :dispose_module, :LLVMDisposeModule, [:pointer], :void
   
   # Obtain the data layout for a module.
   # 
   # @see Module::getDataLayout()
   # 
   # @method get_data_layout(m)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @return [String] 
   # @scope class
-  attach_function :get_data_layout, :LLVMGetDataLayout, [OpaqueModule], :string
+  attach_function :get_data_layout, :LLVMGetDataLayout, [:pointer], :string
   
   # Set the data layout for a module.
   # 
   # @see Module::setDataLayout()
   # 
   # @method set_data_layout(m, triple)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] triple 
   # @return [nil] 
   # @scope class
-  attach_function :set_data_layout, :LLVMSetDataLayout, [OpaqueModule, :string], :void
+  attach_function :set_data_layout, :LLVMSetDataLayout, [:pointer, :string], :void
   
   # Obtain the target triple for a module.
   # 
   # @see Module::getTargetTriple()
   # 
   # @method get_target(m)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @return [String] 
   # @scope class
-  attach_function :get_target, :LLVMGetTarget, [OpaqueModule], :string
+  attach_function :get_target, :LLVMGetTarget, [:pointer], :string
   
   # Set the target triple for a module.
   # 
   # @see Module::setTargetTriple()
   # 
   # @method set_target(m, triple)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] triple 
   # @return [nil] 
   # @scope class
-  attach_function :set_target, :LLVMSetTarget, [OpaqueModule, :string], :void
+  attach_function :set_target, :LLVMSetTarget, [:pointer, :string], :void
   
   # Dump a representation of a module to stderr.
   # 
   # @see Module::dump()
   # 
   # @method dump_module(m)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @return [nil] 
   # @scope class
-  attach_function :dump_module, :LLVMDumpModule, [OpaqueModule], :void
+  attach_function :dump_module, :LLVMDumpModule, [:pointer], :void
   
   # Print a representation of a module to a file. The ErrorMessage needs to be
   # disposed with LLVMDisposeMessage. Returns 0 on success, 1 otherwise.
@@ -1147,12 +1075,12 @@ module LLVM::C
   # @see Module::print()
   # 
   # @method print_module_to_file(m, filename, error_message)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] filename 
   # @param [FFI::Pointer(**CharS)] error_message 
   # @return [Integer] 
   # @scope class
-  attach_function :print_module_to_file, :LLVMPrintModuleToFile, [OpaqueModule, :string, :pointer], :int
+  attach_function :print_module_to_file, :LLVMPrintModuleToFile, [:pointer, :string, :pointer], :int
   
   # Return a string representation of the module. Use
   # LLVMDisposeMessage to free the string.
@@ -1160,51 +1088,51 @@ module LLVM::C
   # @see Module::print()
   # 
   # @method print_module_to_string(m)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @return [String] 
   # @scope class
-  attach_function :print_module_to_string, :LLVMPrintModuleToString, [OpaqueModule], :string
+  attach_function :print_module_to_string, :LLVMPrintModuleToString, [:pointer], :string
   
   # Set inline assembly for a module.
   # 
   # @see Module::setModuleInlineAsm()
   # 
   # @method set_module_inline_asm(m, asm)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] asm 
   # @return [nil] 
   # @scope class
-  attach_function :set_module_inline_asm, :LLVMSetModuleInlineAsm, [OpaqueModule, :string], :void
+  attach_function :set_module_inline_asm, :LLVMSetModuleInlineAsm, [:pointer, :string], :void
   
   # Obtain the context to which this module is associated.
   # 
   # @see Module::getContext()
   # 
   # @method get_module_context(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaqueContext] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(ContextRef)] 
   # @scope class
-  attach_function :get_module_context, :LLVMGetModuleContext, [OpaqueModule], OpaqueContext
+  attach_function :get_module_context, :LLVMGetModuleContext, [:pointer], :pointer
   
   # Obtain a Type from a module by its registered name.
   # 
   # @method get_type_by_name(m, name)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] name 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :get_type_by_name, :LLVMGetTypeByName, [OpaqueModule, :string], OpaqueType
+  attach_function :get_type_by_name, :LLVMGetTypeByName, [:pointer, :string], :pointer
   
   # Obtain the number of operands for named metadata in a module.
   # 
   # @see llvm::Module::getNamedMetadata()
   # 
   # @method get_named_metadata_num_operands(m, name)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] name 
   # @return [Integer] 
   # @scope class
-  attach_function :get_named_metadata_num_operands, :LLVMGetNamedMetadataNumOperands, [OpaqueModule, :string], :uint
+  attach_function :get_named_metadata_num_operands, :LLVMGetNamedMetadataNumOperands, [:pointer, :string], :uint
   
   # Obtain the named metadata operands for a module.
   # 
@@ -1217,12 +1145,12 @@ module LLVM::C
   # @see llvm::MDNode::getOperand()
   # 
   # @method get_named_metadata_operands(m, name, dest)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] name 
   # @param [FFI::Pointer(*ValueRef)] dest 
   # @return [nil] 
   # @scope class
-  attach_function :get_named_metadata_operands, :LLVMGetNamedMetadataOperands, [OpaqueModule, :string, :pointer], :void
+  attach_function :get_named_metadata_operands, :LLVMGetNamedMetadataOperands, [:pointer, :string, :pointer], :void
   
   # Add an operand to named metadata.
   # 
@@ -1230,24 +1158,24 @@ module LLVM::C
   # @see llvm::MDNode::addOperand()
   # 
   # @method add_named_metadata_operand(m, name, val)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] name 
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [nil] 
   # @scope class
-  attach_function :add_named_metadata_operand, :LLVMAddNamedMetadataOperand, [OpaqueModule, :string, OpaqueValue], :void
+  attach_function :add_named_metadata_operand, :LLVMAddNamedMetadataOperand, [:pointer, :string, :pointer], :void
   
   # Add a function to a module under a specified name.
   # 
   # @see llvm::Function::Create()
   # 
   # @method add_function(m, name, function_ty)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] name 
-  # @param [OpaqueType] function_ty 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(TypeRef)] function_ty 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :add_function, :LLVMAddFunction, [OpaqueModule, :string, OpaqueType], OpaqueValue
+  attach_function :add_function, :LLVMAddFunction, [:pointer, :string, :pointer], :pointer
   
   # Obtain a Function value from a Module by its name.
   # 
@@ -1256,31 +1184,31 @@ module LLVM::C
   # @see llvm::Module::getFunction()
   # 
   # @method get_named_function(m, name)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_named_function, :LLVMGetNamedFunction, [OpaqueModule, :string], OpaqueValue
+  attach_function :get_named_function, :LLVMGetNamedFunction, [:pointer, :string], :pointer
   
   # Obtain an iterator to the first Function in a Module.
   # 
   # @see llvm::Module::begin()
   # 
   # @method get_first_function(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_first_function, :LLVMGetFirstFunction, [OpaqueModule], OpaqueValue
+  attach_function :get_first_function, :LLVMGetFirstFunction, [:pointer], :pointer
   
   # Obtain an iterator to the last Function in a Module.
   # 
   # @see llvm::Module::end()
   # 
   # @method get_last_function(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_last_function, :LLVMGetLastFunction, [OpaqueModule], OpaqueValue
+  attach_function :get_last_function, :LLVMGetLastFunction, [:pointer], :pointer
   
   # Advance a Function iterator to the next Function.
   # 
@@ -1288,10 +1216,10 @@ module LLVM::C
   # functions.
   # 
   # @method get_next_function(fn)
-  # @param [OpaqueValue] fn 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_next_function, :LLVMGetNextFunction, [OpaqueValue], OpaqueValue
+  attach_function :get_next_function, :LLVMGetNextFunction, [:pointer], :pointer
   
   # Decrement a Function iterator to the previous Function.
   # 
@@ -1299,20 +1227,20 @@ module LLVM::C
   # no previous functions.
   # 
   # @method get_previous_function(fn)
-  # @param [OpaqueValue] fn 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_previous_function, :LLVMGetPreviousFunction, [OpaqueValue], OpaqueValue
+  attach_function :get_previous_function, :LLVMGetPreviousFunction, [:pointer], :pointer
   
   # Obtain the enumerated type of a Type instance.
   # 
   # @see llvm::Type:getTypeID()
   # 
   # @method get_type_kind(ty)
-  # @param [OpaqueType] ty 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Symbol from _enum_type_kind_] 
   # @scope class
-  attach_function :get_type_kind, :LLVMGetTypeKind, [OpaqueType], :type_kind
+  attach_function :get_type_kind, :LLVMGetTypeKind, [:pointer], :type_kind
   
   # Whether the type has a known size.
   # 
@@ -1321,30 +1249,30 @@ module LLVM::C
   # @see llvm::Type::isSized()
   # 
   # @method type_is_sized(ty)
-  # @param [OpaqueType] ty 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [Integer] 
   # @scope class
-  attach_function :type_is_sized, :LLVMTypeIsSized, [OpaqueType], :int
+  attach_function :type_is_sized, :LLVMTypeIsSized, [:pointer], :int
   
   # Obtain the context to which this type instance is associated.
   # 
   # @see llvm::Type::getContext()
   # 
   # @method get_type_context(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueContext] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(ContextRef)] 
   # @scope class
-  attach_function :get_type_context, :LLVMGetTypeContext, [OpaqueType], OpaqueContext
+  attach_function :get_type_context, :LLVMGetTypeContext, [:pointer], :pointer
   
   # Dump a representation of a type to stderr.
   # 
   # @see llvm::Type::dump()
   # 
   # @method dump_type(val)
-  # @param [OpaqueType] val 
+  # @param [FFI::Pointer(TypeRef)] val 
   # @return [nil] 
   # @scope class
-  attach_function :dump_type, :LLVMDumpType, [OpaqueType], :void
+  attach_function :dump_type, :LLVMDumpType, [:pointer], :void
   
   # Return a string representation of the type. Use
   # LLVMDisposeMessage to free the string.
@@ -1352,204 +1280,219 @@ module LLVM::C
   # @see llvm::Type::print()
   # 
   # @method print_type_to_string(val)
-  # @param [OpaqueType] val 
+  # @param [FFI::Pointer(TypeRef)] val 
   # @return [String] 
   # @scope class
-  attach_function :print_type_to_string, :LLVMPrintTypeToString, [OpaqueType], :string
+  attach_function :print_type_to_string, :LLVMPrintTypeToString, [:pointer], :string
   
   # Obtain an integer type from a context with specified bit width.
   # 
   # @method int1_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int1_type_in_context, :LLVMInt1TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :int1_type_in_context, :LLVMInt1TypeInContext, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method int8_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int8_type_in_context, :LLVMInt8TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :int8_type_in_context, :LLVMInt8TypeInContext, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method int16_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int16_type_in_context, :LLVMInt16TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :int16_type_in_context, :LLVMInt16TypeInContext, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method int32_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int32_type_in_context, :LLVMInt32TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :int32_type_in_context, :LLVMInt32TypeInContext, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method int64_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int64_type_in_context, :LLVMInt64TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :int64_type_in_context, :LLVMInt64TypeInContext, [:pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method int128_type_in_context(c)
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
+  # @scope class
+  attach_function :int128_type_in_context, :LLVMInt128TypeInContext, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method int_type_in_context(c, num_bits)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [Integer] num_bits 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int_type_in_context, :LLVMIntTypeInContext, [OpaqueContext, :uint], OpaqueType
+  attach_function :int_type_in_context, :LLVMIntTypeInContext, [:pointer, :uint], :pointer
   
   # Obtain an integer type from the global context with a specified bit
   # width.
   # 
   # @method int1_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int1_type, :LLVMInt1Type, [], OpaqueType
+  attach_function :int1_type, :LLVMInt1Type, [], :pointer
   
   # (Not documented)
   # 
   # @method int8_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int8_type, :LLVMInt8Type, [], OpaqueType
+  attach_function :int8_type, :LLVMInt8Type, [], :pointer
   
   # (Not documented)
   # 
   # @method int16_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int16_type, :LLVMInt16Type, [], OpaqueType
+  attach_function :int16_type, :LLVMInt16Type, [], :pointer
   
   # (Not documented)
   # 
   # @method int32_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int32_type, :LLVMInt32Type, [], OpaqueType
+  attach_function :int32_type, :LLVMInt32Type, [], :pointer
   
   # (Not documented)
   # 
   # @method int64_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int64_type, :LLVMInt64Type, [], OpaqueType
+  attach_function :int64_type, :LLVMInt64Type, [], :pointer
+  
+  # (Not documented)
+  # 
+  # @method int128_type()
+  # @return [FFI::Pointer(TypeRef)] 
+  # @scope class
+  attach_function :int128_type, :LLVMInt128Type, [], :pointer
   
   # (Not documented)
   # 
   # @method int_type(num_bits)
   # @param [Integer] num_bits 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :int_type, :LLVMIntType, [:uint], OpaqueType
+  attach_function :int_type, :LLVMIntType, [:uint], :pointer
   
   # (Not documented)
   # 
   # @method get_int_type_width(integer_ty)
-  # @param [OpaqueType] integer_ty 
+  # @param [FFI::Pointer(TypeRef)] integer_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :get_int_type_width, :LLVMGetIntTypeWidth, [OpaqueType], :uint
+  attach_function :get_int_type_width, :LLVMGetIntTypeWidth, [:pointer], :uint
   
   # Obtain a 16-bit floating point type from a context.
   # 
   # @method half_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :half_type_in_context, :LLVMHalfTypeInContext, [OpaqueContext], OpaqueType
+  attach_function :half_type_in_context, :LLVMHalfTypeInContext, [:pointer], :pointer
   
   # Obtain a 32-bit floating point type from a context.
   # 
   # @method float_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :float_type_in_context, :LLVMFloatTypeInContext, [OpaqueContext], OpaqueType
+  attach_function :float_type_in_context, :LLVMFloatTypeInContext, [:pointer], :pointer
   
   # Obtain a 64-bit floating point type from a context.
   # 
   # @method double_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :double_type_in_context, :LLVMDoubleTypeInContext, [OpaqueContext], OpaqueType
+  attach_function :double_type_in_context, :LLVMDoubleTypeInContext, [:pointer], :pointer
   
   # Obtain a 80-bit floating point type (X87) from a context.
   # 
   # @method x86fp80_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :x86fp80_type_in_context, :LLVMX86FP80TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :x86fp80_type_in_context, :LLVMX86FP80TypeInContext, [:pointer], :pointer
   
   # Obtain a 128-bit floating point type (112-bit mantissa) from a
   # context.
   # 
   # @method fp128_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :fp128_type_in_context, :LLVMFP128TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :fp128_type_in_context, :LLVMFP128TypeInContext, [:pointer], :pointer
   
   # Obtain a 128-bit floating point type (two 64-bits) from a context.
   # 
   # @method ppcfp128_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :ppcfp128_type_in_context, :LLVMPPCFP128TypeInContext, [OpaqueContext], OpaqueType
+  attach_function :ppcfp128_type_in_context, :LLVMPPCFP128TypeInContext, [:pointer], :pointer
   
   # Obtain a floating point type from the global context.
   # 
   # These map to the functions in this group of the same name.
   # 
   # @method half_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :half_type, :LLVMHalfType, [], OpaqueType
+  attach_function :half_type, :LLVMHalfType, [], :pointer
   
   # (Not documented)
   # 
   # @method float_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :float_type, :LLVMFloatType, [], OpaqueType
+  attach_function :float_type, :LLVMFloatType, [], :pointer
   
   # (Not documented)
   # 
   # @method double_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :double_type, :LLVMDoubleType, [], OpaqueType
+  attach_function :double_type, :LLVMDoubleType, [], :pointer
   
   # (Not documented)
   # 
   # @method x86fp80_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :x86fp80_type, :LLVMX86FP80Type, [], OpaqueType
+  attach_function :x86fp80_type, :LLVMX86FP80Type, [], :pointer
   
   # (Not documented)
   # 
   # @method fp128_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :fp128_type, :LLVMFP128Type, [], OpaqueType
+  attach_function :fp128_type, :LLVMFP128Type, [], :pointer
   
   # (Not documented)
   # 
   # @method ppcfp128_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :ppcfp128_type, :LLVMPPCFP128Type, [], OpaqueType
+  attach_function :ppcfp128_type, :LLVMPPCFP128Type, [], :pointer
   
   # Obtain a function type consisting of a specified signature.
   # 
@@ -1557,37 +1500,37 @@ module LLVM::C
   # parameter types, and whether the function is variadic.
   # 
   # @method function_type(return_type, param_types, param_count, is_var_arg)
-  # @param [OpaqueType] return_type 
+  # @param [FFI::Pointer(TypeRef)] return_type 
   # @param [FFI::Pointer(*TypeRef)] param_types 
   # @param [Integer] param_count 
   # @param [Integer] is_var_arg 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :function_type, :LLVMFunctionType, [OpaqueType, :pointer, :uint, :int], OpaqueType
+  attach_function :function_type, :LLVMFunctionType, [:pointer, :pointer, :uint, :int], :pointer
   
   # Returns whether a function type is variadic.
   # 
   # @method is_function_var_arg(function_ty)
-  # @param [OpaqueType] function_ty 
+  # @param [FFI::Pointer(TypeRef)] function_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :is_function_var_arg, :LLVMIsFunctionVarArg, [OpaqueType], :int
+  attach_function :is_function_var_arg, :LLVMIsFunctionVarArg, [:pointer], :int
   
   # Obtain the Type this function Type returns.
   # 
   # @method get_return_type(function_ty)
-  # @param [OpaqueType] function_ty 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(TypeRef)] function_ty 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :get_return_type, :LLVMGetReturnType, [OpaqueType], OpaqueType
+  attach_function :get_return_type, :LLVMGetReturnType, [:pointer], :pointer
   
   # Obtain the number of parameters this function accepts.
   # 
   # @method count_param_types(function_ty)
-  # @param [OpaqueType] function_ty 
+  # @param [FFI::Pointer(TypeRef)] function_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :count_param_types, :LLVMCountParamTypes, [OpaqueType], :uint
+  attach_function :count_param_types, :LLVMCountParamTypes, [:pointer], :uint
   
   # Obtain the types of a function's parameters.
   # 
@@ -1600,11 +1543,11 @@ module LLVM::C
   # @param Dest Memory address of an array to be filled with result.
   # 
   # @method get_param_types(function_ty, dest)
-  # @param [OpaqueType] function_ty 
+  # @param [FFI::Pointer(TypeRef)] function_ty 
   # @param [FFI::Pointer(*TypeRef)] dest 
   # @return [nil] 
   # @scope class
-  attach_function :get_param_types, :LLVMGetParamTypes, [OpaqueType, :pointer], :void
+  attach_function :get_param_types, :LLVMGetParamTypes, [:pointer, :pointer], :void
   
   # Create a new structure type in a context.
   # 
@@ -1614,13 +1557,13 @@ module LLVM::C
   # @see llvm::StructType::create()
   # 
   # @method struct_type_in_context(c, element_types, element_count, packed)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [FFI::Pointer(*TypeRef)] element_types 
   # @param [Integer] element_count 
   # @param [Integer] packed 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :struct_type_in_context, :LLVMStructTypeInContext, [OpaqueContext, :pointer, :uint, :int], OpaqueType
+  attach_function :struct_type_in_context, :LLVMStructTypeInContext, [:pointer, :pointer, :uint, :int], :pointer
   
   # Create a new structure type in the global context.
   # 
@@ -1630,53 +1573,53 @@ module LLVM::C
   # @param [FFI::Pointer(*TypeRef)] element_types 
   # @param [Integer] element_count 
   # @param [Integer] packed 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :struct_type, :LLVMStructType, [:pointer, :uint, :int], OpaqueType
+  attach_function :struct_type, :LLVMStructType, [:pointer, :uint, :int], :pointer
   
   # Create an empty structure in a context having a specified name.
   # 
   # @see llvm::StructType::create()
   # 
   # @method struct_create_named(c, name)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [String] name 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :struct_create_named, :LLVMStructCreateNamed, [OpaqueContext, :string], OpaqueType
+  attach_function :struct_create_named, :LLVMStructCreateNamed, [:pointer, :string], :pointer
   
   # Obtain the name of a structure.
   # 
   # @see llvm::StructType::getName()
   # 
   # @method get_struct_name(ty)
-  # @param [OpaqueType] ty 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @return [String] 
   # @scope class
-  attach_function :get_struct_name, :LLVMGetStructName, [OpaqueType], :string
+  attach_function :get_struct_name, :LLVMGetStructName, [:pointer], :string
   
   # Set the contents of a structure type.
   # 
   # @see llvm::StructType::setBody()
   # 
   # @method struct_set_body(struct_ty, element_types, element_count, packed)
-  # @param [OpaqueType] struct_ty 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [FFI::Pointer(*TypeRef)] element_types 
   # @param [Integer] element_count 
   # @param [Integer] packed 
   # @return [nil] 
   # @scope class
-  attach_function :struct_set_body, :LLVMStructSetBody, [OpaqueType, :pointer, :uint, :int], :void
+  attach_function :struct_set_body, :LLVMStructSetBody, [:pointer, :pointer, :uint, :int], :void
   
   # Get the number of elements defined inside the structure.
   # 
   # @see llvm::StructType::getNumElements()
   # 
   # @method count_struct_element_types(struct_ty)
-  # @param [OpaqueType] struct_ty 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :count_struct_element_types, :LLVMCountStructElementTypes, [OpaqueType], :uint
+  attach_function :count_struct_element_types, :LLVMCountStructElementTypes, [:pointer], :uint
   
   # Get the elements within a structure.
   # 
@@ -1688,31 +1631,42 @@ module LLVM::C
   # is contained in.
   # 
   # @method get_struct_element_types(struct_ty, dest)
-  # @param [OpaqueType] struct_ty 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [FFI::Pointer(*TypeRef)] dest 
   # @return [nil] 
   # @scope class
-  attach_function :get_struct_element_types, :LLVMGetStructElementTypes, [OpaqueType, :pointer], :void
+  attach_function :get_struct_element_types, :LLVMGetStructElementTypes, [:pointer, :pointer], :void
+  
+  # Get the type of the element at a given index in the structure.
+  # 
+  # @see llvm::StructType::getTypeAtIndex()
+  # 
+  # @method struct_get_type_at_index(struct_ty, i)
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
+  # @param [Integer] i 
+  # @return [FFI::Pointer(TypeRef)] 
+  # @scope class
+  attach_function :struct_get_type_at_index, :LLVMStructGetTypeAtIndex, [:pointer, :uint], :pointer
   
   # Determine whether a structure is packed.
   # 
   # @see llvm::StructType::isPacked()
   # 
   # @method is_packed_struct(struct_ty)
-  # @param [OpaqueType] struct_ty 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :is_packed_struct, :LLVMIsPackedStruct, [OpaqueType], :int
+  attach_function :is_packed_struct, :LLVMIsPackedStruct, [:pointer], :int
   
   # Determine whether a structure is opaque.
   # 
   # @see llvm::StructType::isOpaque()
   # 
   # @method is_opaque_struct(struct_ty)
-  # @param [OpaqueType] struct_ty 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :is_opaque_struct, :LLVMIsOpaqueStruct, [OpaqueType], :int
+  attach_function :is_opaque_struct, :LLVMIsOpaqueStruct, [:pointer], :int
   
   # Obtain the type of elements within a sequential type.
   # 
@@ -1721,10 +1675,10 @@ module LLVM::C
   # @see llvm::SequentialType::getElementType()
   # 
   # @method get_element_type(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :get_element_type, :LLVMGetElementType, [OpaqueType], OpaqueType
+  attach_function :get_element_type, :LLVMGetElementType, [:pointer], :pointer
   
   # Create a fixed size array type that refers to a specific type.
   # 
@@ -1734,11 +1688,11 @@ module LLVM::C
   # @see llvm::ArrayType::get()
   # 
   # @method array_type(element_type, element_count)
-  # @param [OpaqueType] element_type 
+  # @param [FFI::Pointer(TypeRef)] element_type 
   # @param [Integer] element_count 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :array_type, :LLVMArrayType, [OpaqueType, :uint], OpaqueType
+  attach_function :array_type, :LLVMArrayType, [:pointer, :uint], :pointer
   
   # Obtain the length of an array type.
   # 
@@ -1747,10 +1701,10 @@ module LLVM::C
   # @see llvm::ArrayType::getNumElements()
   # 
   # @method get_array_length(array_ty)
-  # @param [OpaqueType] array_ty 
+  # @param [FFI::Pointer(TypeRef)] array_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :get_array_length, :LLVMGetArrayLength, [OpaqueType], :uint
+  attach_function :get_array_length, :LLVMGetArrayLength, [:pointer], :uint
   
   # Create a pointer type that points to a defined type.
   # 
@@ -1760,11 +1714,11 @@ module LLVM::C
   # @see llvm::PointerType::get()
   # 
   # @method pointer_type(element_type, address_space)
-  # @param [OpaqueType] element_type 
+  # @param [FFI::Pointer(TypeRef)] element_type 
   # @param [Integer] address_space 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :pointer_type, :LLVMPointerType, [OpaqueType, :uint], OpaqueType
+  attach_function :pointer_type, :LLVMPointerType, [:pointer, :uint], :pointer
   
   # Obtain the address space of a pointer type.
   # 
@@ -1773,10 +1727,10 @@ module LLVM::C
   # @see llvm::PointerType::getAddressSpace()
   # 
   # @method get_pointer_address_space(pointer_ty)
-  # @param [OpaqueType] pointer_ty 
+  # @param [FFI::Pointer(TypeRef)] pointer_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :get_pointer_address_space, :LLVMGetPointerAddressSpace, [OpaqueType], :uint
+  attach_function :get_pointer_address_space, :LLVMGetPointerAddressSpace, [:pointer], :uint
   
   # Create a vector type that contains a defined type and has a specific
   # number of elements.
@@ -1787,11 +1741,11 @@ module LLVM::C
   # @see llvm::VectorType::get()
   # 
   # @method vector_type(element_type, element_count)
-  # @param [OpaqueType] element_type 
+  # @param [FFI::Pointer(TypeRef)] element_type 
   # @param [Integer] element_count 
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :vector_type, :LLVMVectorType, [OpaqueType, :uint], OpaqueType
+  attach_function :vector_type, :LLVMVectorType, [:pointer, :uint], :pointer
   
   # Obtain the number of elements in a vector type.
   # 
@@ -1800,97 +1754,97 @@ module LLVM::C
   # @see llvm::VectorType::getNumElements()
   # 
   # @method get_vector_size(vector_ty)
-  # @param [OpaqueType] vector_ty 
+  # @param [FFI::Pointer(TypeRef)] vector_ty 
   # @return [Integer] 
   # @scope class
-  attach_function :get_vector_size, :LLVMGetVectorSize, [OpaqueType], :uint
+  attach_function :get_vector_size, :LLVMGetVectorSize, [:pointer], :uint
   
   # Create a void type in a context.
   # 
   # @method void_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :void_type_in_context, :LLVMVoidTypeInContext, [OpaqueContext], OpaqueType
+  attach_function :void_type_in_context, :LLVMVoidTypeInContext, [:pointer], :pointer
   
   # Create a label type in a context.
   # 
   # @method label_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :label_type_in_context, :LLVMLabelTypeInContext, [OpaqueContext], OpaqueType
+  attach_function :label_type_in_context, :LLVMLabelTypeInContext, [:pointer], :pointer
   
   # Create a X86 MMX type in a context.
   # 
   # @method x86mmx_type_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :x86mmx_type_in_context, :LLVMX86MMXTypeInContext, [OpaqueContext], OpaqueType
+  attach_function :x86mmx_type_in_context, :LLVMX86MMXTypeInContext, [:pointer], :pointer
   
   # These are similar to the above functions except they operate on the
   # global context.
   # 
   # @method void_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :void_type, :LLVMVoidType, [], OpaqueType
+  attach_function :void_type, :LLVMVoidType, [], :pointer
   
   # (Not documented)
   # 
   # @method label_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :label_type, :LLVMLabelType, [], OpaqueType
+  attach_function :label_type, :LLVMLabelType, [], :pointer
   
   # (Not documented)
   # 
   # @method x86mmx_type()
-  # @return [OpaqueType] 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :x86mmx_type, :LLVMX86MMXType, [], OpaqueType
+  attach_function :x86mmx_type, :LLVMX86MMXType, [], :pointer
   
   # Obtain the type of a value.
   # 
   # @see llvm::Value::getType()
   # 
   # @method type_of(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueType] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(TypeRef)] 
   # @scope class
-  attach_function :type_of, :LLVMTypeOf, [OpaqueValue], OpaqueType
+  attach_function :type_of, :LLVMTypeOf, [:pointer], :pointer
   
   # Obtain the string name of a value.
   # 
   # @see llvm::Value::getName()
   # 
   # @method get_value_name(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [String] 
   # @scope class
-  attach_function :get_value_name, :LLVMGetValueName, [OpaqueValue], :string
+  attach_function :get_value_name, :LLVMGetValueName, [:pointer], :string
   
   # Set the string name of a value.
   # 
   # @see llvm::Value::setName()
   # 
   # @method set_value_name(val, name)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [String] name 
   # @return [nil] 
   # @scope class
-  attach_function :set_value_name, :LLVMSetValueName, [OpaqueValue, :string], :void
+  attach_function :set_value_name, :LLVMSetValueName, [:pointer, :string], :void
   
   # Dump a representation of a value to stderr.
   # 
   # @see llvm::Value::dump()
   # 
   # @method dump_value(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [nil] 
   # @scope class
-  attach_function :dump_value, :LLVMDumpValue, [OpaqueValue], :void
+  attach_function :dump_value, :LLVMDumpValue, [:pointer], :void
   
   # Return a string representation of the value. Use
   # LLVMDisposeMessage to free the string.
@@ -1898,629 +1852,677 @@ module LLVM::C
   # @see llvm::Value::print()
   # 
   # @method print_value_to_string(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [String] 
   # @scope class
-  attach_function :print_value_to_string, :LLVMPrintValueToString, [OpaqueValue], :string
+  attach_function :print_value_to_string, :LLVMPrintValueToString, [:pointer], :string
   
   # Replace all uses of a value with another one.
   # 
   # @see llvm::Value::replaceAllUsesWith()
   # 
   # @method replace_all_uses_with(old_val, new_val)
-  # @param [OpaqueValue] old_val 
-  # @param [OpaqueValue] new_val 
+  # @param [FFI::Pointer(ValueRef)] old_val 
+  # @param [FFI::Pointer(ValueRef)] new_val 
   # @return [nil] 
   # @scope class
-  attach_function :replace_all_uses_with, :LLVMReplaceAllUsesWith, [OpaqueValue, OpaqueValue], :void
+  attach_function :replace_all_uses_with, :LLVMReplaceAllUsesWith, [:pointer, :pointer], :void
   
   # Determine whether the specified constant instance is constant.
   # 
   # @method is_constant(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [Integer] 
   # @scope class
-  attach_function :is_constant, :LLVMIsConstant, [OpaqueValue], :int
+  attach_function :is_constant, :LLVMIsConstant, [:pointer], :int
   
   # Determine whether a value instance is undefined.
   # 
   # @method is_undef(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [Integer] 
   # @scope class
-  attach_function :is_undef, :LLVMIsUndef, [OpaqueValue], :int
+  attach_function :is_undef, :LLVMIsUndef, [:pointer], :int
   
   # (Not documented)
   # 
   # @method is_a_argument(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_argument, :LLVMIsAArgument, [OpaqueValue], OpaqueValue
+  attach_function :is_a_argument, :LLVMIsAArgument, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_basic_block(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_basic_block, :LLVMIsABasicBlock, [OpaqueValue], OpaqueValue
+  attach_function :is_a_basic_block, :LLVMIsABasicBlock, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_inline_asm(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_inline_asm, :LLVMIsAInlineAsm, [OpaqueValue], OpaqueValue
+  attach_function :is_a_inline_asm, :LLVMIsAInlineAsm, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_user(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_user, :LLVMIsAUser, [OpaqueValue], OpaqueValue
+  attach_function :is_a_user, :LLVMIsAUser, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant, :LLVMIsAConstant, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant, :LLVMIsAConstant, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_block_address(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_block_address, :LLVMIsABlockAddress, [OpaqueValue], OpaqueValue
+  attach_function :is_a_block_address, :LLVMIsABlockAddress, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_aggregate_zero(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_aggregate_zero, :LLVMIsAConstantAggregateZero, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_aggregate_zero, :LLVMIsAConstantAggregateZero, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_array(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_array, :LLVMIsAConstantArray, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_array, :LLVMIsAConstantArray, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_data_sequential(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_data_sequential, :LLVMIsAConstantDataSequential, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_data_sequential, :LLVMIsAConstantDataSequential, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_data_array(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_data_array, :LLVMIsAConstantDataArray, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_data_array, :LLVMIsAConstantDataArray, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_data_vector(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_data_vector, :LLVMIsAConstantDataVector, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_data_vector, :LLVMIsAConstantDataVector, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_expr(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_expr, :LLVMIsAConstantExpr, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_expr, :LLVMIsAConstantExpr, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_fp(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_fp, :LLVMIsAConstantFP, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_fp, :LLVMIsAConstantFP, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_int(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_int, :LLVMIsAConstantInt, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_int, :LLVMIsAConstantInt, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_pointer_null(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_pointer_null, :LLVMIsAConstantPointerNull, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_pointer_null, :LLVMIsAConstantPointerNull, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_struct(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_struct, :LLVMIsAConstantStruct, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_struct, :LLVMIsAConstantStruct, [:pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method is_a_constant_token_none(val)
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
+  # @scope class
+  attach_function :is_a_constant_token_none, :LLVMIsAConstantTokenNone, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_constant_vector(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_constant_vector, :LLVMIsAConstantVector, [OpaqueValue], OpaqueValue
+  attach_function :is_a_constant_vector, :LLVMIsAConstantVector, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_global_value(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_global_value, :LLVMIsAGlobalValue, [OpaqueValue], OpaqueValue
+  attach_function :is_a_global_value, :LLVMIsAGlobalValue, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_global_alias(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_global_alias, :LLVMIsAGlobalAlias, [OpaqueValue], OpaqueValue
+  attach_function :is_a_global_alias, :LLVMIsAGlobalAlias, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_global_object(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_global_object, :LLVMIsAGlobalObject, [OpaqueValue], OpaqueValue
+  attach_function :is_a_global_object, :LLVMIsAGlobalObject, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_function(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_function, :LLVMIsAFunction, [OpaqueValue], OpaqueValue
+  attach_function :is_a_function, :LLVMIsAFunction, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_global_variable(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_global_variable, :LLVMIsAGlobalVariable, [OpaqueValue], OpaqueValue
+  attach_function :is_a_global_variable, :LLVMIsAGlobalVariable, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_undef_value(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_undef_value, :LLVMIsAUndefValue, [OpaqueValue], OpaqueValue
+  attach_function :is_a_undef_value, :LLVMIsAUndefValue, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_instruction(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_instruction, :LLVMIsAInstruction, [OpaqueValue], OpaqueValue
+  attach_function :is_a_instruction, :LLVMIsAInstruction, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_binary_operator(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_binary_operator, :LLVMIsABinaryOperator, [OpaqueValue], OpaqueValue
+  attach_function :is_a_binary_operator, :LLVMIsABinaryOperator, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_call_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_call_inst, :LLVMIsACallInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_call_inst, :LLVMIsACallInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_intrinsic_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_intrinsic_inst, :LLVMIsAIntrinsicInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_intrinsic_inst, :LLVMIsAIntrinsicInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_dbg_info_intrinsic(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_dbg_info_intrinsic, :LLVMIsADbgInfoIntrinsic, [OpaqueValue], OpaqueValue
+  attach_function :is_a_dbg_info_intrinsic, :LLVMIsADbgInfoIntrinsic, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_dbg_declare_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_dbg_declare_inst, :LLVMIsADbgDeclareInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_dbg_declare_inst, :LLVMIsADbgDeclareInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_mem_intrinsic(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_mem_intrinsic, :LLVMIsAMemIntrinsic, [OpaqueValue], OpaqueValue
+  attach_function :is_a_mem_intrinsic, :LLVMIsAMemIntrinsic, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_mem_cpy_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_mem_cpy_inst, :LLVMIsAMemCpyInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_mem_cpy_inst, :LLVMIsAMemCpyInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_mem_move_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_mem_move_inst, :LLVMIsAMemMoveInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_mem_move_inst, :LLVMIsAMemMoveInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_mem_set_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_mem_set_inst, :LLVMIsAMemSetInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_mem_set_inst, :LLVMIsAMemSetInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_cmp_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_cmp_inst, :LLVMIsACmpInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_cmp_inst, :LLVMIsACmpInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_af_cmp_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_af_cmp_inst, :LLVMIsAFCmpInst, [OpaqueValue], OpaqueValue
+  attach_function :is_af_cmp_inst, :LLVMIsAFCmpInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_ai_cmp_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_ai_cmp_inst, :LLVMIsAICmpInst, [OpaqueValue], OpaqueValue
+  attach_function :is_ai_cmp_inst, :LLVMIsAICmpInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_extract_element_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_extract_element_inst, :LLVMIsAExtractElementInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_extract_element_inst, :LLVMIsAExtractElementInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_get_element_ptr_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_get_element_ptr_inst, :LLVMIsAGetElementPtrInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_get_element_ptr_inst, :LLVMIsAGetElementPtrInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_insert_element_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_insert_element_inst, :LLVMIsAInsertElementInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_insert_element_inst, :LLVMIsAInsertElementInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_insert_value_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_insert_value_inst, :LLVMIsAInsertValueInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_insert_value_inst, :LLVMIsAInsertValueInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_landing_pad_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_landing_pad_inst, :LLVMIsALandingPadInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_landing_pad_inst, :LLVMIsALandingPadInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_aphi_node(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_aphi_node, :LLVMIsAPHINode, [OpaqueValue], OpaqueValue
+  attach_function :is_aphi_node, :LLVMIsAPHINode, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_select_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_select_inst, :LLVMIsASelectInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_select_inst, :LLVMIsASelectInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_shuffle_vector_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_shuffle_vector_inst, :LLVMIsAShuffleVectorInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_shuffle_vector_inst, :LLVMIsAShuffleVectorInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_store_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_store_inst, :LLVMIsAStoreInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_store_inst, :LLVMIsAStoreInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_terminator_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_terminator_inst, :LLVMIsATerminatorInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_terminator_inst, :LLVMIsATerminatorInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_branch_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_branch_inst, :LLVMIsABranchInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_branch_inst, :LLVMIsABranchInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_indirect_br_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_indirect_br_inst, :LLVMIsAIndirectBrInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_indirect_br_inst, :LLVMIsAIndirectBrInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_invoke_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_invoke_inst, :LLVMIsAInvokeInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_invoke_inst, :LLVMIsAInvokeInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_return_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_return_inst, :LLVMIsAReturnInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_return_inst, :LLVMIsAReturnInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_switch_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_switch_inst, :LLVMIsASwitchInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_switch_inst, :LLVMIsASwitchInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_unreachable_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_unreachable_inst, :LLVMIsAUnreachableInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_unreachable_inst, :LLVMIsAUnreachableInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_resume_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_resume_inst, :LLVMIsAResumeInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_resume_inst, :LLVMIsAResumeInst, [:pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method is_a_cleanup_return_inst(val)
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
+  # @scope class
+  attach_function :is_a_cleanup_return_inst, :LLVMIsACleanupReturnInst, [:pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method is_a_catch_return_inst(val)
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
+  # @scope class
+  attach_function :is_a_catch_return_inst, :LLVMIsACatchReturnInst, [:pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method is_a_funclet_pad_inst(val)
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
+  # @scope class
+  attach_function :is_a_funclet_pad_inst, :LLVMIsAFuncletPadInst, [:pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method is_a_catch_pad_inst(val)
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
+  # @scope class
+  attach_function :is_a_catch_pad_inst, :LLVMIsACatchPadInst, [:pointer], :pointer
+  
+  # (Not documented)
+  # 
+  # @method is_a_cleanup_pad_inst(val)
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
+  # @scope class
+  attach_function :is_a_cleanup_pad_inst, :LLVMIsACleanupPadInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_unary_instruction(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_unary_instruction, :LLVMIsAUnaryInstruction, [OpaqueValue], OpaqueValue
+  attach_function :is_a_unary_instruction, :LLVMIsAUnaryInstruction, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_alloca_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_alloca_inst, :LLVMIsAAllocaInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_alloca_inst, :LLVMIsAAllocaInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_cast_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_cast_inst, :LLVMIsACastInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_cast_inst, :LLVMIsACastInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_addr_space_cast_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_addr_space_cast_inst, :LLVMIsAAddrSpaceCastInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_addr_space_cast_inst, :LLVMIsAAddrSpaceCastInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_bit_cast_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_bit_cast_inst, :LLVMIsABitCastInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_bit_cast_inst, :LLVMIsABitCastInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_afp_ext_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_afp_ext_inst, :LLVMIsAFPExtInst, [OpaqueValue], OpaqueValue
+  attach_function :is_afp_ext_inst, :LLVMIsAFPExtInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_afp_to_si_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_afp_to_si_inst, :LLVMIsAFPToSIInst, [OpaqueValue], OpaqueValue
+  attach_function :is_afp_to_si_inst, :LLVMIsAFPToSIInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_afp_to_ui_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_afp_to_ui_inst, :LLVMIsAFPToUIInst, [OpaqueValue], OpaqueValue
+  attach_function :is_afp_to_ui_inst, :LLVMIsAFPToUIInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_afp_trunc_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_afp_trunc_inst, :LLVMIsAFPTruncInst, [OpaqueValue], OpaqueValue
+  attach_function :is_afp_trunc_inst, :LLVMIsAFPTruncInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_int_to_ptr_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_int_to_ptr_inst, :LLVMIsAIntToPtrInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_int_to_ptr_inst, :LLVMIsAIntToPtrInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_ptr_to_int_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_ptr_to_int_inst, :LLVMIsAPtrToIntInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_ptr_to_int_inst, :LLVMIsAPtrToIntInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_as_ext_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_as_ext_inst, :LLVMIsASExtInst, [OpaqueValue], OpaqueValue
+  attach_function :is_as_ext_inst, :LLVMIsASExtInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_asi_to_fp_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_asi_to_fp_inst, :LLVMIsASIToFPInst, [OpaqueValue], OpaqueValue
+  attach_function :is_asi_to_fp_inst, :LLVMIsASIToFPInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_trunc_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_trunc_inst, :LLVMIsATruncInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_trunc_inst, :LLVMIsATruncInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_aui_to_fp_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_aui_to_fp_inst, :LLVMIsAUIToFPInst, [OpaqueValue], OpaqueValue
+  attach_function :is_aui_to_fp_inst, :LLVMIsAUIToFPInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_az_ext_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_az_ext_inst, :LLVMIsAZExtInst, [OpaqueValue], OpaqueValue
+  attach_function :is_az_ext_inst, :LLVMIsAZExtInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_extract_value_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_extract_value_inst, :LLVMIsAExtractValueInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_extract_value_inst, :LLVMIsAExtractValueInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_a_load_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_a_load_inst, :LLVMIsALoadInst, [OpaqueValue], OpaqueValue
+  attach_function :is_a_load_inst, :LLVMIsALoadInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_ava_arg_inst(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_ava_arg_inst, :LLVMIsAVAArgInst, [OpaqueValue], OpaqueValue
+  attach_function :is_ava_arg_inst, :LLVMIsAVAArgInst, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_amd_node(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_amd_node, :LLVMIsAMDNode, [OpaqueValue], OpaqueValue
+  attach_function :is_amd_node, :LLVMIsAMDNode, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_amd_string(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :is_amd_string, :LLVMIsAMDString, [OpaqueValue], OpaqueValue
+  attach_function :is_amd_string, :LLVMIsAMDString, [:pointer], :pointer
   
   # Obtain the first use of a value.
   # 
@@ -2532,10 +2534,10 @@ module LLVM::C
   # @see llvm::Value::use_begin()
   # 
   # @method get_first_use(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueUse] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(UseRef)] 
   # @scope class
-  attach_function :get_first_use, :LLVMGetFirstUse, [OpaqueValue], OpaqueUse
+  attach_function :get_first_use, :LLVMGetFirstUse, [:pointer], :pointer
   
   # Obtain the next use of a value.
   # 
@@ -2543,10 +2545,10 @@ module LLVM::C
   # the final use and no more are available.
   # 
   # @method get_next_use(u)
-  # @param [OpaqueUse] u 
-  # @return [OpaqueUse] 
+  # @param [FFI::Pointer(UseRef)] u 
+  # @return [FFI::Pointer(UseRef)] 
   # @scope class
-  attach_function :get_next_use, :LLVMGetNextUse, [OpaqueUse], OpaqueUse
+  attach_function :get_next_use, :LLVMGetNextUse, [:pointer], :pointer
   
   # Obtain the user value for a user.
   # 
@@ -2555,74 +2557,74 @@ module LLVM::C
   # @see llvm::Use::getUser()
   # 
   # @method get_user(u)
-  # @param [OpaqueUse] u 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(UseRef)] u 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_user, :LLVMGetUser, [OpaqueUse], OpaqueValue
+  attach_function :get_user, :LLVMGetUser, [:pointer], :pointer
   
   # Obtain the value this use corresponds to.
   # 
   # @see llvm::Use::get().
   # 
   # @method get_used_value(u)
-  # @param [OpaqueUse] u 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(UseRef)] u 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_used_value, :LLVMGetUsedValue, [OpaqueUse], OpaqueValue
+  attach_function :get_used_value, :LLVMGetUsedValue, [:pointer], :pointer
   
   # Obtain an operand at a specific index in a llvm::User value.
   # 
   # @see llvm::User::getOperand()
   # 
   # @method get_operand(val, index)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [Integer] index 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_operand, :LLVMGetOperand, [OpaqueValue, :uint], OpaqueValue
+  attach_function :get_operand, :LLVMGetOperand, [:pointer, :uint], :pointer
   
   # Obtain the use of an operand at a specific index in a llvm::User value.
   # 
   # @see llvm::User::getOperandUse()
   # 
   # @method get_operand_use(val, index)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [Integer] index 
-  # @return [OpaqueUse] 
+  # @return [FFI::Pointer(UseRef)] 
   # @scope class
-  attach_function :get_operand_use, :LLVMGetOperandUse, [OpaqueValue, :uint], OpaqueUse
+  attach_function :get_operand_use, :LLVMGetOperandUse, [:pointer, :uint], :pointer
   
   # Set an operand at a specific index in a llvm::User value.
   # 
   # @see llvm::User::setOperand()
   # 
   # @method set_operand(user, index, val)
-  # @param [OpaqueValue] user 
+  # @param [FFI::Pointer(ValueRef)] user 
   # @param [Integer] index 
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [nil] 
   # @scope class
-  attach_function :set_operand, :LLVMSetOperand, [OpaqueValue, :uint, OpaqueValue], :void
+  attach_function :set_operand, :LLVMSetOperand, [:pointer, :uint, :pointer], :void
   
   # Obtain the number of operands in a llvm::User value.
   # 
   # @see llvm::User::getNumOperands()
   # 
   # @method get_num_operands(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [Integer] 
   # @scope class
-  attach_function :get_num_operands, :LLVMGetNumOperands, [OpaqueValue], :int
+  attach_function :get_num_operands, :LLVMGetNumOperands, [:pointer], :int
   
   # Obtain a constant value referring to the null instance of a type.
   # 
   # @see llvm::Constant::getNullValue()
   # 
   # @method const_null(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_null, :LLVMConstNull, [OpaqueType], OpaqueValue
+  attach_function :const_null, :LLVMConstNull, [:pointer], :pointer
   
   # Obtain a constant value referring to the instance of a type
   # consisting of all ones.
@@ -2632,39 +2634,39 @@ module LLVM::C
   # @see llvm::Constant::getAllOnesValue()
   # 
   # @method const_all_ones(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_all_ones, :LLVMConstAllOnes, [OpaqueType], OpaqueValue
+  attach_function :const_all_ones, :LLVMConstAllOnes, [:pointer], :pointer
   
   # Obtain a constant value referring to an undefined value of a type.
   # 
   # @see llvm::UndefValue::get()
   # 
   # @method get_undef(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_undef, :LLVMGetUndef, [OpaqueType], OpaqueValue
+  attach_function :get_undef, :LLVMGetUndef, [:pointer], :pointer
   
   # Determine whether a value instance is null.
   # 
   # @see llvm::Constant::isNullValue()
   # 
   # @method is_null(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [Integer] 
   # @scope class
-  attach_function :is_null, :LLVMIsNull, [OpaqueValue], :int
+  attach_function :is_null, :LLVMIsNull, [:pointer], :int
   
   # Obtain a constant that is a constant pointer pointing to NULL for a
   # specified type.
   # 
   # @method const_pointer_null(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_pointer_null, :LLVMConstPointerNull, [OpaqueType], OpaqueValue
+  attach_function :const_pointer_null, :LLVMConstPointerNull, [:pointer], :pointer
   
   # Obtain a constant value for an integer type.
   # 
@@ -2677,24 +2679,24 @@ module LLVM::C
   # @param SignExtend Whether to sign extend the produced value.
   # 
   # @method const_int(int_ty, n, sign_extend)
-  # @param [OpaqueType] int_ty 
+  # @param [FFI::Pointer(TypeRef)] int_ty 
   # @param [Integer] n 
   # @param [Integer] sign_extend 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_int, :LLVMConstInt, [OpaqueType, :ulong_long, :int], OpaqueValue
+  attach_function :const_int, :LLVMConstInt, [:pointer, :ulong_long, :int], :pointer
   
   # Obtain a constant value for an integer of arbitrary precision.
   # 
   # @see llvm::ConstantInt::get()
   # 
   # @method const_int_of_arbitrary_precision(int_ty, num_words, words)
-  # @param [OpaqueType] int_ty 
+  # @param [FFI::Pointer(TypeRef)] int_ty 
   # @param [Integer] num_words 
   # @param [FFI::Pointer(*U_long)] words 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_int_of_arbitrary_precision, :LLVMConstIntOfArbitraryPrecision, [OpaqueType, :uint, :pointer], OpaqueValue
+  attach_function :const_int_of_arbitrary_precision, :LLVMConstIntOfArbitraryPrecision, [:pointer, :uint, :pointer], :pointer
   
   # Obtain a constant value for an integer parsed from a string.
   # 
@@ -2705,12 +2707,12 @@ module LLVM::C
   # @see llvm::ConstantInt::get()
   # 
   # @method const_int_of_string(int_ty, text, radix)
-  # @param [OpaqueType] int_ty 
+  # @param [FFI::Pointer(TypeRef)] int_ty 
   # @param [String] text 
   # @param [Integer] radix 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_int_of_string, :LLVMConstIntOfString, [OpaqueType, :string, :uchar], OpaqueValue
+  attach_function :const_int_of_string, :LLVMConstIntOfString, [:pointer, :string, :uchar], :pointer
   
   # Obtain a constant value for an integer parsed from a string with
   # specified length.
@@ -2718,22 +2720,22 @@ module LLVM::C
   # @see llvm::ConstantInt::get()
   # 
   # @method const_int_of_string_and_size(int_ty, text, s_len, radix)
-  # @param [OpaqueType] int_ty 
+  # @param [FFI::Pointer(TypeRef)] int_ty 
   # @param [String] text 
   # @param [Integer] s_len 
   # @param [Integer] radix 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_int_of_string_and_size, :LLVMConstIntOfStringAndSize, [OpaqueType, :string, :uint, :uchar], OpaqueValue
+  attach_function :const_int_of_string_and_size, :LLVMConstIntOfStringAndSize, [:pointer, :string, :uint, :uchar], :pointer
   
   # Obtain a constant value referring to a double floating point value.
   # 
   # @method const_real(real_ty, n)
-  # @param [OpaqueType] real_ty 
+  # @param [FFI::Pointer(TypeRef)] real_ty 
   # @param [Float] n 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_real, :LLVMConstReal, [OpaqueType, :double], OpaqueValue
+  attach_function :const_real, :LLVMConstReal, [:pointer, :double], :pointer
   
   # Obtain a constant for a floating point value parsed from a string.
   # 
@@ -2741,41 +2743,41 @@ module LLVM::C
   # should be used if the input string's length is known.
   # 
   # @method const_real_of_string(real_ty, text)
-  # @param [OpaqueType] real_ty 
+  # @param [FFI::Pointer(TypeRef)] real_ty 
   # @param [String] text 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_real_of_string, :LLVMConstRealOfString, [OpaqueType, :string], OpaqueValue
+  attach_function :const_real_of_string, :LLVMConstRealOfString, [:pointer, :string], :pointer
   
   # Obtain a constant for a floating point value parsed from a string.
   # 
   # @method const_real_of_string_and_size(real_ty, text, s_len)
-  # @param [OpaqueType] real_ty 
+  # @param [FFI::Pointer(TypeRef)] real_ty 
   # @param [String] text 
   # @param [Integer] s_len 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_real_of_string_and_size, :LLVMConstRealOfStringAndSize, [OpaqueType, :string, :uint], OpaqueValue
+  attach_function :const_real_of_string_and_size, :LLVMConstRealOfStringAndSize, [:pointer, :string, :uint], :pointer
   
   # Obtain the zero extended value for an integer constant value.
   # 
   # @see llvm::ConstantInt::getZExtValue()
   # 
   # @method const_int_get_z_ext_value(constant_val)
-  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
   # @return [Integer] 
   # @scope class
-  attach_function :const_int_get_z_ext_value, :LLVMConstIntGetZExtValue, [OpaqueValue], :ulong_long
+  attach_function :const_int_get_z_ext_value, :LLVMConstIntGetZExtValue, [:pointer], :ulong_long
   
   # Obtain the sign extended value for an integer constant value.
   # 
   # @see llvm::ConstantInt::getSExtValue()
   # 
   # @method const_int_get_s_ext_value(constant_val)
-  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
   # @return [Integer] 
   # @scope class
-  attach_function :const_int_get_s_ext_value, :LLVMConstIntGetSExtValue, [OpaqueValue], :long_long
+  attach_function :const_int_get_s_ext_value, :LLVMConstIntGetSExtValue, [:pointer], :long_long
   
   # Obtain the double value for an floating point constant value.
   # losesInfo indicates if some precision was lost in the conversion.
@@ -2783,24 +2785,24 @@ module LLVM::C
   # @see llvm::ConstantFP::getDoubleValue
   # 
   # @method const_real_get_double(constant_val, loses_info)
-  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
   # @param [FFI::Pointer(*Bool)] loses_info 
   # @return [Float] 
   # @scope class
-  attach_function :const_real_get_double, :LLVMConstRealGetDouble, [OpaqueValue, :pointer], :double
+  attach_function :const_real_get_double, :LLVMConstRealGetDouble, [:pointer, :pointer], :double
   
   # Create a ConstantDataSequential and initialize it with a string.
   # 
   # @see llvm::ConstantDataArray::getString()
   # 
   # @method const_string_in_context(c, str, length, dont_null_terminate)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [String] str 
   # @param [Integer] length 
   # @param [Integer] dont_null_terminate 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_string_in_context, :LLVMConstStringInContext, [OpaqueContext, :string, :uint, :int], OpaqueValue
+  attach_function :const_string_in_context, :LLVMConstStringInContext, [:pointer, :string, :uint, :int], :pointer
   
   # Create a ConstantDataSequential with string content in the global context.
   # 
@@ -2814,43 +2816,43 @@ module LLVM::C
   # @param [String] str 
   # @param [Integer] length 
   # @param [Integer] dont_null_terminate 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_string, :LLVMConstString, [:string, :uint, :int], OpaqueValue
+  attach_function :const_string, :LLVMConstString, [:string, :uint, :int], :pointer
   
   # Returns true if the specified constant is an array of i8.
   # 
   # @see ConstantDataSequential::getAsString()
   # 
   # @method is_constant_string(c)
-  # @param [OpaqueValue] c 
+  # @param [FFI::Pointer(ValueRef)] c 
   # @return [Integer] 
   # @scope class
-  attach_function :is_constant_string, :LLVMIsConstantString, [OpaqueValue], :int
+  attach_function :is_constant_string, :LLVMIsConstantString, [:pointer], :int
   
   # Get the given constant data sequential as a string.
   # 
   # @see ConstantDataSequential::getAsString()
   # 
   # @method get_as_string(c, out)
-  # @param [OpaqueValue] c 
+  # @param [FFI::Pointer(ValueRef)] c 
   # @param [FFI::Pointer(*SizeT)] out 
   # @return [String] 
   # @scope class
-  attach_function :get_as_string, :LLVMGetAsString, [OpaqueValue, :pointer], :string
+  attach_function :get_as_string, :LLVMGetAsString, [:pointer, :pointer], :string
   
   # Create an anonymous ConstantStruct with the specified values.
   # 
   # @see llvm::ConstantStruct::getAnon()
   # 
   # @method const_struct_in_context(c, constant_vals, count, packed)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [FFI::Pointer(*ValueRef)] constant_vals 
   # @param [Integer] count 
   # @param [Integer] packed 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_struct_in_context, :LLVMConstStructInContext, [OpaqueContext, :pointer, :uint, :int], OpaqueValue
+  attach_function :const_struct_in_context, :LLVMConstStructInContext, [:pointer, :pointer, :uint, :int], :pointer
   
   # Create a ConstantStruct in the global Context.
   # 
@@ -2863,44 +2865,44 @@ module LLVM::C
   # @param [FFI::Pointer(*ValueRef)] constant_vals 
   # @param [Integer] count 
   # @param [Integer] packed 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_struct, :LLVMConstStruct, [:pointer, :uint, :int], OpaqueValue
+  attach_function :const_struct, :LLVMConstStruct, [:pointer, :uint, :int], :pointer
   
   # Create a ConstantArray from values.
   # 
   # @see llvm::ConstantArray::get()
   # 
   # @method const_array(element_ty, constant_vals, length)
-  # @param [OpaqueType] element_ty 
+  # @param [FFI::Pointer(TypeRef)] element_ty 
   # @param [FFI::Pointer(*ValueRef)] constant_vals 
   # @param [Integer] length 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_array, :LLVMConstArray, [OpaqueType, :pointer, :uint], OpaqueValue
+  attach_function :const_array, :LLVMConstArray, [:pointer, :pointer, :uint], :pointer
   
   # Create a non-anonymous ConstantStruct from values.
   # 
   # @see llvm::ConstantStruct::get()
   # 
   # @method const_named_struct(struct_ty, constant_vals, count)
-  # @param [OpaqueType] struct_ty 
+  # @param [FFI::Pointer(TypeRef)] struct_ty 
   # @param [FFI::Pointer(*ValueRef)] constant_vals 
   # @param [Integer] count 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_named_struct, :LLVMConstNamedStruct, [OpaqueType, :pointer, :uint], OpaqueValue
+  attach_function :const_named_struct, :LLVMConstNamedStruct, [:pointer, :pointer, :uint], :pointer
   
   # Get an element at specified index as a constant.
   # 
   # @see ConstantDataSequential::getElementAsConstant()
   # 
   # @method get_element_as_constant(c, idx)
-  # @param [OpaqueValue] c 
+  # @param [FFI::Pointer(ValueRef)] c 
   # @param [Integer] idx 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_element_as_constant, :LLVMGetElementAsConstant, [OpaqueValue, :uint], OpaqueValue
+  attach_function :get_element_as_constant, :LLVMGetElementAsConstant, [:pointer, :uint], :pointer
   
   # Create a ConstantVector from values.
   # 
@@ -2909,9 +2911,9 @@ module LLVM::C
   # @method const_vector(scalar_constant_vals, size)
   # @param [FFI::Pointer(*ValueRef)] scalar_constant_vals 
   # @param [Integer] size 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_vector, :LLVMConstVector, [:pointer, :uint], OpaqueValue
+  attach_function :const_vector, :LLVMConstVector, [:pointer, :uint], :pointer
   
   # @defgroup LLVMCCoreValueConstantExpressions Constant Expressions
   # 
@@ -2922,584 +2924,584 @@ module LLVM::C
   # @{
   # 
   # @method get_const_opcode(constant_val)
-  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
   # @return [Symbol from _enum_opcode_] 
   # @scope class
-  attach_function :get_const_opcode, :LLVMGetConstOpcode, [OpaqueValue], :opcode
+  attach_function :get_const_opcode, :LLVMGetConstOpcode, [:pointer], :opcode
   
   # (Not documented)
   # 
   # @method align_of(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :align_of, :LLVMAlignOf, [OpaqueType], OpaqueValue
+  attach_function :align_of, :LLVMAlignOf, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method size_of(ty)
-  # @param [OpaqueType] ty 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :size_of, :LLVMSizeOf, [OpaqueType], OpaqueValue
+  attach_function :size_of, :LLVMSizeOf, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_neg(constant_val)
-  # @param [OpaqueValue] constant_val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_neg, :LLVMConstNeg, [OpaqueValue], OpaqueValue
+  attach_function :const_neg, :LLVMConstNeg, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nsw_neg(constant_val)
-  # @param [OpaqueValue] constant_val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nsw_neg, :LLVMConstNSWNeg, [OpaqueValue], OpaqueValue
+  attach_function :const_nsw_neg, :LLVMConstNSWNeg, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nuw_neg(constant_val)
-  # @param [OpaqueValue] constant_val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nuw_neg, :LLVMConstNUWNeg, [OpaqueValue], OpaqueValue
+  attach_function :const_nuw_neg, :LLVMConstNUWNeg, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_f_neg(constant_val)
-  # @param [OpaqueValue] constant_val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_f_neg, :LLVMConstFNeg, [OpaqueValue], OpaqueValue
+  attach_function :const_f_neg, :LLVMConstFNeg, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_not(constant_val)
-  # @param [OpaqueValue] constant_val 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_not, :LLVMConstNot, [OpaqueValue], OpaqueValue
+  attach_function :const_not, :LLVMConstNot, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_add(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_add, :LLVMConstAdd, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_add, :LLVMConstAdd, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nsw_add(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nsw_add, :LLVMConstNSWAdd, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_nsw_add, :LLVMConstNSWAdd, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nuw_add(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nuw_add, :LLVMConstNUWAdd, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_nuw_add, :LLVMConstNUWAdd, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_f_add(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_f_add, :LLVMConstFAdd, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_f_add, :LLVMConstFAdd, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_sub(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_sub, :LLVMConstSub, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_sub, :LLVMConstSub, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nsw_sub(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nsw_sub, :LLVMConstNSWSub, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_nsw_sub, :LLVMConstNSWSub, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nuw_sub(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nuw_sub, :LLVMConstNUWSub, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_nuw_sub, :LLVMConstNUWSub, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_f_sub(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_f_sub, :LLVMConstFSub, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_f_sub, :LLVMConstFSub, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_mul(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_mul, :LLVMConstMul, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_mul, :LLVMConstMul, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nsw_mul(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nsw_mul, :LLVMConstNSWMul, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_nsw_mul, :LLVMConstNSWMul, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_nuw_mul(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_nuw_mul, :LLVMConstNUWMul, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_nuw_mul, :LLVMConstNUWMul, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_f_mul(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_f_mul, :LLVMConstFMul, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_f_mul, :LLVMConstFMul, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_u_div(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_u_div, :LLVMConstUDiv, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_u_div, :LLVMConstUDiv, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_s_div(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_s_div, :LLVMConstSDiv, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_s_div, :LLVMConstSDiv, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_exact_s_div(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_exact_s_div, :LLVMConstExactSDiv, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_exact_s_div, :LLVMConstExactSDiv, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_f_div(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_f_div, :LLVMConstFDiv, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_f_div, :LLVMConstFDiv, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_u_rem(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_u_rem, :LLVMConstURem, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_u_rem, :LLVMConstURem, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_s_rem(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_s_rem, :LLVMConstSRem, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_s_rem, :LLVMConstSRem, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_f_rem(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_f_rem, :LLVMConstFRem, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_f_rem, :LLVMConstFRem, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_and(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_and, :LLVMConstAnd, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_and, :LLVMConstAnd, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_or(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_or, :LLVMConstOr, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_or, :LLVMConstOr, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_xor(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_xor, :LLVMConstXor, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_xor, :LLVMConstXor, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_i_cmp(predicate, lhs_constant, rhs_constant)
   # @param [Symbol from _enum_int_predicate_] predicate 
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_i_cmp, :LLVMConstICmp, [:int_predicate, OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_i_cmp, :LLVMConstICmp, [:int_predicate, :pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_f_cmp(predicate, lhs_constant, rhs_constant)
   # @param [Symbol from _enum_real_predicate_] predicate 
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_f_cmp, :LLVMConstFCmp, [:real_predicate, OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_f_cmp, :LLVMConstFCmp, [:real_predicate, :pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_shl(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_shl, :LLVMConstShl, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_shl, :LLVMConstShl, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_l_shr(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_l_shr, :LLVMConstLShr, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_l_shr, :LLVMConstLShr, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_a_shr(lhs_constant, rhs_constant)
-  # @param [OpaqueValue] lhs_constant 
-  # @param [OpaqueValue] rhs_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant 
+  # @param [FFI::Pointer(ValueRef)] rhs_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_a_shr, :LLVMConstAShr, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_a_shr, :LLVMConstAShr, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_gep(constant_val, constant_indices, num_indices)
-  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
   # @param [FFI::Pointer(*ValueRef)] constant_indices 
   # @param [Integer] num_indices 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_gep, :LLVMConstGEP, [OpaqueValue, :pointer, :uint], OpaqueValue
+  attach_function :const_gep, :LLVMConstGEP, [:pointer, :pointer, :uint], :pointer
   
   # (Not documented)
   # 
   # @method const_in_bounds_gep(constant_val, constant_indices, num_indices)
-  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
   # @param [FFI::Pointer(*ValueRef)] constant_indices 
   # @param [Integer] num_indices 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_in_bounds_gep, :LLVMConstInBoundsGEP, [OpaqueValue, :pointer, :uint], OpaqueValue
+  attach_function :const_in_bounds_gep, :LLVMConstInBoundsGEP, [:pointer, :pointer, :uint], :pointer
   
   # (Not documented)
   # 
   # @method const_trunc(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_trunc, :LLVMConstTrunc, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_trunc, :LLVMConstTrunc, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_s_ext(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_s_ext, :LLVMConstSExt, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_s_ext, :LLVMConstSExt, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_z_ext(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_z_ext, :LLVMConstZExt, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_z_ext, :LLVMConstZExt, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_fp_trunc(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_fp_trunc, :LLVMConstFPTrunc, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_fp_trunc, :LLVMConstFPTrunc, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_fp_ext(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_fp_ext, :LLVMConstFPExt, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_fp_ext, :LLVMConstFPExt, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_ui_to_fp(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_ui_to_fp, :LLVMConstUIToFP, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_ui_to_fp, :LLVMConstUIToFP, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_si_to_fp(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_si_to_fp, :LLVMConstSIToFP, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_si_to_fp, :LLVMConstSIToFP, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_fp_to_ui(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_fp_to_ui, :LLVMConstFPToUI, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_fp_to_ui, :LLVMConstFPToUI, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_fp_to_si(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_fp_to_si, :LLVMConstFPToSI, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_fp_to_si, :LLVMConstFPToSI, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_ptr_to_int(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_ptr_to_int, :LLVMConstPtrToInt, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_ptr_to_int, :LLVMConstPtrToInt, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_int_to_ptr(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_int_to_ptr, :LLVMConstIntToPtr, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_int_to_ptr, :LLVMConstIntToPtr, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_bit_cast(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_bit_cast, :LLVMConstBitCast, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_bit_cast, :LLVMConstBitCast, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_addr_space_cast(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_addr_space_cast, :LLVMConstAddrSpaceCast, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_addr_space_cast, :LLVMConstAddrSpaceCast, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_z_ext_or_bit_cast(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_z_ext_or_bit_cast, :LLVMConstZExtOrBitCast, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_z_ext_or_bit_cast, :LLVMConstZExtOrBitCast, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_s_ext_or_bit_cast(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_s_ext_or_bit_cast, :LLVMConstSExtOrBitCast, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_s_ext_or_bit_cast, :LLVMConstSExtOrBitCast, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_trunc_or_bit_cast(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_trunc_or_bit_cast, :LLVMConstTruncOrBitCast, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_trunc_or_bit_cast, :LLVMConstTruncOrBitCast, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_pointer_cast(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_pointer_cast, :LLVMConstPointerCast, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_pointer_cast, :LLVMConstPointerCast, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_int_cast(constant_val, to_type, is_signed)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
   # @param [Integer] is_signed 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_int_cast, :LLVMConstIntCast, [OpaqueValue, OpaqueType, :int], OpaqueValue
+  attach_function :const_int_cast, :LLVMConstIntCast, [:pointer, :pointer, :int], :pointer
   
   # (Not documented)
   # 
   # @method const_fp_cast(constant_val, to_type)
-  # @param [OpaqueValue] constant_val 
-  # @param [OpaqueType] to_type 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
+  # @param [FFI::Pointer(TypeRef)] to_type 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_fp_cast, :LLVMConstFPCast, [OpaqueValue, OpaqueType], OpaqueValue
+  attach_function :const_fp_cast, :LLVMConstFPCast, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_select(constant_condition, constant_if_true, constant_if_false)
-  # @param [OpaqueValue] constant_condition 
-  # @param [OpaqueValue] constant_if_true 
-  # @param [OpaqueValue] constant_if_false 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] constant_condition 
+  # @param [FFI::Pointer(ValueRef)] constant_if_true 
+  # @param [FFI::Pointer(ValueRef)] constant_if_false 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_select, :LLVMConstSelect, [OpaqueValue, OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_select, :LLVMConstSelect, [:pointer, :pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_extract_element(vector_constant, index_constant)
-  # @param [OpaqueValue] vector_constant 
-  # @param [OpaqueValue] index_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] vector_constant 
+  # @param [FFI::Pointer(ValueRef)] index_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_extract_element, :LLVMConstExtractElement, [OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_extract_element, :LLVMConstExtractElement, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_insert_element(vector_constant, element_value_constant, index_constant)
-  # @param [OpaqueValue] vector_constant 
-  # @param [OpaqueValue] element_value_constant 
-  # @param [OpaqueValue] index_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] vector_constant 
+  # @param [FFI::Pointer(ValueRef)] element_value_constant 
+  # @param [FFI::Pointer(ValueRef)] index_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_insert_element, :LLVMConstInsertElement, [OpaqueValue, OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_insert_element, :LLVMConstInsertElement, [:pointer, :pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_shuffle_vector(vector_a_constant, vector_b_constant, mask_constant)
-  # @param [OpaqueValue] vector_a_constant 
-  # @param [OpaqueValue] vector_b_constant 
-  # @param [OpaqueValue] mask_constant 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] vector_a_constant 
+  # @param [FFI::Pointer(ValueRef)] vector_b_constant 
+  # @param [FFI::Pointer(ValueRef)] mask_constant 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_shuffle_vector, :LLVMConstShuffleVector, [OpaqueValue, OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :const_shuffle_vector, :LLVMConstShuffleVector, [:pointer, :pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method const_extract_value(agg_constant, idx_list, num_idx)
-  # @param [OpaqueValue] agg_constant 
+  # @param [FFI::Pointer(ValueRef)] agg_constant 
   # @param [FFI::Pointer(*UInt)] idx_list 
   # @param [Integer] num_idx 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_extract_value, :LLVMConstExtractValue, [OpaqueValue, :pointer, :uint], OpaqueValue
+  attach_function :const_extract_value, :LLVMConstExtractValue, [:pointer, :pointer, :uint], :pointer
   
   # (Not documented)
   # 
   # @method const_insert_value(agg_constant, element_value_constant, idx_list, num_idx)
-  # @param [OpaqueValue] agg_constant 
-  # @param [OpaqueValue] element_value_constant 
+  # @param [FFI::Pointer(ValueRef)] agg_constant 
+  # @param [FFI::Pointer(ValueRef)] element_value_constant 
   # @param [FFI::Pointer(*UInt)] idx_list 
   # @param [Integer] num_idx 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_insert_value, :LLVMConstInsertValue, [OpaqueValue, OpaqueValue, :pointer, :uint], OpaqueValue
+  attach_function :const_insert_value, :LLVMConstInsertValue, [:pointer, :pointer, :pointer, :uint], :pointer
   
   # (Not documented)
   # 
   # @method const_inline_asm(ty, asm_string, constraints, has_side_effects, is_align_stack)
-  # @param [OpaqueType] ty 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @param [String] asm_string 
   # @param [String] constraints 
   # @param [Integer] has_side_effects 
   # @param [Integer] is_align_stack 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :const_inline_asm, :LLVMConstInlineAsm, [OpaqueType, :string, :string, :int, :int], OpaqueValue
+  attach_function :const_inline_asm, :LLVMConstInlineAsm, [:pointer, :string, :string, :int, :int], :pointer
   
   # (Not documented)
   # 
   # @method block_address(f, bb)
-  # @param [OpaqueValue] f 
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] f 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :block_address, :LLVMBlockAddress, [OpaqueValue, OpaqueBasicBlock], OpaqueValue
+  attach_function :block_address, :LLVMBlockAddress, [:pointer, :pointer], :pointer
   
   # @defgroup LLVMCCoreValueConstantGlobals Global Values
   # 
@@ -3511,103 +3513,103 @@ module LLVM::C
   # @{
   # 
   # @method get_global_parent(global)
-  # @param [OpaqueValue] global 
-  # @return [OpaqueModule] 
+  # @param [FFI::Pointer(ValueRef)] global 
+  # @return [FFI::Pointer(ModuleRef)] 
   # @scope class
-  attach_function :get_global_parent, :LLVMGetGlobalParent, [OpaqueValue], OpaqueModule
+  attach_function :get_global_parent, :LLVMGetGlobalParent, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method is_declaration(global)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @return [Integer] 
   # @scope class
-  attach_function :is_declaration, :LLVMIsDeclaration, [OpaqueValue], :int
+  attach_function :is_declaration, :LLVMIsDeclaration, [:pointer], :int
   
   # (Not documented)
   # 
   # @method get_linkage(global)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @return [Symbol from _enum_linkage_] 
   # @scope class
-  attach_function :get_linkage, :LLVMGetLinkage, [OpaqueValue], :linkage
+  attach_function :get_linkage, :LLVMGetLinkage, [:pointer], :linkage
   
   # (Not documented)
   # 
   # @method set_linkage(global, linkage)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @param [Symbol from _enum_linkage_] linkage 
   # @return [nil] 
   # @scope class
-  attach_function :set_linkage, :LLVMSetLinkage, [OpaqueValue, :linkage], :void
+  attach_function :set_linkage, :LLVMSetLinkage, [:pointer, :linkage], :void
   
   # (Not documented)
   # 
   # @method get_section(global)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @return [String] 
   # @scope class
-  attach_function :get_section, :LLVMGetSection, [OpaqueValue], :string
+  attach_function :get_section, :LLVMGetSection, [:pointer], :string
   
   # (Not documented)
   # 
   # @method set_section(global, section)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @param [String] section 
   # @return [nil] 
   # @scope class
-  attach_function :set_section, :LLVMSetSection, [OpaqueValue, :string], :void
+  attach_function :set_section, :LLVMSetSection, [:pointer, :string], :void
   
   # (Not documented)
   # 
   # @method get_visibility(global)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @return [Symbol from _enum_visibility_] 
   # @scope class
-  attach_function :get_visibility, :LLVMGetVisibility, [OpaqueValue], :visibility
+  attach_function :get_visibility, :LLVMGetVisibility, [:pointer], :visibility
   
   # (Not documented)
   # 
   # @method set_visibility(global, viz)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @param [Symbol from _enum_visibility_] viz 
   # @return [nil] 
   # @scope class
-  attach_function :set_visibility, :LLVMSetVisibility, [OpaqueValue, :visibility], :void
+  attach_function :set_visibility, :LLVMSetVisibility, [:pointer, :visibility], :void
   
   # (Not documented)
   # 
   # @method get_dll_storage_class(global)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @return [Symbol from _enum_dll_storage_class_] 
   # @scope class
-  attach_function :get_dll_storage_class, :LLVMGetDLLStorageClass, [OpaqueValue], :dll_storage_class
+  attach_function :get_dll_storage_class, :LLVMGetDLLStorageClass, [:pointer], :dll_storage_class
   
   # (Not documented)
   # 
   # @method set_dll_storage_class(global, class_)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @param [Symbol from _enum_dll_storage_class_] class_ 
   # @return [nil] 
   # @scope class
-  attach_function :set_dll_storage_class, :LLVMSetDLLStorageClass, [OpaqueValue, :dll_storage_class], :void
+  attach_function :set_dll_storage_class, :LLVMSetDLLStorageClass, [:pointer, :dll_storage_class], :void
   
   # (Not documented)
   # 
   # @method has_unnamed_addr(global)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @return [Integer] 
   # @scope class
-  attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [OpaqueValue], :int
+  attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [:pointer], :int
   
   # (Not documented)
   # 
   # @method set_unnamed_addr(global, has_unnamed_addr)
-  # @param [OpaqueValue] global 
+  # @param [FFI::Pointer(ValueRef)] global 
   # @param [Integer] has_unnamed_addr 
   # @return [nil] 
   # @scope class
-  attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [OpaqueValue, :int], :void
+  attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [:pointer, :int], :void
   
   # Obtain the preferred alignment of the value.
   # @see llvm::AllocaInst::getAlignment()
@@ -3616,10 +3618,10 @@ module LLVM::C
   # @see llvm::GlobalValue::getAlignment()
   # 
   # @method get_alignment(v)
-  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @return [Integer] 
   # @scope class
-  attach_function :get_alignment, :LLVMGetAlignment, [OpaqueValue], :uint
+  attach_function :get_alignment, :LLVMGetAlignment, [:pointer], :uint
   
   # Set the preferred alignment of the value.
   # @see llvm::AllocaInst::setAlignment()
@@ -3628,11 +3630,11 @@ module LLVM::C
   # @see llvm::GlobalValue::setAlignment()
   # 
   # @method set_alignment(v, bytes)
-  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [Integer] bytes 
   # @return [nil] 
   # @scope class
-  attach_function :set_alignment, :LLVMSetAlignment, [OpaqueValue, :uint], :void
+  attach_function :set_alignment, :LLVMSetAlignment, [:pointer, :uint], :void
   
   # @defgroup LLVMCoreValueConstantGlobalVariable Global Variables
   # 
@@ -3643,157 +3645,157 @@ module LLVM::C
   # @{
   # 
   # @method add_global(m, ty, name)
-  # @param [OpaqueModule] m 
-  # @param [OpaqueType] ty 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :add_global, :LLVMAddGlobal, [OpaqueModule, OpaqueType, :string], OpaqueValue
+  attach_function :add_global, :LLVMAddGlobal, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method add_global_in_address_space(m, ty, name, address_space)
-  # @param [OpaqueModule] m 
-  # @param [OpaqueType] ty 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @param [String] name 
   # @param [Integer] address_space 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :add_global_in_address_space, :LLVMAddGlobalInAddressSpace, [OpaqueModule, OpaqueType, :string, :uint], OpaqueValue
+  attach_function :add_global_in_address_space, :LLVMAddGlobalInAddressSpace, [:pointer, :pointer, :string, :uint], :pointer
   
   # (Not documented)
   # 
   # @method get_named_global(m, name)
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_named_global, :LLVMGetNamedGlobal, [OpaqueModule, :string], OpaqueValue
+  attach_function :get_named_global, :LLVMGetNamedGlobal, [:pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method get_first_global(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_first_global, :LLVMGetFirstGlobal, [OpaqueModule], OpaqueValue
+  attach_function :get_first_global, :LLVMGetFirstGlobal, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method get_last_global(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_last_global, :LLVMGetLastGlobal, [OpaqueModule], OpaqueValue
+  attach_function :get_last_global, :LLVMGetLastGlobal, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method get_next_global(global_var)
-  # @param [OpaqueValue] global_var 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] global_var 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_next_global, :LLVMGetNextGlobal, [OpaqueValue], OpaqueValue
+  attach_function :get_next_global, :LLVMGetNextGlobal, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method get_previous_global(global_var)
-  # @param [OpaqueValue] global_var 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] global_var 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_previous_global, :LLVMGetPreviousGlobal, [OpaqueValue], OpaqueValue
+  attach_function :get_previous_global, :LLVMGetPreviousGlobal, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method delete_global(global_var)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [nil] 
   # @scope class
-  attach_function :delete_global, :LLVMDeleteGlobal, [OpaqueValue], :void
+  attach_function :delete_global, :LLVMDeleteGlobal, [:pointer], :void
   
   # (Not documented)
   # 
   # @method get_initializer(global_var)
-  # @param [OpaqueValue] global_var 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] global_var 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_initializer, :LLVMGetInitializer, [OpaqueValue], OpaqueValue
+  attach_function :get_initializer, :LLVMGetInitializer, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method set_initializer(global_var, constant_val)
-  # @param [OpaqueValue] global_var 
-  # @param [OpaqueValue] constant_val 
+  # @param [FFI::Pointer(ValueRef)] global_var 
+  # @param [FFI::Pointer(ValueRef)] constant_val 
   # @return [nil] 
   # @scope class
-  attach_function :set_initializer, :LLVMSetInitializer, [OpaqueValue, OpaqueValue], :void
+  attach_function :set_initializer, :LLVMSetInitializer, [:pointer, :pointer], :void
   
   # (Not documented)
   # 
   # @method is_thread_local(global_var)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [Integer] 
   # @scope class
-  attach_function :is_thread_local, :LLVMIsThreadLocal, [OpaqueValue], :int
+  attach_function :is_thread_local, :LLVMIsThreadLocal, [:pointer], :int
   
   # (Not documented)
   # 
   # @method set_thread_local(global_var, is_thread_local)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @param [Integer] is_thread_local 
   # @return [nil] 
   # @scope class
-  attach_function :set_thread_local, :LLVMSetThreadLocal, [OpaqueValue, :int], :void
+  attach_function :set_thread_local, :LLVMSetThreadLocal, [:pointer, :int], :void
   
   # (Not documented)
   # 
   # @method is_global_constant(global_var)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [Integer] 
   # @scope class
-  attach_function :is_global_constant, :LLVMIsGlobalConstant, [OpaqueValue], :int
+  attach_function :is_global_constant, :LLVMIsGlobalConstant, [:pointer], :int
   
   # (Not documented)
   # 
   # @method set_global_constant(global_var, is_constant)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @param [Integer] is_constant 
   # @return [nil] 
   # @scope class
-  attach_function :set_global_constant, :LLVMSetGlobalConstant, [OpaqueValue, :int], :void
+  attach_function :set_global_constant, :LLVMSetGlobalConstant, [:pointer, :int], :void
   
   # (Not documented)
   # 
   # @method get_thread_local_mode(global_var)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [Symbol from _enum_thread_local_mode_] 
   # @scope class
-  attach_function :get_thread_local_mode, :LLVMGetThreadLocalMode, [OpaqueValue], :thread_local_mode
+  attach_function :get_thread_local_mode, :LLVMGetThreadLocalMode, [:pointer], :thread_local_mode
   
   # (Not documented)
   # 
   # @method set_thread_local_mode(global_var, mode)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @param [Symbol from _enum_thread_local_mode_] mode 
   # @return [nil] 
   # @scope class
-  attach_function :set_thread_local_mode, :LLVMSetThreadLocalMode, [OpaqueValue, :thread_local_mode], :void
+  attach_function :set_thread_local_mode, :LLVMSetThreadLocalMode, [:pointer, :thread_local_mode], :void
   
   # (Not documented)
   # 
   # @method is_externally_initialized(global_var)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @return [Integer] 
   # @scope class
-  attach_function :is_externally_initialized, :LLVMIsExternallyInitialized, [OpaqueValue], :int
+  attach_function :is_externally_initialized, :LLVMIsExternallyInitialized, [:pointer], :int
   
   # (Not documented)
   # 
   # @method set_externally_initialized(global_var, is_ext_init)
-  # @param [OpaqueValue] global_var 
+  # @param [FFI::Pointer(ValueRef)] global_var 
   # @param [Integer] is_ext_init 
   # @return [nil] 
   # @scope class
-  attach_function :set_externally_initialized, :LLVMSetExternallyInitialized, [OpaqueValue, :int], :void
+  attach_function :set_externally_initialized, :LLVMSetExternallyInitialized, [:pointer, :int], :void
   
   # @defgroup LLVMCoreValueConstantGlobalAlias Global Aliases
   # 
@@ -3804,33 +3806,54 @@ module LLVM::C
   # @{
   # 
   # @method add_alias(m, ty, aliasee, name)
-  # @param [OpaqueModule] m 
-  # @param [OpaqueType] ty 
-  # @param [OpaqueValue] aliasee 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @param [FFI::Pointer(ValueRef)] aliasee 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :add_alias, :LLVMAddAlias, [OpaqueModule, OpaqueType, OpaqueValue, :string], OpaqueValue
+  attach_function :add_alias, :LLVMAddAlias, [:pointer, :pointer, :pointer, :string], :pointer
   
   # Remove a function from its containing module and deletes it.
   # 
   # @see llvm::Function::eraseFromParent()
   # 
   # @method delete_function(fn)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [nil] 
   # @scope class
-  attach_function :delete_function, :LLVMDeleteFunction, [OpaqueValue], :void
+  attach_function :delete_function, :LLVMDeleteFunction, [:pointer], :void
+  
+  # Obtain the personality function attached to the function.
+  # 
+  # @see llvm::Function::getPersonalityFn()
+  # 
+  # @method get_personality_fn(fn)
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(ValueRef)] 
+  # @scope class
+  attach_function :get_personality_fn, :LLVMGetPersonalityFn, [:pointer], :pointer
+  
+  # Set the personality function attached to the function.
+  # 
+  # @see llvm::Function::setPersonalityFn()
+  # 
+  # @method set_personality_fn(fn, personality_fn)
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @param [FFI::Pointer(ValueRef)] personality_fn 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_personality_fn, :LLVMSetPersonalityFn, [:pointer, :pointer], :void
   
   # Obtain the ID number from a function instance.
   # 
   # @see llvm::Function::getIntrinsicID()
   # 
   # @method get_intrinsic_id(fn)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [Integer] 
   # @scope class
-  attach_function :get_intrinsic_id, :LLVMGetIntrinsicID, [OpaqueValue], :uint
+  attach_function :get_intrinsic_id, :LLVMGetIntrinsicID, [:pointer], :uint
   
   # Obtain the calling function of a function.
   # 
@@ -3839,10 +3862,10 @@ module LLVM::C
   # @see llvm::Function::getCallingConv()
   # 
   # @method get_function_call_conv(fn)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [Integer] 
   # @scope class
-  attach_function :get_function_call_conv, :LLVMGetFunctionCallConv, [OpaqueValue], :uint
+  attach_function :get_function_call_conv, :LLVMGetFunctionCallConv, [:pointer], :uint
   
   # Set the calling convention of a function.
   # 
@@ -3852,11 +3875,11 @@ module LLVM::C
   # @param CC LLVMCallConv to set calling convention to
   # 
   # @method set_function_call_conv(fn, cc)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [Integer] cc 
   # @return [nil] 
   # @scope class
-  attach_function :set_function_call_conv, :LLVMSetFunctionCallConv, [OpaqueValue, :uint], :void
+  attach_function :set_function_call_conv, :LLVMSetFunctionCallConv, [:pointer, :uint], :void
   
   # Obtain the name of the garbage collector to use during code
   # generation.
@@ -3864,72 +3887,72 @@ module LLVM::C
   # @see llvm::Function::getGC()
   # 
   # @method get_gc(fn)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [String] 
   # @scope class
-  attach_function :get_gc, :LLVMGetGC, [OpaqueValue], :string
+  attach_function :get_gc, :LLVMGetGC, [:pointer], :string
   
   # Define the garbage collector to use during code generation.
   # 
   # @see llvm::Function::setGC()
   # 
   # @method set_gc(fn, name)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [String] name 
   # @return [nil] 
   # @scope class
-  attach_function :set_gc, :LLVMSetGC, [OpaqueValue, :string], :void
+  attach_function :set_gc, :LLVMSetGC, [:pointer, :string], :void
   
   # Add an attribute to a function.
   # 
   # @see llvm::Function::addAttribute()
   # 
   # @method add_function_attr(fn, pa)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [Symbol from _enum_attribute_] pa 
   # @return [nil] 
   # @scope class
-  attach_function :add_function_attr, :LLVMAddFunctionAttr, [OpaqueValue, :attribute], :void
+  attach_function :add_function_attr, :LLVMAddFunctionAttr, [:pointer, :attribute], :void
   
-  # Add a target-dependent attribute to a fuction
+  # Add a target-dependent attribute to a function
   # @see llvm::AttrBuilder::addAttribute()
   # 
   # @method add_target_dependent_function_attr(fn, a, v)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [String] a 
   # @param [String] v 
   # @return [nil] 
   # @scope class
-  attach_function :add_target_dependent_function_attr, :LLVMAddTargetDependentFunctionAttr, [OpaqueValue, :string, :string], :void
+  attach_function :add_target_dependent_function_attr, :LLVMAddTargetDependentFunctionAttr, [:pointer, :string, :string], :void
   
   # Obtain an attribute from a function.
   # 
   # @see llvm::Function::getAttributes()
   # 
   # @method get_function_attr(fn)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [Symbol from _enum_attribute_] 
   # @scope class
-  attach_function :get_function_attr, :LLVMGetFunctionAttr, [OpaqueValue], :attribute
+  attach_function :get_function_attr, :LLVMGetFunctionAttr, [:pointer], :attribute
   
   # Remove an attribute from a function.
   # 
   # @method remove_function_attr(fn, pa)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [Symbol from _enum_attribute_] pa 
   # @return [nil] 
   # @scope class
-  attach_function :remove_function_attr, :LLVMRemoveFunctionAttr, [OpaqueValue, :attribute], :void
+  attach_function :remove_function_attr, :LLVMRemoveFunctionAttr, [:pointer, :attribute], :void
   
   # Obtain the number of parameters in a function.
   # 
   # @see llvm::Function::arg_size()
   # 
   # @method count_params(fn)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [Integer] 
   # @scope class
-  attach_function :count_params, :LLVMCountParams, [OpaqueValue], :uint
+  attach_function :count_params, :LLVMCountParams, [:pointer], :uint
   
   # Obtain the parameters in a function.
   # 
@@ -3942,11 +3965,11 @@ module LLVM::C
   # @see llvm::Function::arg_begin()
   # 
   # @method get_params(fn, params)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [FFI::Pointer(*ValueRef)] params 
   # @return [nil] 
   # @scope class
-  attach_function :get_params, :LLVMGetParams, [OpaqueValue, :pointer], :void
+  attach_function :get_params, :LLVMGetParams, [:pointer, :pointer], :void
   
   # Obtain the parameter at the specified index.
   # 
@@ -3955,11 +3978,11 @@ module LLVM::C
   # @see llvm::Function::arg_begin()
   # 
   # @method get_param(fn, index)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [Integer] index 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_param, :LLVMGetParam, [OpaqueValue, :uint], OpaqueValue
+  attach_function :get_param, :LLVMGetParam, [:pointer, :uint], :pointer
   
   # Obtain the function to which this argument belongs.
   # 
@@ -3970,30 +3993,30 @@ module LLVM::C
   # argument belongs.
   # 
   # @method get_param_parent(inst)
-  # @param [OpaqueValue] inst 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] inst 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_param_parent, :LLVMGetParamParent, [OpaqueValue], OpaqueValue
+  attach_function :get_param_parent, :LLVMGetParamParent, [:pointer], :pointer
   
   # Obtain the first parameter to a function.
   # 
   # @see llvm::Function::arg_begin()
   # 
   # @method get_first_param(fn)
-  # @param [OpaqueValue] fn 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_first_param, :LLVMGetFirstParam, [OpaqueValue], OpaqueValue
+  attach_function :get_first_param, :LLVMGetFirstParam, [:pointer], :pointer
   
   # Obtain the last parameter to a function.
   # 
   # @see llvm::Function::arg_end()
   # 
   # @method get_last_param(fn)
-  # @param [OpaqueValue] fn 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_last_param, :LLVMGetLastParam, [OpaqueValue], OpaqueValue
+  attach_function :get_last_param, :LLVMGetLastParam, [:pointer], :pointer
   
   # Obtain the next parameter to a function.
   # 
@@ -4002,50 +4025,50 @@ module LLVM::C
   # underlying iterator.
   # 
   # @method get_next_param(arg)
-  # @param [OpaqueValue] arg 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] arg 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_next_param, :LLVMGetNextParam, [OpaqueValue], OpaqueValue
+  attach_function :get_next_param, :LLVMGetNextParam, [:pointer], :pointer
   
   # Obtain the previous parameter to a function.
   # 
   # This is the opposite of LLVMGetNextParam().
   # 
   # @method get_previous_param(arg)
-  # @param [OpaqueValue] arg 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] arg 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_previous_param, :LLVMGetPreviousParam, [OpaqueValue], OpaqueValue
+  attach_function :get_previous_param, :LLVMGetPreviousParam, [:pointer], :pointer
   
   # Add an attribute to a function argument.
   # 
   # @see llvm::Argument::addAttr()
   # 
   # @method add_attribute(arg, pa)
-  # @param [OpaqueValue] arg 
+  # @param [FFI::Pointer(ValueRef)] arg 
   # @param [Symbol from _enum_attribute_] pa 
   # @return [nil] 
   # @scope class
-  attach_function :add_attribute, :LLVMAddAttribute, [OpaqueValue, :attribute], :void
+  attach_function :add_attribute, :LLVMAddAttribute, [:pointer, :attribute], :void
   
   # Remove an attribute from a function argument.
   # 
   # @see llvm::Argument::removeAttr()
   # 
   # @method remove_attribute(arg, pa)
-  # @param [OpaqueValue] arg 
+  # @param [FFI::Pointer(ValueRef)] arg 
   # @param [Symbol from _enum_attribute_] pa 
   # @return [nil] 
   # @scope class
-  attach_function :remove_attribute, :LLVMRemoveAttribute, [OpaqueValue, :attribute], :void
+  attach_function :remove_attribute, :LLVMRemoveAttribute, [:pointer, :attribute], :void
   
   # Get an attribute from a function argument.
   # 
   # @method get_attribute(arg)
-  # @param [OpaqueValue] arg 
+  # @param [FFI::Pointer(ValueRef)] arg 
   # @return [Symbol from _enum_attribute_] 
   # @scope class
-  attach_function :get_attribute, :LLVMGetAttribute, [OpaqueValue], :attribute
+  attach_function :get_attribute, :LLVMGetAttribute, [:pointer], :attribute
   
   # Set the alignment for a function parameter.
   # 
@@ -4053,11 +4076,11 @@ module LLVM::C
   # @see llvm::AttrBuilder::addAlignmentAttr()
   # 
   # @method set_param_alignment(arg, align)
-  # @param [OpaqueValue] arg 
+  # @param [FFI::Pointer(ValueRef)] arg 
   # @param [Integer] align 
   # @return [nil] 
   # @scope class
-  attach_function :set_param_alignment, :LLVMSetParamAlignment, [OpaqueValue, :uint], :void
+  attach_function :set_param_alignment, :LLVMSetParamAlignment, [:pointer, :uint], :void
   
   # Obtain a MDString value from a context.
   # 
@@ -4068,42 +4091,42 @@ module LLVM::C
   # this function returns.
   # 
   # @method md_string_in_context(c, str, s_len)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [String] str 
   # @param [Integer] s_len 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :md_string_in_context, :LLVMMDStringInContext, [OpaqueContext, :string, :uint], OpaqueValue
+  attach_function :md_string_in_context, :LLVMMDStringInContext, [:pointer, :string, :uint], :pointer
   
   # Obtain a MDString value from the global context.
   # 
   # @method md_string(str, s_len)
   # @param [String] str 
   # @param [Integer] s_len 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :md_string, :LLVMMDString, [:string, :uint], OpaqueValue
+  attach_function :md_string, :LLVMMDString, [:string, :uint], :pointer
   
   # Obtain a MDNode value from a context.
   # 
   # The returned value corresponds to the llvm::MDNode class.
   # 
   # @method md_node_in_context(c, vals, count)
-  # @param [OpaqueContext] c 
+  # @param [FFI::Pointer(ContextRef)] c 
   # @param [FFI::Pointer(*ValueRef)] vals 
   # @param [Integer] count 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :md_node_in_context, :LLVMMDNodeInContext, [OpaqueContext, :pointer, :uint], OpaqueValue
+  attach_function :md_node_in_context, :LLVMMDNodeInContext, [:pointer, :pointer, :uint], :pointer
   
   # Obtain a MDNode value from the global context.
   # 
   # @method md_node(vals, count)
   # @param [FFI::Pointer(*ValueRef)] vals 
   # @param [Integer] count 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :md_node, :LLVMMDNode, [:pointer, :uint], OpaqueValue
+  attach_function :md_node, :LLVMMDNode, [:pointer, :uint], :pointer
   
   # Obtain the underlying string from a MDString value.
   # 
@@ -4112,11 +4135,11 @@ module LLVM::C
   # @return String data in MDString.
   # 
   # @method get_md_string(v, len)
-  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [FFI::Pointer(*UInt)] len 
   # @return [String] 
   # @scope class
-  attach_function :get_md_string, :LLVMGetMDString, [OpaqueValue, :pointer], :string
+  attach_function :get_md_string, :LLVMGetMDString, [:pointer, :pointer], :string
   
   # Obtain the number of operands from an MDNode value.
   # 
@@ -4124,10 +4147,10 @@ module LLVM::C
   # @return Number of operands of the MDNode.
   # 
   # @method get_md_node_num_operands(v)
-  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @return [Integer] 
   # @scope class
-  attach_function :get_md_node_num_operands, :LLVMGetMDNodeNumOperands, [OpaqueValue], :uint
+  attach_function :get_md_node_num_operands, :LLVMGetMDNodeNumOperands, [:pointer], :uint
   
   # Obtain the given MDNode's operands.
   # 
@@ -4140,45 +4163,45 @@ module LLVM::C
   # @param Dest Destination array for operands.
   # 
   # @method get_md_node_operands(v, dest)
-  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [FFI::Pointer(*ValueRef)] dest 
   # @return [nil] 
   # @scope class
-  attach_function :get_md_node_operands, :LLVMGetMDNodeOperands, [OpaqueValue, :pointer], :void
+  attach_function :get_md_node_operands, :LLVMGetMDNodeOperands, [:pointer, :pointer], :void
   
   # Convert a basic block instance to a value type.
   # 
   # @method basic_block_as_value(bb)
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :basic_block_as_value, :LLVMBasicBlockAsValue, [OpaqueBasicBlock], OpaqueValue
+  attach_function :basic_block_as_value, :LLVMBasicBlockAsValue, [:pointer], :pointer
   
   # Determine whether an LLVMValueRef is itself a basic block.
   # 
   # @method value_is_basic_block(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [Integer] 
   # @scope class
-  attach_function :value_is_basic_block, :LLVMValueIsBasicBlock, [OpaqueValue], :int
+  attach_function :value_is_basic_block, :LLVMValueIsBasicBlock, [:pointer], :int
   
   # Convert an LLVMValueRef to an LLVMBasicBlockRef instance.
   # 
   # @method value_as_basic_block(val)
-  # @param [OpaqueValue] val 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :value_as_basic_block, :LLVMValueAsBasicBlock, [OpaqueValue], OpaqueBasicBlock
+  attach_function :value_as_basic_block, :LLVMValueAsBasicBlock, [:pointer], :pointer
   
   # Obtain the function to which a basic block belongs.
   # 
   # @see llvm::BasicBlock::getParent()
   # 
   # @method get_basic_block_parent(bb)
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_basic_block_parent, :LLVMGetBasicBlockParent, [OpaqueBasicBlock], OpaqueValue
+  attach_function :get_basic_block_parent, :LLVMGetBasicBlockParent, [:pointer], :pointer
   
   # Obtain the terminator instruction for a basic block.
   # 
@@ -4190,20 +4213,20 @@ module LLVM::C
   # @see llvm::BasicBlock::getTerminator()
   # 
   # @method get_basic_block_terminator(bb)
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_basic_block_terminator, :LLVMGetBasicBlockTerminator, [OpaqueBasicBlock], OpaqueValue
+  attach_function :get_basic_block_terminator, :LLVMGetBasicBlockTerminator, [:pointer], :pointer
   
   # Obtain the number of basic blocks in a function.
   # 
   # @param Fn Function value to operate on.
   # 
   # @method count_basic_blocks(fn)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @return [Integer] 
   # @scope class
-  attach_function :count_basic_blocks, :LLVMCountBasicBlocks, [OpaqueValue], :uint
+  attach_function :count_basic_blocks, :LLVMCountBasicBlocks, [:pointer], :uint
   
   # Obtain all of the basic blocks in a function.
   # 
@@ -4213,11 +4236,11 @@ module LLVM::C
   # LLVMBasicBlockRef instances.
   # 
   # @method get_basic_blocks(fn, basic_blocks)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [FFI::Pointer(*BasicBlockRef)] basic_blocks 
   # @return [nil] 
   # @scope class
-  attach_function :get_basic_blocks, :LLVMGetBasicBlocks, [OpaqueValue, :pointer], :void
+  attach_function :get_basic_blocks, :LLVMGetBasicBlocks, [:pointer, :pointer], :void
   
   # Obtain the first basic block in a function.
   # 
@@ -4227,36 +4250,36 @@ module LLVM::C
   # @see llvm::Function::begin()
   # 
   # @method get_first_basic_block(fn)
-  # @param [OpaqueValue] fn 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_first_basic_block, :LLVMGetFirstBasicBlock, [OpaqueValue], OpaqueBasicBlock
+  attach_function :get_first_basic_block, :LLVMGetFirstBasicBlock, [:pointer], :pointer
   
   # Obtain the last basic block in a function.
   # 
   # @see llvm::Function::end()
   # 
   # @method get_last_basic_block(fn)
-  # @param [OpaqueValue] fn 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_last_basic_block, :LLVMGetLastBasicBlock, [OpaqueValue], OpaqueBasicBlock
+  attach_function :get_last_basic_block, :LLVMGetLastBasicBlock, [:pointer], :pointer
   
   # Advance a basic block iterator.
   # 
   # @method get_next_basic_block(bb)
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_next_basic_block, :LLVMGetNextBasicBlock, [OpaqueBasicBlock], OpaqueBasicBlock
+  attach_function :get_next_basic_block, :LLVMGetNextBasicBlock, [:pointer], :pointer
   
   # Go backwards in a basic block iterator.
   # 
   # @method get_previous_basic_block(bb)
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_previous_basic_block, :LLVMGetPreviousBasicBlock, [OpaqueBasicBlock], OpaqueBasicBlock
+  attach_function :get_previous_basic_block, :LLVMGetPreviousBasicBlock, [:pointer], :pointer
   
   # Obtain the basic block that corresponds to the entry point of a
   # function.
@@ -4264,22 +4287,22 @@ module LLVM::C
   # @see llvm::Function::getEntryBlock()
   # 
   # @method get_entry_basic_block(fn)
-  # @param [OpaqueValue] fn 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(ValueRef)] fn 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_entry_basic_block, :LLVMGetEntryBasicBlock, [OpaqueValue], OpaqueBasicBlock
+  attach_function :get_entry_basic_block, :LLVMGetEntryBasicBlock, [:pointer], :pointer
   
   # Append a basic block to the end of a function.
   # 
   # @see llvm::BasicBlock::Create()
   # 
   # @method append_basic_block_in_context(c, fn, name)
-  # @param [OpaqueContext] c 
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [String] name 
-  # @return [OpaqueBasicBlock] 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :append_basic_block_in_context, :LLVMAppendBasicBlockInContext, [OpaqueContext, OpaqueValue, :string], OpaqueBasicBlock
+  attach_function :append_basic_block_in_context, :LLVMAppendBasicBlockInContext, [:pointer, :pointer, :string], :pointer
   
   # Append a basic block to the end of a function using the global
   # context.
@@ -4287,11 +4310,11 @@ module LLVM::C
   # @see llvm::BasicBlock::Create()
   # 
   # @method append_basic_block(fn, name)
-  # @param [OpaqueValue] fn 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [String] name 
-  # @return [OpaqueBasicBlock] 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :append_basic_block, :LLVMAppendBasicBlock, [OpaqueValue, :string], OpaqueBasicBlock
+  attach_function :append_basic_block, :LLVMAppendBasicBlock, [:pointer, :string], :pointer
   
   # Insert a basic block in a function before another basic block.
   # 
@@ -4301,23 +4324,23 @@ module LLVM::C
   # @see llvm::BasicBlock::Create()
   # 
   # @method insert_basic_block_in_context(c, bb, name)
-  # @param [OpaqueContext] c 
-  # @param [OpaqueBasicBlock] bb 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
   # @param [String] name 
-  # @return [OpaqueBasicBlock] 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :insert_basic_block_in_context, :LLVMInsertBasicBlockInContext, [OpaqueContext, OpaqueBasicBlock, :string], OpaqueBasicBlock
+  attach_function :insert_basic_block_in_context, :LLVMInsertBasicBlockInContext, [:pointer, :pointer, :string], :pointer
   
   # Insert a basic block in a function using the global context.
   # 
   # @see llvm::BasicBlock::Create()
   # 
   # @method insert_basic_block(insert_before_bb, name)
-  # @param [OpaqueBasicBlock] insert_before_bb 
+  # @param [FFI::Pointer(BasicBlockRef)] insert_before_bb 
   # @param [String] name 
-  # @return [OpaqueBasicBlock] 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :insert_basic_block, :LLVMInsertBasicBlock, [OpaqueBasicBlock, :string], OpaqueBasicBlock
+  attach_function :insert_basic_block, :LLVMInsertBasicBlock, [:pointer, :string], :pointer
   
   # Remove a basic block from a function and delete it.
   # 
@@ -4327,10 +4350,10 @@ module LLVM::C
   # @see llvm::BasicBlock::eraseFromParent()
   # 
   # @method delete_basic_block(bb)
-  # @param [OpaqueBasicBlock] bb 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
   # @return [nil] 
   # @scope class
-  attach_function :delete_basic_block, :LLVMDeleteBasicBlock, [OpaqueBasicBlock], :void
+  attach_function :delete_basic_block, :LLVMDeleteBasicBlock, [:pointer], :void
   
   # Remove a basic block from a function.
   # 
@@ -4340,32 +4363,32 @@ module LLVM::C
   # @see llvm::BasicBlock::removeFromParent()
   # 
   # @method remove_basic_block_from_parent(bb)
-  # @param [OpaqueBasicBlock] bb 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
   # @return [nil] 
   # @scope class
-  attach_function :remove_basic_block_from_parent, :LLVMRemoveBasicBlockFromParent, [OpaqueBasicBlock], :void
+  attach_function :remove_basic_block_from_parent, :LLVMRemoveBasicBlockFromParent, [:pointer], :void
   
   # Move a basic block to before another one.
   # 
   # @see llvm::BasicBlock::moveBefore()
   # 
   # @method move_basic_block_before(bb, move_pos)
-  # @param [OpaqueBasicBlock] bb 
-  # @param [OpaqueBasicBlock] move_pos 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @param [FFI::Pointer(BasicBlockRef)] move_pos 
   # @return [nil] 
   # @scope class
-  attach_function :move_basic_block_before, :LLVMMoveBasicBlockBefore, [OpaqueBasicBlock, OpaqueBasicBlock], :void
+  attach_function :move_basic_block_before, :LLVMMoveBasicBlockBefore, [:pointer, :pointer], :void
   
   # Move a basic block to after another one.
   # 
   # @see llvm::BasicBlock::moveAfter()
   # 
   # @method move_basic_block_after(bb, move_pos)
-  # @param [OpaqueBasicBlock] bb 
-  # @param [OpaqueBasicBlock] move_pos 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @param [FFI::Pointer(BasicBlockRef)] move_pos 
   # @return [nil] 
   # @scope class
-  attach_function :move_basic_block_after, :LLVMMoveBasicBlockAfter, [OpaqueBasicBlock, OpaqueBasicBlock], :void
+  attach_function :move_basic_block_after, :LLVMMoveBasicBlockAfter, [:pointer, :pointer], :void
   
   # Obtain the first instruction in a basic block.
   # 
@@ -4373,57 +4396,57 @@ module LLVM::C
   # instance.
   # 
   # @method get_first_instruction(bb)
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_first_instruction, :LLVMGetFirstInstruction, [OpaqueBasicBlock], OpaqueValue
+  attach_function :get_first_instruction, :LLVMGetFirstInstruction, [:pointer], :pointer
   
   # Obtain the last instruction in a basic block.
   # 
   # The returned LLVMValueRef corresponds to an LLVM:Instruction.
   # 
   # @method get_last_instruction(bb)
-  # @param [OpaqueBasicBlock] bb 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_last_instruction, :LLVMGetLastInstruction, [OpaqueBasicBlock], OpaqueValue
+  attach_function :get_last_instruction, :LLVMGetLastInstruction, [:pointer], :pointer
   
   # Determine whether an instruction has any metadata attached.
   # 
   # @method has_metadata(val)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @return [Integer] 
   # @scope class
-  attach_function :has_metadata, :LLVMHasMetadata, [OpaqueValue], :int
+  attach_function :has_metadata, :LLVMHasMetadata, [:pointer], :int
   
   # Return metadata associated with an instruction value.
   # 
   # @method get_metadata(val, kind_id)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [Integer] kind_id 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_metadata, :LLVMGetMetadata, [OpaqueValue, :uint], OpaqueValue
+  attach_function :get_metadata, :LLVMGetMetadata, [:pointer, :uint], :pointer
   
   # Set metadata associated with an instruction value.
   # 
   # @method set_metadata(val, kind_id, node)
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [Integer] kind_id 
-  # @param [OpaqueValue] node 
+  # @param [FFI::Pointer(ValueRef)] node 
   # @return [nil] 
   # @scope class
-  attach_function :set_metadata, :LLVMSetMetadata, [OpaqueValue, :uint, OpaqueValue], :void
+  attach_function :set_metadata, :LLVMSetMetadata, [:pointer, :uint, :pointer], :void
   
   # Obtain the basic block to which an instruction belongs.
   # 
   # @see llvm::Instruction::getParent()
   # 
   # @method get_instruction_parent(inst)
-  # @param [OpaqueValue] inst 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(ValueRef)] inst 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_instruction_parent, :LLVMGetInstructionParent, [OpaqueValue], OpaqueBasicBlock
+  attach_function :get_instruction_parent, :LLVMGetInstructionParent, [:pointer], :pointer
   
   # Obtain the instruction that occurs after the one specified.
   # 
@@ -4433,10 +4456,10 @@ module LLVM::C
   # returned.
   # 
   # @method get_next_instruction(inst)
-  # @param [OpaqueValue] inst 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] inst 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_next_instruction, :LLVMGetNextInstruction, [OpaqueValue], OpaqueValue
+  attach_function :get_next_instruction, :LLVMGetNextInstruction, [:pointer], :pointer
   
   # Obtain the instruction that occurred before this one.
   # 
@@ -4444,10 +4467,10 @@ module LLVM::C
   # will be returned.
   # 
   # @method get_previous_instruction(inst)
-  # @param [OpaqueValue] inst 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] inst 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_previous_instruction, :LLVMGetPreviousInstruction, [OpaqueValue], OpaqueValue
+  attach_function :get_previous_instruction, :LLVMGetPreviousInstruction, [:pointer], :pointer
   
   # Remove and delete an instruction.
   # 
@@ -4457,20 +4480,20 @@ module LLVM::C
   # @see llvm::Instruction::eraseFromParent()
   # 
   # @method instruction_erase_from_parent(inst)
-  # @param [OpaqueValue] inst 
+  # @param [FFI::Pointer(ValueRef)] inst 
   # @return [nil] 
   # @scope class
-  attach_function :instruction_erase_from_parent, :LLVMInstructionEraseFromParent, [OpaqueValue], :void
+  attach_function :instruction_erase_from_parent, :LLVMInstructionEraseFromParent, [:pointer], :void
   
   # Obtain the code opcode for an individual instruction.
   # 
   # @see llvm::Instruction::getOpCode()
   # 
   # @method get_instruction_opcode(inst)
-  # @param [OpaqueValue] inst 
+  # @param [FFI::Pointer(ValueRef)] inst 
   # @return [Symbol from _enum_opcode_] 
   # @scope class
-  attach_function :get_instruction_opcode, :LLVMGetInstructionOpcode, [OpaqueValue], :opcode
+  attach_function :get_instruction_opcode, :LLVMGetInstructionOpcode, [:pointer], :opcode
   
   # Obtain the predicate of an instruction.
   # 
@@ -4480,10 +4503,10 @@ module LLVM::C
   # @see llvm::ICmpInst::getPredicate()
   # 
   # @method get_i_cmp_predicate(inst)
-  # @param [OpaqueValue] inst 
+  # @param [FFI::Pointer(ValueRef)] inst 
   # @return [Symbol from _enum_int_predicate_] 
   # @scope class
-  attach_function :get_i_cmp_predicate, :LLVMGetICmpPredicate, [OpaqueValue], :int_predicate
+  attach_function :get_i_cmp_predicate, :LLVMGetICmpPredicate, [:pointer], :int_predicate
   
   # Obtain the float predicate of an instruction.
   # 
@@ -4493,10 +4516,10 @@ module LLVM::C
   # @see llvm::FCmpInst::getPredicate()
   # 
   # @method get_f_cmp_predicate(inst)
-  # @param [OpaqueValue] inst 
+  # @param [FFI::Pointer(ValueRef)] inst 
   # @return [Symbol from _enum_real_predicate_] 
   # @scope class
-  attach_function :get_f_cmp_predicate, :LLVMGetFCmpPredicate, [OpaqueValue], :real_predicate
+  attach_function :get_f_cmp_predicate, :LLVMGetFCmpPredicate, [:pointer], :real_predicate
   
   # Create a copy of 'this' instruction that is identical in all ways
   # except the following:
@@ -4506,10 +4529,10 @@ module LLVM::C
   # @see llvm::Instruction::clone()
   # 
   # @method instruction_clone(inst)
-  # @param [OpaqueValue] inst 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] inst 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :instruction_clone, :LLVMInstructionClone, [OpaqueValue], OpaqueValue
+  attach_function :instruction_clone, :LLVMInstructionClone, [:pointer], :pointer
   
   # Set the calling convention for a call instruction.
   # 
@@ -4520,11 +4543,11 @@ module LLVM::C
   # @see llvm::InvokeInst::setCallingConv()
   # 
   # @method set_instruction_call_conv(instr, cc)
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @param [Integer] cc 
   # @return [nil] 
   # @scope class
-  attach_function :set_instruction_call_conv, :LLVMSetInstructionCallConv, [OpaqueValue, :uint], :void
+  attach_function :set_instruction_call_conv, :LLVMSetInstructionCallConv, [:pointer, :uint], :void
   
   # Obtain the calling convention for a call instruction.
   # 
@@ -4534,40 +4557,40 @@ module LLVM::C
   # @see LLVMSetInstructionCallConv()
   # 
   # @method get_instruction_call_conv(instr)
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @return [Integer] 
   # @scope class
-  attach_function :get_instruction_call_conv, :LLVMGetInstructionCallConv, [OpaqueValue], :uint
+  attach_function :get_instruction_call_conv, :LLVMGetInstructionCallConv, [:pointer], :uint
   
   # (Not documented)
   # 
   # @method add_instr_attribute(instr, index, attribute)
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @param [Integer] index 
   # @param [Symbol from _enum_attribute_] attribute 
   # @return [nil] 
   # @scope class
-  attach_function :add_instr_attribute, :LLVMAddInstrAttribute, [OpaqueValue, :uint, :attribute], :void
+  attach_function :add_instr_attribute, :LLVMAddInstrAttribute, [:pointer, :uint, :attribute], :void
   
   # (Not documented)
   # 
   # @method remove_instr_attribute(instr, index, attribute)
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @param [Integer] index 
   # @param [Symbol from _enum_attribute_] attribute 
   # @return [nil] 
   # @scope class
-  attach_function :remove_instr_attribute, :LLVMRemoveInstrAttribute, [OpaqueValue, :uint, :attribute], :void
+  attach_function :remove_instr_attribute, :LLVMRemoveInstrAttribute, [:pointer, :uint, :attribute], :void
   
   # (Not documented)
   # 
   # @method set_instr_param_alignment(instr, index, align)
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @param [Integer] index 
   # @param [Integer] align 
   # @return [nil] 
   # @scope class
-  attach_function :set_instr_param_alignment, :LLVMSetInstrParamAlignment, [OpaqueValue, :uint, :uint], :void
+  attach_function :set_instr_param_alignment, :LLVMSetInstrParamAlignment, [:pointer, :uint, :uint], :void
   
   # Obtain whether a call instruction is a tail call.
   # 
@@ -4576,10 +4599,10 @@ module LLVM::C
   # @see llvm::CallInst::isTailCall()
   # 
   # @method is_tail_call(call_inst)
-  # @param [OpaqueValue] call_inst 
+  # @param [FFI::Pointer(ValueRef)] call_inst 
   # @return [Integer] 
   # @scope class
-  attach_function :is_tail_call, :LLVMIsTailCall, [OpaqueValue], :int
+  attach_function :is_tail_call, :LLVMIsTailCall, [:pointer], :int
   
   # Set whether a call instruction is a tail call.
   # 
@@ -4588,44 +4611,44 @@ module LLVM::C
   # @see llvm::CallInst::setTailCall()
   # 
   # @method set_tail_call(call_inst, is_tail_call)
-  # @param [OpaqueValue] call_inst 
+  # @param [FFI::Pointer(ValueRef)] call_inst 
   # @param [Integer] is_tail_call 
   # @return [nil] 
   # @scope class
-  attach_function :set_tail_call, :LLVMSetTailCall, [OpaqueValue, :int], :void
+  attach_function :set_tail_call, :LLVMSetTailCall, [:pointer, :int], :void
   
   # Return the number of successors that this terminator has.
   # 
   # @see llvm::TerminatorInst::getNumSuccessors
   # 
   # @method get_num_successors(term)
-  # @param [OpaqueValue] term 
+  # @param [FFI::Pointer(ValueRef)] term 
   # @return [Integer] 
   # @scope class
-  attach_function :get_num_successors, :LLVMGetNumSuccessors, [OpaqueValue], :uint
+  attach_function :get_num_successors, :LLVMGetNumSuccessors, [:pointer], :uint
   
   # Return the specified successor.
   # 
   # @see llvm::TerminatorInst::getSuccessor
   # 
   # @method get_successor(term, i)
-  # @param [OpaqueValue] term 
+  # @param [FFI::Pointer(ValueRef)] term 
   # @param [Integer] i 
-  # @return [OpaqueBasicBlock] 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_successor, :LLVMGetSuccessor, [OpaqueValue, :uint], OpaqueBasicBlock
+  attach_function :get_successor, :LLVMGetSuccessor, [:pointer, :uint], :pointer
   
   # Update the specified successor to point at the provided block.
   # 
   # @see llvm::TerminatorInst::setSuccessor
   # 
   # @method set_successor(term, i, block)
-  # @param [OpaqueValue] term 
+  # @param [FFI::Pointer(ValueRef)] term 
   # @param [Integer] i 
-  # @param [OpaqueBasicBlock] block 
+  # @param [FFI::Pointer(BasicBlockRef)] block 
   # @return [nil] 
   # @scope class
-  attach_function :set_successor, :LLVMSetSuccessor, [OpaqueValue, :uint, OpaqueBasicBlock], :void
+  attach_function :set_successor, :LLVMSetSuccessor, [:pointer, :uint, :pointer], :void
   
   # Return if a branch is conditional.
   # 
@@ -4634,10 +4657,10 @@ module LLVM::C
   # @see llvm::BranchInst::isConditional
   # 
   # @method is_conditional(branch)
-  # @param [OpaqueValue] branch 
+  # @param [FFI::Pointer(ValueRef)] branch 
   # @return [Integer] 
   # @scope class
-  attach_function :is_conditional, :LLVMIsConditional, [OpaqueValue], :int
+  attach_function :is_conditional, :LLVMIsConditional, [:pointer], :int
   
   # Return the condition of a branch instruction.
   # 
@@ -4646,10 +4669,10 @@ module LLVM::C
   # @see llvm::BranchInst::getCondition
   # 
   # @method get_condition(branch)
-  # @param [OpaqueValue] branch 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(ValueRef)] branch 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_condition, :LLVMGetCondition, [OpaqueValue], OpaqueValue
+  attach_function :get_condition, :LLVMGetCondition, [:pointer], :pointer
   
   # Set the condition of a branch instruction.
   # 
@@ -4658,11 +4681,11 @@ module LLVM::C
   # @see llvm::BranchInst::setCondition
   # 
   # @method set_condition(branch, cond)
-  # @param [OpaqueValue] branch 
-  # @param [OpaqueValue] cond 
+  # @param [FFI::Pointer(ValueRef)] branch 
+  # @param [FFI::Pointer(ValueRef)] cond 
   # @return [nil] 
   # @scope class
-  attach_function :set_condition, :LLVMSetCondition, [OpaqueValue, OpaqueValue], :void
+  attach_function :set_condition, :LLVMSetCondition, [:pointer, :pointer], :void
   
   # Obtain the default destination basic block of a switch instruction.
   # 
@@ -4671,47 +4694,47 @@ module LLVM::C
   # @see llvm::SwitchInst::getDefaultDest()
   # 
   # @method get_switch_default_dest(switch_instr)
-  # @param [OpaqueValue] switch_instr 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(ValueRef)] switch_instr 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_switch_default_dest, :LLVMGetSwitchDefaultDest, [OpaqueValue], OpaqueBasicBlock
+  attach_function :get_switch_default_dest, :LLVMGetSwitchDefaultDest, [:pointer], :pointer
   
   # Add an incoming value to the end of a PHI list.
   # 
   # @method add_incoming(phi_node, incoming_values, incoming_blocks, count)
-  # @param [OpaqueValue] phi_node 
+  # @param [FFI::Pointer(ValueRef)] phi_node 
   # @param [FFI::Pointer(*ValueRef)] incoming_values 
   # @param [FFI::Pointer(*BasicBlockRef)] incoming_blocks 
   # @param [Integer] count 
   # @return [nil] 
   # @scope class
-  attach_function :add_incoming, :LLVMAddIncoming, [OpaqueValue, :pointer, :pointer, :uint], :void
+  attach_function :add_incoming, :LLVMAddIncoming, [:pointer, :pointer, :pointer, :uint], :void
   
   # Obtain the number of incoming basic blocks to a PHI node.
   # 
   # @method count_incoming(phi_node)
-  # @param [OpaqueValue] phi_node 
+  # @param [FFI::Pointer(ValueRef)] phi_node 
   # @return [Integer] 
   # @scope class
-  attach_function :count_incoming, :LLVMCountIncoming, [OpaqueValue], :uint
+  attach_function :count_incoming, :LLVMCountIncoming, [:pointer], :uint
   
   # Obtain an incoming value to a PHI node as an LLVMValueRef.
   # 
   # @method get_incoming_value(phi_node, index)
-  # @param [OpaqueValue] phi_node 
+  # @param [FFI::Pointer(ValueRef)] phi_node 
   # @param [Integer] index 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_incoming_value, :LLVMGetIncomingValue, [OpaqueValue, :uint], OpaqueValue
+  attach_function :get_incoming_value, :LLVMGetIncomingValue, [:pointer, :uint], :pointer
   
   # Obtain an incoming value to a PHI node as an LLVMBasicBlockRef.
   # 
   # @method get_incoming_block(phi_node, index)
-  # @param [OpaqueValue] phi_node 
+  # @param [FFI::Pointer(ValueRef)] phi_node 
   # @param [Integer] index 
-  # @return [OpaqueBasicBlock] 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_incoming_block, :LLVMGetIncomingBlock, [OpaqueValue, :uint], OpaqueBasicBlock
+  attach_function :get_incoming_block, :LLVMGetIncomingBlock, [:pointer, :uint], :pointer
   
   # @defgroup LLVMCCoreInstructionBuilder Instruction Builders
   # 
@@ -4721,1162 +4744,1179 @@ module LLVM::C
   # @{
   # 
   # @method create_builder_in_context(c)
-  # @param [OpaqueContext] c 
-  # @return [OpaqueBuilder] 
+  # @param [FFI::Pointer(ContextRef)] c 
+  # @return [FFI::Pointer(BuilderRef)] 
   # @scope class
-  attach_function :create_builder_in_context, :LLVMCreateBuilderInContext, [OpaqueContext], OpaqueBuilder
+  attach_function :create_builder_in_context, :LLVMCreateBuilderInContext, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method create_builder()
-  # @return [OpaqueBuilder] 
+  # @return [FFI::Pointer(BuilderRef)] 
   # @scope class
-  attach_function :create_builder, :LLVMCreateBuilder, [], OpaqueBuilder
+  attach_function :create_builder, :LLVMCreateBuilder, [], :pointer
   
   # (Not documented)
   # 
   # @method position_builder(builder, block, instr)
-  # @param [OpaqueBuilder] builder 
-  # @param [OpaqueBasicBlock] block 
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @param [FFI::Pointer(BasicBlockRef)] block 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @return [nil] 
   # @scope class
-  attach_function :position_builder, :LLVMPositionBuilder, [OpaqueBuilder, OpaqueBasicBlock, OpaqueValue], :void
+  attach_function :position_builder, :LLVMPositionBuilder, [:pointer, :pointer, :pointer], :void
   
   # (Not documented)
   # 
   # @method position_builder_before(builder, instr)
-  # @param [OpaqueBuilder] builder 
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @return [nil] 
   # @scope class
-  attach_function :position_builder_before, :LLVMPositionBuilderBefore, [OpaqueBuilder, OpaqueValue], :void
+  attach_function :position_builder_before, :LLVMPositionBuilderBefore, [:pointer, :pointer], :void
   
   # (Not documented)
   # 
   # @method position_builder_at_end(builder, block)
-  # @param [OpaqueBuilder] builder 
-  # @param [OpaqueBasicBlock] block 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @param [FFI::Pointer(BasicBlockRef)] block 
   # @return [nil] 
   # @scope class
-  attach_function :position_builder_at_end, :LLVMPositionBuilderAtEnd, [OpaqueBuilder, OpaqueBasicBlock], :void
+  attach_function :position_builder_at_end, :LLVMPositionBuilderAtEnd, [:pointer, :pointer], :void
   
   # (Not documented)
   # 
   # @method get_insert_block(builder)
-  # @param [OpaqueBuilder] builder 
-  # @return [OpaqueBasicBlock] 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @return [FFI::Pointer(BasicBlockRef)] 
   # @scope class
-  attach_function :get_insert_block, :LLVMGetInsertBlock, [OpaqueBuilder], OpaqueBasicBlock
+  attach_function :get_insert_block, :LLVMGetInsertBlock, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method clear_insertion_position(builder)
-  # @param [OpaqueBuilder] builder 
+  # @param [FFI::Pointer(BuilderRef)] builder 
   # @return [nil] 
   # @scope class
-  attach_function :clear_insertion_position, :LLVMClearInsertionPosition, [OpaqueBuilder], :void
+  attach_function :clear_insertion_position, :LLVMClearInsertionPosition, [:pointer], :void
   
   # (Not documented)
   # 
   # @method insert_into_builder(builder, instr)
-  # @param [OpaqueBuilder] builder 
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @return [nil] 
   # @scope class
-  attach_function :insert_into_builder, :LLVMInsertIntoBuilder, [OpaqueBuilder, OpaqueValue], :void
+  attach_function :insert_into_builder, :LLVMInsertIntoBuilder, [:pointer, :pointer], :void
   
   # (Not documented)
   # 
   # @method insert_into_builder_with_name(builder, instr, name)
-  # @param [OpaqueBuilder] builder 
-  # @param [OpaqueValue] instr 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @param [FFI::Pointer(ValueRef)] instr 
   # @param [String] name 
   # @return [nil] 
   # @scope class
-  attach_function :insert_into_builder_with_name, :LLVMInsertIntoBuilderWithName, [OpaqueBuilder, OpaqueValue, :string], :void
+  attach_function :insert_into_builder_with_name, :LLVMInsertIntoBuilderWithName, [:pointer, :pointer, :string], :void
   
   # (Not documented)
   # 
   # @method dispose_builder(builder)
-  # @param [OpaqueBuilder] builder 
+  # @param [FFI::Pointer(BuilderRef)] builder 
   # @return [nil] 
   # @scope class
-  attach_function :dispose_builder, :LLVMDisposeBuilder, [OpaqueBuilder], :void
+  attach_function :dispose_builder, :LLVMDisposeBuilder, [:pointer], :void
   
   # Metadata
   # 
   # @method set_current_debug_location(builder, l)
-  # @param [OpaqueBuilder] builder 
-  # @param [OpaqueValue] l 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @param [FFI::Pointer(ValueRef)] l 
   # @return [nil] 
   # @scope class
-  attach_function :set_current_debug_location, :LLVMSetCurrentDebugLocation, [OpaqueBuilder, OpaqueValue], :void
+  attach_function :set_current_debug_location, :LLVMSetCurrentDebugLocation, [:pointer, :pointer], :void
   
   # (Not documented)
   # 
   # @method get_current_debug_location(builder)
-  # @param [OpaqueBuilder] builder 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :get_current_debug_location, :LLVMGetCurrentDebugLocation, [OpaqueBuilder], OpaqueValue
+  attach_function :get_current_debug_location, :LLVMGetCurrentDebugLocation, [:pointer], :pointer
   
   # (Not documented)
   # 
   # @method set_inst_debug_location(builder, inst)
-  # @param [OpaqueBuilder] builder 
-  # @param [OpaqueValue] inst 
+  # @param [FFI::Pointer(BuilderRef)] builder 
+  # @param [FFI::Pointer(ValueRef)] inst 
   # @return [nil] 
   # @scope class
-  attach_function :set_inst_debug_location, :LLVMSetInstDebugLocation, [OpaqueBuilder, OpaqueValue], :void
+  attach_function :set_inst_debug_location, :LLVMSetInstDebugLocation, [:pointer, :pointer], :void
   
   # Terminators
   # 
-  # @method build_ret_void(opaque_builder)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @return [OpaqueValue] 
+  # @method build_ret_void(builder_ref)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_ret_void, :LLVMBuildRetVoid, [OpaqueBuilder], OpaqueValue
+  attach_function :build_ret_void, :LLVMBuildRetVoid, [:pointer], :pointer
   
   # (Not documented)
   # 
-  # @method build_ret(opaque_builder, v)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] v 
-  # @return [OpaqueValue] 
+  # @method build_ret(builder_ref, v)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] v 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_ret, :LLVMBuildRet, [OpaqueBuilder, OpaqueValue], OpaqueValue
+  attach_function :build_ret, :LLVMBuildRet, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
-  # @method build_aggregate_ret(opaque_builder, ret_vals, n)
-  # @param [OpaqueBuilder] opaque_builder 
+  # @method build_aggregate_ret(builder_ref, ret_vals, n)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
   # @param [FFI::Pointer(*ValueRef)] ret_vals 
   # @param [Integer] n 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_aggregate_ret, :LLVMBuildAggregateRet, [OpaqueBuilder, :pointer, :uint], OpaqueValue
+  attach_function :build_aggregate_ret, :LLVMBuildAggregateRet, [:pointer, :pointer, :uint], :pointer
   
   # (Not documented)
   # 
-  # @method build_br(opaque_builder, dest)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueBasicBlock] dest 
-  # @return [OpaqueValue] 
+  # @method build_br(builder_ref, dest)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(BasicBlockRef)] dest 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_br, :LLVMBuildBr, [OpaqueBuilder, OpaqueBasicBlock], OpaqueValue
+  attach_function :build_br, :LLVMBuildBr, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
-  # @method build_cond_br(opaque_builder, if_, then_, else_)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] if_ 
-  # @param [OpaqueBasicBlock] then_ 
-  # @param [OpaqueBasicBlock] else_ 
-  # @return [OpaqueValue] 
+  # @method build_cond_br(builder_ref, if_, then_, else_)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] if_ 
+  # @param [FFI::Pointer(BasicBlockRef)] then_ 
+  # @param [FFI::Pointer(BasicBlockRef)] else_ 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_cond_br, :LLVMBuildCondBr, [OpaqueBuilder, OpaqueValue, OpaqueBasicBlock, OpaqueBasicBlock], OpaqueValue
+  attach_function :build_cond_br, :LLVMBuildCondBr, [:pointer, :pointer, :pointer, :pointer], :pointer
   
   # (Not documented)
   # 
-  # @method build_switch(opaque_builder, v, else_, num_cases)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] v 
-  # @param [OpaqueBasicBlock] else_ 
+  # @method build_switch(builder_ref, v, else_, num_cases)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] v 
+  # @param [FFI::Pointer(BasicBlockRef)] else_ 
   # @param [Integer] num_cases 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_switch, :LLVMBuildSwitch, [OpaqueBuilder, OpaqueValue, OpaqueBasicBlock, :uint], OpaqueValue
+  attach_function :build_switch, :LLVMBuildSwitch, [:pointer, :pointer, :pointer, :uint], :pointer
   
   # (Not documented)
   # 
   # @method build_indirect_br(b, addr, num_dests)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueValue] addr 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(ValueRef)] addr 
   # @param [Integer] num_dests 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_indirect_br, :LLVMBuildIndirectBr, [OpaqueBuilder, OpaqueValue, :uint], OpaqueValue
+  attach_function :build_indirect_br, :LLVMBuildIndirectBr, [:pointer, :pointer, :uint], :pointer
   
   # (Not documented)
   # 
-  # @method build_invoke(opaque_builder, fn, args, num_args, then_, catch, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] fn 
+  # @method build_invoke(builder_ref, fn, args, num_args, then_, catch, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [FFI::Pointer(*ValueRef)] args 
   # @param [Integer] num_args 
-  # @param [OpaqueBasicBlock] then_ 
-  # @param [OpaqueBasicBlock] catch 
+  # @param [FFI::Pointer(BasicBlockRef)] then_ 
+  # @param [FFI::Pointer(BasicBlockRef)] catch 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_invoke, :LLVMBuildInvoke, [OpaqueBuilder, OpaqueValue, :pointer, :uint, OpaqueBasicBlock, OpaqueBasicBlock, :string], OpaqueValue
+  attach_function :build_invoke, :LLVMBuildInvoke, [:pointer, :pointer, :pointer, :uint, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_landing_pad(b, ty, pers_fn, num_clauses, name)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueType] ty 
-  # @param [OpaqueValue] pers_fn 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @param [FFI::Pointer(ValueRef)] pers_fn 
   # @param [Integer] num_clauses 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_landing_pad, :LLVMBuildLandingPad, [OpaqueBuilder, OpaqueType, OpaqueValue, :uint, :string], OpaqueValue
+  attach_function :build_landing_pad, :LLVMBuildLandingPad, [:pointer, :pointer, :pointer, :uint, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_resume(b, exn)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueValue] exn 
-  # @return [OpaqueValue] 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(ValueRef)] exn 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_resume, :LLVMBuildResume, [OpaqueBuilder, OpaqueValue], OpaqueValue
+  attach_function :build_resume, :LLVMBuildResume, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
-  # @method build_unreachable(opaque_builder)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @return [OpaqueValue] 
+  # @method build_unreachable(builder_ref)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_unreachable, :LLVMBuildUnreachable, [OpaqueBuilder], OpaqueValue
+  attach_function :build_unreachable, :LLVMBuildUnreachable, [:pointer], :pointer
   
   # Add a case to the switch instruction
   # 
   # @method add_case(switch, on_val, dest)
-  # @param [OpaqueValue] switch 
-  # @param [OpaqueValue] on_val 
-  # @param [OpaqueBasicBlock] dest 
+  # @param [FFI::Pointer(ValueRef)] switch 
+  # @param [FFI::Pointer(ValueRef)] on_val 
+  # @param [FFI::Pointer(BasicBlockRef)] dest 
   # @return [nil] 
   # @scope class
-  attach_function :add_case, :LLVMAddCase, [OpaqueValue, OpaqueValue, OpaqueBasicBlock], :void
+  attach_function :add_case, :LLVMAddCase, [:pointer, :pointer, :pointer], :void
   
   # Add a destination to the indirectbr instruction
   # 
   # @method add_destination(indirect_br, dest)
-  # @param [OpaqueValue] indirect_br 
-  # @param [OpaqueBasicBlock] dest 
+  # @param [FFI::Pointer(ValueRef)] indirect_br 
+  # @param [FFI::Pointer(BasicBlockRef)] dest 
   # @return [nil] 
   # @scope class
-  attach_function :add_destination, :LLVMAddDestination, [OpaqueValue, OpaqueBasicBlock], :void
+  attach_function :add_destination, :LLVMAddDestination, [:pointer, :pointer], :void
   
   # Add a catch or filter clause to the landingpad instruction
   # 
   # @method add_clause(landing_pad, clause_val)
-  # @param [OpaqueValue] landing_pad 
-  # @param [OpaqueValue] clause_val 
+  # @param [FFI::Pointer(ValueRef)] landing_pad 
+  # @param [FFI::Pointer(ValueRef)] clause_val 
   # @return [nil] 
   # @scope class
-  attach_function :add_clause, :LLVMAddClause, [OpaqueValue, OpaqueValue], :void
+  attach_function :add_clause, :LLVMAddClause, [:pointer, :pointer], :void
   
   # Set the 'cleanup' flag in the landingpad instruction
   # 
   # @method set_cleanup(landing_pad, val)
-  # @param [OpaqueValue] landing_pad 
+  # @param [FFI::Pointer(ValueRef)] landing_pad 
   # @param [Integer] val 
   # @return [nil] 
   # @scope class
-  attach_function :set_cleanup, :LLVMSetCleanup, [OpaqueValue, :int], :void
+  attach_function :set_cleanup, :LLVMSetCleanup, [:pointer, :int], :void
   
   # Arithmetic
   # 
-  # @method build_add(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_add(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_add, :LLVMBuildAdd, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_add, :LLVMBuildAdd, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_nsw_add(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_nsw_add(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nsw_add, :LLVMBuildNSWAdd, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nsw_add, :LLVMBuildNSWAdd, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_nuw_add(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_nuw_add(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nuw_add, :LLVMBuildNUWAdd, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nuw_add, :LLVMBuildNUWAdd, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_f_add(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_f_add(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_f_add, :LLVMBuildFAdd, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_f_add, :LLVMBuildFAdd, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_sub(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_sub(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_sub, :LLVMBuildSub, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_sub, :LLVMBuildSub, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_nsw_sub(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_nsw_sub(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nsw_sub, :LLVMBuildNSWSub, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nsw_sub, :LLVMBuildNSWSub, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_nuw_sub(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_nuw_sub(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nuw_sub, :LLVMBuildNUWSub, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nuw_sub, :LLVMBuildNUWSub, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_f_sub(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_f_sub(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_f_sub, :LLVMBuildFSub, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_f_sub, :LLVMBuildFSub, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_mul(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_mul(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_mul, :LLVMBuildMul, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_mul, :LLVMBuildMul, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_nsw_mul(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_nsw_mul(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nsw_mul, :LLVMBuildNSWMul, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nsw_mul, :LLVMBuildNSWMul, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_nuw_mul(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_nuw_mul(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nuw_mul, :LLVMBuildNUWMul, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nuw_mul, :LLVMBuildNUWMul, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_f_mul(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_f_mul(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_f_mul, :LLVMBuildFMul, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_f_mul, :LLVMBuildFMul, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_u_div(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_u_div(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_u_div, :LLVMBuildUDiv, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_u_div, :LLVMBuildUDiv, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_s_div(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_s_div(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_s_div, :LLVMBuildSDiv, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_s_div, :LLVMBuildSDiv, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_exact_s_div(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_exact_s_div(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_exact_s_div, :LLVMBuildExactSDiv, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_exact_s_div, :LLVMBuildExactSDiv, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_f_div(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_f_div(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_f_div, :LLVMBuildFDiv, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_f_div, :LLVMBuildFDiv, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_u_rem(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_u_rem(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_u_rem, :LLVMBuildURem, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_u_rem, :LLVMBuildURem, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_s_rem(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_s_rem(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_s_rem, :LLVMBuildSRem, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_s_rem, :LLVMBuildSRem, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_f_rem(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_f_rem(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_f_rem, :LLVMBuildFRem, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_f_rem, :LLVMBuildFRem, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_shl(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_shl(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_shl, :LLVMBuildShl, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_shl, :LLVMBuildShl, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_l_shr(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_l_shr(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_l_shr, :LLVMBuildLShr, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_l_shr, :LLVMBuildLShr, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_a_shr(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_a_shr(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_a_shr, :LLVMBuildAShr, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_a_shr, :LLVMBuildAShr, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_and(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_and(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_and, :LLVMBuildAnd, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_and, :LLVMBuildAnd, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_or(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_or(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_or, :LLVMBuildOr, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_or, :LLVMBuildOr, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_xor(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_xor(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_xor, :LLVMBuildXor, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_xor, :LLVMBuildXor, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_bin_op(b, op, lhs, rhs, name)
-  # @param [OpaqueBuilder] b 
+  # @param [FFI::Pointer(BuilderRef)] b 
   # @param [Symbol from _enum_opcode_] op 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_bin_op, :LLVMBuildBinOp, [OpaqueBuilder, :opcode, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_bin_op, :LLVMBuildBinOp, [:pointer, :opcode, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_neg(opaque_builder, v, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] v 
+  # @method build_neg(builder_ref, v, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_neg, :LLVMBuildNeg, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_neg, :LLVMBuildNeg, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_nsw_neg(b, v, name)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nsw_neg, :LLVMBuildNSWNeg, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nsw_neg, :LLVMBuildNSWNeg, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_nuw_neg(b, v, name)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueValue] v 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_nuw_neg, :LLVMBuildNUWNeg, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_nuw_neg, :LLVMBuildNUWNeg, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_f_neg(opaque_builder, v, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] v 
+  # @method build_f_neg(builder_ref, v, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_f_neg, :LLVMBuildFNeg, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_f_neg, :LLVMBuildFNeg, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_not(opaque_builder, v, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] v 
+  # @method build_not(builder_ref, v, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] v 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_not, :LLVMBuildNot, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_not, :LLVMBuildNot, [:pointer, :pointer, :string], :pointer
   
   # Memory
   # 
-  # @method build_malloc(opaque_builder, ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueType] ty 
+  # @method build_malloc(builder_ref, ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_malloc, :LLVMBuildMalloc, [OpaqueBuilder, OpaqueType, :string], OpaqueValue
+  attach_function :build_malloc, :LLVMBuildMalloc, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_array_malloc(opaque_builder, ty, val, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueType] ty 
-  # @param [OpaqueValue] val 
+  # @method build_array_malloc(builder_ref, ty, val, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_array_malloc, :LLVMBuildArrayMalloc, [OpaqueBuilder, OpaqueType, OpaqueValue, :string], OpaqueValue
+  attach_function :build_array_malloc, :LLVMBuildArrayMalloc, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_alloca(opaque_builder, ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueType] ty 
+  # @method build_alloca(builder_ref, ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_alloca, :LLVMBuildAlloca, [OpaqueBuilder, OpaqueType, :string], OpaqueValue
+  attach_function :build_alloca, :LLVMBuildAlloca, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_array_alloca(opaque_builder, ty, val, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueType] ty 
-  # @param [OpaqueValue] val 
+  # @method build_array_alloca(builder_ref, ty, val, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(TypeRef)] ty 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_array_alloca, :LLVMBuildArrayAlloca, [OpaqueBuilder, OpaqueType, OpaqueValue, :string], OpaqueValue
+  attach_function :build_array_alloca, :LLVMBuildArrayAlloca, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_free(opaque_builder, pointer_val)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] pointer_val 
-  # @return [OpaqueValue] 
+  # @method build_free(builder_ref, pointer_val)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] pointer_val 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_free, :LLVMBuildFree, [OpaqueBuilder, OpaqueValue], OpaqueValue
+  attach_function :build_free, :LLVMBuildFree, [:pointer, :pointer], :pointer
   
   # (Not documented)
   # 
-  # @method build_load(opaque_builder, pointer_val, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] pointer_val 
+  # @method build_load(builder_ref, pointer_val, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] pointer_val 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_load, :LLVMBuildLoad, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_load, :LLVMBuildLoad, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_store(opaque_builder, val, ptr)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueValue] ptr 
-  # @return [OpaqueValue] 
+  # @method build_store(builder_ref, val, ptr)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(ValueRef)] ptr 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_store, :LLVMBuildStore, [OpaqueBuilder, OpaqueValue, OpaqueValue], OpaqueValue
+  attach_function :build_store, :LLVMBuildStore, [:pointer, :pointer, :pointer], :pointer
   
   # (Not documented)
   # 
   # @method build_gep(b, pointer, indices, num_indices, name)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueValue] pointer 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(ValueRef)] pointer 
   # @param [FFI::Pointer(*ValueRef)] indices 
   # @param [Integer] num_indices 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_gep, :LLVMBuildGEP, [OpaqueBuilder, OpaqueValue, :pointer, :uint, :string], OpaqueValue
+  attach_function :build_gep, :LLVMBuildGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_in_bounds_gep(b, pointer, indices, num_indices, name)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueValue] pointer 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(ValueRef)] pointer 
   # @param [FFI::Pointer(*ValueRef)] indices 
   # @param [Integer] num_indices 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_in_bounds_gep, :LLVMBuildInBoundsGEP, [OpaqueBuilder, OpaqueValue, :pointer, :uint, :string], OpaqueValue
+  attach_function :build_in_bounds_gep, :LLVMBuildInBoundsGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_struct_gep(b, pointer, idx, name)
-  # @param [OpaqueBuilder] b 
-  # @param [OpaqueValue] pointer 
+  # @param [FFI::Pointer(BuilderRef)] b 
+  # @param [FFI::Pointer(ValueRef)] pointer 
   # @param [Integer] idx 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_struct_gep, :LLVMBuildStructGEP, [OpaqueBuilder, OpaqueValue, :uint, :string], OpaqueValue
+  attach_function :build_struct_gep, :LLVMBuildStructGEP, [:pointer, :pointer, :uint, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_global_string(b, str, name)
-  # @param [OpaqueBuilder] b 
+  # @param [FFI::Pointer(BuilderRef)] b 
   # @param [String] str 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_global_string, :LLVMBuildGlobalString, [OpaqueBuilder, :string, :string], OpaqueValue
+  attach_function :build_global_string, :LLVMBuildGlobalString, [:pointer, :string, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_global_string_ptr(b, str, name)
-  # @param [OpaqueBuilder] b 
+  # @param [FFI::Pointer(BuilderRef)] b 
   # @param [String] str 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_global_string_ptr, :LLVMBuildGlobalStringPtr, [OpaqueBuilder, :string, :string], OpaqueValue
+  attach_function :build_global_string_ptr, :LLVMBuildGlobalStringPtr, [:pointer, :string, :string], :pointer
   
   # (Not documented)
   # 
   # @method get_volatile(memory_access_inst)
-  # @param [OpaqueValue] memory_access_inst 
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
   # @return [Integer] 
   # @scope class
-  attach_function :get_volatile, :LLVMGetVolatile, [OpaqueValue], :int
+  attach_function :get_volatile, :LLVMGetVolatile, [:pointer], :int
   
   # (Not documented)
   # 
   # @method set_volatile(memory_access_inst, is_volatile)
-  # @param [OpaqueValue] memory_access_inst 
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
   # @param [Integer] is_volatile 
   # @return [nil] 
   # @scope class
-  attach_function :set_volatile, :LLVMSetVolatile, [OpaqueValue, :int], :void
+  attach_function :set_volatile, :LLVMSetVolatile, [:pointer, :int], :void
+  
+  # (Not documented)
+  # 
+  # @method get_ordering(memory_access_inst)
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
+  # @return [Symbol from _enum_atomic_ordering_] 
+  # @scope class
+  attach_function :get_ordering, :LLVMGetOrdering, [:pointer], :atomic_ordering
+  
+  # (Not documented)
+  # 
+  # @method set_ordering(memory_access_inst, ordering)
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
+  # @param [Symbol from _enum_atomic_ordering_] ordering 
+  # @return [nil] 
+  # @scope class
+  attach_function :set_ordering, :LLVMSetOrdering, [:pointer, :atomic_ordering], :void
   
   # Casts
   # 
-  # @method build_trunc(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_trunc(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_trunc, :LLVMBuildTrunc, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_trunc, :LLVMBuildTrunc, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_z_ext(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_z_ext(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_z_ext, :LLVMBuildZExt, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_z_ext, :LLVMBuildZExt, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_s_ext(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_s_ext(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_s_ext, :LLVMBuildSExt, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_s_ext, :LLVMBuildSExt, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_fp_to_ui(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_fp_to_ui(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_fp_to_ui, :LLVMBuildFPToUI, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_fp_to_ui, :LLVMBuildFPToUI, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_fp_to_si(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_fp_to_si(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_fp_to_si, :LLVMBuildFPToSI, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_fp_to_si, :LLVMBuildFPToSI, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_ui_to_fp(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_ui_to_fp(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_ui_to_fp, :LLVMBuildUIToFP, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_ui_to_fp, :LLVMBuildUIToFP, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_si_to_fp(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_si_to_fp(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_si_to_fp, :LLVMBuildSIToFP, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_si_to_fp, :LLVMBuildSIToFP, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_fp_trunc(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_fp_trunc(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_fp_trunc, :LLVMBuildFPTrunc, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_fp_trunc, :LLVMBuildFPTrunc, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_fp_ext(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_fp_ext(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_fp_ext, :LLVMBuildFPExt, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_fp_ext, :LLVMBuildFPExt, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_ptr_to_int(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_ptr_to_int(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_ptr_to_int, :LLVMBuildPtrToInt, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_ptr_to_int, :LLVMBuildPtrToInt, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_int_to_ptr(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_int_to_ptr(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_int_to_ptr, :LLVMBuildIntToPtr, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_int_to_ptr, :LLVMBuildIntToPtr, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_bit_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_bit_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_bit_cast, :LLVMBuildBitCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_bit_cast, :LLVMBuildBitCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_addr_space_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_addr_space_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_addr_space_cast, :LLVMBuildAddrSpaceCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_addr_space_cast, :LLVMBuildAddrSpaceCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_z_ext_or_bit_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_z_ext_or_bit_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_z_ext_or_bit_cast, :LLVMBuildZExtOrBitCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_z_ext_or_bit_cast, :LLVMBuildZExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_s_ext_or_bit_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_s_ext_or_bit_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_s_ext_or_bit_cast, :LLVMBuildSExtOrBitCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_s_ext_or_bit_cast, :LLVMBuildSExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_trunc_or_bit_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_trunc_or_bit_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_trunc_or_bit_cast, :LLVMBuildTruncOrBitCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_trunc_or_bit_cast, :LLVMBuildTruncOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_cast(b, op, val, dest_ty, name)
-  # @param [OpaqueBuilder] b 
+  # @param [FFI::Pointer(BuilderRef)] b 
   # @param [Symbol from _enum_opcode_] op 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_cast, :LLVMBuildCast, [OpaqueBuilder, :opcode, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_cast, :LLVMBuildCast, [:pointer, :opcode, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_pointer_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_pointer_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_pointer_cast, :LLVMBuildPointerCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_pointer_cast, :LLVMBuildPointerCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_int_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_int_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_int_cast, :LLVMBuildIntCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_int_cast, :LLVMBuildIntCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_fp_cast(opaque_builder, val, dest_ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
-  # @param [OpaqueType] dest_ty 
+  # @method build_fp_cast(builder_ref, val, dest_ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
+  # @param [FFI::Pointer(TypeRef)] dest_ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_fp_cast, :LLVMBuildFPCast, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_fp_cast, :LLVMBuildFPCast, [:pointer, :pointer, :pointer, :string], :pointer
   
   # Comparisons
   # 
-  # @method build_i_cmp(opaque_builder, op, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
+  # @method build_i_cmp(builder_ref, op, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
   # @param [Symbol from _enum_int_predicate_] op 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_i_cmp, :LLVMBuildICmp, [OpaqueBuilder, :int_predicate, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_i_cmp, :LLVMBuildICmp, [:pointer, :int_predicate, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_f_cmp(opaque_builder, op, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
+  # @method build_f_cmp(builder_ref, op, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
   # @param [Symbol from _enum_real_predicate_] op 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_f_cmp, :LLVMBuildFCmp, [OpaqueBuilder, :real_predicate, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_f_cmp, :LLVMBuildFCmp, [:pointer, :real_predicate, :pointer, :pointer, :string], :pointer
   
   # Miscellaneous instructions
   # 
-  # @method build_phi(opaque_builder, ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueType] ty 
+  # @method build_phi(builder_ref, ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_phi, :LLVMBuildPhi, [OpaqueBuilder, OpaqueType, :string], OpaqueValue
+  attach_function :build_phi, :LLVMBuildPhi, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_call(opaque_builder, fn, args, num_args, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] fn 
+  # @method build_call(builder_ref, fn, args, num_args, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] fn 
   # @param [FFI::Pointer(*ValueRef)] args 
   # @param [Integer] num_args 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_call, :LLVMBuildCall, [OpaqueBuilder, OpaqueValue, :pointer, :uint, :string], OpaqueValue
+  attach_function :build_call, :LLVMBuildCall, [:pointer, :pointer, :pointer, :uint, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_select(opaque_builder, if_, then_, else_, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] if_ 
-  # @param [OpaqueValue] then_ 
-  # @param [OpaqueValue] else_ 
+  # @method build_select(builder_ref, if_, then_, else_, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] if_ 
+  # @param [FFI::Pointer(ValueRef)] then_ 
+  # @param [FFI::Pointer(ValueRef)] else_ 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_select, :LLVMBuildSelect, [OpaqueBuilder, OpaqueValue, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_select, :LLVMBuildSelect, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_va_arg(opaque_builder, list, ty, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] list 
-  # @param [OpaqueType] ty 
+  # @method build_va_arg(builder_ref, list, ty, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] list 
+  # @param [FFI::Pointer(TypeRef)] ty 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_va_arg, :LLVMBuildVAArg, [OpaqueBuilder, OpaqueValue, OpaqueType, :string], OpaqueValue
+  attach_function :build_va_arg, :LLVMBuildVAArg, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_extract_element(opaque_builder, vec_val, index, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] vec_val 
-  # @param [OpaqueValue] index 
+  # @method build_extract_element(builder_ref, vec_val, index, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] vec_val 
+  # @param [FFI::Pointer(ValueRef)] index 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_extract_element, :LLVMBuildExtractElement, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_extract_element, :LLVMBuildExtractElement, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_insert_element(opaque_builder, vec_val, elt_val, index, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] vec_val 
-  # @param [OpaqueValue] elt_val 
-  # @param [OpaqueValue] index 
+  # @method build_insert_element(builder_ref, vec_val, elt_val, index, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] vec_val 
+  # @param [FFI::Pointer(ValueRef)] elt_val 
+  # @param [FFI::Pointer(ValueRef)] index 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_insert_element, :LLVMBuildInsertElement, [OpaqueBuilder, OpaqueValue, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_insert_element, :LLVMBuildInsertElement, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_shuffle_vector(opaque_builder, v1, v2, mask, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] v1 
-  # @param [OpaqueValue] v2 
-  # @param [OpaqueValue] mask 
+  # @method build_shuffle_vector(builder_ref, v1, v2, mask, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] v1 
+  # @param [FFI::Pointer(ValueRef)] v2 
+  # @param [FFI::Pointer(ValueRef)] mask 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_shuffle_vector, :LLVMBuildShuffleVector, [OpaqueBuilder, OpaqueValue, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_shuffle_vector, :LLVMBuildShuffleVector, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_extract_value(opaque_builder, agg_val, index, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] agg_val 
+  # @method build_extract_value(builder_ref, agg_val, index, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] agg_val 
   # @param [Integer] index 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_extract_value, :LLVMBuildExtractValue, [OpaqueBuilder, OpaqueValue, :uint, :string], OpaqueValue
+  attach_function :build_extract_value, :LLVMBuildExtractValue, [:pointer, :pointer, :uint, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_insert_value(opaque_builder, agg_val, elt_val, index, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] agg_val 
-  # @param [OpaqueValue] elt_val 
+  # @method build_insert_value(builder_ref, agg_val, elt_val, index, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] agg_val 
+  # @param [FFI::Pointer(ValueRef)] elt_val 
   # @param [Integer] index 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_insert_value, :LLVMBuildInsertValue, [OpaqueBuilder, OpaqueValue, OpaqueValue, :uint, :string], OpaqueValue
+  attach_function :build_insert_value, :LLVMBuildInsertValue, [:pointer, :pointer, :pointer, :uint, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_is_null(opaque_builder, val, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
+  # @method build_is_null(builder_ref, val, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_is_null, :LLVMBuildIsNull, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_is_null, :LLVMBuildIsNull, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_is_not_null(opaque_builder, val, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] val 
+  # @method build_is_not_null(builder_ref, val, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_is_not_null, :LLVMBuildIsNotNull, [OpaqueBuilder, OpaqueValue, :string], OpaqueValue
+  attach_function :build_is_not_null, :LLVMBuildIsNotNull, [:pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
-  # @method build_ptr_diff(opaque_builder, lhs, rhs, name)
-  # @param [OpaqueBuilder] opaque_builder 
-  # @param [OpaqueValue] lhs 
-  # @param [OpaqueValue] rhs 
+  # @method build_ptr_diff(builder_ref, lhs, rhs, name)
+  # @param [FFI::Pointer(BuilderRef)] builder_ref 
+  # @param [FFI::Pointer(ValueRef)] lhs 
+  # @param [FFI::Pointer(ValueRef)] rhs 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_ptr_diff, :LLVMBuildPtrDiff, [OpaqueBuilder, OpaqueValue, OpaqueValue, :string], OpaqueValue
+  attach_function :build_ptr_diff, :LLVMBuildPtrDiff, [:pointer, :pointer, :pointer, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_fence(b, ordering, single_thread, name)
-  # @param [OpaqueBuilder] b 
+  # @param [FFI::Pointer(BuilderRef)] b 
   # @param [Symbol from _enum_atomic_ordering_] ordering 
   # @param [Integer] single_thread 
   # @param [String] name 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_fence, :LLVMBuildFence, [OpaqueBuilder, :atomic_ordering, :int, :string], OpaqueValue
+  attach_function :build_fence, :LLVMBuildFence, [:pointer, :atomic_ordering, :int, :string], :pointer
   
   # (Not documented)
   # 
   # @method build_atomic_rmw(b, op, ptr, val, ordering, single_thread)
-  # @param [OpaqueBuilder] b 
+  # @param [FFI::Pointer(BuilderRef)] b 
   # @param [Symbol from _enum_atomic_rmw_bin_op_] op 
-  # @param [OpaqueValue] ptr 
-  # @param [OpaqueValue] val 
+  # @param [FFI::Pointer(ValueRef)] ptr 
+  # @param [FFI::Pointer(ValueRef)] val 
   # @param [Symbol from _enum_atomic_ordering_] ordering 
   # @param [Integer] single_thread 
-  # @return [OpaqueValue] 
+  # @return [FFI::Pointer(ValueRef)] 
   # @scope class
-  attach_function :build_atomic_rmw, :LLVMBuildAtomicRMW, [OpaqueBuilder, :atomic_rmw_bin_op, OpaqueValue, OpaqueValue, :atomic_ordering, :int], OpaqueValue
+  attach_function :build_atomic_rmw, :LLVMBuildAtomicRMW, [:pointer, :atomic_rmw_bin_op, :pointer, :pointer, :atomic_ordering, :int], :pointer
   
   # Changes the type of M so it can be passed to FunctionPassManagers and the
   # JIT.  They take ModuleProviders for historical reasons.
   # 
   # @method create_module_provider_for_existing_module(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaqueModuleProvider] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(ModuleProviderRef)] 
   # @scope class
-  attach_function :create_module_provider_for_existing_module, :LLVMCreateModuleProviderForExistingModule, [OpaqueModule], OpaqueModuleProvider
+  attach_function :create_module_provider_for_existing_module, :LLVMCreateModuleProviderForExistingModule, [:pointer], :pointer
   
   # Destroys the module M.
   # 
   # @method dispose_module_provider(m)
-  # @param [OpaqueModuleProvider] m 
+  # @param [FFI::Pointer(ModuleProviderRef)] m 
   # @return [nil] 
   # @scope class
-  attach_function :dispose_module_provider, :LLVMDisposeModuleProvider, [OpaqueModuleProvider], :void
+  attach_function :dispose_module_provider, :LLVMDisposeModuleProvider, [:pointer], :void
   
   # @defgroup LLVMCCoreMemoryBuffers Memory Buffers
   # 
@@ -5906,9 +5946,9 @@ module LLVM::C
   # @param [Integer] input_data_length 
   # @param [String] buffer_name 
   # @param [Integer] requires_null_terminator 
-  # @return [OpaqueMemoryBuffer] 
+  # @return [FFI::Pointer(MemoryBufferRef)] 
   # @scope class
-  attach_function :create_memory_buffer_with_memory_range, :LLVMCreateMemoryBufferWithMemoryRange, [:string, :ulong, :string, :int], OpaqueMemoryBuffer
+  attach_function :create_memory_buffer_with_memory_range, :LLVMCreateMemoryBufferWithMemoryRange, [:string, :ulong, :string, :int], :pointer
   
   # (Not documented)
   # 
@@ -5916,50 +5956,50 @@ module LLVM::C
   # @param [String] input_data 
   # @param [Integer] input_data_length 
   # @param [String] buffer_name 
-  # @return [OpaqueMemoryBuffer] 
+  # @return [FFI::Pointer(MemoryBufferRef)] 
   # @scope class
-  attach_function :create_memory_buffer_with_memory_range_copy, :LLVMCreateMemoryBufferWithMemoryRangeCopy, [:string, :ulong, :string], OpaqueMemoryBuffer
+  attach_function :create_memory_buffer_with_memory_range_copy, :LLVMCreateMemoryBufferWithMemoryRangeCopy, [:string, :ulong, :string], :pointer
   
   # (Not documented)
   # 
   # @method get_buffer_start(mem_buf)
-  # @param [OpaqueMemoryBuffer] mem_buf 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
   # @return [String] 
   # @scope class
-  attach_function :get_buffer_start, :LLVMGetBufferStart, [OpaqueMemoryBuffer], :string
+  attach_function :get_buffer_start, :LLVMGetBufferStart, [:pointer], :string
   
   # (Not documented)
   # 
   # @method get_buffer_size(mem_buf)
-  # @param [OpaqueMemoryBuffer] mem_buf 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
   # @return [Integer] 
   # @scope class
-  attach_function :get_buffer_size, :LLVMGetBufferSize, [OpaqueMemoryBuffer], :ulong
+  attach_function :get_buffer_size, :LLVMGetBufferSize, [:pointer], :ulong
   
   # (Not documented)
   # 
   # @method dispose_memory_buffer(mem_buf)
-  # @param [OpaqueMemoryBuffer] mem_buf 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
   # @return [nil] 
   # @scope class
-  attach_function :dispose_memory_buffer, :LLVMDisposeMemoryBuffer, [OpaqueMemoryBuffer], :void
+  attach_function :dispose_memory_buffer, :LLVMDisposeMemoryBuffer, [:pointer], :void
   
   # Return the global pass registry, for use with initialization functions.
   #     @see llvm::PassRegistry::getPassRegistry
   # 
   # @method get_global_pass_registry()
-  # @return [OpaquePassRegistry] 
+  # @return [FFI::Pointer(PassRegistryRef)] 
   # @scope class
-  attach_function :get_global_pass_registry, :LLVMGetGlobalPassRegistry, [], OpaquePassRegistry
+  attach_function :get_global_pass_registry, :LLVMGetGlobalPassRegistry, [], :pointer
   
   # Constructs a new whole-module pass pipeline. This type of pipeline is
   #     suitable for link-time optimization and whole-module transformations.
   #     @see llvm::PassManager::PassManager
   # 
   # @method create_pass_manager()
-  # @return [OpaquePassManager] 
+  # @return [FFI::Pointer(PassManagerRef)] 
   # @scope class
-  attach_function :create_pass_manager, :LLVMCreatePassManager, [], OpaquePassManager
+  attach_function :create_pass_manager, :LLVMCreatePassManager, [], :pointer
   
   # Constructs a new function-by-function pass pipeline over the module
   #     provider. It does not take ownership of the module provider. This type of
@@ -5967,18 +6007,18 @@ module LLVM::C
   #     @see llvm::FunctionPassManager::FunctionPassManager
   # 
   # @method create_function_pass_manager_for_module(m)
-  # @param [OpaqueModule] m 
-  # @return [OpaquePassManager] 
+  # @param [FFI::Pointer(ModuleRef)] m 
+  # @return [FFI::Pointer(PassManagerRef)] 
   # @scope class
-  attach_function :create_function_pass_manager_for_module, :LLVMCreateFunctionPassManagerForModule, [OpaqueModule], OpaquePassManager
+  attach_function :create_function_pass_manager_for_module, :LLVMCreateFunctionPassManagerForModule, [:pointer], :pointer
   
   # Deprecated: Use LLVMCreateFunctionPassManagerForModule instead.
   # 
   # @method create_function_pass_manager(mp)
-  # @param [OpaqueModuleProvider] mp 
-  # @return [OpaquePassManager] 
+  # @param [FFI::Pointer(ModuleProviderRef)] mp 
+  # @return [FFI::Pointer(PassManagerRef)] 
   # @scope class
-  attach_function :create_function_pass_manager, :LLVMCreateFunctionPassManager, [OpaqueModuleProvider], OpaquePassManager
+  attach_function :create_function_pass_manager, :LLVMCreateFunctionPassManager, [:pointer], :pointer
   
   # Initializes, executes on the provided module, and finalizes all of the
   #     passes scheduled in the pass manager. Returns 1 if any of the passes
@@ -5986,21 +6026,21 @@ module LLVM::C
   #     @see llvm::PassManager::run(Module&)
   # 
   # @method run_pass_manager(pm, m)
-  # @param [OpaquePassManager] pm 
-  # @param [OpaqueModule] m 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
+  # @param [FFI::Pointer(ModuleRef)] m 
   # @return [Integer] 
   # @scope class
-  attach_function :run_pass_manager, :LLVMRunPassManager, [OpaquePassManager, OpaqueModule], :int
+  attach_function :run_pass_manager, :LLVMRunPassManager, [:pointer, :pointer], :int
   
   # Initializes all of the function passes scheduled in the function pass
   #     manager. Returns 1 if any of the passes modified the module, 0 otherwise.
   #     @see llvm::FunctionPassManager::doInitialization
   # 
   # @method initialize_function_pass_manager(fpm)
-  # @param [OpaquePassManager] fpm 
+  # @param [FFI::Pointer(PassManagerRef)] fpm 
   # @return [Integer] 
   # @scope class
-  attach_function :initialize_function_pass_manager, :LLVMInitializeFunctionPassManager, [OpaquePassManager], :int
+  attach_function :initialize_function_pass_manager, :LLVMInitializeFunctionPassManager, [:pointer], :int
   
   # Executes all of the function passes scheduled in the function pass manager
   #     on the provided function. Returns 1 if any of the passes modified the
@@ -6008,31 +6048,31 @@ module LLVM::C
   #     @see llvm::FunctionPassManager::run(Function&)
   # 
   # @method run_function_pass_manager(fpm, f)
-  # @param [OpaquePassManager] fpm 
-  # @param [OpaqueValue] f 
+  # @param [FFI::Pointer(PassManagerRef)] fpm 
+  # @param [FFI::Pointer(ValueRef)] f 
   # @return [Integer] 
   # @scope class
-  attach_function :run_function_pass_manager, :LLVMRunFunctionPassManager, [OpaquePassManager, OpaqueValue], :int
+  attach_function :run_function_pass_manager, :LLVMRunFunctionPassManager, [:pointer, :pointer], :int
   
   # Finalizes all of the function passes scheduled in in the function pass
   #     manager. Returns 1 if any of the passes modified the module, 0 otherwise.
   #     @see llvm::FunctionPassManager::doFinalization
   # 
   # @method finalize_function_pass_manager(fpm)
-  # @param [OpaquePassManager] fpm 
+  # @param [FFI::Pointer(PassManagerRef)] fpm 
   # @return [Integer] 
   # @scope class
-  attach_function :finalize_function_pass_manager, :LLVMFinalizeFunctionPassManager, [OpaquePassManager], :int
+  attach_function :finalize_function_pass_manager, :LLVMFinalizeFunctionPassManager, [:pointer], :int
   
   # Frees the memory of a pass pipeline. For function pipelines, does not free
   #     the module provider.
   #     @see llvm::PassManagerBase::~PassManagerBase.
   # 
   # @method dispose_pass_manager(pm)
-  # @param [OpaquePassManager] pm 
+  # @param [FFI::Pointer(PassManagerRef)] pm 
   # @return [nil] 
   # @scope class
-  attach_function :dispose_pass_manager, :LLVMDisposePassManager, [OpaquePassManager], :void
+  attach_function :dispose_pass_manager, :LLVMDisposePassManager, [:pointer], :void
   
   # Deprecated: Multi-threading can only be enabled/disabled with the compile
   #     time define LLVM_ENABLE_THREADS.  This function always returns
