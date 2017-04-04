@@ -56,9 +56,6 @@ class TargetTestCase < Minitest::Test
     assert_equal 'x86-linux-gnu', mach.triple
     assert_equal 'i686', mach.cpu
     assert_equal '', mach.features
-
-    layout = mach.data_layout
-    assert_equal 'e-m:e-p:32:32-f64:32:64-f80:32-n8:16:32-S128', layout.to_s
   end
 
   def test_emit
@@ -81,20 +78,6 @@ class TargetTestCase < Minitest::Test
       mach.emit(mod, tmp.path, :object)
       assert_match %r{\x66\x31\xc0}, File.read(tmp.path, mode: 'rb')
     end
-  end
-
-  def test_module_properties
-    mod = LLVM::Module.new('mod')
-
-    assert_equal '', mod.triple
-
-    mod.triple = 'x86-linux-gnu'
-    assert_equal 'x86-linux-gnu', mod.triple
-
-    assert_equal '', mod.data_layout
-
-    mod.data_layout = 'e-p:32:32'
-    assert_equal 'e-p:32:32', mod.data_layout
   end
 
   def test_data_layout

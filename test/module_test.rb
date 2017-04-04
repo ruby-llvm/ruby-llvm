@@ -54,7 +54,9 @@ class ModuleTestCase < Minitest::Test
 
   def test_to_s
     mod = LLVM::Module.new('test_print')
-    assert_equal mod.to_s, "; ModuleID = 'test_print'\n"
+    puts mod.to_s.inspect
+    assert_equal mod.to_s,
+      "; ModuleID = 'test_print'\nsource_filename = \"test_print\"\n"
   end
 
   def test_dump
@@ -73,6 +75,20 @@ class ModuleTestCase < Minitest::Test
         $stderr.reopen(stderr_old)
       end
     end
+  end
+
+  def test_module_properties
+    mod = LLVM::Module.new('mod')
+
+    assert_equal '', mod.triple
+
+    mod.triple = 'x86-linux-gnu'
+    assert_equal 'x86-linux-gnu', mod.triple
+
+    assert_equal '', mod.data_layout
+
+    mod.data_layout = 'e-p:32:32'
+    assert_equal 'e-p:32:32', mod.data_layout
   end
 
 end
