@@ -9,7 +9,7 @@ module LLVM
     # @return [nil, String] human-readable error if linking has failed
     def link_into(other)
       LLVM.with_message_output do |msg|
-        C.link_modules(other, self, 0, msg)
+        C.link_modules2(other, self)
       end
     end
   end
