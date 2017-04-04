@@ -192,13 +192,6 @@ module LLVM
       C.get_target_machine_feature_string(self)
     end
 
-    # Returns the data layout used for this target machine.
-    #
-    # @return [TargetDataLayout]
-    def data_layout
-      TargetDataLayout.from_ptr(C.get_target_machine_data(self))
-    end
-
     # Emits an asm or object file for the given module.
     #
     # @param [Symbol] codegen :assembly, :object
