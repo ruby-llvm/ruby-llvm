@@ -54,7 +54,6 @@ class ModuleTestCase < Minitest::Test
 
   def test_to_s
     mod = LLVM::Module.new('test_print')
-    puts mod.to_s.inspect
     assert_equal mod.to_s,
       "; ModuleID = 'test_print'\nsource_filename = \"test_print\"\n"
   end
