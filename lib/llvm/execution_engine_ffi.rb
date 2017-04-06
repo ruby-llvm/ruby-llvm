@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-3.6.so.1", "LLVM-3.6"]
+  ffi_lib ["libLLVM-3.8.so.1", "LLVM-3.8"]
   
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -200,37 +200,6 @@ module LLVM::C
   # @scope class
   attach_function :create_mcjit_compiler_for_module, :LLVMCreateMCJITCompilerForModule, [:pointer, :pointer, MCJITCompilerOptions, :ulong, :pointer], :int
   
-  # Deprecated: Use LLVMCreateExecutionEngineForModule instead.
-  # 
-  # @method create_execution_engine(out_ee, mp, out_error)
-  # @param [FFI::Pointer(*ExecutionEngineRef)] out_ee 
-  # @param [FFI::Pointer(ModuleProviderRef)] mp 
-  # @param [FFI::Pointer(**CharS)] out_error 
-  # @return [Integer] 
-  # @scope class
-  attach_function :create_execution_engine, :LLVMCreateExecutionEngine, [:pointer, :pointer, :pointer], :int
-  
-  # Deprecated: Use LLVMCreateInterpreterForModule instead.
-  # 
-  # @method create_interpreter(out_interp, mp, out_error)
-  # @param [FFI::Pointer(*ExecutionEngineRef)] out_interp 
-  # @param [FFI::Pointer(ModuleProviderRef)] mp 
-  # @param [FFI::Pointer(**CharS)] out_error 
-  # @return [Integer] 
-  # @scope class
-  attach_function :create_interpreter, :LLVMCreateInterpreter, [:pointer, :pointer, :pointer], :int
-  
-  # Deprecated: Use LLVMCreateJITCompilerForModule instead.
-  # 
-  # @method create_jit_compiler(out_jit, mp, opt_level, out_error)
-  # @param [FFI::Pointer(*ExecutionEngineRef)] out_jit 
-  # @param [FFI::Pointer(ModuleProviderRef)] mp 
-  # @param [Integer] opt_level 
-  # @param [FFI::Pointer(**CharS)] out_error 
-  # @return [Integer] 
-  # @scope class
-  attach_function :create_jit_compiler, :LLVMCreateJITCompiler, [:pointer, :pointer, :uint, :pointer], :int
-  
   # (Not documented)
   # 
   # @method dispose_execution_engine(ee)
@@ -296,15 +265,6 @@ module LLVM::C
   # @scope class
   attach_function :add_module, :LLVMAddModule, [OpaqueExecutionEngine, :pointer], :void
   
-  # Deprecated: Use LLVMAddModule instead.
-  # 
-  # @method add_module_provider(ee, mp)
-  # @param [OpaqueExecutionEngine] ee 
-  # @param [FFI::Pointer(ModuleProviderRef)] mp 
-  # @return [nil] 
-  # @scope class
-  attach_function :add_module_provider, :LLVMAddModuleProvider, [OpaqueExecutionEngine, :pointer], :void
-  
   # (Not documented)
   # 
   # @method remove_module(ee, m, out_mod, out_error)
@@ -315,17 +275,6 @@ module LLVM::C
   # @return [Integer] 
   # @scope class
   attach_function :remove_module, :LLVMRemoveModule, [OpaqueExecutionEngine, :pointer, :pointer, :pointer], :int
-  
-  # Deprecated: Use LLVMRemoveModule instead.
-  # 
-  # @method remove_module_provider(ee, mp, out_mod, out_error)
-  # @param [OpaqueExecutionEngine] ee 
-  # @param [FFI::Pointer(ModuleProviderRef)] mp 
-  # @param [FFI::Pointer(*ModuleRef)] out_mod 
-  # @param [FFI::Pointer(**CharS)] out_error 
-  # @return [Integer] 
-  # @scope class
-  attach_function :remove_module_provider, :LLVMRemoveModuleProvider, [OpaqueExecutionEngine, :pointer, :pointer, :pointer], :int
   
   # (Not documented)
   # 
@@ -403,7 +352,8 @@ module LLVM::C
   # 
   # <em>This entry is only for documentation and no real method.</em>
   # 
-  # @method _callback_memory_manager_allocate_code_section_callback_(opaque, size, alignment, section_id, section_name)
+  # @method _callback_memory_manager_allocate_code_section_callback_(uint8_t, opaque, size, alignment, section_id, section_name)
+  # @param [Integer] uint8_t 
   # @param [FFI::Pointer(*Void)] opaque 
   # @param [Integer] size 
   # @param [Integer] alignment 
@@ -411,13 +361,14 @@ module LLVM::C
   # @param [String] section_name 
   # @return [Integer] 
   # @scope class
-  callback :memory_manager_allocate_code_section_callback, [:pointer, :ulong, :uint, :uint, :string], :uchar
+  callback :memory_manager_allocate_code_section_callback, [:uchar, :pointer, :ulong, :uint, :uint, :string], :uchar
   
   # (Not documented)
   # 
   # <em>This entry is only for documentation and no real method.</em>
   # 
-  # @method _callback_memory_manager_allocate_data_section_callback_(opaque, size, alignment, section_id, section_name, is_read_only)
+  # @method _callback_memory_manager_allocate_data_section_callback_(uint8_t, opaque, size, alignment, section_id, section_name, is_read_only)
+  # @param [Integer] uint8_t 
   # @param [FFI::Pointer(*Void)] opaque 
   # @param [Integer] size 
   # @param [Integer] alignment 
@@ -426,18 +377,19 @@ module LLVM::C
   # @param [Integer] is_read_only 
   # @return [Integer] 
   # @scope class
-  callback :memory_manager_allocate_data_section_callback, [:pointer, :ulong, :uint, :uint, :string, :int], :uchar
+  callback :memory_manager_allocate_data_section_callback, [:uchar, :pointer, :ulong, :uint, :uint, :string, :int], :uchar
   
   # (Not documented)
   # 
   # <em>This entry is only for documentation and no real method.</em>
   # 
-  # @method _callback_memory_manager_finalize_memory_callback_(opaque, err_msg)
+  # @method _callback_memory_manager_finalize_memory_callback_(bool, opaque, err_msg)
+  # @param [Integer] bool 
   # @param [FFI::Pointer(*Void)] opaque 
   # @param [FFI::Pointer(**CharS)] err_msg 
   # @return [Integer] 
   # @scope class
-  callback :memory_manager_finalize_memory_callback, [:pointer, :pointer], :int
+  callback :memory_manager_finalize_memory_callback, [:int, :pointer, :pointer], :int
   
   # Create a simple custom MCJIT memory manager. This memory manager can
   # intercept allocations in a module-oblivious way. This will return NULL
