@@ -7,7 +7,6 @@ module LLVM
     # @param [LLVM::ExecutionEngine, LLVM::TargetMachine] machine
     def initialize(machine)
       @ptr = C.create_pass_manager()
-      C.add_target_data(machine.data_layout, @ptr)
     end
 
     # @private
