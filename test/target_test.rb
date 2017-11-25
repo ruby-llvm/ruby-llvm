@@ -87,7 +87,7 @@ class TargetTestCase < Minitest::Test
     desc = "e-p:32:32:32-S0-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:32:64-f16:16:16-f32:32:32-f64:64:64-f128:128:128-v64:64:64-v128:128:128-a0:0:64"
     layout = LLVM::TargetDataLayout.new(desc)
 
-    assert_equal "e-p:32:32", layout.to_s
+    assert_equal desc, layout.to_s
     assert_equal :little_endian, layout.byte_order
     assert_equal 4, layout.pointer_size
     assert_equal 4, layout.pointer_size(0)

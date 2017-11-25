@@ -1,4 +1,4 @@
-module LLVM  
+module LLVM
   class Context
     def initialize(ptr = nil)
       @ptr = ptr || C.context_create()
