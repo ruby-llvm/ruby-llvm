@@ -77,7 +77,7 @@ class MCJITTestCase < Minitest::Test
       assert_equal engine.modules, ret, '#<< returns self'
     end
 
-    assert engine.functions[:bar]
+    refute_nil engine.functions[:bar]
     engine.modules.delete(mod2).tap do |ret|
       assert_instance_of LLVM::Module, ret, '#delete returns module'
       assert_equal mod2, ret
