@@ -31,26 +31,6 @@ module LLVM::C
   ]
   
   # Links the source module into the destination module. The source module is
-  # damaged. The only thing that can be done is destroy it. Optionally returns a
-  # human-readable description of any errors that occurred in linking. OutMessage
-  # must be disposed with LLVMDisposeMessage. The return value is true if an
-  # error occurred, false otherwise.
-  # 
-  # Note that the linker mode parameter \p Unused is no longer used, and has
-  # no effect.
-  # 
-  # This function is deprecated. Use LLVMLinkModules2 instead.
-  # 
-  # @method link_modules(dest, src, unused, out_message)
-  # @param [FFI::Pointer(ModuleRef)] dest 
-  # @param [FFI::Pointer(ModuleRef)] src 
-  # @param [Symbol from _enum_linker_mode_] unused 
-  # @param [FFI::Pointer(**CharS)] out_message 
-  # @return [Integer] 
-  # @scope class
-  attach_function :link_modules, :LLVMLinkModules, [:pointer, :pointer, :linker_mode, :pointer], :int
-  
-  # Links the source module into the destination module. The source module is
   # destroyed.
   # The return value is true if an error occurred, false otherwise.
   # Use the diagnostic handler to get any diagnostic message.

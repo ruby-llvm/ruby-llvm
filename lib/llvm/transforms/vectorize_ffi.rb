@@ -12,7 +12,7 @@ module LLVM::C
     end
   end
   
-  # See llvm::createBBVectorizePass function.
+  # DEPRECATED - Use LLVMAddSLPVectorizePass
   # 
   # @method add_bb_vectorize_pass(pm)
   # @param [FFI::Pointer(PassManagerRef)] pm 

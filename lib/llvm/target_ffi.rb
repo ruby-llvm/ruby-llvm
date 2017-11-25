@@ -112,6 +112,23 @@ module LLVM::C
 
   # (Not documented)
   #
+  # @method get_module_data_layout(m)
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [OpaqueTargetData]
+  # @scope class
+  attach_function :get_module_data_layout, :LLVMGetModuleDataLayout, [:pointer], OpaqueTargetData
+
+  # (Not documented)
+  #
+  # @method set_module_data_layout(m, dl)
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [OpaqueTargetData] dl
+  # @return [nil]
+  # @scope class
+  attach_function :set_module_data_layout, :LLVMSetModuleDataLayout, [:pointer, OpaqueTargetData], :void
+
+  # (Not documented)
+  #
   # @method create_target_data(string_rep)
   # @param [String] string_rep
   # @return [OpaqueTargetData]
@@ -120,12 +137,11 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method add_target_data(td, pm)
+  # @method dispose_target_data(td)
   # @param [OpaqueTargetData] td
-  # @param [FFI::Pointer(PassManagerRef)] pm
   # @return [nil]
   # @scope class
-  attach_function :add_target_data, :LLVMAddTargetData, [OpaqueTargetData, :pointer], :void
+  attach_function :dispose_target_data, :LLVMDisposeTargetData, [OpaqueTargetData], :void
 
   # (Not documented)
   #
@@ -287,14 +303,6 @@ module LLVM::C
   # @return [Integer]
   # @scope class
   attach_function :offset_of_element, :LLVMOffsetOfElement, [OpaqueTargetData, :pointer, :uint], :ulong_long
-
-  # (Not documented)
-  #
-  # @method dispose_target_data(td)
-  # @param [OpaqueTargetData] td
-  # @return [nil]
-  # @scope class
-  attach_function :dispose_target_data, :LLVMDisposeTargetData, [OpaqueTargetData], :void
 
   # (Not documented)
   class OpaqueTargetMachine < FFI::Struct
@@ -557,13 +565,13 @@ module LLVM::C
   # @scope class
   attach_function :get_target_machine_feature_string, :LLVMGetTargetMachineFeatureString, [OpaqueTargetMachine], :string
 
-  # Returns the llvm::DataLayout used for this llvm:TargetMachine.
+  # Create a DataLayout based on the targetMachine.
   #
-  # @method get_target_machine_data(t)
+  # @method create_target_data_layout(t)
   # @param [OpaqueTargetMachine] t
   # @return [OpaqueTargetData]
   # @scope class
-  attach_function :get_target_machine_data, :LLVMGetTargetMachineData, [OpaqueTargetMachine], OpaqueTargetData
+  attach_function :create_target_data_layout, :LLVMCreateTargetDataLayout, [OpaqueTargetMachine], OpaqueTargetData
 
   # Set the target machine's ASM verbosity.
   #
