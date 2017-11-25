@@ -118,8 +118,8 @@ module LLVM
     # @return [LLVM::Instruction]
     def switch(val, default, cases)
       inst = SwitchInst.from_ptr(C.build_switch(self, val, default, cases.size))
-      cases.each do |(val, block)|
-        inst.add_case(val, block)
+      cases.each do |(c, block)|
+        inst.add_case(c, block)
       end
       inst
     end
