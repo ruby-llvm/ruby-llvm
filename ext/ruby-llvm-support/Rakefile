@@ -57,6 +57,15 @@ def invoke_llvm_config(options)
   `#{LLVM_CONFIG} #{options}`.gsub("\n", " ")
 end
 
+def llvm_lib_name
+  lib_dir = invoke_llvm_config('--libdir').strip
+  lib_name = 'LLVM'
+  versioned_lib_name = "#{lib_name}-#{LLVM_VERSION}"
+  versioned_lib_pattern = "lib#{versioned_lib_name}.*"
+  versioned_lib_found = Dir.glob(File.join(lib_dir, versioned_lib_pattern)) != []
+  versioned_lib_found ? versioned_lib_name : lib_name
+end
+
 SUPPORT_LIB = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
 CONFIG_MOD  = File.expand_path('../../lib/llvm/config.rb', File.dirname(__FILE__))
 
@@ -66,7 +75,7 @@ desc "Build the shared library and config module"
 task :default => [SUPPORT_LIB, CONFIG_MOD]
 
 file SUPPORT_LIB => %w(support.cpp) do |task|
-  sh "#{CXX} -shared #{task.prerequisites.join(' ')} -lLLVM-#{LLVM_VERSION} " \
+  sh "#{CXX} -shared #{task.prerequisites.join(' ')} -l#{llvm_lib_name} " \
      "#{invoke_llvm_config('--cxxflags --ldflags')} -o #{SUPPORT_LIB}"
 end
 
