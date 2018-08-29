@@ -33,7 +33,7 @@ module LLVM
 
     # Returns the type of this types elements (works only for Pointer, Vector, and Array types.)
     def element_type
-      case self.kind
+      case kind
       when :pointer, :vector, :array
         Type.from_ptr(C.get_element_type(self), nil)
       end

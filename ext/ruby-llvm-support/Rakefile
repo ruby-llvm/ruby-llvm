@@ -21,7 +21,7 @@ def check_for(what, variants, env_var)
   if result
     result
   else
-    raise RuntimeError, "Cannot find #{what}: tried #{variants}"
+    raise "Cannot find #{what}: tried #{variants}"
   end
 end
 

@@ -66,7 +66,7 @@ module LLVM
       msg_ptr = str.read_pointer
 
       if result != 0
-        raise RuntimeError, "Error is signalled, but msg_ptr is null" if msg_ptr.null?
+        raise "Error is signalled, but msg_ptr is null" if msg_ptr.null?
 
         message = msg_ptr.read_string
         C.dispose_message msg_ptr
@@ -84,7 +84,7 @@ module LLVM
   def self.with_error_output(&block)
     error = with_message_output(&block)
 
-    raise RuntimeError, error unless error.nil?
+    raise error unless error.nil?
   end
 
   require 'llvm/core/context'

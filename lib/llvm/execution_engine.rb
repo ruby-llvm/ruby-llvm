@@ -26,7 +26,7 @@ module LLVM
         else
           C.dispose_message(error)
           error.autorelease = false
-          raise RuntimeError, "Error creating JIT compiler: #{message}"
+          raise "Error creating JIT compiler: #{message}"
         end
       end
     end
@@ -63,7 +63,7 @@ module LLVM
     def run_function(fun, *args)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
         new_values = []
-        args_ptr.write_array_of_pointer fun.params.zip(args).map { |p, a|
+        args_ptr.write_array_of_pointer(fun.params.zip(args).map do |p, a|
           if a.kind_of?(GenericValue)
             a
           else
@@ -71,7 +71,7 @@ module LLVM
             new_values << value
             value
           end
-        }
+        end)
         result = LLVM::GenericValue.from_ptr(
           C.run_function(self, fun, args.size, args_ptr))
         new_values.each(&:dispose)
@@ -220,7 +220,7 @@ module LLVM
       f = FFI::Function.new(return_type, args2, ptr)
       ret1 = f.call(*args)
       ret2 = LLVM.make_generic_value(fun.function_type.return_type, ret1)
-      return ret2
+      ret2
     end
 
     protected

@@ -60,7 +60,7 @@ class CallTestCase < Minitest::Test
         builder.ret(builder.call(external, arguments.first))
       end
     end
-    assert_equal -10.abs, run_function_on_module(test_module, "test_function", -10).to_i
+    assert_equal(-10.abs, run_function_on_module(test_module, "test_function", -10).to_i)
   end
 
   def test_external_string

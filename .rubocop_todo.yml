@@ -169,21 +169,6 @@ Layout/SpaceInsideHashLiteralBraces:
     - 'samples/kaleidescope/if_ast.rb'
 
 # Offense count: 1
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - 'lib/llvm/execution_engine.rb'
-
-# Offense count: 1
-Lint/AmbiguousOperator:
-  Exclude:
-    - 'test/call_test.rb'
-
-# Offense count: 2
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - 'test/mcjit_test.rb'
-
-# Offense count: 1
 Lint/HandleExceptions:
   Exclude:
     - 'test/test_helper.rb'
@@ -622,68 +607,6 @@ Style/PercentLiteralDelimiters:
     - 'lib/llvm/target.rb'
     - 'ruby-llvm.gemspec'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/PerlBackrefs:
-  Exclude:
-    - 'lib/llvm/core/value.rb'
-    - 'samples/kaleidescope/lexer.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/RedundantException:
-  Exclude:
-    - 'ext/ruby-llvm-support/Rakefile'
-    - 'lib/llvm/core.rb'
-    - 'lib/llvm/execution_engine.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/RedundantParentheses:
-  Exclude:
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
-# Offense count: 38
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Exclude:
-    - 'lib/llvm/core/bitcode.rb'
-    - 'lib/llvm/execution_engine.rb'
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/for_ast.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Exclude:
-    - 'lib/llvm/core/type.rb'
-    - 'lib/llvm/core/value.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, AllowInnerSlashes.
-# SupportedStyles: slashes, percent_r, mixed
-Style/RegexpLiteral:
-  Exclude:
-    - 'test/target_test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/for_ast.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -770,18 +693,6 @@ Style/UnneededCondition:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Style/UnneededInterpolation:
-  Exclude:
-    - 'samples/kaleidescope/variable_ast.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/WhileUntilDo:
-  Exclude:
-    - 'samples/factorial.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 # Configuration parameters: WordRegex.
 # SupportedStyles: percent, brackets
 Style/WordArray:
@@ -796,12 +707,6 @@ Style/YodaCondition:
   Exclude:
     - 'lib/llvm/core/value.rb'
     - 'samples/kaleidescope/driver.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'samples/factorial.rb'
 
 # Offense count: 744
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.

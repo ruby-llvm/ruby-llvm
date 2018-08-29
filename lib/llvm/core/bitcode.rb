@@ -32,7 +32,7 @@ module LLVM
       else
         C.write_bitcode_to_file(self, path_or_io.to_str)
       end
-      return status == 0
+      status == 0
     end
   end
 

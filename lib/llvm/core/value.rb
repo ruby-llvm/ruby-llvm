@@ -12,7 +12,7 @@ module LLVM
 
     # Returns the Value type. This is abstract and is overidden by its subclasses.
     def self.type
-      raise NotImplementedError, "#{self.name}.type() is abstract."
+      raise NotImplementedError, "#{name}.type() is abstract."
     end
 
     def self.to_ptr
@@ -113,7 +113,7 @@ module LLVM
   class BasicBlock < Value
     # Creates a basic block for the given function with the given name.
     def self.create(fun = nil, name = "")
-      self.from_ptr(C.append_basic_block(fun, name))
+      from_ptr(C.append_basic_block(fun, name))
     end
 
     # Build the basic block with the given builder. Creates a new one if nil. Yields the builder.
@@ -486,7 +486,7 @@ module LLVM
   def LLVM.const_missing(const)
     case const.to_s
     when /Int(\d+)/
-      width = $1.to_i
+      width = Regexp.last_match(1).to_i
       name  = "Int#{width}"
       eval <<-KLASS
         class #{name} < ConstantInt
@@ -838,7 +838,7 @@ module LLVM
 
       # Returns a Value representation of the parameter at the given index.
       def [](i)
-        sz = self.size
+        sz = size
         i = sz + i if i < 0
         return unless 0 <= i && i < sz
         Value.from_ptr(C.get_param(@fun, i))
