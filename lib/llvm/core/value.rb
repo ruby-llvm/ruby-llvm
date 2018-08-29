@@ -726,7 +726,7 @@ module LLVM
     end
 
     # Adds attr to this value's attributes.
-    def add_attribute(attr, param_index=0)
+    def add_attribute(attr, param_index = 0)
       attr_kind_id = attribute_id(attr)
       ctx = Context.global
       attr_ref = C.create_enum_attribute(ctx, attr_kind_id, 0)
@@ -734,16 +734,16 @@ module LLVM
     end
 
     # Removes the given attribute from the function.
-    def remove_attribute(attr, param_index=0)
+    def remove_attribute(attr, param_index = 0)
       attr_kind_id = attribute_id(attr)
       C.remove_enum_attribute_at_index(self, param_index, attr_kind_id)
     end
 
-    def attribute_count(attr_index=0)
+    def attribute_count(attr_index = 0)
       C.get_attribute_count_at_index(self, attr_index)
     end
 
-    def attributes(param_index=0)
+    def attributes(param_index = 0)
       count = attribute_count(param_index)
       attr_refs = nil
       FFI::MemoryPointer.new(:pointer, count) do |p|
@@ -751,7 +751,7 @@ module LLVM
         attr_refs = p.read_array_of_type(:pointer, :read_pointer, count)
       end
 
-      attr_refs.map {|e| C.get_enum_attribute_kind(e) }
+      attr_refs.map { |e| C.get_enum_attribute_kind(e) }
     end
 
     private
@@ -766,14 +766,11 @@ module LLVM
     end
 
     def attribute_id(attr_name)
-      attr_kind_id = 0
       attr_mem = FFI::MemoryPointer.from_string(attribute_name(attr_name))
       attr_kind_id = C.get_enum_attribute_kind_for_name(attr_mem, attr_mem.size - 1)
 
-      if attr_kind_id == 0
-        raise "No attribute named: #{attr_name}"
-      end
-      return attr_kind_id
+      raise "No attribute named: #{attr_name}" if attr_kind_id.zero?
+      attr_kind_id
     end
 
     public

@@ -820,7 +820,6 @@ module LLVM
     # @return [LLVM::Instruction] The phi node
     # @LLVMinst phi
     def phi(ty, incoming, name = "")
-
       phi = Phi.from_ptr(C.build_phi(self, LLVM::Type(ty), name))
       phi.add_incoming(incoming)
       phi

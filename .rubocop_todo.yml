@@ -100,13 +100,6 @@ Layout/EmptyLinesAroundBlockBody:
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Layout/EmptyLinesAroundMethodBody:
-  Exclude:
-    - 'lib/llvm/core/builder.rb'
-    - 'test/equality_test.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -117,14 +110,6 @@ Layout/EmptyLinesAroundModuleBody:
     - 'lib/llvm/support.rb'
     - 'lib/llvm/target_ffi.rb'
     - 'lib/llvm/transforms/scalar_ffi.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, AutoCorrect, Severity.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Layout/EndAlignment:
-  Exclude:
-    - 'lib/llvm/core/type.rb'
 
 # Offense count: 33
 # Cop supports --auto-correct.
@@ -149,26 +134,6 @@ Layout/ExtraSpacing:
 # SupportedStyles: normal, rails
 Layout/IndentationConsistency:
   Exclude:
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: Width, IgnoredPatterns.
-Layout/IndentationWidth:
-  Exclude:
-    - 'lib/llvm/analysis_ffi.rb'
-    - 'lib/llvm/core/bitcode_ffi.rb'
-    - 'lib/llvm/core/type.rb'
-    - 'lib/llvm/core_ffi.rb'
-    - 'lib/llvm/execution_engine_ffi.rb'
-    - 'lib/llvm/linker_ffi.rb'
-    - 'lib/llvm/target_ffi.rb'
-    - 'lib/llvm/transforms/builder_ffi.rb'
-    - 'lib/llvm/transforms/ipo_ffi.rb'
-    - 'lib/llvm/transforms/scalar_ffi.rb'
-    - 'lib/llvm/transforms/vectorize_ffi.rb'
-    - 'samples/factorial.rb'
     - 'samples/kaleidescope/simple_ast.rb'
     - 'samples/kaleidescope/variable_ast.rb'
 
@@ -218,41 +183,6 @@ Layout/MultilineOperationIndentation:
   Exclude:
     - 'lib/llvm.rb'
 
-# Offense count: 10
-# Cop supports --auto-correct.
-Layout/RescueEnsureAlignment:
-  Exclude:
-    - 'lib/llvm/analysis_ffi.rb'
-    - 'lib/llvm/core/bitcode_ffi.rb'
-    - 'lib/llvm/core_ffi.rb'
-    - 'lib/llvm/execution_engine_ffi.rb'
-    - 'lib/llvm/linker_ffi.rb'
-    - 'lib/llvm/target_ffi.rb'
-    - 'lib/llvm/transforms/builder_ffi.rb'
-    - 'lib/llvm/transforms/ipo_ffi.rb'
-    - 'lib/llvm/transforms/scalar_ffi.rb'
-    - 'lib/llvm/transforms/vectorize_ffi.rb'
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Layout/SpaceAfterComma:
-  Exclude:
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'test/generic_value_test.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleInsidePipes.
-# SupportedStylesInsidePipes: space, no_space
-Layout/SpaceAroundBlockParameters:
-  Exclude:
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/lexer.rb'
-
 # Offense count: 14
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -262,13 +192,6 @@ Layout/SpaceAroundEqualsInParameterDefault:
     - 'lib/llvm/target.rb'
     - 'lib/llvm/transforms/builder.rb'
     - 'lib/llvm/transforms/ipo.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Layout/SpaceAroundKeyword:
-  Exclude:
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/parser.rb'
 
 # Offense count: 12
 # Cop supports --auto-correct.
@@ -676,24 +599,6 @@ Style/CaseEquality:
   Exclude:
     - 'lib/llvm/core/builder.rb'
 
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'lib/llvm/analysis_ffi.rb'
-    - 'lib/llvm/core/bitcode_ffi.rb'
-    - 'lib/llvm/core_ffi.rb'
-    - 'lib/llvm/execution_engine_ffi.rb'
-    - 'lib/llvm/linker_ffi.rb'
-    - 'lib/llvm/target_ffi.rb'
-    - 'lib/llvm/transforms/builder_ffi.rb'
-    - 'lib/llvm/transforms/ipo_ffi.rb'
-    - 'lib/llvm/transforms/scalar_ffi.rb'
-    - 'lib/llvm/transforms/vectorize_ffi.rb'
-    - 'test/test_helper.rb'
-
 # Offense count: 10
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -741,12 +646,6 @@ Style/ConditionalAssignment:
   Exclude:
     - 'lib/llvm/core/builder.rb'
     - 'lib/llvm/core/module.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/DefWithParentheses:
-  Exclude:
-    - 'lib/llvm/target_ffi.rb'
 
 # Offense count: 64
 Style/Documentation:
@@ -920,21 +819,6 @@ Style/PerlBackrefs:
   Exclude:
     - 'lib/llvm/core/value.rb'
     - 'samples/kaleidescope/lexer.rb'
-
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/RedundantBegin:
-  Exclude:
-    - 'lib/llvm/analysis_ffi.rb'
-    - 'lib/llvm/core/bitcode_ffi.rb'
-    - 'lib/llvm/core_ffi.rb'
-    - 'lib/llvm/execution_engine_ffi.rb'
-    - 'lib/llvm/linker_ffi.rb'
-    - 'lib/llvm/target_ffi.rb'
-    - 'lib/llvm/transforms/builder_ffi.rb'
-    - 'lib/llvm/transforms/ipo_ffi.rb'
-    - 'lib/llvm/transforms/scalar_ffi.rb'
-    - 'lib/llvm/transforms/vectorize_ffi.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
