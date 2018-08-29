@@ -128,7 +128,7 @@ module LLVM
         C.get_param_types(self, types_ptr)
         result = types_ptr.read_array_of_pointer(size)
       end
-      result.map{ |p| Type.from_ptr(p, nil) }
+      result.map { |p| Type.from_ptr(p, nil) }
     end
 
     def vararg?

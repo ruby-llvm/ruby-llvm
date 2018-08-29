@@ -85,4 +85,3 @@ class BasicBlockTestCase < Minitest::Test
   end
 
 end
-

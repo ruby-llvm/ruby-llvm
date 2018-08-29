@@ -28,5 +28,3 @@ class InstructionTestCase < Minitest::Test
     assert_equal entry, inst2.parent
   end
 end
-
-

@@ -229,7 +229,7 @@ module LLVM
       # Iterates through each operand in the collection.
       def each
         return to_enum :each unless block_given?
-        0.upto(size-1) { |i| yield self[i] }
+        0.upto(size - 1) { |i| yield self[i] }
         self
       end
     end
@@ -793,7 +793,7 @@ module LLVM
         return to_enum :each unless block_given?
 
         ptr = C.get_first_basic_block(@fun)
-        0.upto(size-1) do |i|
+        0.upto(size - 1) do |i|
           yield BasicBlock.from_ptr(ptr)
           ptr = C.get_next_basic_block(ptr)
         end
@@ -854,7 +854,7 @@ module LLVM
       # Iteraters through each parameter in the collection.
       def each
         return to_enum :each unless block_given?
-        0.upto(size-1) { |i| yield self[i] }
+        0.upto(size - 1) { |i| yield self[i] }
         self
       end
     end

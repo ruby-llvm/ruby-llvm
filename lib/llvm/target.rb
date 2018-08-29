@@ -20,7 +20,7 @@ module LLVM
     #
     # @param [String]      target      Target name in LLVM format, e.g. "X86", "ARM" or "PowerPC".
     # @param [true, false] asm_printer Initialize corresponding AsmPrinter.
-    def self.init(target, asm_printer=false)
+    def self.init(target, asm_printer = false)
       C.module_eval do
         attach_function :"initialize_target_info_#{target}",
             :"LLVMInitialize#{target}TargetInfo", [], :void
@@ -57,7 +57,7 @@ module LLVM
     # Initializes all available targets.
     #
     # @param [true, false] asm_printer Initialize corresponding AsmPrinters.
-    def self.init_all(asm_printer=false)
+    def self.init_all(asm_printer = false)
       Support::C.initialize_all_target_infos
       Support::C.initialize_all_targets
       Support::C.initialize_all_target_mcs
@@ -69,7 +69,7 @@ module LLVM
     #
     # @param [true, false] asm_printer Initialize corresponding AsmPrinter.
     #   True by default, as this is required for MCJIT to function.
-    def self.init_native(asm_printer=true)
+    def self.init_native(asm_printer = true)
       Support::C.initialize_native_target
 
       Support::C.initialize_native_asm_printer if asm_printer
@@ -145,8 +145,8 @@ module LLVM
     # @param  [Symbol]        reloc      :default, :static, :pic, :dynamic_no_pic
     # @param  [Symbol]        code_model :default, :jit_default, :small, :kernel, :medium, :large
     # @return [TargetMachine]
-    def create_machine(triple, cpu="", features="",
-                       opt_level=:default, reloc=:default, code_model=:default)
+    def create_machine(triple, cpu = "", features = "",
+                       opt_level = :default, reloc = :default, code_model = :default)
       TargetMachine.from_ptr(C.create_target_machine(self,
             triple, cpu, features, opt_level, reloc, code_model))
     end
@@ -195,7 +195,7 @@ module LLVM
     # Emits an asm or object file for the given module.
     #
     # @param [Symbol] codegen :assembly, :object
-    def emit(mod, filename, codegen=:assembly)
+    def emit(mod, filename, codegen = :assembly)
       LLVM.with_error_output do |err|
         C.target_machine_emit_to_file(self, mod, filename.to_s, codegen, err)
       end
@@ -256,14 +256,14 @@ module LLVM
     # Returns the pointer size in bytes for a target.
     #
     # @param [Integer] addr_space address space number
-    def pointer_size(addr_space=0)
+    def pointer_size(addr_space = 0)
       C.pointer_size_for_as(self, addr_space)
     end
 
     # Returns the integer type that is the same size as a pointer on a target.
     #
     # @param [Integer] addr_space address space number
-    def int_ptr_type(addr_space=0)
+    def int_ptr_type(addr_space = 0)
       Type.from_ptr(C.int_ptr_type_for_as(self, addr_space), :integer)
     end
 

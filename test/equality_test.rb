@@ -87,4 +87,3 @@ class EqualityTestCase < Minitest::Test
   end
 
 end
-

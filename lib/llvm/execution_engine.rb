@@ -25,7 +25,7 @@ module LLVM
           @ptr = ptr.read_pointer
         else
           C.dispose_message(error)
-          error.autorelease=false
+          error.autorelease = false
           raise RuntimeError, "Error creating JIT compiler: #{message}"
         end
       end
@@ -127,7 +127,7 @@ module LLVM
           message = errorp.read_string unless errorp.null?
 
           C.dispose_message(error)
-          error.autorelease=false
+          error.autorelease = false
 
           raise "Error removing module: #{message}"
         end
@@ -212,7 +212,7 @@ module LLVM
     end
 
     def run_function(fun, *args)
-      args2 = fun.params.map{|e| convert_type(e.type)}
+      args2 = fun.params.map {|e| convert_type(e.type)}
       ptr = FFI::Pointer.new(function_address(fun.name))
       raise "Couldn't find function" if ptr.null?
 

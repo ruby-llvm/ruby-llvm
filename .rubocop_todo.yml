@@ -27,16 +27,6 @@ Layout/CaseIndentation:
   Exclude:
     - 'lib/llvm/core/type.rb'
 
-# Offense count: 21
-# Cop supports --auto-correct.
-Layout/CommentIndentation:
-  Exclude:
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-    - 'test/double_test.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -120,36 +110,6 @@ Layout/ExtraSpacing:
     - 'samples/kaleidescope/token.rb'
     - 'test/equality_test.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: normal, rails
-Layout/IndentationConsistency:
-  Exclude:
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/LeadingBlankLines:
-  Exclude:
-    - 'samples/kaleidescope/token.rb'
-
-# Offense count: 45
-# Cop supports --auto-correct.
-Layout/LeadingCommentSpace:
-  Exclude:
-    - 'samples/hello.rb'
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/lexer.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/token.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 Layout/MultilineBlockLayout:
@@ -174,66 +134,6 @@ Layout/MultilineMethodCallBraceLayout:
 Layout/MultilineOperationIndentation:
   Exclude:
     - 'lib/llvm.rb'
-
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/SpaceAroundEqualsInParameterDefault:
-  Exclude:
-    - 'lib/llvm/target.rb'
-    - 'lib/llvm/transforms/builder.rb'
-    - 'lib/llvm/transforms/ipo.rb'
-
-# Offense count: 12
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceAroundOperators:
-  Exclude:
-    - 'lib/llvm/core/value.rb'
-    - 'lib/llvm/execution_engine.rb'
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-    - 'test/double_test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  Exclude:
-    - 'lib/llvm/core/type.rb'
-    - 'lib/llvm/execution_engine.rb'
-    - 'samples/factorial.rb'
-
-# Offense count: 161
-# Cop supports --auto-correct.
-Layout/SpaceBeforeComma:
-  Exclude:
-    - 'samples/factorial.rb'
-    - 'samples/hello.rb'
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/for_ast.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/lexer.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/token.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-    - 'test/generic_value_test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceBeforeFirstArg:
-  Exclude:
-    - 'samples/kaleidescope/token.rb'
 
 # Offense count: 13
 # Cop supports --auto-correct.
@@ -267,66 +167,6 @@ Layout/SpaceInsideBlockBraces:
 Layout/SpaceInsideHashLiteralBraces:
   Exclude:
     - 'samples/kaleidescope/if_ast.rb'
-
-# Offense count: 33
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/SpaceInsideParens:
-  Exclude:
-    - 'samples/factorial.rb'
-    - 'samples/fp.rb'
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/lexer.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/SpaceInsideRangeLiteral:
-  Exclude:
-    - 'samples/kaleidescope/lexer.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/SpaceInsideStringInterpolation:
-  Exclude:
-    - 'samples/kaleidescope/simple_ast.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: IndentationWidth.
-Layout/Tab:
-  Exclude:
-    - 'test/double_test.rb'
-
-# Offense count: 10
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: final_newline, final_blank_line
-Layout/TrailingBlankLines:
-  Exclude:
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/lexer.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/token.rb'
-    - 'test/basic_block_test.rb'
-    - 'test/equality_test.rb'
-    - 'test/instruction_test.rb'
-
-# Offense count: 3506
-# Cop supports --auto-correct.
-# Configuration parameters: AllowInHeredoc.
-Layout/TrailingWhitespace:
-  Enabled: false
 
 # Offense count: 1
 Lint/AmbiguousBlockAssociation:

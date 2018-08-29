@@ -61,7 +61,7 @@ module LLVM
     end
 
     # @LLVMpass internalize
-    def internalize!(all_but_main=true)
+    def internalize!(all_but_main = true)
       C.add_internalize_pass(self, all_but_main)
     end
 
