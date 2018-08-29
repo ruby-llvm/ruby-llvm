@@ -54,7 +54,7 @@ LLVM_CONFIG = find_llvm_config
 CXX         = find_cxx
 
 def invoke_llvm_config(options)
-  `#{LLVM_CONFIG} #{options}`.gsub("\n", " ")
+  `#{LLVM_CONFIG} #{options}`.tr("\n", " ")
 end
 
 def llvm_lib_name

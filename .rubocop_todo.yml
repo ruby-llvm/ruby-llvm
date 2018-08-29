@@ -6,14 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: Include, TreatCommentsAsGroupSeparators.
-# Include: **/*.gemspec
-Gemspec/OrderedDependencies:
-  Exclude:
-    - 'ruby-llvm.gemspec'
-
 # Offense count: 18
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -351,27 +343,10 @@ Lint/AmbiguousRegexpLiteral:
   Exclude:
     - 'test/mcjit_test.rb'
 
-# Offense count: 32
-# Configuration parameters: AllowSafeAssignment.
-Lint/AssignmentInCondition:
-  Exclude:
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/for_ast.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
 # Offense count: 1
 Lint/HandleExceptions:
   Exclude:
     - 'test/test_helper.rb'
-
-# Offense count: 3
-Lint/LiteralAsCondition:
-  Exclude:
-    - 'samples/kaleidescope/parser.rb'
 
 # Offense count: 4
 Lint/ParenthesesAsGroupedExpression:
@@ -551,12 +526,6 @@ Naming/VariableNumber:
     - 'samples/factorial.rb'
     - 'test/branch_test.rb'
     - 'test/call_test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Performance/StringReplacement:
-  Exclude:
-    - 'ext/ruby-llvm-support/Rakefile'
 
 # Offense count: 1
 Security/Eval:
