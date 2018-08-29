@@ -7,13 +7,16 @@ module LLVM
   module C
     attach_function :dispose_message, :LLVMDisposeMessage, [:pointer], :void
 
+    # typedef unsigned LLVMAttributeIndex;
+    typedef(:uint, :llvmattributeindex)
+
     # void LLVMAddAttributeAtIndex
     # (LLVMValueRef F, LLVMAttributeIndex Idx, LLVMAttributeRef A);
-    attach_function :add_attribute_at_index, :LLVMAddAttributeAtIndex, [:pointer, :uint, :pointer], :void
+    attach_function :add_attribute_at_index, :LLVMAddAttributeAtIndex, [:pointer, :llvmattributeindex, :pointer], :void
 
     # void LLVMRemoveEnumAttributeAtIndex
     # (LLVMValueRef F, LLVMAttributeIndex Idx, unsigned KindID);
-    attach_function :remove_enum_attribute_at_index, :LLVMRemoveEnumAttributeAtIndex, [:pointer, :uint, :uint], :void
+    attach_function :remove_enum_attribute_at_index, :LLVMRemoveEnumAttributeAtIndex, [:pointer, :llvmattributeindex, :uint], :void
 
     # LLVMAttributeRef LLVMCreateEnumAttribute
     # (LLVMContextRef C, unsigned KindID, uint64_t Val);
@@ -25,11 +28,11 @@ module LLVM
 
     # unsigned LLVMGetAttributeCountAtIndex
     # (LLVMValueRef F, LLVMAttributeIndex Idx);
-    attach_function :get_attribute_count_at_index, :LLVMGetAttributeCountAtIndex, [:pointer, :uint], :uint
+    attach_function :get_attribute_count_at_index, :LLVMGetAttributeCountAtIndex, [:pointer, :llvmattributeindex], :uint
 
     # void LLVMGetAttributesAtIndex
     # (LLVMValueRef F, LLVMAttributeIndex Idx, LLVMAttributeRef *Attrs);
-    attach_function :get_attributes_at_index, :LLVMGetAttributesAtIndex, [:pointer, :uint, :pointer], :void
+    attach_function :get_attributes_at_index, :LLVMGetAttributesAtIndex, [:pointer, :llvmattributeindex, :pointer], :void
 
     # unsigned LLVMGetEnumAttributeKind
     # (LLVMAttributeRef A);
