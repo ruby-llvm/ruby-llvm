@@ -239,6 +239,8 @@ module LLVM
     end
   end
 
+  JITCompiler = MCJITCompiler
+
   class GenericValue
     # @private
     def to_ptr

@@ -30,6 +30,29 @@ class FunctionTest < Minitest::Test
     end
   end
 
+  def helper_test_attribute(name)
+    with_function [], LLVM.Void do |fun|
+      assert_equal 0, fun.attribute_count
+      assert_equal [], fun.attributes
+
+      fun.add_attribute(name)
+      assert_equal 1, fun.attribute_count
+      assert_equal [29], fun.attributes
+
+      fun.remove_attribute(name)
+      assert_equal 0, fun.attribute_count
+      assert_equal [], fun.attributes
+    end
+  end
+
+  def test_add_attribute_old_name
+    helper_test_attribute(:no_unwind_attribute)
+  end
+
+  def test_add_attribute_new_name
+    helper_test_attribute(:nounwind)
+  end
+
 end
 
 class FunctionTypeTest < Minitest::Test

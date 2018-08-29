@@ -66,8 +66,45 @@ module LLVM
 
     # Adds attr to this value's attributes.
     def add_attribute(attr)
-      C.add_attribute(self, attr)
+      fun = param_parent
+      return unless fun
+
+      index = param_index(fun)
+      return unless index
+
+      fun.add_attribute(attr, index)
     end
+
+    # Removes the given attribute from the function.
+    def remove_attribute(attr)
+      fun = param_parent
+      return unless fun
+
+      index = param_index(fun)
+      return unless index
+
+      fun.remove_attribute(attr, index)
+    end
+
+    private
+
+    # get function this param belongs to
+    # return if it is not a param
+    def param_parent
+      valueref = C.get_param_parent(self)
+      return if valueref.null?
+      fun = LLVM::Function.from_ptr(valueref)
+      return if fun.null?
+      fun
+    end
+
+    # get index of this param by llvm count (+1 from parametercollection)
+    def param_index(fun)
+      index = fun.params.find_index(self)
+      return if index.nil?
+      index + 1
+    end
+
   end
 
   class Argument < Value
@@ -675,16 +712,6 @@ module LLVM
       conv
     end
 
-    # Adds the given attribute to the function.
-    def add_attribute(attr)
-      C.add_function_attr(self, attr)
-    end
-
-    # Removes the given attribute from the function.
-    def remove_attribute(attr)
-      C.remove_function_attr(self, attr)
-    end
-
     # Returns an Enumerable of the BasicBlocks in this function.
     def basic_blocks
       @basic_block_collection ||= BasicBlockCollection.new(self)
@@ -697,6 +724,59 @@ module LLVM
     def function_type
       type.element_type
     end
+
+    # Adds attr to this value's attributes.
+    def add_attribute(attr, param_index=0)
+      attr_kind_id = attribute_id(attr)
+      ctx = Context.global
+      attr_ref = C.create_enum_attribute(ctx, attr_kind_id, 0)
+      C.add_attribute_at_index(@ptr, param_index, attr_ref)
+    end
+
+    # Removes the given attribute from the function.
+    def remove_attribute(attr, param_index=0)
+      attr_kind_id = attribute_id(attr)
+      C.remove_enum_attribute_at_index(self, param_index, attr_kind_id)
+    end
+
+    def attribute_count(attr_index=0)
+      C.get_attribute_count_at_index(self, attr_index)
+    end
+
+    def attributes(param_index=0)
+      count = attribute_count(param_index)
+      attr_refs = nil
+      FFI::MemoryPointer.new(:pointer, count) do |p|
+        C.get_attributes_at_index(self, param_index, p)
+        attr_refs = p.read_array_of_type(:pointer, :read_pointer, count)
+      end
+
+      attr_refs.map {|e| C.get_enum_attribute_kind(e) }
+    end
+
+    private
+
+    def attribute_name(attr_name)
+      attr_name = attr_name.to_s
+      if attr_name =~ /_attribute$/
+        attr_name.chomp('_attribute').tr('_', '')
+      else
+        attr_name
+      end
+    end
+
+    def attribute_id(attr_name)
+      attr_kind_id = 0
+      attr_mem = FFI::MemoryPointer.from_string(attribute_name(attr_name))
+      attr_kind_id = C.get_enum_attribute_kind_for_name(attr_mem, attr_mem.size - 1)
+
+      if attr_kind_id == 0
+        raise "No attribute named: #{attr_name}"
+      end
+      return attr_kind_id
+    end
+
+    public
 
     # @private
     class BasicBlockCollection
