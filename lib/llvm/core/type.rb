@@ -33,7 +33,7 @@ module LLVM
 
     # Returns the type of this types elements (works only for Pointer, Vector, and Array types.)
     def element_type
-      case self.kind
+      case kind
       when :pointer, :vector, :array
         Type.from_ptr(C.get_element_type(self), nil)
       end
@@ -128,7 +128,7 @@ module LLVM
         C.get_param_types(self, types_ptr)
         result = types_ptr.read_array_of_pointer(size)
       end
-      result.map{ |p| Type.from_ptr(p, nil) }
+      result.map { |p| Type.from_ptr(p, nil) }
     end
 
     def vararg?

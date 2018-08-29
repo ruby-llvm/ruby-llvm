@@ -71,12 +71,12 @@ class TargetTestCase < Minitest::Test
 
     Tempfile.open('emit') do |tmp|
       mach.emit(mod, tmp.path)
-      assert_match %r{xorl\t%eax, %eax}, tmp.read
+      assert_match(/xorl\t%eax, %eax/, tmp.read)
     end
 
     Tempfile.open('emit') do |tmp|
       mach.emit(mod, tmp.path, :object)
-      assert_match %r{\x66\x31\xc0}, File.read(tmp.path, mode: 'rb')
+      assert_match(/\x66\x31\xc0/, File.read(tmp.path, mode: 'rb'))
     end
   end
 

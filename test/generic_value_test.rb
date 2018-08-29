@@ -8,7 +8,7 @@ class GenericValueTestCase < Minitest::Test
 
   def test_from_i
     assert_equal 2, LLVM::GenericValue.from_i(2).to_i
-    assert_equal 2 ,LLVM::GenericValue.from_i(2.2).to_i
+    assert_equal 2, LLVM::GenericValue.from_i(2.2).to_i
   end
 
   def test_from_float

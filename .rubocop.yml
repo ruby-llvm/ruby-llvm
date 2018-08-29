@@ -1,1 +1,13 @@
 inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+    - 'lib/**/*ffi.rb'
+    - 'samples/**/*'
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Layout/EndAlignment:
+  AutoCorrect: true
+  EnforcedStyleAlignWith: variable

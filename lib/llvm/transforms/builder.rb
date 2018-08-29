@@ -83,7 +83,7 @@ module LLVM
 
     # Populate an LTO pass manager.
     # @param [PassManager] pass_manager
-    def build_with_lto(pass_manager, internalize=false, run_inliner=false)
+    def build_with_lto(pass_manager, internalize = false, run_inliner = false)
       if pass_manager.is_a?(FunctionPassManager)
         raise ArgumentError, "FunctionPassManager does not support LTO"
       end

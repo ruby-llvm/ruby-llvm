@@ -26,7 +26,6 @@ class EqualityTestCase < Minitest::Test
         callable.call(n, m, name.to_s)
       end
     end
-
   end
 
   def test_int_value
@@ -88,4 +87,3 @@ class EqualityTestCase < Minitest::Test
   end
 
 end
-

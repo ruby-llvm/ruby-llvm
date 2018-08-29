@@ -25,8 +25,8 @@ module LLVM
           @ptr = ptr.read_pointer
         else
           C.dispose_message(error)
-          error.autorelease=false
-          raise RuntimeError, "Error creating JIT compiler: #{message}"
+          error.autorelease = false
+          raise "Error creating JIT compiler: #{message}"
         end
       end
     end
@@ -63,7 +63,7 @@ module LLVM
     def run_function(fun, *args)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
         new_values = []
-        args_ptr.write_array_of_pointer fun.params.zip(args).map { |p, a|
+        args_ptr.write_array_of_pointer(fun.params.zip(args).map do |p, a|
           if a.kind_of?(GenericValue)
             a
           else
@@ -71,7 +71,7 @@ module LLVM
             new_values << value
             value
           end
-        }
+        end)
         result = LLVM::GenericValue.from_ptr(
           C.run_function(self, fun, args.size, args_ptr))
         new_values.each(&:dispose)
@@ -127,7 +127,7 @@ module LLVM
           message = errorp.read_string unless errorp.null?
 
           C.dispose_message(error)
-          error.autorelease=false
+          error.autorelease = false
 
           raise "Error removing module: #{message}"
         end
@@ -212,7 +212,7 @@ module LLVM
     end
 
     def run_function(fun, *args)
-      args2 = fun.params.map{|e| convert_type(e.type)}
+      args2 = fun.params.map {|e| convert_type(e.type)}
       ptr = FFI::Pointer.new(function_address(fun.name))
       raise "Couldn't find function" if ptr.null?
 
@@ -220,7 +220,7 @@ module LLVM
       f = FFI::Function.new(return_type, args2, ptr)
       ret1 = f.call(*args)
       ret2 = LLVM.make_generic_value(fun.function_type.return_type, ret1)
-      return ret2
+      ret2
     end
 
     protected
@@ -238,6 +238,8 @@ module LLVM
       C.create_mcjit_compiler_for_module(out_ee, mod, mcopts, mcopts.size, out_error)
     end
   end
+
+  JITCompiler = MCJITCompiler
 
   class GenericValue
     # @private
