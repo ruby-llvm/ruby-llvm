@@ -65,9 +65,56 @@ module LLVM
     end
 
     # Adds attr to this value's attributes.
-    def add_attribute(attr)
-      C.add_attribute(self, attr)
+    def add_attribute(attr, attr_index=0)
+      attr_kind_id = attribute_id(attr)
+      ctx = Context.global
+      attr_ref = C.create_enum_attribute(ctx, attr_kind_id, 0)
+      C.add_attribute_at_index(self, attr_index, attr_ref)
     end
+
+    # Removes the given attribute from the function.
+    def remove_attribute(attr, attr_index=0)
+      attr_kind_id = attribute_id(attr)
+      C.remove_enum_attribute_at_index(self, attr_index, attr_kind_id)
+    end
+
+    def attribute_count(attr_index=0)
+      C.get_attribute_count_at_index(self, attr_index)
+    end
+
+    def attributes(attr_index=0)
+      count = attribute_count(attr_index)
+      attr_refs = nil
+      FFI::MemoryPointer.new(:pointer, count) do |p|
+        C.get_attributes_at_index(self, attr_index, p)
+        attr_refs = p.read_array_of_type(:pointer, :read_pointer, count)
+      end
+
+      attr_refs.map {|e| C.get_enum_attribute_kind(e) }
+    end
+
+    private
+
+    def attribute_name(attr_name)
+      attr_name = attr_name.to_s
+      if attr_name =~ /_attribute$/
+        attr_name.chomp('_attribute').tr('_', '')
+      else
+        attr_name
+      end
+    end
+
+    def attribute_id(attr_name)
+      attr_kind_id = 0
+      attr_mem = FFI::MemoryPointer.from_string(attribute_name(attr_name))
+      attr_kind_id = C.get_enum_attribute_kind_for_name(attr_mem, attr_mem.size - 1)
+
+      if attr_kind_id == 0
+        raise "No attribute named: #{attr_name}"
+      end
+      return attr_kind_id
+    end
+
   end
 
   class Argument < Value
@@ -673,16 +720,6 @@ module LLVM
     def call_conv=(conv)
       C.set_function_call_conv(self, conv)
       conv
-    end
-
-    # Adds the given attribute to the function.
-    def add_attribute(attr)
-      C.add_function_attr(self, attr)
-    end
-
-    # Removes the given attribute from the function.
-    def remove_attribute(attr)
-      C.remove_function_attr(self, attr)
     end
 
     # Returns an Enumerable of the BasicBlocks in this function.
