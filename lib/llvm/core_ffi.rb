@@ -5,115 +5,115 @@ require 'ffi'
 module LLVM::C
   extend FFI::Library
   ffi_lib ["libLLVM-8.so.1", "LLVM-8"]
-  
+
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
       (class << self; self; end).class_eval { define_method(name) { |*_| raise e } }
     end
   end
-  
+
   def for_each_value_subclass(macro)
     macroARGUMENTmacroBASIC_BLOCKmacroINLINE_ASMmacroUSERmacroCONSTANTmacroBLOCK_ADDRESSmacroCONSTANT_AGGREGATE_ZEROmacroCONSTANT_ARRAYmacroCONSTANT_DATA_SEQUENTIALmacroCONSTANT_DATA_ARRAYmacroCONSTANT_DATA_VECTORmacroCONSTANT_EXPRmacroCONSTANT_FPmacroCONSTANT_INTmacroCONSTANT_POINTER_NULLmacroCONSTANT_STRUCTmacroCONSTANT_TOKEN_NONEmacroCONSTANT_VECTORmacroGLOBAL_VALUEmacroGLOBAL_ALIASmacroGLOBAL_OBJECTmacroFUNCTIONmacroGLOBAL_VARIABLEmacroUNDEF_VALUEmacroINSTRUCTIONmacroBINARY_OPERATORmacroCALL_INSTmacroINTRINSIC_INSTmacroDBG_INFO_INTRINSICmacroDBG_DECLARE_INSTmacroMEM_INTRINSICmacroMEM_CPY_INSTmacroMEM_MOVE_INSTmacroMEM_SET_INSTmacroCMP_INSTmacroF_CMP_INSTmacroI_CMP_INSTmacroEXTRACT_ELEMENT_INSTmacroGET_ELEMENT_PTR_INSTmacroINSERT_ELEMENT_INSTmacroINSERT_VALUE_INSTmacroLANDING_PAD_INSTmacroPHI_NODEmacroSELECT_INSTmacroSHUFFLE_VECTOR_INSTmacroSTORE_INSTmacroTERMINATOR_INSTmacroBRANCH_INSTmacroINDIRECT_BR_INSTmacroINVOKE_INSTmacroRETURN_INSTmacroSWITCH_INSTmacroUNREACHABLE_INSTmacroRESUME_INSTmacroCLEANUP_RETURN_INSTmacroCATCH_RETURN_INSTmacroFUNCLET_PAD_INSTmacroCATCH_PAD_INSTmacroCLEANUP_PAD_INSTmacroUNARY_INSTRUCTIONmacroALLOCA_INSTmacroCAST_INSTmacroADDR_SPACE_CAST_INSTmacroBIT_CAST_INSTmacroFP_EXT_INSTmacroFP_TO_SI_INSTmacroFP_TO_UI_INSTmacroFP_TRUNC_INSTmacroINT_TO_PTR_INSTmacroPTR_TO_INT_INSTmacroS_EXT_INSTmacroSI_TO_FP_INSTmacroTRUNC_INSTmacroUI_TO_FP_INSTmacroZ_EXT_INSTmacroEXTRACT_VALUE_INSTmacroLOAD_INSTmacroVA_ARG_INST
   end
-  
+
   # (Not documented)
-  # 
+  #
   # @method load_library_permanently(filename)
-  # @param [String] filename 
-  # @return [Integer] 
+  # @param [String] filename
+  # @return [Integer]
   # @scope class
   attach_function :load_library_permanently, :LLVMLoadLibraryPermanently, [:string], :int
-  
+
   # This function parses the given arguments using the LLVM command line parser.
   # Note that the only stable thing about this function is its signature; you
   # cannot rely on any particular set of command line arguments being interpreted
   # the same way across LLVM versions.
-  # 
+  #
   # @see llvm::cl::ParseCommandLineOptions()
-  # 
+  #
   # @method parse_command_line_options(argc, argv, overview)
-  # @param [Integer] argc 
-  # @param [FFI::Pointer(**CharS)] argv 
-  # @param [String] overview 
-  # @return [nil] 
+  # @param [Integer] argc
+  # @param [FFI::Pointer(**CharS)] argv
+  # @param [String] overview
+  # @return [nil]
   # @scope class
   attach_function :parse_command_line_options, :LLVMParseCommandLineOptions, [:int, :pointer, :string], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method search_for_address_of_symbol(symbol_name)
-  # @param [String] symbol_name 
-  # @return [FFI::Pointer(*Void)] 
+  # @param [String] symbol_name
+  # @return [FFI::Pointer(*Void)]
   # @scope class
   attach_function :search_for_address_of_symbol, :LLVMSearchForAddressOfSymbol, [:string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method add_symbol(symbol_name, symbol_value)
-  # @param [String] symbol_name 
-  # @param [FFI::Pointer(*Void)] symbol_value 
-  # @return [nil] 
+  # @param [String] symbol_name
+  # @param [FFI::Pointer(*Void)] symbol_value
+  # @return [nil]
   # @scope class
   attach_function :add_symbol, :LLVMAddSymbol, [:string, :pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:attribute).</em>
-  # 
+  #
   # === Options:
   # :z_ext_attribute ::
-  #   
+  #
   # :s_ext_attribute ::
-  #   
+  #
   # :no_return_attribute ::
-  #   
+  #
   # :in_reg_attribute ::
-  #   
+  #
   # :struct_ret_attribute ::
-  #   
+  #
   # :no_unwind_attribute ::
-  #   
+  #
   # :no_alias_attribute ::
-  #   
+  #
   # :by_val_attribute ::
-  #   
+  #
   # :nest_attribute ::
-  #   
+  #
   # :read_none_attribute ::
-  #   
+  #
   # :read_only_attribute ::
-  #   
+  #
   # :no_inline_attribute ::
-  #   
+  #
   # :always_inline_attribute ::
-  #   
+  #
   # :optimize_for_size_attribute ::
-  #   
+  #
   # :stack_protect_attribute ::
-  #   
+  #
   # :stack_protect_req_attribute ::
-  #   
+  #
   # :alignment ::
-  #   
+  #
   # :no_capture_attribute ::
-  #   
+  #
   # :no_red_zone_attribute ::
-  #   
+  #
   # :no_implicit_float_attribute ::
-  #   
+  #
   # :naked_attribute ::
-  #   
+  #
   # :inline_hint_attribute ::
-  #   
+  #
   # :stack_alignment ::
-  #   
+  #
   # :returns_twice ::
-  #   
+  #
   # :uw_table ::
-  #   
+  #
   # :non_lazy_bind ::
-  #   
-  # 
+  #
+  #
   # @method _enum_attribute_
   # @return [Symbol]
   # @scope class
@@ -145,141 +145,141 @@ module LLVM::C
     :uw_table, 1073741824,
     :non_lazy_bind, 2147483648
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:opcode).</em>
-  # 
+  #
   # === Options:
   # :ret ::
   #   Terminator Instructions
   # :br ::
-  #   
+  #
   # :switch ::
-  #   
+  #
   # :indirect_br ::
-  #   
+  #
   # :invoke ::
-  #   
+  #
   # :unreachable ::
   #   removed 6 due to API changes
   # :add ::
   #   Standard Binary Operators
   # :f_add ::
-  #   
+  #
   # :sub ::
-  #   
+  #
   # :f_sub ::
-  #   
+  #
   # :mul ::
-  #   
+  #
   # :f_mul ::
-  #   
+  #
   # :u_div ::
-  #   
+  #
   # :s_div ::
-  #   
+  #
   # :f_div ::
-  #   
+  #
   # :u_rem ::
-  #   
+  #
   # :s_rem ::
-  #   
+  #
   # :f_rem ::
-  #   
+  #
   # :shl ::
   #   Logical Operators
   # :l_shr ::
-  #   
+  #
   # :a_shr ::
-  #   
+  #
   # :and_ ::
-  #   
+  #
   # :or_ ::
-  #   
+  #
   # :xor ::
-  #   
+  #
   # :alloca ::
   #   Memory Operators
   # :load ::
-  #   
+  #
   # :store ::
-  #   
+  #
   # :get_element_ptr ::
-  #   
+  #
   # :trunc ::
   #   Cast Operators
   # :z_ext ::
-  #   
+  #
   # :s_ext ::
-  #   
+  #
   # :fp_to_ui ::
-  #   
+  #
   # :fp_to_si ::
-  #   
+  #
   # :ui_to_fp ::
-  #   
+  #
   # :si_to_fp ::
-  #   
+  #
   # :fp_trunc ::
-  #   
+  #
   # :fp_ext ::
-  #   
+  #
   # :ptr_to_int ::
-  #   
+  #
   # :int_to_ptr ::
-  #   
+  #
   # :bit_cast ::
-  #   
+  #
   # :addr_space_cast ::
-  #   
+  #
   # :i_cmp ::
   #   Other Operators
   # :f_cmp ::
-  #   
+  #
   # :phi ::
-  #   
+  #
   # :call ::
-  #   
+  #
   # :select ::
-  #   
+  #
   # :user_op1 ::
-  #   
+  #
   # :user_op2 ::
-  #   
+  #
   # :va_arg ::
-  #   
+  #
   # :extract_element ::
-  #   
+  #
   # :insert_element ::
-  #   
+  #
   # :shuffle_vector ::
-  #   
+  #
   # :extract_value ::
-  #   
+  #
   # :insert_value ::
-  #   
+  #
   # :fence ::
   #   Atomic operators
   # :atomic_cmp_xchg ::
-  #   
+  #
   # :atomic_rmw ::
-  #   
+  #
   # :resume ::
   #   Exception Handling Operators
   # :landing_pad ::
-  #   
+  #
   # :cleanup_ret ::
-  #   
+  #
   # :catch_ret ::
-  #   
+  #
   # :catch_pad ::
-  #   
+  #
   # :cleanup_pad ::
-  #   
+  #
   # :catch_switch ::
-  #   
-  # 
+  #
+  #
   # @method _enum_opcode_
   # @return [Symbol]
   # @scope class
@@ -349,14 +349,14 @@ module LLVM::C
     :cleanup_pad, 64,
     :catch_switch, 65
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:type_kind).</em>
-  # 
+  #
   # === Options:
   # :void ::
-  #   
+  #
   # :half ::
   #   < type with no size
   # :float ::
@@ -389,7 +389,7 @@ module LLVM::C
   #   < Metadata
   # :token ::
   #   < X86 MMX
-  # 
+  #
   # @method _enum_type_kind_
   # @return [Symbol]
   # @scope class
@@ -412,18 +412,18 @@ module LLVM::C
     :x86_mmx, 15,
     :token, 16
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:linkage).</em>
-  # 
+  #
   # === Options:
   # :external ::
-  #   
+  #
   # :available_externally ::
   #   < Externally visible function
   # :link_once_any ::
-  #   
+  #
   # :link_once_odr ::
   #   < Keep one copy of function when linking (inline)
   # :link_once_odr_auto_hide ::
@@ -455,7 +455,7 @@ module LLVM::C
   #   < Tentative definitions
   # :linker_private_weak ::
   #   < Like Private, but linker removes.
-  # 
+  #
   # @method _enum_linkage_
   # @return [Symbol]
   # @scope class
@@ -478,19 +478,19 @@ module LLVM::C
     :linker_private, 15,
     :linker_private_weak, 16
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:visibility).</em>
-  # 
+  #
   # === Options:
   # :default ::
-  #   
+  #
   # :hidden ::
   #   < The GV is visible
   # :protected ::
   #   < The GV is hidden
-  # 
+  #
   # @method _enum_visibility_
   # @return [Symbol]
   # @scope class
@@ -499,19 +499,19 @@ module LLVM::C
     :hidden, 1,
     :protected, 2
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:dll_storage_class).</em>
-  # 
+  #
   # === Options:
   # :default ::
-  #   
+  #
   # :dll_import ::
-  #   
+  #
   # :dll_export ::
   #   < Function to be imported from DLL.
-  # 
+  #
   # @method _enum_dll_storage_class_
   # @return [Symbol]
   # @scope class
@@ -520,27 +520,27 @@ module LLVM::C
     :dll_import, 1,
     :dll_export, 2
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:call_conv).</em>
-  # 
+  #
   # === Options:
   # :c ::
-  #   
+  #
   # :fast ::
-  #   
+  #
   # :cold ::
-  #   
+  #
   # :web_kit_js ::
-  #   
+  #
   # :any_reg ::
-  #   
+  #
   # :x86_stdcall ::
-  #   
+  #
   # :x86_fastcall ::
-  #   
-  # 
+  #
+  #
   # @method _enum_call_conv_
   # @return [Symbol]
   # @scope class
@@ -553,14 +553,14 @@ module LLVM::C
     :x86_stdcall, 64,
     :x86_fastcall, 65
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:int_predicate).</em>
-  # 
+  #
   # === Options:
   # :eq ::
-  #   
+  #
   # :ne ::
   #   < equal
   # :ugt ::
@@ -579,7 +579,7 @@ module LLVM::C
   #   < signed greater or equal
   # :sle ::
   #   < signed less than
-  # 
+  #
   # @method _enum_int_predicate_
   # @return [Symbol]
   # @scope class
@@ -595,14 +595,14 @@ module LLVM::C
     :slt, 40,
     :sle, 41
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:real_predicate).</em>
-  # 
+  #
   # === Options:
   # :predicate_false ::
-  #   
+  #
   # :oeq ::
   #   < Always false (always folded)
   # :ogt ::
@@ -633,7 +633,7 @@ module LLVM::C
   #   < True if unordered, less than, or equal
   # :predicate_true ::
   #   < True if unordered or not equal
-  # 
+  #
   # @method _enum_real_predicate_
   # @return [Symbol]
   # @scope class
@@ -655,17 +655,17 @@ module LLVM::C
     :une, 14,
     :predicate_true, 15
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:landing_pad_clause_ty).</em>
-  # 
+  #
   # === Options:
   # :catch ::
-  #   
+  #
   # :filter ::
-  #   < A catch clause  
-  # 
+  #   < A catch clause
+  #
   # @method _enum_landing_pad_clause_ty_
   # @return [Symbol]
   # @scope class
@@ -673,23 +673,23 @@ module LLVM::C
     :catch, 0,
     :filter, 1
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:thread_local_mode).</em>
-  # 
+  #
   # === Options:
   # :not_thread_local ::
-  #   
+  #
   # :general_dynamic_tls_model ::
-  #   
+  #
   # :local_dynamic_tls_model ::
-  #   
+  #
   # :initial_exec_tls_model ::
-  #   
+  #
   # :local_exec_tls_model ::
-  #   
-  # 
+  #
+  #
   # @method _enum_thread_local_mode_
   # @return [Symbol]
   # @scope class
@@ -700,14 +700,14 @@ module LLVM::C
     :initial_exec_tls_model, 3,
     :local_exec_tls_model, 4
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:atomic_ordering).</em>
-  # 
+  #
   # === Options:
   # :not_atomic ::
-  #   
+  #
   # :unordered ::
   #   < A load or store which is not atomic
   # :monotonic ::
@@ -730,7 +730,7 @@ module LLVM::C
   #                                             Release barrier (for fences and
   #                                             operations which both read and write
   #                                              memory).
-  # 
+  #
   # @method _enum_atomic_ordering_
   # @return [Symbol]
   # @scope class
@@ -743,14 +743,14 @@ module LLVM::C
     :acquire_release, 6,
     :sequentially_consistent, 7
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:atomic_rmw_bin_op).</em>
-  # 
+  #
   # === Options:
   # :xchg ::
-  #   
+  #
   # :add ::
   #   < Set the new value and return the one old
   # :sub ::
@@ -777,7 +777,7 @@ module LLVM::C
   #   < Sets the value if it's greater than the
   #                                original using an unsigned comparison and return
   #                                the old one
-  # 
+  #
   # @method _enum_atomic_rmw_bin_op_
   # @return [Symbol]
   # @scope class
@@ -794,21 +794,21 @@ module LLVM::C
     :u_max, 9,
     :u_min, 10
   ]
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:diagnostic_severity).</em>
-  # 
+  #
   # === Options:
   # :ds_error ::
-  #   
+  #
   # :ds_warning ::
-  #   
+  #
   # :ds_remark ::
-  #   
+  #
   # :ds_note ::
-  #   
-  # 
+  #
+  #
   # @method _enum_diagnostic_severity_
   # @return [Symbol]
   # @scope class
@@ -818,5285 +818,5284 @@ module LLVM::C
     :ds_remark, 2,
     :ds_note, 3
   ]
-  
+
   # @}
-  # 
+  #
   # @method initialize_core(r)
-  # @param [FFI::Pointer(PassRegistryRef)] r 
-  # @return [nil] 
+  # @param [FFI::Pointer(PassRegistryRef)] r
+  # @return [nil]
   # @scope class
   attach_function :initialize_core, :LLVMInitializeCore, [:pointer], :void
-  
+
   # Deallocate and destroy all ManagedStatic variables.
   #     @see llvm::llvm_shutdown
   #     @see ManagedStatic
-  # 
+  #
   # @method shutdown()
-  # @return [nil] 
+  # @return [nil]
   # @scope class
   attach_function :shutdown, :LLVMShutdown, [], :void
-  
+
   # ===-- Error handling ----------------------------------------------------===
-  # 
+  #
   # @method create_message(message)
-  # @param [String] message 
-  # @return [String] 
+  # @param [String] message
+  # @return [String]
   # @scope class
   attach_function :create_message, :LLVMCreateMessage, [:string], :string
-  
+
   # (Not documented)
-  # 
+  #
   # @method dispose_message(message)
-  # @param [String] message 
-  # @return [nil] 
+  # @param [String] message
+  # @return [nil]
   # @scope class
   attach_function :dispose_message, :LLVMDisposeMessage, [:string], :void
-  
+
   # @defgroup LLVMCCoreContext Contexts
-  # 
+  #
   # Contexts are execution states for the core LLVM IR system.
-  # 
+  #
   # Most types are tied to a context instance. Multiple contexts can
   # exist simultaneously. A single context is not thread safe. However,
   # different contexts can execute on different threads simultaneously.
-  # 
+  #
   # @{
-  # 
+  #
   # <em>This entry is only for documentation and no real method.</em>
-  # 
+  #
   # @method _callback_diagnostic_handler_(diagnostic_info_ref, void)
-  # @param [FFI::Pointer(DiagnosticInfoRef)] diagnostic_info_ref 
-  # @param [FFI::Pointer(*Void)] void 
-  # @return [FFI::Pointer(DiagnosticInfoRef)] 
+  # @param [FFI::Pointer(DiagnosticInfoRef)] diagnostic_info_ref
+  # @param [FFI::Pointer(*Void)] void
+  # @return [FFI::Pointer(DiagnosticInfoRef)]
   # @scope class
   callback :diagnostic_handler, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # <em>This entry is only for documentation and no real method.</em>
-  # 
+  #
   # @method _callback_yield_callback_(context_ref, void)
-  # @param [FFI::Pointer(ContextRef)] context_ref 
-  # @param [FFI::Pointer(*Void)] void 
-  # @return [FFI::Pointer(ContextRef)] 
+  # @param [FFI::Pointer(ContextRef)] context_ref
+  # @param [FFI::Pointer(*Void)] void
+  # @return [FFI::Pointer(ContextRef)]
   # @scope class
   callback :yield_callback, [:pointer, :pointer], :pointer
-  
+
   # Create a new context.
-  # 
+  #
   # Every call to this function should be paired with a call to
   # LLVMContextDispose() or the context will leak memory.
-  # 
+  #
   # @method context_create()
-  # @return [FFI::Pointer(ContextRef)] 
+  # @return [FFI::Pointer(ContextRef)]
   # @scope class
   attach_function :context_create, :LLVMContextCreate, [], :pointer
-  
+
   # Obtain the global context instance.
-  # 
+  #
   # @method get_global_context()
-  # @return [FFI::Pointer(ContextRef)] 
+  # @return [FFI::Pointer(ContextRef)]
   # @scope class
   attach_function :get_global_context, :LLVMGetGlobalContext, [], :pointer
-  
+
   # Set the diagnostic handler for this context.
-  # 
+  #
   # @method context_set_diagnostic_handler(c, handler, diagnostic_context)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [Proc(_callback_diagnostic_handler_)] handler 
-  # @param [FFI::Pointer(*Void)] diagnostic_context 
-  # @return [nil] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [Proc(_callback_diagnostic_handler_)] handler
+  # @param [FFI::Pointer(*Void)] diagnostic_context
+  # @return [nil]
   # @scope class
   attach_function :context_set_diagnostic_handler, :LLVMContextSetDiagnosticHandler, [:pointer, :diagnostic_handler, :pointer], :void
-  
+
   # Set the yield callback function for this context.
-  # 
+  #
   # @see LLVMContext::setYieldCallback()
-  # 
+  #
   # @method context_set_yield_callback(c, callback, opaque_handle)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [Proc(_callback_yield_callback_)] callback 
-  # @param [FFI::Pointer(*Void)] opaque_handle 
-  # @return [nil] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [Proc(_callback_yield_callback_)] callback
+  # @param [FFI::Pointer(*Void)] opaque_handle
+  # @return [nil]
   # @scope class
   attach_function :context_set_yield_callback, :LLVMContextSetYieldCallback, [:pointer, :yield_callback, :pointer], :void
-  
+
   # Destroy a context instance.
-  # 
+  #
   # This should be called for every call to LLVMContextCreate() or memory
   # will be leaked.
-  # 
+  #
   # @method context_dispose(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [nil] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [nil]
   # @scope class
   attach_function :context_dispose, :LLVMContextDispose, [:pointer], :void
-  
+
   # Return a string representation of the DiagnosticInfo. Use
   # LLVMDisposeMessage to free the string.
-  # 
+  #
   # @see DiagnosticInfo::print()
-  # 
+  #
   # @method get_diag_info_description(di)
-  # @param [FFI::Pointer(DiagnosticInfoRef)] di 
-  # @return [String] 
+  # @param [FFI::Pointer(DiagnosticInfoRef)] di
+  # @return [String]
   # @scope class
   attach_function :get_diag_info_description, :LLVMGetDiagInfoDescription, [:pointer], :string
-  
+
   # Return an enum LLVMDiagnosticSeverity.
-  # 
+  #
   # @see DiagnosticInfo::getSeverity()
-  # 
+  #
   # @method get_diag_info_severity(di)
-  # @param [FFI::Pointer(DiagnosticInfoRef)] di 
-  # @return [Symbol from _enum_diagnostic_severity_] 
+  # @param [FFI::Pointer(DiagnosticInfoRef)] di
+  # @return [Symbol from _enum_diagnostic_severity_]
   # @scope class
   attach_function :get_diag_info_severity, :LLVMGetDiagInfoSeverity, [:pointer], :diagnostic_severity
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_md_kind_id_in_context(c, name, s_len)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [String] name 
-  # @param [Integer] s_len 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [String] name
+  # @param [Integer] s_len
+  # @return [Integer]
   # @scope class
   attach_function :get_md_kind_id_in_context, :LLVMGetMDKindIDInContext, [:pointer, :string, :uint], :uint
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_md_kind_id(name, s_len)
-  # @param [String] name 
-  # @param [Integer] s_len 
-  # @return [Integer] 
+  # @param [String] name
+  # @param [Integer] s_len
+  # @return [Integer]
   # @scope class
   attach_function :get_md_kind_id, :LLVMGetMDKindID, [:string, :uint], :uint
-  
+
   # Create a new, empty module in the global context.
-  # 
+  #
   # This is equivalent to calling LLVMModuleCreateWithNameInContext with
   # LLVMGetGlobalContext() as the context parameter.
-  # 
+  #
   # Every invocation should be paired with LLVMDisposeModule() or memory
   # will be leaked.
-  # 
+  #
   # @method module_create_with_name(module_id)
-  # @param [String] module_id 
-  # @return [FFI::Pointer(ModuleRef)] 
+  # @param [String] module_id
+  # @return [FFI::Pointer(ModuleRef)]
   # @scope class
   attach_function :module_create_with_name, :LLVMModuleCreateWithName, [:string], :pointer
-  
+
   # Create a new, empty module in a specific context.
-  # 
+  #
   # Every invocation should be paired with LLVMDisposeModule() or memory
   # will be leaked.
-  # 
+  #
   # @method module_create_with_name_in_context(module_id, c)
-  # @param [String] module_id 
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(ModuleRef)] 
+  # @param [String] module_id
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(ModuleRef)]
   # @scope class
   attach_function :module_create_with_name_in_context, :LLVMModuleCreateWithNameInContext, [:string, :pointer], :pointer
-  
+
   # Return an exact copy of the specified module.
-  # 
+  #
   # @method clone_module(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(ModuleRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(ModuleRef)]
   # @scope class
   attach_function :clone_module, :LLVMCloneModule, [:pointer], :pointer
-  
+
   # Destroy a module instance.
-  # 
+  #
   # This must be called for every created module or memory will be
   # leaked.
-  # 
+  #
   # @method dispose_module(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [nil]
   # @scope class
   attach_function :dispose_module, :LLVMDisposeModule, [:pointer], :void
-  
+
   # Obtain the data layout for a module.
-  # 
+  #
   # @see Module::getDataLayout()
-  # 
+  #
   # @method get_data_layout(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [String] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [String]
   # @scope class
   attach_function :get_data_layout, :LLVMGetDataLayout, [:pointer], :string
-  
+
   # Set the data layout for a module.
-  # 
+  #
   # @see Module::setDataLayout()
-  # 
+  #
   # @method set_data_layout(m, triple)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] triple 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] triple
+  # @return [nil]
   # @scope class
   attach_function :set_data_layout, :LLVMSetDataLayout, [:pointer, :string], :void
-  
+
   # Obtain the target triple for a module.
-  # 
+  #
   # @see Module::getTargetTriple()
-  # 
+  #
   # @method get_target(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [String] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [String]
   # @scope class
   attach_function :get_target, :LLVMGetTarget, [:pointer], :string
-  
+
   # Set the target triple for a module.
-  # 
+  #
   # @see Module::setTargetTriple()
-  # 
+  #
   # @method set_target(m, triple)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] triple 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] triple
+  # @return [nil]
   # @scope class
   attach_function :set_target, :LLVMSetTarget, [:pointer, :string], :void
-  
+
   # Dump a representation of a module to stderr.
-  # 
+  #
   # @see Module::dump()
-  # 
+  #
   # @method dump_module(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [nil]
   # @scope class
   attach_function :dump_module, :LLVMDumpModule, [:pointer], :void
-  
+
   # Print a representation of a module to a file. The ErrorMessage needs to be
   # disposed with LLVMDisposeMessage. Returns 0 on success, 1 otherwise.
-  # 
+  #
   # @see Module::print()
-  # 
+  #
   # @method print_module_to_file(m, filename, error_message)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] filename 
-  # @param [FFI::Pointer(**CharS)] error_message 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] filename
+  # @param [FFI::Pointer(**CharS)] error_message
+  # @return [Integer]
   # @scope class
   attach_function :print_module_to_file, :LLVMPrintModuleToFile, [:pointer, :string, :pointer], :int
-  
+
   # Return a string representation of the module. Use
   # LLVMDisposeMessage to free the string.
-  # 
+  #
   # @see Module::print()
-  # 
+  #
   # @method print_module_to_string(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [String] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [String]
   # @scope class
   attach_function :print_module_to_string, :LLVMPrintModuleToString, [:pointer], :string
-  
+
   # Set inline assembly for a module.
-  # 
+  #
   # @see Module::setModuleInlineAsm()
-  # 
+  #
   # @method set_module_inline_asm(m, asm)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] asm 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] asm
+  # @return [nil]
   # @scope class
   attach_function :set_module_inline_asm, :LLVMSetModuleInlineAsm, [:pointer, :string], :void
-  
+
   # Obtain the context to which this module is associated.
-  # 
+  #
   # @see Module::getContext()
-  # 
+  #
   # @method get_module_context(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(ContextRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(ContextRef)]
   # @scope class
   attach_function :get_module_context, :LLVMGetModuleContext, [:pointer], :pointer
-  
+
   # Obtain a Type from a module by its registered name.
-  # 
+  #
   # @method get_type_by_name(m, name)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] name 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] name
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :get_type_by_name, :LLVMGetTypeByName, [:pointer, :string], :pointer
-  
+
   # Obtain the number of operands for named metadata in a module.
-  # 
+  #
   # @see llvm::Module::getNamedMetadata()
-  # 
+  #
   # @method get_named_metadata_num_operands(m, name)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] name 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] name
+  # @return [Integer]
   # @scope class
   attach_function :get_named_metadata_num_operands, :LLVMGetNamedMetadataNumOperands, [:pointer, :string], :uint
-  
+
   # Obtain the named metadata operands for a module.
-  # 
+  #
   # The passed LLVMValueRef pointer should refer to an array of
   # LLVMValueRef at least LLVMGetNamedMetadataNumOperands long. This
   # array will be populated with the LLVMValueRef instances. Each
   # instance corresponds to a llvm::MDNode.
-  # 
+  #
   # @see llvm::Module::getNamedMetadata()
   # @see llvm::MDNode::getOperand()
-  # 
+  #
   # @method get_named_metadata_operands(m, name, dest)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] name 
-  # @param [FFI::Pointer(*ValueRef)] dest 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] name
+  # @param [FFI::Pointer(*ValueRef)] dest
+  # @return [nil]
   # @scope class
   attach_function :get_named_metadata_operands, :LLVMGetNamedMetadataOperands, [:pointer, :string, :pointer], :void
-  
+
   # Add an operand to named metadata.
-  # 
+  #
   # @see llvm::Module::getNamedMetadata()
   # @see llvm::MDNode::addOperand()
-  # 
+  #
   # @method add_named_metadata_operand(m, name, val)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] name 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] name
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [nil]
   # @scope class
   attach_function :add_named_metadata_operand, :LLVMAddNamedMetadataOperand, [:pointer, :string, :pointer], :void
-  
+
   # Add a function to a module under a specified name.
-  # 
+  #
   # @see llvm::Function::Create()
-  # 
+  #
   # @method add_function(m, name, function_ty)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] name 
-  # @param [FFI::Pointer(TypeRef)] function_ty 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] name
+  # @param [FFI::Pointer(TypeRef)] function_ty
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :add_function, :LLVMAddFunction, [:pointer, :string, :pointer], :pointer
-  
+
   # Obtain a Function value from a Module by its name.
-  # 
+  #
   # The returned value corresponds to a llvm::Function value.
-  # 
+  #
   # @see llvm::Module::getFunction()
-  # 
+  #
   # @method get_named_function(m, name)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_named_function, :LLVMGetNamedFunction, [:pointer, :string], :pointer
-  
+
   # Obtain an iterator to the first Function in a Module.
-  # 
+  #
   # @see llvm::Module::begin()
-  # 
+  #
   # @method get_first_function(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_first_function, :LLVMGetFirstFunction, [:pointer], :pointer
-  
+
   # Obtain an iterator to the last Function in a Module.
-  # 
+  #
   # @see llvm::Module::end()
-  # 
+  #
   # @method get_last_function(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_last_function, :LLVMGetLastFunction, [:pointer], :pointer
-  
+
   # Advance a Function iterator to the next Function.
-  # 
+  #
   # Returns NULL if the iterator was already at the end and there are no more
   # functions.
-  # 
+  #
   # @method get_next_function(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_next_function, :LLVMGetNextFunction, [:pointer], :pointer
-  
+
   # Decrement a Function iterator to the previous Function.
-  # 
+  #
   # Returns NULL if the iterator was already at the beginning and there are
   # no previous functions.
-  # 
+  #
   # @method get_previous_function(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_previous_function, :LLVMGetPreviousFunction, [:pointer], :pointer
-  
+
   # Obtain the enumerated type of a Type instance.
-  # 
+  #
   # @see llvm::Type:getTypeID()
-  # 
+  #
   # @method get_type_kind(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [Symbol from _enum_type_kind_] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [Symbol from _enum_type_kind_]
   # @scope class
   attach_function :get_type_kind, :LLVMGetTypeKind, [:pointer], :type_kind
-  
+
   # Whether the type has a known size.
-  # 
+  #
   # Things that don't have a size are abstract types, labels, and void.a
-  # 
+  #
   # @see llvm::Type::isSized()
-  # 
+  #
   # @method type_is_sized(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [Integer]
   # @scope class
   attach_function :type_is_sized, :LLVMTypeIsSized, [:pointer], :int
-  
+
   # Obtain the context to which this type instance is associated.
-  # 
+  #
   # @see llvm::Type::getContext()
-  # 
+  #
   # @method get_type_context(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(ContextRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(ContextRef)]
   # @scope class
   attach_function :get_type_context, :LLVMGetTypeContext, [:pointer], :pointer
-  
+
   # Dump a representation of a type to stderr.
-  # 
+  #
   # @see llvm::Type::dump()
-  # 
+  #
   # @method dump_type(val)
-  # @param [FFI::Pointer(TypeRef)] val 
-  # @return [nil] 
+  # @param [FFI::Pointer(TypeRef)] val
+  # @return [nil]
   # @scope class
   attach_function :dump_type, :LLVMDumpType, [:pointer], :void
-  
+
   # Return a string representation of the type. Use
   # LLVMDisposeMessage to free the string.
-  # 
+  #
   # @see llvm::Type::print()
-  # 
+  #
   # @method print_type_to_string(val)
-  # @param [FFI::Pointer(TypeRef)] val 
-  # @return [String] 
+  # @param [FFI::Pointer(TypeRef)] val
+  # @return [String]
   # @scope class
   attach_function :print_type_to_string, :LLVMPrintTypeToString, [:pointer], :string
-  
+
   # Obtain an integer type from a context with specified bit width.
-  # 
+  #
   # @method int1_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int1_type_in_context, :LLVMInt1TypeInContext, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int8_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int8_type_in_context, :LLVMInt8TypeInContext, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int16_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int16_type_in_context, :LLVMInt16TypeInContext, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int32_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int32_type_in_context, :LLVMInt32TypeInContext, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int64_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int64_type_in_context, :LLVMInt64TypeInContext, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int128_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int128_type_in_context, :LLVMInt128TypeInContext, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int_type_in_context(c, num_bits)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [Integer] num_bits 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [Integer] num_bits
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int_type_in_context, :LLVMIntTypeInContext, [:pointer, :uint], :pointer
-  
+
   # Obtain an integer type from the global context with a specified bit
   # width.
-  # 
+  #
   # @method int1_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int1_type, :LLVMInt1Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int8_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int8_type, :LLVMInt8Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int16_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int16_type, :LLVMInt16Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int32_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int32_type, :LLVMInt32Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int64_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int64_type, :LLVMInt64Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int128_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int128_type, :LLVMInt128Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method int_type(num_bits)
-  # @param [Integer] num_bits 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [Integer] num_bits
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :int_type, :LLVMIntType, [:uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_int_type_width(integer_ty)
-  # @param [FFI::Pointer(TypeRef)] integer_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] integer_ty
+  # @return [Integer]
   # @scope class
   attach_function :get_int_type_width, :LLVMGetIntTypeWidth, [:pointer], :uint
-  
+
   # Obtain a 16-bit floating point type from a context.
-  # 
+  #
   # @method half_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :half_type_in_context, :LLVMHalfTypeInContext, [:pointer], :pointer
-  
+
   # Obtain a 32-bit floating point type from a context.
-  # 
+  #
   # @method float_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :float_type_in_context, :LLVMFloatTypeInContext, [:pointer], :pointer
-  
+
   # Obtain a 64-bit floating point type from a context.
-  # 
+  #
   # @method double_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :double_type_in_context, :LLVMDoubleTypeInContext, [:pointer], :pointer
-  
+
   # Obtain a 80-bit floating point type (X87) from a context.
-  # 
+  #
   # @method x86fp80_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :x86fp80_type_in_context, :LLVMX86FP80TypeInContext, [:pointer], :pointer
-  
+
   # Obtain a 128-bit floating point type (112-bit mantissa) from a
   # context.
-  # 
+  #
   # @method fp128_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :fp128_type_in_context, :LLVMFP128TypeInContext, [:pointer], :pointer
-  
+
   # Obtain a 128-bit floating point type (two 64-bits) from a context.
-  # 
+  #
   # @method ppcfp128_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :ppcfp128_type_in_context, :LLVMPPCFP128TypeInContext, [:pointer], :pointer
-  
+
   # Obtain a floating point type from the global context.
-  # 
+  #
   # These map to the functions in this group of the same name.
-  # 
+  #
   # @method half_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :half_type, :LLVMHalfType, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method float_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :float_type, :LLVMFloatType, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method double_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :double_type, :LLVMDoubleType, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method x86fp80_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :x86fp80_type, :LLVMX86FP80Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method fp128_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :fp128_type, :LLVMFP128Type, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method ppcfp128_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :ppcfp128_type, :LLVMPPCFP128Type, [], :pointer
-  
+
   # Obtain a function type consisting of a specified signature.
-  # 
+  #
   # The function is defined as a tuple of a return Type, a list of
   # parameter types, and whether the function is variadic.
-  # 
+  #
   # @method function_type(return_type, param_types, param_count, is_var_arg)
-  # @param [FFI::Pointer(TypeRef)] return_type 
-  # @param [FFI::Pointer(*TypeRef)] param_types 
-  # @param [Integer] param_count 
-  # @param [Integer] is_var_arg 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(TypeRef)] return_type
+  # @param [FFI::Pointer(*TypeRef)] param_types
+  # @param [Integer] param_count
+  # @param [Integer] is_var_arg
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :function_type, :LLVMFunctionType, [:pointer, :pointer, :uint, :int], :pointer
-  
+
   # Returns whether a function type is variadic.
-  # 
+  #
   # @method is_function_var_arg(function_ty)
-  # @param [FFI::Pointer(TypeRef)] function_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] function_ty
+  # @return [Integer]
   # @scope class
   attach_function :is_function_var_arg, :LLVMIsFunctionVarArg, [:pointer], :int
-  
+
   # Obtain the Type this function Type returns.
-  # 
+  #
   # @method get_return_type(function_ty)
-  # @param [FFI::Pointer(TypeRef)] function_ty 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(TypeRef)] function_ty
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :get_return_type, :LLVMGetReturnType, [:pointer], :pointer
-  
+
   # Obtain the number of parameters this function accepts.
-  # 
+  #
   # @method count_param_types(function_ty)
-  # @param [FFI::Pointer(TypeRef)] function_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] function_ty
+  # @return [Integer]
   # @scope class
   attach_function :count_param_types, :LLVMCountParamTypes, [:pointer], :uint
-  
+
   # Obtain the types of a function's parameters.
-  # 
+  #
   # The Dest parameter should point to a pre-allocated array of
   # LLVMTypeRef at least LLVMCountParamTypes() large. On return, the
   # first LLVMCountParamTypes() entries in the array will be populated
   # with LLVMTypeRef instances.
-  # 
+  #
   # @param FunctionTy The function type to operate on.
   # @param Dest Memory address of an array to be filled with result.
-  # 
+  #
   # @method get_param_types(function_ty, dest)
-  # @param [FFI::Pointer(TypeRef)] function_ty 
-  # @param [FFI::Pointer(*TypeRef)] dest 
-  # @return [nil] 
+  # @param [FFI::Pointer(TypeRef)] function_ty
+  # @param [FFI::Pointer(*TypeRef)] dest
+  # @return [nil]
   # @scope class
   attach_function :get_param_types, :LLVMGetParamTypes, [:pointer, :pointer], :void
-  
+
   # Create a new structure type in a context.
-  # 
+  #
   # A structure is specified by a list of inner elements/types and
   # whether these can be packed together.
-  # 
+  #
   # @see llvm::StructType::create()
-  # 
+  #
   # @method struct_type_in_context(c, element_types, element_count, packed)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [FFI::Pointer(*TypeRef)] element_types 
-  # @param [Integer] element_count 
-  # @param [Integer] packed 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [FFI::Pointer(*TypeRef)] element_types
+  # @param [Integer] element_count
+  # @param [Integer] packed
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :struct_type_in_context, :LLVMStructTypeInContext, [:pointer, :pointer, :uint, :int], :pointer
-  
+
   # Create a new structure type in the global context.
-  # 
+  #
   # @see llvm::StructType::create()
-  # 
+  #
   # @method struct_type(element_types, element_count, packed)
-  # @param [FFI::Pointer(*TypeRef)] element_types 
-  # @param [Integer] element_count 
-  # @param [Integer] packed 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(*TypeRef)] element_types
+  # @param [Integer] element_count
+  # @param [Integer] packed
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :struct_type, :LLVMStructType, [:pointer, :uint, :int], :pointer
-  
+
   # Create an empty structure in a context having a specified name.
-  # 
+  #
   # @see llvm::StructType::create()
-  # 
+  #
   # @method struct_create_named(c, name)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [String] name 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [String] name
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :struct_create_named, :LLVMStructCreateNamed, [:pointer, :string], :pointer
-  
+
   # Obtain the name of a structure.
-  # 
+  #
   # @see llvm::StructType::getName()
-  # 
+  #
   # @method get_struct_name(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [String] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [String]
   # @scope class
   attach_function :get_struct_name, :LLVMGetStructName, [:pointer], :string
-  
+
   # Set the contents of a structure type.
-  # 
+  #
   # @see llvm::StructType::setBody()
-  # 
+  #
   # @method struct_set_body(struct_ty, element_types, element_count, packed)
-  # @param [FFI::Pointer(TypeRef)] struct_ty 
-  # @param [FFI::Pointer(*TypeRef)] element_types 
-  # @param [Integer] element_count 
-  # @param [Integer] packed 
-  # @return [nil] 
+  # @param [FFI::Pointer(TypeRef)] struct_ty
+  # @param [FFI::Pointer(*TypeRef)] element_types
+  # @param [Integer] element_count
+  # @param [Integer] packed
+  # @return [nil]
   # @scope class
   attach_function :struct_set_body, :LLVMStructSetBody, [:pointer, :pointer, :uint, :int], :void
-  
+
   # Get the number of elements defined inside the structure.
-  # 
+  #
   # @see llvm::StructType::getNumElements()
-  # 
+  #
   # @method count_struct_element_types(struct_ty)
-  # @param [FFI::Pointer(TypeRef)] struct_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] struct_ty
+  # @return [Integer]
   # @scope class
   attach_function :count_struct_element_types, :LLVMCountStructElementTypes, [:pointer], :uint
-  
+
   # Get the elements within a structure.
-  # 
+  #
   # The function is passed the address of a pre-allocated array of
   # LLVMTypeRef at least LLVMCountStructElementTypes() long. After
   # invocation, this array will be populated with the structure's
   # elements. The objects in the destination array will have a lifetime
   # of the structure type itself, which is the lifetime of the context it
   # is contained in.
-  # 
+  #
   # @method get_struct_element_types(struct_ty, dest)
-  # @param [FFI::Pointer(TypeRef)] struct_ty 
-  # @param [FFI::Pointer(*TypeRef)] dest 
-  # @return [nil] 
+  # @param [FFI::Pointer(TypeRef)] struct_ty
+  # @param [FFI::Pointer(*TypeRef)] dest
+  # @return [nil]
   # @scope class
   attach_function :get_struct_element_types, :LLVMGetStructElementTypes, [:pointer, :pointer], :void
-  
+
   # Get the type of the element at a given index in the structure.
-  # 
+  #
   # @see llvm::StructType::getTypeAtIndex()
-  # 
+  #
   # @method struct_get_type_at_index(struct_ty, i)
-  # @param [FFI::Pointer(TypeRef)] struct_ty 
-  # @param [Integer] i 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(TypeRef)] struct_ty
+  # @param [Integer] i
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :struct_get_type_at_index, :LLVMStructGetTypeAtIndex, [:pointer, :uint], :pointer
-  
+
   # Determine whether a structure is packed.
-  # 
+  #
   # @see llvm::StructType::isPacked()
-  # 
+  #
   # @method is_packed_struct(struct_ty)
-  # @param [FFI::Pointer(TypeRef)] struct_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] struct_ty
+  # @return [Integer]
   # @scope class
   attach_function :is_packed_struct, :LLVMIsPackedStruct, [:pointer], :int
-  
+
   # Determine whether a structure is opaque.
-  # 
+  #
   # @see llvm::StructType::isOpaque()
-  # 
+  #
   # @method is_opaque_struct(struct_ty)
-  # @param [FFI::Pointer(TypeRef)] struct_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] struct_ty
+  # @return [Integer]
   # @scope class
   attach_function :is_opaque_struct, :LLVMIsOpaqueStruct, [:pointer], :int
-  
+
   # Obtain the type of elements within a sequential type.
-  # 
+  #
   # This works on array, vector, and pointer types.
-  # 
+  #
   # @see llvm::SequentialType::getElementType()
-  # 
+  #
   # @method get_element_type(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :get_element_type, :LLVMGetElementType, [:pointer], :pointer
-  
+
   # Create a fixed size array type that refers to a specific type.
-  # 
+  #
   # The created type will exist in the context that its element type
   # exists in.
-  # 
+  #
   # @see llvm::ArrayType::get()
-  # 
+  #
   # @method array_type(element_type, element_count)
-  # @param [FFI::Pointer(TypeRef)] element_type 
-  # @param [Integer] element_count 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(TypeRef)] element_type
+  # @param [Integer] element_count
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :array_type, :LLVMArrayType, [:pointer, :uint], :pointer
-  
+
   # Obtain the length of an array type.
-  # 
+  #
   # This only works on types that represent arrays.
-  # 
+  #
   # @see llvm::ArrayType::getNumElements()
-  # 
+  #
   # @method get_array_length(array_ty)
-  # @param [FFI::Pointer(TypeRef)] array_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] array_ty
+  # @return [Integer]
   # @scope class
   attach_function :get_array_length, :LLVMGetArrayLength, [:pointer], :uint
-  
+
   # Create a pointer type that points to a defined type.
-  # 
+  #
   # The created type will exist in the context that its pointee type
   # exists in.
-  # 
+  #
   # @see llvm::PointerType::get()
-  # 
+  #
   # @method pointer_type(element_type, address_space)
-  # @param [FFI::Pointer(TypeRef)] element_type 
-  # @param [Integer] address_space 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(TypeRef)] element_type
+  # @param [Integer] address_space
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :pointer_type, :LLVMPointerType, [:pointer, :uint], :pointer
-  
+
   # Obtain the address space of a pointer type.
-  # 
+  #
   # This only works on types that represent pointers.
-  # 
+  #
   # @see llvm::PointerType::getAddressSpace()
-  # 
+  #
   # @method get_pointer_address_space(pointer_ty)
-  # @param [FFI::Pointer(TypeRef)] pointer_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] pointer_ty
+  # @return [Integer]
   # @scope class
   attach_function :get_pointer_address_space, :LLVMGetPointerAddressSpace, [:pointer], :uint
-  
+
   # Create a vector type that contains a defined type and has a specific
   # number of elements.
-  # 
+  #
   # The created type will exist in the context thats its element type
   # exists in.
-  # 
+  #
   # @see llvm::VectorType::get()
-  # 
+  #
   # @method vector_type(element_type, element_count)
-  # @param [FFI::Pointer(TypeRef)] element_type 
-  # @param [Integer] element_count 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(TypeRef)] element_type
+  # @param [Integer] element_count
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :vector_type, :LLVMVectorType, [:pointer, :uint], :pointer
-  
+
   # Obtain the number of elements in a vector type.
-  # 
+  #
   # This only works on types that represent vectors.
-  # 
+  #
   # @see llvm::VectorType::getNumElements()
-  # 
+  #
   # @method get_vector_size(vector_ty)
-  # @param [FFI::Pointer(TypeRef)] vector_ty 
-  # @return [Integer] 
+  # @param [FFI::Pointer(TypeRef)] vector_ty
+  # @return [Integer]
   # @scope class
   attach_function :get_vector_size, :LLVMGetVectorSize, [:pointer], :uint
-  
+
   # Create a void type in a context.
-  # 
+  #
   # @method void_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :void_type_in_context, :LLVMVoidTypeInContext, [:pointer], :pointer
-  
+
   # Create a label type in a context.
-  # 
+  #
   # @method label_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :label_type_in_context, :LLVMLabelTypeInContext, [:pointer], :pointer
-  
+
   # Create a X86 MMX type in a context.
-  # 
+  #
   # @method x86mmx_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :x86mmx_type_in_context, :LLVMX86MMXTypeInContext, [:pointer], :pointer
-  
+
   # These are similar to the above functions except they operate on the
   # global context.
-  # 
+  #
   # @method void_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :void_type, :LLVMVoidType, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method label_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :label_type, :LLVMLabelType, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method x86mmx_type()
-  # @return [FFI::Pointer(TypeRef)] 
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :x86mmx_type, :LLVMX86MMXType, [], :pointer
-  
+
   # Obtain the type of a value.
-  # 
+  #
   # @see llvm::Value::getType()
-  # 
+  #
   # @method type_of(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(TypeRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :type_of, :LLVMTypeOf, [:pointer], :pointer
-  
+
   # Obtain the string name of a value.
-  # 
+  #
   # @see llvm::Value::getName()
-  # 
+  #
   # @method get_value_name(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [String] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [String]
   # @scope class
   attach_function :get_value_name, :LLVMGetValueName, [:pointer], :string
-  
+
   # Set the string name of a value.
-  # 
+  #
   # @see llvm::Value::setName()
-  # 
+  #
   # @method set_value_name(val, name)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [String] name 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [String] name
+  # @return [nil]
   # @scope class
   attach_function :set_value_name, :LLVMSetValueName, [:pointer, :string], :void
-  
+
   # Dump a representation of a value to stderr.
-  # 
+  #
   # @see llvm::Value::dump()
-  # 
+  #
   # @method dump_value(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [nil]
   # @scope class
   attach_function :dump_value, :LLVMDumpValue, [:pointer], :void
-  
+
   # Return a string representation of the value. Use
   # LLVMDisposeMessage to free the string.
-  # 
+  #
   # @see llvm::Value::print()
-  # 
+  #
   # @method print_value_to_string(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [String] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [String]
   # @scope class
   attach_function :print_value_to_string, :LLVMPrintValueToString, [:pointer], :string
-  
+
   # Replace all uses of a value with another one.
-  # 
+  #
   # @see llvm::Value::replaceAllUsesWith()
-  # 
+  #
   # @method replace_all_uses_with(old_val, new_val)
-  # @param [FFI::Pointer(ValueRef)] old_val 
-  # @param [FFI::Pointer(ValueRef)] new_val 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] old_val
+  # @param [FFI::Pointer(ValueRef)] new_val
+  # @return [nil]
   # @scope class
   attach_function :replace_all_uses_with, :LLVMReplaceAllUsesWith, [:pointer, :pointer], :void
-  
+
   # Determine whether the specified constant instance is constant.
-  # 
+  #
   # @method is_constant(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [Integer]
   # @scope class
   attach_function :is_constant, :LLVMIsConstant, [:pointer], :int
-  
+
   # Determine whether a value instance is undefined.
-  # 
+  #
   # @method is_undef(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [Integer]
   # @scope class
   attach_function :is_undef, :LLVMIsUndef, [:pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_argument(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_argument, :LLVMIsAArgument, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_basic_block(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_basic_block, :LLVMIsABasicBlock, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_inline_asm(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_inline_asm, :LLVMIsAInlineAsm, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_user(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_user, :LLVMIsAUser, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant, :LLVMIsAConstant, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_block_address(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_block_address, :LLVMIsABlockAddress, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_aggregate_zero(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_aggregate_zero, :LLVMIsAConstantAggregateZero, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_array(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_array, :LLVMIsAConstantArray, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_data_sequential(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_data_sequential, :LLVMIsAConstantDataSequential, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_data_array(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_data_array, :LLVMIsAConstantDataArray, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_data_vector(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_data_vector, :LLVMIsAConstantDataVector, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_expr(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_expr, :LLVMIsAConstantExpr, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_fp(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_fp, :LLVMIsAConstantFP, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_int(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_int, :LLVMIsAConstantInt, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_pointer_null(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_pointer_null, :LLVMIsAConstantPointerNull, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_struct(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_struct, :LLVMIsAConstantStruct, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_token_none(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_token_none, :LLVMIsAConstantTokenNone, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_constant_vector(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_constant_vector, :LLVMIsAConstantVector, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_global_value(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_global_value, :LLVMIsAGlobalValue, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_global_alias(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_global_alias, :LLVMIsAGlobalAlias, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_global_object(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_global_object, :LLVMIsAGlobalObject, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_function(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_function, :LLVMIsAFunction, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_global_variable(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_global_variable, :LLVMIsAGlobalVariable, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_undef_value(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_undef_value, :LLVMIsAUndefValue, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_instruction(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_instruction, :LLVMIsAInstruction, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_binary_operator(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_binary_operator, :LLVMIsABinaryOperator, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_call_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_call_inst, :LLVMIsACallInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_intrinsic_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_intrinsic_inst, :LLVMIsAIntrinsicInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_dbg_info_intrinsic(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_dbg_info_intrinsic, :LLVMIsADbgInfoIntrinsic, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_dbg_declare_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_dbg_declare_inst, :LLVMIsADbgDeclareInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_mem_intrinsic(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_mem_intrinsic, :LLVMIsAMemIntrinsic, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_mem_cpy_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_mem_cpy_inst, :LLVMIsAMemCpyInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_mem_move_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_mem_move_inst, :LLVMIsAMemMoveInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_mem_set_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_mem_set_inst, :LLVMIsAMemSetInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_cmp_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_cmp_inst, :LLVMIsACmpInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_af_cmp_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_af_cmp_inst, :LLVMIsAFCmpInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_ai_cmp_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_ai_cmp_inst, :LLVMIsAICmpInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_extract_element_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_extract_element_inst, :LLVMIsAExtractElementInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_get_element_ptr_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_get_element_ptr_inst, :LLVMIsAGetElementPtrInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_insert_element_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_insert_element_inst, :LLVMIsAInsertElementInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_insert_value_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_insert_value_inst, :LLVMIsAInsertValueInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_landing_pad_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_landing_pad_inst, :LLVMIsALandingPadInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_aphi_node(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_aphi_node, :LLVMIsAPHINode, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_select_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_select_inst, :LLVMIsASelectInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_shuffle_vector_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_shuffle_vector_inst, :LLVMIsAShuffleVectorInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_store_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_store_inst, :LLVMIsAStoreInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_terminator_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_terminator_inst, :LLVMIsATerminatorInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_branch_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_branch_inst, :LLVMIsABranchInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_indirect_br_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_indirect_br_inst, :LLVMIsAIndirectBrInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_invoke_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_invoke_inst, :LLVMIsAInvokeInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_return_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_return_inst, :LLVMIsAReturnInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_switch_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_switch_inst, :LLVMIsASwitchInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_unreachable_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_unreachable_inst, :LLVMIsAUnreachableInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_resume_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_resume_inst, :LLVMIsAResumeInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_cleanup_return_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_cleanup_return_inst, :LLVMIsACleanupReturnInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_catch_return_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_catch_return_inst, :LLVMIsACatchReturnInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_funclet_pad_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_funclet_pad_inst, :LLVMIsAFuncletPadInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_catch_pad_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_catch_pad_inst, :LLVMIsACatchPadInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_cleanup_pad_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_cleanup_pad_inst, :LLVMIsACleanupPadInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_unary_instruction(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_unary_instruction, :LLVMIsAUnaryInstruction, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_alloca_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_alloca_inst, :LLVMIsAAllocaInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_cast_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_cast_inst, :LLVMIsACastInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_addr_space_cast_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_addr_space_cast_inst, :LLVMIsAAddrSpaceCastInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_bit_cast_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_bit_cast_inst, :LLVMIsABitCastInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_afp_ext_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_afp_ext_inst, :LLVMIsAFPExtInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_afp_to_si_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_afp_to_si_inst, :LLVMIsAFPToSIInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_afp_to_ui_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_afp_to_ui_inst, :LLVMIsAFPToUIInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_afp_trunc_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_afp_trunc_inst, :LLVMIsAFPTruncInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_int_to_ptr_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_int_to_ptr_inst, :LLVMIsAIntToPtrInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_ptr_to_int_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_ptr_to_int_inst, :LLVMIsAPtrToIntInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_as_ext_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_as_ext_inst, :LLVMIsASExtInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_asi_to_fp_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_asi_to_fp_inst, :LLVMIsASIToFPInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_trunc_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_trunc_inst, :LLVMIsATruncInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_aui_to_fp_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_aui_to_fp_inst, :LLVMIsAUIToFPInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_az_ext_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_az_ext_inst, :LLVMIsAZExtInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_extract_value_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_extract_value_inst, :LLVMIsAExtractValueInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_a_load_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_a_load_inst, :LLVMIsALoadInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_ava_arg_inst(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_ava_arg_inst, :LLVMIsAVAArgInst, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_amd_node(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_amd_node, :LLVMIsAMDNode, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_amd_string(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :is_amd_string, :LLVMIsAMDString, [:pointer], :pointer
-  
+
   # Obtain the first use of a value.
-  # 
+  #
   # Uses are obtained in an iterator fashion. First, call this function
   # to obtain a reference to the first use. Then, call LLVMGetNextUse()
   # on that instance and all subsequently obtained instances until
   # LLVMGetNextUse() returns NULL.
-  # 
+  #
   # @see llvm::Value::use_begin()
-  # 
+  #
   # @method get_first_use(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(UseRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(UseRef)]
   # @scope class
   attach_function :get_first_use, :LLVMGetFirstUse, [:pointer], :pointer
-  
+
   # Obtain the next use of a value.
-  # 
+  #
   # This effectively advances the iterator. It returns NULL if you are on
   # the final use and no more are available.
-  # 
+  #
   # @method get_next_use(u)
-  # @param [FFI::Pointer(UseRef)] u 
-  # @return [FFI::Pointer(UseRef)] 
+  # @param [FFI::Pointer(UseRef)] u
+  # @return [FFI::Pointer(UseRef)]
   # @scope class
   attach_function :get_next_use, :LLVMGetNextUse, [:pointer], :pointer
-  
+
   # Obtain the user value for a user.
-  # 
+  #
   # The returned value corresponds to a llvm::User type.
-  # 
+  #
   # @see llvm::Use::getUser()
-  # 
+  #
   # @method get_user(u)
-  # @param [FFI::Pointer(UseRef)] u 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(UseRef)] u
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_user, :LLVMGetUser, [:pointer], :pointer
-  
+
   # Obtain the value this use corresponds to.
-  # 
+  #
   # @see llvm::Use::get().
-  # 
+  #
   # @method get_used_value(u)
-  # @param [FFI::Pointer(UseRef)] u 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(UseRef)] u
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_used_value, :LLVMGetUsedValue, [:pointer], :pointer
-  
+
   # Obtain an operand at a specific index in a llvm::User value.
-  # 
+  #
   # @see llvm::User::getOperand()
-  # 
+  #
   # @method get_operand(val, index)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [Integer] index 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [Integer] index
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_operand, :LLVMGetOperand, [:pointer, :uint], :pointer
-  
+
   # Obtain the use of an operand at a specific index in a llvm::User value.
-  # 
+  #
   # @see llvm::User::getOperandUse()
-  # 
+  #
   # @method get_operand_use(val, index)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [Integer] index 
-  # @return [FFI::Pointer(UseRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [Integer] index
+  # @return [FFI::Pointer(UseRef)]
   # @scope class
   attach_function :get_operand_use, :LLVMGetOperandUse, [:pointer, :uint], :pointer
-  
+
   # Set an operand at a specific index in a llvm::User value.
-  # 
+  #
   # @see llvm::User::setOperand()
-  # 
+  #
   # @method set_operand(user, index, val)
-  # @param [FFI::Pointer(ValueRef)] user 
-  # @param [Integer] index 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] user
+  # @param [Integer] index
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [nil]
   # @scope class
   attach_function :set_operand, :LLVMSetOperand, [:pointer, :uint, :pointer], :void
-  
+
   # Obtain the number of operands in a llvm::User value.
-  # 
+  #
   # @see llvm::User::getNumOperands()
-  # 
+  #
   # @method get_num_operands(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [Integer]
   # @scope class
   attach_function :get_num_operands, :LLVMGetNumOperands, [:pointer], :int
-  
+
   # Obtain a constant value referring to the null instance of a type.
-  # 
+  #
   # @see llvm::Constant::getNullValue()
-  # 
+  #
   # @method const_null(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_null, :LLVMConstNull, [:pointer], :pointer
-  
+
   # Obtain a constant value referring to the instance of a type
   # consisting of all ones.
-  # 
+  #
   # This is only valid for integer types.
-  # 
+  #
   # @see llvm::Constant::getAllOnesValue()
-  # 
+  #
   # @method const_all_ones(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_all_ones, :LLVMConstAllOnes, [:pointer], :pointer
-  
+
   # Obtain a constant value referring to an undefined value of a type.
-  # 
+  #
   # @see llvm::UndefValue::get()
-  # 
+  #
   # @method get_undef(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_undef, :LLVMGetUndef, [:pointer], :pointer
-  
+
   # Determine whether a value instance is null.
-  # 
+  #
   # @see llvm::Constant::isNullValue()
-  # 
+  #
   # @method is_null(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [Integer]
   # @scope class
   attach_function :is_null, :LLVMIsNull, [:pointer], :int
-  
+
   # Obtain a constant that is a constant pointer pointing to NULL for a
   # specified type.
-  # 
+  #
   # @method const_pointer_null(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_pointer_null, :LLVMConstPointerNull, [:pointer], :pointer
-  
+
   # Obtain a constant value for an integer type.
-  # 
+  #
   # The returned value corresponds to a llvm::ConstantInt.
-  # 
+  #
   # @see llvm::ConstantInt::get()
-  # 
+  #
   # @param IntTy Integer type to obtain value of.
   # @param N The value the returned instance should refer to.
   # @param SignExtend Whether to sign extend the produced value.
-  # 
+  #
   # @method const_int(int_ty, n, sign_extend)
-  # @param [FFI::Pointer(TypeRef)] int_ty 
-  # @param [Integer] n 
-  # @param [Integer] sign_extend 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] int_ty
+  # @param [Integer] n
+  # @param [Integer] sign_extend
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_int, :LLVMConstInt, [:pointer, :ulong_long, :int], :pointer
-  
+
   # Obtain a constant value for an integer of arbitrary precision.
-  # 
+  #
   # @see llvm::ConstantInt::get()
-  # 
+  #
   # @method const_int_of_arbitrary_precision(int_ty, num_words, words)
-  # @param [FFI::Pointer(TypeRef)] int_ty 
-  # @param [Integer] num_words 
-  # @param [FFI::Pointer(*U_long)] words 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] int_ty
+  # @param [Integer] num_words
+  # @param [FFI::Pointer(*U_long)] words
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_int_of_arbitrary_precision, :LLVMConstIntOfArbitraryPrecision, [:pointer, :uint, :pointer], :pointer
-  
+
   # Obtain a constant value for an integer parsed from a string.
-  # 
+  #
   # A similar API, LLVMConstIntOfStringAndSize is also available. If the
   # string's length is available, it is preferred to call that function
   # instead.
-  # 
+  #
   # @see llvm::ConstantInt::get()
-  # 
+  #
   # @method const_int_of_string(int_ty, text, radix)
-  # @param [FFI::Pointer(TypeRef)] int_ty 
-  # @param [String] text 
-  # @param [Integer] radix 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] int_ty
+  # @param [String] text
+  # @param [Integer] radix
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_int_of_string, :LLVMConstIntOfString, [:pointer, :string, :uchar], :pointer
-  
+
   # Obtain a constant value for an integer parsed from a string with
   # specified length.
-  # 
+  #
   # @see llvm::ConstantInt::get()
-  # 
+  #
   # @method const_int_of_string_and_size(int_ty, text, s_len, radix)
-  # @param [FFI::Pointer(TypeRef)] int_ty 
-  # @param [String] text 
-  # @param [Integer] s_len 
-  # @param [Integer] radix 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] int_ty
+  # @param [String] text
+  # @param [Integer] s_len
+  # @param [Integer] radix
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_int_of_string_and_size, :LLVMConstIntOfStringAndSize, [:pointer, :string, :uint, :uchar], :pointer
-  
+
   # Obtain a constant value referring to a double floating point value.
-  # 
+  #
   # @method const_real(real_ty, n)
-  # @param [FFI::Pointer(TypeRef)] real_ty 
-  # @param [Float] n 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] real_ty
+  # @param [Float] n
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_real, :LLVMConstReal, [:pointer, :double], :pointer
-  
+
   # Obtain a constant for a floating point value parsed from a string.
-  # 
+  #
   # A similar API, LLVMConstRealOfStringAndSize is also available. It
   # should be used if the input string's length is known.
-  # 
+  #
   # @method const_real_of_string(real_ty, text)
-  # @param [FFI::Pointer(TypeRef)] real_ty 
-  # @param [String] text 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] real_ty
+  # @param [String] text
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_real_of_string, :LLVMConstRealOfString, [:pointer, :string], :pointer
-  
+
   # Obtain a constant for a floating point value parsed from a string.
-  # 
+  #
   # @method const_real_of_string_and_size(real_ty, text, s_len)
-  # @param [FFI::Pointer(TypeRef)] real_ty 
-  # @param [String] text 
-  # @param [Integer] s_len 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] real_ty
+  # @param [String] text
+  # @param [Integer] s_len
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_real_of_string_and_size, :LLVMConstRealOfStringAndSize, [:pointer, :string, :uint], :pointer
-  
+
   # Obtain the zero extended value for an integer constant value.
-  # 
+  #
   # @see llvm::ConstantInt::getZExtValue()
-  # 
+  #
   # @method const_int_get_z_ext_value(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [Integer]
   # @scope class
   attach_function :const_int_get_z_ext_value, :LLVMConstIntGetZExtValue, [:pointer], :ulong_long
-  
+
   # Obtain the sign extended value for an integer constant value.
-  # 
+  #
   # @see llvm::ConstantInt::getSExtValue()
-  # 
+  #
   # @method const_int_get_s_ext_value(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [Integer]
   # @scope class
   attach_function :const_int_get_s_ext_value, :LLVMConstIntGetSExtValue, [:pointer], :long_long
-  
+
   # Obtain the double value for an floating point constant value.
   # losesInfo indicates if some precision was lost in the conversion.
-  # 
+  #
   # @see llvm::ConstantFP::getDoubleValue
-  # 
+  #
   # @method const_real_get_double(constant_val, loses_info)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(*Bool)] loses_info 
-  # @return [Float] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(*Bool)] loses_info
+  # @return [Float]
   # @scope class
   attach_function :const_real_get_double, :LLVMConstRealGetDouble, [:pointer, :pointer], :double
-  
+
   # Create a ConstantDataSequential and initialize it with a string.
-  # 
+  #
   # @see llvm::ConstantDataArray::getString()
-  # 
+  #
   # @method const_string_in_context(c, str, length, dont_null_terminate)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [String] str 
-  # @param [Integer] length 
-  # @param [Integer] dont_null_terminate 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [String] str
+  # @param [Integer] length
+  # @param [Integer] dont_null_terminate
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_string_in_context, :LLVMConstStringInContext, [:pointer, :string, :uint, :int], :pointer
-  
+
   # Create a ConstantDataSequential with string content in the global context.
-  # 
+  #
   # This is the same as LLVMConstStringInContext except it operates on the
   # global context.
-  # 
+  #
   # @see LLVMConstStringInContext()
   # @see llvm::ConstantDataArray::getString()
-  # 
+  #
   # @method const_string(str, length, dont_null_terminate)
-  # @param [String] str 
-  # @param [Integer] length 
-  # @param [Integer] dont_null_terminate 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [String] str
+  # @param [Integer] length
+  # @param [Integer] dont_null_terminate
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_string, :LLVMConstString, [:string, :uint, :int], :pointer
-  
+
   # Returns true if the specified constant is an array of i8.
-  # 
+  #
   # @see ConstantDataSequential::getAsString()
-  # 
+  #
   # @method is_constant_string(c)
-  # @param [FFI::Pointer(ValueRef)] c 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] c
+  # @return [Integer]
   # @scope class
   attach_function :is_constant_string, :LLVMIsConstantString, [:pointer], :int
-  
+
   # Get the given constant data sequential as a string.
-  # 
+  #
   # @see ConstantDataSequential::getAsString()
-  # 
+  #
   # @method get_as_string(c, out)
-  # @param [FFI::Pointer(ValueRef)] c 
-  # @param [FFI::Pointer(*SizeT)] out 
-  # @return [String] 
+  # @param [FFI::Pointer(ValueRef)] c
+  # @param [FFI::Pointer(*SizeT)] out
+  # @return [String]
   # @scope class
   attach_function :get_as_string, :LLVMGetAsString, [:pointer, :pointer], :string
-  
+
   # Create an anonymous ConstantStruct with the specified values.
-  # 
+  #
   # @see llvm::ConstantStruct::getAnon()
-  # 
+  #
   # @method const_struct_in_context(c, constant_vals, count, packed)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [FFI::Pointer(*ValueRef)] constant_vals 
-  # @param [Integer] count 
-  # @param [Integer] packed 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [FFI::Pointer(*ValueRef)] constant_vals
+  # @param [Integer] count
+  # @param [Integer] packed
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_struct_in_context, :LLVMConstStructInContext, [:pointer, :pointer, :uint, :int], :pointer
-  
+
   # Create a ConstantStruct in the global Context.
-  # 
+  #
   # This is the same as LLVMConstStructInContext except it operates on the
   # global Context.
-  # 
+  #
   # @see LLVMConstStructInContext()
-  # 
+  #
   # @method const_struct(constant_vals, count, packed)
-  # @param [FFI::Pointer(*ValueRef)] constant_vals 
-  # @param [Integer] count 
-  # @param [Integer] packed 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(*ValueRef)] constant_vals
+  # @param [Integer] count
+  # @param [Integer] packed
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_struct, :LLVMConstStruct, [:pointer, :uint, :int], :pointer
-  
+
   # Create a ConstantArray from values.
-  # 
+  #
   # @see llvm::ConstantArray::get()
-  # 
+  #
   # @method const_array(element_ty, constant_vals, length)
-  # @param [FFI::Pointer(TypeRef)] element_ty 
-  # @param [FFI::Pointer(*ValueRef)] constant_vals 
-  # @param [Integer] length 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] element_ty
+  # @param [FFI::Pointer(*ValueRef)] constant_vals
+  # @param [Integer] length
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_array, :LLVMConstArray, [:pointer, :pointer, :uint], :pointer
-  
+
   # Create a non-anonymous ConstantStruct from values.
-  # 
+  #
   # @see llvm::ConstantStruct::get()
-  # 
+  #
   # @method const_named_struct(struct_ty, constant_vals, count)
-  # @param [FFI::Pointer(TypeRef)] struct_ty 
-  # @param [FFI::Pointer(*ValueRef)] constant_vals 
-  # @param [Integer] count 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] struct_ty
+  # @param [FFI::Pointer(*ValueRef)] constant_vals
+  # @param [Integer] count
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_named_struct, :LLVMConstNamedStruct, [:pointer, :pointer, :uint], :pointer
-  
+
   # Get an element at specified index as a constant.
-  # 
+  #
   # @see ConstantDataSequential::getElementAsConstant()
-  # 
+  #
   # @method get_element_as_constant(c, idx)
-  # @param [FFI::Pointer(ValueRef)] c 
-  # @param [Integer] idx 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] c
+  # @param [Integer] idx
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_element_as_constant, :LLVMGetElementAsConstant, [:pointer, :uint], :pointer
-  
+
   # Create a ConstantVector from values.
-  # 
+  #
   # @see llvm::ConstantVector::get()
-  # 
+  #
   # @method const_vector(scalar_constant_vals, size)
-  # @param [FFI::Pointer(*ValueRef)] scalar_constant_vals 
-  # @param [Integer] size 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(*ValueRef)] scalar_constant_vals
+  # @param [Integer] size
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_vector, :LLVMConstVector, [:pointer, :uint], :pointer
-  
+
   # @defgroup LLVMCCoreValueConstantExpressions Constant Expressions
-  # 
+  #
   # Functions in this group correspond to APIs on llvm::ConstantExpr.
-  # 
+  #
   # @see llvm::ConstantExpr.
-  # 
+  #
   # @{
-  # 
+  #
   # @method get_const_opcode(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [Symbol from _enum_opcode_] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [Symbol from _enum_opcode_]
   # @scope class
   attach_function :get_const_opcode, :LLVMGetConstOpcode, [:pointer], :opcode
-  
+
   # (Not documented)
-  # 
+  #
   # @method align_of(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :align_of, :LLVMAlignOf, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method size_of(ty)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :size_of, :LLVMSizeOf, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_neg(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_neg, :LLVMConstNeg, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nsw_neg(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nsw_neg, :LLVMConstNSWNeg, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nuw_neg(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nuw_neg, :LLVMConstNUWNeg, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_f_neg(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_f_neg, :LLVMConstFNeg, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_not(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_not, :LLVMConstNot, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_add(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_add, :LLVMConstAdd, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nsw_add(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nsw_add, :LLVMConstNSWAdd, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nuw_add(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nuw_add, :LLVMConstNUWAdd, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_f_add(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_f_add, :LLVMConstFAdd, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_sub(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_sub, :LLVMConstSub, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nsw_sub(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nsw_sub, :LLVMConstNSWSub, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nuw_sub(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nuw_sub, :LLVMConstNUWSub, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_f_sub(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_f_sub, :LLVMConstFSub, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_mul, :LLVMConstMul, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nsw_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nsw_mul, :LLVMConstNSWMul, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_nuw_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nuw_mul, :LLVMConstNUWMul, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_f_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_f_mul, :LLVMConstFMul, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_u_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_u_div, :LLVMConstUDiv, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_s_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_s_div, :LLVMConstSDiv, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_exact_s_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_exact_s_div, :LLVMConstExactSDiv, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_f_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_f_div, :LLVMConstFDiv, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_u_rem(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_u_rem, :LLVMConstURem, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_s_rem(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_s_rem, :LLVMConstSRem, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_f_rem(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_f_rem, :LLVMConstFRem, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_and(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_and, :LLVMConstAnd, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_or(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_or, :LLVMConstOr, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_xor(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_xor, :LLVMConstXor, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_i_cmp(predicate, lhs_constant, rhs_constant)
-  # @param [Symbol from _enum_int_predicate_] predicate 
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [Symbol from _enum_int_predicate_] predicate
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_i_cmp, :LLVMConstICmp, [:int_predicate, :pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_f_cmp(predicate, lhs_constant, rhs_constant)
-  # @param [Symbol from _enum_real_predicate_] predicate 
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [Symbol from _enum_real_predicate_] predicate
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_f_cmp, :LLVMConstFCmp, [:real_predicate, :pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_shl(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_shl, :LLVMConstShl, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_l_shr(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_l_shr, :LLVMConstLShr, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_a_shr(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant 
-  # @param [FFI::Pointer(ValueRef)] rhs_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] lhs_constant
+  # @param [FFI::Pointer(ValueRef)] rhs_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_a_shr, :LLVMConstAShr, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_gep(constant_val, constant_indices, num_indices)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(*ValueRef)] constant_indices 
-  # @param [Integer] num_indices 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(*ValueRef)] constant_indices
+  # @param [Integer] num_indices
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_gep, :LLVMConstGEP, [:pointer, :pointer, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_in_bounds_gep(constant_val, constant_indices, num_indices)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(*ValueRef)] constant_indices 
-  # @param [Integer] num_indices 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(*ValueRef)] constant_indices
+  # @param [Integer] num_indices
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_in_bounds_gep, :LLVMConstInBoundsGEP, [:pointer, :pointer, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_trunc(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_trunc, :LLVMConstTrunc, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_s_ext(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_s_ext, :LLVMConstSExt, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_z_ext(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_z_ext, :LLVMConstZExt, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_fp_trunc(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_fp_trunc, :LLVMConstFPTrunc, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_fp_ext(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_fp_ext, :LLVMConstFPExt, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_ui_to_fp(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_ui_to_fp, :LLVMConstUIToFP, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_si_to_fp(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_si_to_fp, :LLVMConstSIToFP, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_fp_to_ui(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_fp_to_ui, :LLVMConstFPToUI, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_fp_to_si(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_fp_to_si, :LLVMConstFPToSI, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_ptr_to_int(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_ptr_to_int, :LLVMConstPtrToInt, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_int_to_ptr(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_int_to_ptr, :LLVMConstIntToPtr, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_bit_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_bit_cast, :LLVMConstBitCast, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_addr_space_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_addr_space_cast, :LLVMConstAddrSpaceCast, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_z_ext_or_bit_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_z_ext_or_bit_cast, :LLVMConstZExtOrBitCast, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_s_ext_or_bit_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_s_ext_or_bit_cast, :LLVMConstSExtOrBitCast, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_trunc_or_bit_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_trunc_or_bit_cast, :LLVMConstTruncOrBitCast, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_pointer_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_pointer_cast, :LLVMConstPointerCast, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_int_cast(constant_val, to_type, is_signed)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @param [Integer] is_signed 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @param [Integer] is_signed
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_int_cast, :LLVMConstIntCast, [:pointer, :pointer, :int], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_fp_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @param [FFI::Pointer(TypeRef)] to_type 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @param [FFI::Pointer(TypeRef)] to_type
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_fp_cast, :LLVMConstFPCast, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_select(constant_condition, constant_if_true, constant_if_false)
-  # @param [FFI::Pointer(ValueRef)] constant_condition 
-  # @param [FFI::Pointer(ValueRef)] constant_if_true 
-  # @param [FFI::Pointer(ValueRef)] constant_if_false 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] constant_condition
+  # @param [FFI::Pointer(ValueRef)] constant_if_true
+  # @param [FFI::Pointer(ValueRef)] constant_if_false
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_select, :LLVMConstSelect, [:pointer, :pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_extract_element(vector_constant, index_constant)
-  # @param [FFI::Pointer(ValueRef)] vector_constant 
-  # @param [FFI::Pointer(ValueRef)] index_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] vector_constant
+  # @param [FFI::Pointer(ValueRef)] index_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_extract_element, :LLVMConstExtractElement, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_insert_element(vector_constant, element_value_constant, index_constant)
-  # @param [FFI::Pointer(ValueRef)] vector_constant 
-  # @param [FFI::Pointer(ValueRef)] element_value_constant 
-  # @param [FFI::Pointer(ValueRef)] index_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] vector_constant
+  # @param [FFI::Pointer(ValueRef)] element_value_constant
+  # @param [FFI::Pointer(ValueRef)] index_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_insert_element, :LLVMConstInsertElement, [:pointer, :pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_shuffle_vector(vector_a_constant, vector_b_constant, mask_constant)
-  # @param [FFI::Pointer(ValueRef)] vector_a_constant 
-  # @param [FFI::Pointer(ValueRef)] vector_b_constant 
-  # @param [FFI::Pointer(ValueRef)] mask_constant 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] vector_a_constant
+  # @param [FFI::Pointer(ValueRef)] vector_b_constant
+  # @param [FFI::Pointer(ValueRef)] mask_constant
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_shuffle_vector, :LLVMConstShuffleVector, [:pointer, :pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_extract_value(agg_constant, idx_list, num_idx)
-  # @param [FFI::Pointer(ValueRef)] agg_constant 
-  # @param [FFI::Pointer(*UInt)] idx_list 
-  # @param [Integer] num_idx 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] agg_constant
+  # @param [FFI::Pointer(*UInt)] idx_list
+  # @param [Integer] num_idx
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_extract_value, :LLVMConstExtractValue, [:pointer, :pointer, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_insert_value(agg_constant, element_value_constant, idx_list, num_idx)
-  # @param [FFI::Pointer(ValueRef)] agg_constant 
-  # @param [FFI::Pointer(ValueRef)] element_value_constant 
-  # @param [FFI::Pointer(*UInt)] idx_list 
-  # @param [Integer] num_idx 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] agg_constant
+  # @param [FFI::Pointer(ValueRef)] element_value_constant
+  # @param [FFI::Pointer(*UInt)] idx_list
+  # @param [Integer] num_idx
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_insert_value, :LLVMConstInsertValue, [:pointer, :pointer, :pointer, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method const_inline_asm(ty, asm_string, constraints, has_side_effects, is_align_stack)
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [String] asm_string 
-  # @param [String] constraints 
-  # @param [Integer] has_side_effects 
-  # @param [Integer] is_align_stack 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [String] asm_string
+  # @param [String] constraints
+  # @param [Integer] has_side_effects
+  # @param [Integer] is_align_stack
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_inline_asm, :LLVMConstInlineAsm, [:pointer, :string, :string, :int, :int], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method block_address(f, bb)
-  # @param [FFI::Pointer(ValueRef)] f 
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] f
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :block_address, :LLVMBlockAddress, [:pointer, :pointer], :pointer
-  
+
   # @defgroup LLVMCCoreValueConstantGlobals Global Values
-  # 
+  #
   # This group contains functions that operate on global values. Functions in
   # this group relate to functions in the llvm::GlobalValue class tree.
-  # 
+  #
   # @see llvm::GlobalValue
-  # 
+  #
   # @{
-  # 
+  #
   # @method get_global_parent(global)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @return [FFI::Pointer(ModuleRef)] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @return [FFI::Pointer(ModuleRef)]
   # @scope class
   attach_function :get_global_parent, :LLVMGetGlobalParent, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_declaration(global)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @return [Integer]
   # @scope class
   attach_function :is_declaration, :LLVMIsDeclaration, [:pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_linkage(global)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @return [Symbol from _enum_linkage_] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @return [Symbol from _enum_linkage_]
   # @scope class
   attach_function :get_linkage, :LLVMGetLinkage, [:pointer], :linkage
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_linkage(global, linkage)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @param [Symbol from _enum_linkage_] linkage 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @param [Symbol from _enum_linkage_] linkage
+  # @return [nil]
   # @scope class
   attach_function :set_linkage, :LLVMSetLinkage, [:pointer, :linkage], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_section(global)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @return [String] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @return [String]
   # @scope class
   attach_function :get_section, :LLVMGetSection, [:pointer], :string
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_section(global, section)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @param [String] section 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @param [String] section
+  # @return [nil]
   # @scope class
   attach_function :set_section, :LLVMSetSection, [:pointer, :string], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_visibility(global)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @return [Symbol from _enum_visibility_] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @return [Symbol from _enum_visibility_]
   # @scope class
   attach_function :get_visibility, :LLVMGetVisibility, [:pointer], :visibility
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_visibility(global, viz)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @param [Symbol from _enum_visibility_] viz 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @param [Symbol from _enum_visibility_] viz
+  # @return [nil]
   # @scope class
   attach_function :set_visibility, :LLVMSetVisibility, [:pointer, :visibility], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_dll_storage_class(global)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @return [Symbol from _enum_dll_storage_class_] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @return [Symbol from _enum_dll_storage_class_]
   # @scope class
   attach_function :get_dll_storage_class, :LLVMGetDLLStorageClass, [:pointer], :dll_storage_class
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_dll_storage_class(global, class_)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @param [Symbol from _enum_dll_storage_class_] class_ 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @param [Symbol from _enum_dll_storage_class_] class_
+  # @return [nil]
   # @scope class
   attach_function :set_dll_storage_class, :LLVMSetDLLStorageClass, [:pointer, :dll_storage_class], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method has_unnamed_addr(global)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @return [Integer]
   # @scope class
   attach_function :has_unnamed_addr, :LLVMHasUnnamedAddr, [:pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_unnamed_addr(global, has_unnamed_addr)
-  # @param [FFI::Pointer(ValueRef)] global 
-  # @param [Integer] has_unnamed_addr 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global
+  # @param [Integer] has_unnamed_addr
+  # @return [nil]
   # @scope class
   attach_function :set_unnamed_addr, :LLVMSetUnnamedAddr, [:pointer, :int], :void
-  
+
   # Obtain the preferred alignment of the value.
   # @see llvm::AllocaInst::getAlignment()
   # @see llvm::LoadInst::getAlignment()
   # @see llvm::StoreInst::getAlignment()
   # @see llvm::GlobalValue::getAlignment()
-  # 
+  #
   # @method get_alignment(v)
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] v
+  # @return [Integer]
   # @scope class
   attach_function :get_alignment, :LLVMGetAlignment, [:pointer], :uint
-  
+
   # Set the preferred alignment of the value.
   # @see llvm::AllocaInst::setAlignment()
   # @see llvm::LoadInst::setAlignment()
   # @see llvm::StoreInst::setAlignment()
   # @see llvm::GlobalValue::setAlignment()
-  # 
+  #
   # @method set_alignment(v, bytes)
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [Integer] bytes 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [Integer] bytes
+  # @return [nil]
   # @scope class
   attach_function :set_alignment, :LLVMSetAlignment, [:pointer, :uint], :void
-  
+
   # @defgroup LLVMCoreValueConstantGlobalVariable Global Variables
-  # 
+  #
   # This group contains functions that operate on global variable values.
-  # 
+  #
   # @see llvm::GlobalVariable
-  # 
+  #
   # @{
-  # 
+  #
   # @method add_global(m, ty, name)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :add_global, :LLVMAddGlobal, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method add_global_in_address_space(m, ty, name, address_space)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [String] name 
-  # @param [Integer] address_space 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [String] name
+  # @param [Integer] address_space
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :add_global_in_address_space, :LLVMAddGlobalInAddressSpace, [:pointer, :pointer, :string, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_named_global(m, name)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_named_global, :LLVMGetNamedGlobal, [:pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_first_global(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_first_global, :LLVMGetFirstGlobal, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_last_global(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_last_global, :LLVMGetLastGlobal, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_next_global(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_next_global, :LLVMGetNextGlobal, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_previous_global(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_previous_global, :LLVMGetPreviousGlobal, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method delete_global(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [nil]
   # @scope class
   attach_function :delete_global, :LLVMDeleteGlobal, [:pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_initializer(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_initializer, :LLVMGetInitializer, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_initializer(global_var, constant_val)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @param [FFI::Pointer(ValueRef)] constant_val 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @param [FFI::Pointer(ValueRef)] constant_val
+  # @return [nil]
   # @scope class
   attach_function :set_initializer, :LLVMSetInitializer, [:pointer, :pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_thread_local(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [Integer]
   # @scope class
   attach_function :is_thread_local, :LLVMIsThreadLocal, [:pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_thread_local(global_var, is_thread_local)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @param [Integer] is_thread_local 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @param [Integer] is_thread_local
+  # @return [nil]
   # @scope class
   attach_function :set_thread_local, :LLVMSetThreadLocal, [:pointer, :int], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_global_constant(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [Integer]
   # @scope class
   attach_function :is_global_constant, :LLVMIsGlobalConstant, [:pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_global_constant(global_var, is_constant)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @param [Integer] is_constant 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @param [Integer] is_constant
+  # @return [nil]
   # @scope class
   attach_function :set_global_constant, :LLVMSetGlobalConstant, [:pointer, :int], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_thread_local_mode(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [Symbol from _enum_thread_local_mode_] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [Symbol from _enum_thread_local_mode_]
   # @scope class
   attach_function :get_thread_local_mode, :LLVMGetThreadLocalMode, [:pointer], :thread_local_mode
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_thread_local_mode(global_var, mode)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @param [Symbol from _enum_thread_local_mode_] mode 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @param [Symbol from _enum_thread_local_mode_] mode
+  # @return [nil]
   # @scope class
   attach_function :set_thread_local_mode, :LLVMSetThreadLocalMode, [:pointer, :thread_local_mode], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method is_externally_initialized(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @return [Integer]
   # @scope class
   attach_function :is_externally_initialized, :LLVMIsExternallyInitialized, [:pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_externally_initialized(global_var, is_ext_init)
-  # @param [FFI::Pointer(ValueRef)] global_var 
-  # @param [Integer] is_ext_init 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] global_var
+  # @param [Integer] is_ext_init
+  # @return [nil]
   # @scope class
   attach_function :set_externally_initialized, :LLVMSetExternallyInitialized, [:pointer, :int], :void
-  
+
   # @defgroup LLVMCoreValueConstantGlobalAlias Global Aliases
-  # 
+  #
   # This group contains function that operate on global alias values.
-  # 
+  #
   # @see llvm::GlobalAlias
-  # 
+  #
   # @{
-  # 
+  #
   # @method add_alias(m, ty, aliasee, name)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [FFI::Pointer(ValueRef)] aliasee 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [FFI::Pointer(ValueRef)] aliasee
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :add_alias, :LLVMAddAlias, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # Remove a function from its containing module and deletes it.
-  # 
+  #
   # @see llvm::Function::eraseFromParent()
-  # 
+  #
   # @method delete_function(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [nil]
   # @scope class
   attach_function :delete_function, :LLVMDeleteFunction, [:pointer], :void
-  
+
   # Obtain the personality function attached to the function.
-  # 
+  #
   # @see llvm::Function::getPersonalityFn()
-  # 
+  #
   # @method get_personality_fn(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_personality_fn, :LLVMGetPersonalityFn, [:pointer], :pointer
-  
+
   # Set the personality function attached to the function.
-  # 
+  #
   # @see llvm::Function::setPersonalityFn()
-  # 
+  #
   # @method set_personality_fn(fn, personality_fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [FFI::Pointer(ValueRef)] personality_fn 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [FFI::Pointer(ValueRef)] personality_fn
+  # @return [nil]
   # @scope class
   attach_function :set_personality_fn, :LLVMSetPersonalityFn, [:pointer, :pointer], :void
-  
+
   # Obtain the ID number from a function instance.
-  # 
+  #
   # @see llvm::Function::getIntrinsicID()
-  # 
+  #
   # @method get_intrinsic_id(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [Integer]
   # @scope class
   attach_function :get_intrinsic_id, :LLVMGetIntrinsicID, [:pointer], :uint
-  
+
   # Obtain the calling function of a function.
-  # 
+  #
   # The returned value corresponds to the LLVMCallConv enumeration.
-  # 
+  #
   # @see llvm::Function::getCallingConv()
-  # 
+  #
   # @method get_function_call_conv(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [Integer]
   # @scope class
   attach_function :get_function_call_conv, :LLVMGetFunctionCallConv, [:pointer], :uint
-  
+
   # Set the calling convention of a function.
-  # 
+  #
   # @see llvm::Function::setCallingConv()
-  # 
+  #
   # @param Fn Function to operate on
   # @param CC LLVMCallConv to set calling convention to
-  # 
+  #
   # @method set_function_call_conv(fn, cc)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [Integer] cc 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [Integer] cc
+  # @return [nil]
   # @scope class
   attach_function :set_function_call_conv, :LLVMSetFunctionCallConv, [:pointer, :uint], :void
-  
+
   # Obtain the name of the garbage collector to use during code
   # generation.
-  # 
+  #
   # @see llvm::Function::getGC()
-  # 
+  #
   # @method get_gc(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [String] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [String]
   # @scope class
   attach_function :get_gc, :LLVMGetGC, [:pointer], :string
-  
+
   # Define the garbage collector to use during code generation.
-  # 
+  #
   # @see llvm::Function::setGC()
-  # 
+  #
   # @method set_gc(fn, name)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [String] name 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [String] name
+  # @return [nil]
   # @scope class
   attach_function :set_gc, :LLVMSetGC, [:pointer, :string], :void
-  
+
   # Add an attribute to a function.
-  # 
+  #
   # @see llvm::Function::addAttribute()
-  # 
+  #
   # @method add_function_attr(fn, pa)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [Symbol from _enum_attribute_] pa 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [Symbol from _enum_attribute_] pa
+  # @return [nil]
   # @scope class
   attach_function :add_function_attr, :LLVMAddFunctionAttr, [:pointer, :attribute], :void
-  
+
   # Add a target-dependent attribute to a function
   # @see llvm::AttrBuilder::addAttribute()
-  # 
+  #
   # @method add_target_dependent_function_attr(fn, a, v)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [String] a 
-  # @param [String] v 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [String] a
+  # @param [String] v
+  # @return [nil]
   # @scope class
   attach_function :add_target_dependent_function_attr, :LLVMAddTargetDependentFunctionAttr, [:pointer, :string, :string], :void
-  
+
   # Obtain an attribute from a function.
-  # 
+  #
   # @see llvm::Function::getAttributes()
-  # 
+  #
   # @method get_function_attr(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [Symbol from _enum_attribute_] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [Symbol from _enum_attribute_]
   # @scope class
   attach_function :get_function_attr, :LLVMGetFunctionAttr, [:pointer], :attribute
-  
+
   # Remove an attribute from a function.
-  # 
+  #
   # @method remove_function_attr(fn, pa)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [Symbol from _enum_attribute_] pa 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [Symbol from _enum_attribute_] pa
+  # @return [nil]
   # @scope class
   attach_function :remove_function_attr, :LLVMRemoveFunctionAttr, [:pointer, :attribute], :void
-  
+
   # Obtain the number of parameters in a function.
-  # 
+  #
   # @see llvm::Function::arg_size()
-  # 
+  #
   # @method count_params(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [Integer]
   # @scope class
   attach_function :count_params, :LLVMCountParams, [:pointer], :uint
-  
+
   # Obtain the parameters in a function.
-  # 
+  #
   # The takes a pointer to a pre-allocated array of LLVMValueRef that is
   # at least LLVMCountParams() long. This array will be filled with
   # LLVMValueRef instances which correspond to the parameters the
   # function receives. Each LLVMValueRef corresponds to a llvm::Argument
   # instance.
-  # 
+  #
   # @see llvm::Function::arg_begin()
-  # 
+  #
   # @method get_params(fn, params)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [FFI::Pointer(*ValueRef)] params 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [FFI::Pointer(*ValueRef)] params
+  # @return [nil]
   # @scope class
   attach_function :get_params, :LLVMGetParams, [:pointer, :pointer], :void
-  
+
   # Obtain the parameter at the specified index.
-  # 
+  #
   # Parameters are indexed from 0.
-  # 
+  #
   # @see llvm::Function::arg_begin()
-  # 
+  #
   # @method get_param(fn, index)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [Integer] index 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [Integer] index
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_param, :LLVMGetParam, [:pointer, :uint], :pointer
-  
+
   # Obtain the function to which this argument belongs.
-  # 
+  #
   # Unlike other functions in this group, this one takes an LLVMValueRef
   # that corresponds to a llvm::Attribute.
-  # 
+  #
   # The returned LLVMValueRef is the llvm::Function to which this
   # argument belongs.
-  # 
+  #
   # @method get_param_parent(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_param_parent, :LLVMGetParamParent, [:pointer], :pointer
-  
+
   # Obtain the first parameter to a function.
-  # 
+  #
   # @see llvm::Function::arg_begin()
-  # 
+  #
   # @method get_first_param(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_first_param, :LLVMGetFirstParam, [:pointer], :pointer
-  
+
   # Obtain the last parameter to a function.
-  # 
+  #
   # @see llvm::Function::arg_end()
-  # 
+  #
   # @method get_last_param(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_last_param, :LLVMGetLastParam, [:pointer], :pointer
-  
+
   # Obtain the next parameter to a function.
-  # 
+  #
   # This takes an LLVMValueRef obtained from LLVMGetFirstParam() (which is
   # actually a wrapped iterator) and obtains the next parameter from the
   # underlying iterator.
-  # 
+  #
   # @method get_next_param(arg)
-  # @param [FFI::Pointer(ValueRef)] arg 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] arg
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_next_param, :LLVMGetNextParam, [:pointer], :pointer
-  
+
   # Obtain the previous parameter to a function.
-  # 
+  #
   # This is the opposite of LLVMGetNextParam().
-  # 
+  #
   # @method get_previous_param(arg)
-  # @param [FFI::Pointer(ValueRef)] arg 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] arg
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_previous_param, :LLVMGetPreviousParam, [:pointer], :pointer
-  
+
   # Add an attribute to a function argument.
-  # 
+  #
   # @see llvm::Argument::addAttr()
-  # 
+  #
   # @method add_attribute(arg, pa)
-  # @param [FFI::Pointer(ValueRef)] arg 
-  # @param [Symbol from _enum_attribute_] pa 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] arg
+  # @param [Symbol from _enum_attribute_] pa
+  # @return [nil]
   # @scope class
   attach_function :add_attribute, :LLVMAddAttribute, [:pointer, :attribute], :void
-  
+
   # Remove an attribute from a function argument.
-  # 
+  #
   # @see llvm::Argument::removeAttr()
-  # 
+  #
   # @method remove_attribute(arg, pa)
-  # @param [FFI::Pointer(ValueRef)] arg 
-  # @param [Symbol from _enum_attribute_] pa 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] arg
+  # @param [Symbol from _enum_attribute_] pa
+  # @return [nil]
   # @scope class
   attach_function :remove_attribute, :LLVMRemoveAttribute, [:pointer, :attribute], :void
-  
+
   # Get an attribute from a function argument.
-  # 
+  #
   # @method get_attribute(arg)
-  # @param [FFI::Pointer(ValueRef)] arg 
-  # @return [Symbol from _enum_attribute_] 
+  # @param [FFI::Pointer(ValueRef)] arg
+  # @return [Symbol from _enum_attribute_]
   # @scope class
   attach_function :get_attribute, :LLVMGetAttribute, [:pointer], :attribute
-  
+
   # Set the alignment for a function parameter.
-  # 
+  #
   # @see llvm::Argument::addAttr()
   # @see llvm::AttrBuilder::addAlignmentAttr()
-  # 
+  #
   # @method set_param_alignment(arg, align)
-  # @param [FFI::Pointer(ValueRef)] arg 
-  # @param [Integer] align 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] arg
+  # @param [Integer] align
+  # @return [nil]
   # @scope class
   attach_function :set_param_alignment, :LLVMSetParamAlignment, [:pointer, :uint], :void
-  
+
   # Obtain a MDString value from a context.
-  # 
+  #
   # The returned instance corresponds to the llvm::MDString class.
-  # 
+  #
   # The instance is specified by string data of a specified length. The
   # string content is copied, so the backing memory can be freed after
   # this function returns.
-  # 
+  #
   # @method md_string_in_context(c, str, s_len)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [String] str 
-  # @param [Integer] s_len 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [String] str
+  # @param [Integer] s_len
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :md_string_in_context, :LLVMMDStringInContext, [:pointer, :string, :uint], :pointer
-  
+
   # Obtain a MDString value from the global context.
-  # 
+  #
   # @method md_string(str, s_len)
-  # @param [String] str 
-  # @param [Integer] s_len 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [String] str
+  # @param [Integer] s_len
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :md_string, :LLVMMDString, [:string, :uint], :pointer
-  
+
   # Obtain a MDNode value from a context.
-  # 
+  #
   # The returned value corresponds to the llvm::MDNode class.
-  # 
+  #
   # @method md_node_in_context(c, vals, count)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [FFI::Pointer(*ValueRef)] vals 
-  # @param [Integer] count 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [FFI::Pointer(*ValueRef)] vals
+  # @param [Integer] count
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :md_node_in_context, :LLVMMDNodeInContext, [:pointer, :pointer, :uint], :pointer
-  
+
   # Obtain a MDNode value from the global context.
-  # 
+  #
   # @method md_node(vals, count)
-  # @param [FFI::Pointer(*ValueRef)] vals 
-  # @param [Integer] count 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(*ValueRef)] vals
+  # @param [Integer] count
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :md_node, :LLVMMDNode, [:pointer, :uint], :pointer
-  
+
   # Obtain the underlying string from a MDString value.
-  # 
+  #
   # @param V Instance to obtain string from.
   # @param Len Memory address which will hold length of returned string.
   # @return String data in MDString.
-  # 
+  #
   # @method get_md_string(v, len)
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [FFI::Pointer(*UInt)] len 
-  # @return [String] 
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [FFI::Pointer(*UInt)] len
+  # @return [String]
   # @scope class
   attach_function :get_md_string, :LLVMGetMDString, [:pointer, :pointer], :string
-  
+
   # Obtain the number of operands from an MDNode value.
-  # 
+  #
   # @param V MDNode to get number of operands from.
   # @return Number of operands of the MDNode.
-  # 
+  #
   # @method get_md_node_num_operands(v)
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] v
+  # @return [Integer]
   # @scope class
   attach_function :get_md_node_num_operands, :LLVMGetMDNodeNumOperands, [:pointer], :uint
-  
+
   # Obtain the given MDNode's operands.
-  # 
+  #
   # The passed LLVMValueRef pointer should point to enough memory to hold all of
   # the operands of the given MDNode (see LLVMGetMDNodeNumOperands) as
   # LLVMValueRefs. This memory will be populated with the LLVMValueRefs of the
   # MDNode's operands.
-  # 
+  #
   # @param V MDNode to get the operands from.
   # @param Dest Destination array for operands.
-  # 
+  #
   # @method get_md_node_operands(v, dest)
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [FFI::Pointer(*ValueRef)] dest 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [FFI::Pointer(*ValueRef)] dest
+  # @return [nil]
   # @scope class
   attach_function :get_md_node_operands, :LLVMGetMDNodeOperands, [:pointer, :pointer], :void
-  
+
   # Convert a basic block instance to a value type.
-  # 
+  #
   # @method basic_block_as_value(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :basic_block_as_value, :LLVMBasicBlockAsValue, [:pointer], :pointer
-  
+
   # Determine whether an LLVMValueRef is itself a basic block.
-  # 
+  #
   # @method value_is_basic_block(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [Integer]
   # @scope class
   attach_function :value_is_basic_block, :LLVMValueIsBasicBlock, [:pointer], :int
-  
+
   # Convert an LLVMValueRef to an LLVMBasicBlockRef instance.
-  # 
+  #
   # @method value_as_basic_block(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :value_as_basic_block, :LLVMValueAsBasicBlock, [:pointer], :pointer
-  
+
   # Obtain the function to which a basic block belongs.
-  # 
+  #
   # @see llvm::BasicBlock::getParent()
-  # 
+  #
   # @method get_basic_block_parent(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_basic_block_parent, :LLVMGetBasicBlockParent, [:pointer], :pointer
-  
+
   # Obtain the terminator instruction for a basic block.
-  # 
+  #
   # If the basic block does not have a terminator (it is not well-formed
   # if it doesn't), then NULL is returned.
-  # 
+  #
   # The returned LLVMValueRef corresponds to a llvm::TerminatorInst.
-  # 
+  #
   # @see llvm::BasicBlock::getTerminator()
-  # 
+  #
   # @method get_basic_block_terminator(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_basic_block_terminator, :LLVMGetBasicBlockTerminator, [:pointer], :pointer
-  
+
   # Obtain the number of basic blocks in a function.
-  # 
+  #
   # @param Fn Function value to operate on.
-  # 
+  #
   # @method count_basic_blocks(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [Integer]
   # @scope class
   attach_function :count_basic_blocks, :LLVMCountBasicBlocks, [:pointer], :uint
-  
+
   # Obtain all of the basic blocks in a function.
-  # 
+  #
   # This operates on a function value. The BasicBlocks parameter is a
   # pointer to a pre-allocated array of LLVMBasicBlockRef of at least
   # LLVMCountBasicBlocks() in length. This array is populated with
   # LLVMBasicBlockRef instances.
-  # 
+  #
   # @method get_basic_blocks(fn, basic_blocks)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [FFI::Pointer(*BasicBlockRef)] basic_blocks 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [FFI::Pointer(*BasicBlockRef)] basic_blocks
+  # @return [nil]
   # @scope class
   attach_function :get_basic_blocks, :LLVMGetBasicBlocks, [:pointer, :pointer], :void
-  
+
   # Obtain the first basic block in a function.
-  # 
+  #
   # The returned basic block can be used as an iterator. You will likely
   # eventually call into LLVMGetNextBasicBlock() with it.
-  # 
+  #
   # @see llvm::Function::begin()
-  # 
+  #
   # @method get_first_basic_block(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_first_basic_block, :LLVMGetFirstBasicBlock, [:pointer], :pointer
-  
+
   # Obtain the last basic block in a function.
-  # 
+  #
   # @see llvm::Function::end()
-  # 
+  #
   # @method get_last_basic_block(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_last_basic_block, :LLVMGetLastBasicBlock, [:pointer], :pointer
-  
+
   # Advance a basic block iterator.
-  # 
+  #
   # @method get_next_basic_block(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_next_basic_block, :LLVMGetNextBasicBlock, [:pointer], :pointer
-  
+
   # Go backwards in a basic block iterator.
-  # 
+  #
   # @method get_previous_basic_block(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_previous_basic_block, :LLVMGetPreviousBasicBlock, [:pointer], :pointer
-  
+
   # Obtain the basic block that corresponds to the entry point of a
   # function.
-  # 
+  #
   # @see llvm::Function::getEntryBlock()
-  # 
+  #
   # @method get_entry_basic_block(fn)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_entry_basic_block, :LLVMGetEntryBasicBlock, [:pointer], :pointer
-  
+
   # Append a basic block to the end of a function.
-  # 
+  #
   # @see llvm::BasicBlock::Create()
-  # 
+  #
   # @method append_basic_block_in_context(c, fn, name)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [String] name 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [String] name
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :append_basic_block_in_context, :LLVMAppendBasicBlockInContext, [:pointer, :pointer, :string], :pointer
-  
+
   # Append a basic block to the end of a function using the global
   # context.
-  # 
+  #
   # @see llvm::BasicBlock::Create()
-  # 
+  #
   # @method append_basic_block(fn, name)
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [String] name 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [String] name
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :append_basic_block, :LLVMAppendBasicBlock, [:pointer, :string], :pointer
-  
+
   # Insert a basic block in a function before another basic block.
-  # 
+  #
   # The function to add to is determined by the function of the
   # passed basic block.
-  # 
+  #
   # @see llvm::BasicBlock::Create()
-  # 
+  #
   # @method insert_basic_block_in_context(c, bb, name)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @param [String] name 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @param [String] name
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :insert_basic_block_in_context, :LLVMInsertBasicBlockInContext, [:pointer, :pointer, :string], :pointer
-  
+
   # Insert a basic block in a function using the global context.
-  # 
+  #
   # @see llvm::BasicBlock::Create()
-  # 
+  #
   # @method insert_basic_block(insert_before_bb, name)
-  # @param [FFI::Pointer(BasicBlockRef)] insert_before_bb 
-  # @param [String] name 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] insert_before_bb
+  # @param [String] name
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :insert_basic_block, :LLVMInsertBasicBlock, [:pointer, :string], :pointer
-  
+
   # Remove a basic block from a function and delete it.
-  # 
+  #
   # This deletes the basic block from its containing function and deletes
   # the basic block itself.
-  # 
+  #
   # @see llvm::BasicBlock::eraseFromParent()
-  # 
+  #
   # @method delete_basic_block(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [nil] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [nil]
   # @scope class
   attach_function :delete_basic_block, :LLVMDeleteBasicBlock, [:pointer], :void
-  
+
   # Remove a basic block from a function.
-  # 
+  #
   # This deletes the basic block from its containing function but keep
   # the basic block alive.
-  # 
+  #
   # @see llvm::BasicBlock::removeFromParent()
-  # 
+  #
   # @method remove_basic_block_from_parent(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [nil] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [nil]
   # @scope class
   attach_function :remove_basic_block_from_parent, :LLVMRemoveBasicBlockFromParent, [:pointer], :void
-  
+
   # Move a basic block to before another one.
-  # 
+  #
   # @see llvm::BasicBlock::moveBefore()
-  # 
+  #
   # @method move_basic_block_before(bb, move_pos)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @param [FFI::Pointer(BasicBlockRef)] move_pos 
-  # @return [nil] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @param [FFI::Pointer(BasicBlockRef)] move_pos
+  # @return [nil]
   # @scope class
   attach_function :move_basic_block_before, :LLVMMoveBasicBlockBefore, [:pointer, :pointer], :void
-  
+
   # Move a basic block to after another one.
-  # 
+  #
   # @see llvm::BasicBlock::moveAfter()
-  # 
+  #
   # @method move_basic_block_after(bb, move_pos)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @param [FFI::Pointer(BasicBlockRef)] move_pos 
-  # @return [nil] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @param [FFI::Pointer(BasicBlockRef)] move_pos
+  # @return [nil]
   # @scope class
   attach_function :move_basic_block_after, :LLVMMoveBasicBlockAfter, [:pointer, :pointer], :void
-  
+
   # Obtain the first instruction in a basic block.
-  # 
+  #
   # The returned LLVMValueRef corresponds to a llvm::Instruction
   # instance.
-  # 
+  #
   # @method get_first_instruction(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_first_instruction, :LLVMGetFirstInstruction, [:pointer], :pointer
-  
+
   # Obtain the last instruction in a basic block.
-  # 
+  #
   # The returned LLVMValueRef corresponds to an LLVM:Instruction.
-  # 
+  #
   # @method get_last_instruction(bb)
-  # @param [FFI::Pointer(BasicBlockRef)] bb 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BasicBlockRef)] bb
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_last_instruction, :LLVMGetLastInstruction, [:pointer], :pointer
-  
+
   # Determine whether an instruction has any metadata attached.
-  # 
+  #
   # @method has_metadata(val)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @return [Integer]
   # @scope class
   attach_function :has_metadata, :LLVMHasMetadata, [:pointer], :int
-  
+
   # Return metadata associated with an instruction value.
-  # 
+  #
   # @method get_metadata(val, kind_id)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [Integer] kind_id 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [Integer] kind_id
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_metadata, :LLVMGetMetadata, [:pointer, :uint], :pointer
-  
+
   # Set metadata associated with an instruction value.
-  # 
+  #
   # @method set_metadata(val, kind_id, node)
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [Integer] kind_id 
-  # @param [FFI::Pointer(ValueRef)] node 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [Integer] kind_id
+  # @param [FFI::Pointer(ValueRef)] node
+  # @return [nil]
   # @scope class
   attach_function :set_metadata, :LLVMSetMetadata, [:pointer, :uint, :pointer], :void
-  
+
   # Obtain the basic block to which an instruction belongs.
-  # 
+  #
   # @see llvm::Instruction::getParent()
-  # 
+  #
   # @method get_instruction_parent(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_instruction_parent, :LLVMGetInstructionParent, [:pointer], :pointer
-  
+
   # Obtain the instruction that occurs after the one specified.
-  # 
+  #
   # The next instruction will be from the same basic block.
-  # 
+  #
   # If this is the last instruction in a basic block, NULL will be
   # returned.
-  # 
+  #
   # @method get_next_instruction(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_next_instruction, :LLVMGetNextInstruction, [:pointer], :pointer
-  
+
   # Obtain the instruction that occurred before this one.
-  # 
+  #
   # If the instruction is the first instruction in a basic block, NULL
   # will be returned.
-  # 
+  #
   # @method get_previous_instruction(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_previous_instruction, :LLVMGetPreviousInstruction, [:pointer], :pointer
-  
+
   # Remove and delete an instruction.
-  # 
+  #
   # The instruction specified is removed from its containing building
   # block and then deleted.
-  # 
+  #
   # @see llvm::Instruction::eraseFromParent()
-  # 
+  #
   # @method instruction_erase_from_parent(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [nil]
   # @scope class
   attach_function :instruction_erase_from_parent, :LLVMInstructionEraseFromParent, [:pointer], :void
-  
+
   # Obtain the code opcode for an individual instruction.
-  # 
+  #
   # @see llvm::Instruction::getOpCode()
-  # 
+  #
   # @method get_instruction_opcode(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [Symbol from _enum_opcode_] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [Symbol from _enum_opcode_]
   # @scope class
   attach_function :get_instruction_opcode, :LLVMGetInstructionOpcode, [:pointer], :opcode
-  
+
   # Obtain the predicate of an instruction.
-  # 
+  #
   # This is only valid for instructions that correspond to llvm::ICmpInst
   # or llvm::ConstantExpr whose opcode is llvm::Instruction::ICmp.
-  # 
+  #
   # @see llvm::ICmpInst::getPredicate()
-  # 
+  #
   # @method get_i_cmp_predicate(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [Symbol from _enum_int_predicate_] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [Symbol from _enum_int_predicate_]
   # @scope class
   attach_function :get_i_cmp_predicate, :LLVMGetICmpPredicate, [:pointer], :int_predicate
-  
+
   # Obtain the float predicate of an instruction.
-  # 
+  #
   # This is only valid for instructions that correspond to llvm::FCmpInst
   # or llvm::ConstantExpr whose opcode is llvm::Instruction::FCmp.
-  # 
+  #
   # @see llvm::FCmpInst::getPredicate()
-  # 
+  #
   # @method get_f_cmp_predicate(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [Symbol from _enum_real_predicate_] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [Symbol from _enum_real_predicate_]
   # @scope class
   attach_function :get_f_cmp_predicate, :LLVMGetFCmpPredicate, [:pointer], :real_predicate
-  
+
   # Create a copy of 'this' instruction that is identical in all ways
   # except the following:
   #   * The instruction has no parent
   #   * The instruction has no name
-  # 
+  #
   # @see llvm::Instruction::clone()
-  # 
+  #
   # @method instruction_clone(inst)
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :instruction_clone, :LLVMInstructionClone, [:pointer], :pointer
-  
+
   # Set the calling convention for a call instruction.
-  # 
+  #
   # This expects an LLVMValueRef that corresponds to a llvm::CallInst or
   # llvm::InvokeInst.
-  # 
+  #
   # @see llvm::CallInst::setCallingConv()
   # @see llvm::InvokeInst::setCallingConv()
-  # 
+  #
   # @method set_instruction_call_conv(instr, cc)
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @param [Integer] cc 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @param [Integer] cc
+  # @return [nil]
   # @scope class
   attach_function :set_instruction_call_conv, :LLVMSetInstructionCallConv, [:pointer, :uint], :void
-  
+
   # Obtain the calling convention for a call instruction.
-  # 
+  #
   # This is the opposite of LLVMSetInstructionCallConv(). Reads its
   # usage.
-  # 
+  #
   # @see LLVMSetInstructionCallConv()
-  # 
+  #
   # @method get_instruction_call_conv(instr)
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @return [Integer]
   # @scope class
   attach_function :get_instruction_call_conv, :LLVMGetInstructionCallConv, [:pointer], :uint
-  
+
   # (Not documented)
-  # 
+  #
   # @method add_instr_attribute(instr, index, attribute)
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @param [Integer] index 
-  # @param [Symbol from _enum_attribute_] attribute 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @param [Integer] index
+  # @param [Symbol from _enum_attribute_] attribute
+  # @return [nil]
   # @scope class
   attach_function :add_instr_attribute, :LLVMAddInstrAttribute, [:pointer, :uint, :attribute], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method remove_instr_attribute(instr, index, attribute)
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @param [Integer] index 
-  # @param [Symbol from _enum_attribute_] attribute 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @param [Integer] index
+  # @param [Symbol from _enum_attribute_] attribute
+  # @return [nil]
   # @scope class
   attach_function :remove_instr_attribute, :LLVMRemoveInstrAttribute, [:pointer, :uint, :attribute], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_instr_param_alignment(instr, index, align)
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @param [Integer] index 
-  # @param [Integer] align 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @param [Integer] index
+  # @param [Integer] align
+  # @return [nil]
   # @scope class
   attach_function :set_instr_param_alignment, :LLVMSetInstrParamAlignment, [:pointer, :uint, :uint], :void
-  
+
   # Obtain whether a call instruction is a tail call.
-  # 
+  #
   # This only works on llvm::CallInst instructions.
-  # 
+  #
   # @see llvm::CallInst::isTailCall()
-  # 
+  #
   # @method is_tail_call(call_inst)
-  # @param [FFI::Pointer(ValueRef)] call_inst 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] call_inst
+  # @return [Integer]
   # @scope class
   attach_function :is_tail_call, :LLVMIsTailCall, [:pointer], :int
-  
+
   # Set whether a call instruction is a tail call.
-  # 
+  #
   # This only works on llvm::CallInst instructions.
-  # 
+  #
   # @see llvm::CallInst::setTailCall()
-  # 
+  #
   # @method set_tail_call(call_inst, is_tail_call)
-  # @param [FFI::Pointer(ValueRef)] call_inst 
-  # @param [Integer] is_tail_call 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] call_inst
+  # @param [Integer] is_tail_call
+  # @return [nil]
   # @scope class
   attach_function :set_tail_call, :LLVMSetTailCall, [:pointer, :int], :void
-  
+
   # Return the number of successors that this terminator has.
-  # 
+  #
   # @see llvm::TerminatorInst::getNumSuccessors
-  # 
+  #
   # @method get_num_successors(term)
-  # @param [FFI::Pointer(ValueRef)] term 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] term
+  # @return [Integer]
   # @scope class
   attach_function :get_num_successors, :LLVMGetNumSuccessors, [:pointer], :uint
-  
+
   # Return the specified successor.
-  # 
+  #
   # @see llvm::TerminatorInst::getSuccessor
-  # 
+  #
   # @method get_successor(term, i)
-  # @param [FFI::Pointer(ValueRef)] term 
-  # @param [Integer] i 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] term
+  # @param [Integer] i
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_successor, :LLVMGetSuccessor, [:pointer, :uint], :pointer
-  
+
   # Update the specified successor to point at the provided block.
-  # 
+  #
   # @see llvm::TerminatorInst::setSuccessor
-  # 
+  #
   # @method set_successor(term, i, block)
-  # @param [FFI::Pointer(ValueRef)] term 
-  # @param [Integer] i 
-  # @param [FFI::Pointer(BasicBlockRef)] block 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] term
+  # @param [Integer] i
+  # @param [FFI::Pointer(BasicBlockRef)] block
+  # @return [nil]
   # @scope class
   attach_function :set_successor, :LLVMSetSuccessor, [:pointer, :uint, :pointer], :void
-  
+
   # Return if a branch is conditional.
-  # 
+  #
   # This only works on llvm::BranchInst instructions.
-  # 
+  #
   # @see llvm::BranchInst::isConditional
-  # 
+  #
   # @method is_conditional(branch)
-  # @param [FFI::Pointer(ValueRef)] branch 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] branch
+  # @return [Integer]
   # @scope class
   attach_function :is_conditional, :LLVMIsConditional, [:pointer], :int
-  
+
   # Return the condition of a branch instruction.
-  # 
+  #
   # This only works on llvm::BranchInst instructions.
-  # 
+  #
   # @see llvm::BranchInst::getCondition
-  # 
+  #
   # @method get_condition(branch)
-  # @param [FFI::Pointer(ValueRef)] branch 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] branch
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_condition, :LLVMGetCondition, [:pointer], :pointer
-  
+
   # Set the condition of a branch instruction.
-  # 
+  #
   # This only works on llvm::BranchInst instructions.
-  # 
+  #
   # @see llvm::BranchInst::setCondition
-  # 
+  #
   # @method set_condition(branch, cond)
-  # @param [FFI::Pointer(ValueRef)] branch 
-  # @param [FFI::Pointer(ValueRef)] cond 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] branch
+  # @param [FFI::Pointer(ValueRef)] cond
+  # @return [nil]
   # @scope class
   attach_function :set_condition, :LLVMSetCondition, [:pointer, :pointer], :void
-  
+
   # Obtain the default destination basic block of a switch instruction.
-  # 
+  #
   # This only works on llvm::SwitchInst instructions.
-  # 
+  #
   # @see llvm::SwitchInst::getDefaultDest()
-  # 
+  #
   # @method get_switch_default_dest(switch_instr)
-  # @param [FFI::Pointer(ValueRef)] switch_instr 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] switch_instr
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_switch_default_dest, :LLVMGetSwitchDefaultDest, [:pointer], :pointer
-  
+
   # Add an incoming value to the end of a PHI list.
-  # 
+  #
   # @method add_incoming(phi_node, incoming_values, incoming_blocks, count)
-  # @param [FFI::Pointer(ValueRef)] phi_node 
-  # @param [FFI::Pointer(*ValueRef)] incoming_values 
-  # @param [FFI::Pointer(*BasicBlockRef)] incoming_blocks 
-  # @param [Integer] count 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] phi_node
+  # @param [FFI::Pointer(*ValueRef)] incoming_values
+  # @param [FFI::Pointer(*BasicBlockRef)] incoming_blocks
+  # @param [Integer] count
+  # @return [nil]
   # @scope class
   attach_function :add_incoming, :LLVMAddIncoming, [:pointer, :pointer, :pointer, :uint], :void
-  
+
   # Obtain the number of incoming basic blocks to a PHI node.
-  # 
+  #
   # @method count_incoming(phi_node)
-  # @param [FFI::Pointer(ValueRef)] phi_node 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] phi_node
+  # @return [Integer]
   # @scope class
   attach_function :count_incoming, :LLVMCountIncoming, [:pointer], :uint
-  
+
   # Obtain an incoming value to a PHI node as an LLVMValueRef.
-  # 
+  #
   # @method get_incoming_value(phi_node, index)
-  # @param [FFI::Pointer(ValueRef)] phi_node 
-  # @param [Integer] index 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(ValueRef)] phi_node
+  # @param [Integer] index
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_incoming_value, :LLVMGetIncomingValue, [:pointer, :uint], :pointer
-  
+
   # Obtain an incoming value to a PHI node as an LLVMBasicBlockRef.
-  # 
+  #
   # @method get_incoming_block(phi_node, index)
-  # @param [FFI::Pointer(ValueRef)] phi_node 
-  # @param [Integer] index 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(ValueRef)] phi_node
+  # @param [Integer] index
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_incoming_block, :LLVMGetIncomingBlock, [:pointer, :uint], :pointer
-  
+
   # @defgroup LLVMCCoreInstructionBuilder Instruction Builders
-  # 
+  #
   # An instruction builder represents a point within a basic block and is
   # the exclusive means of building instructions using the C interface.
-  # 
+  #
   # @{
-  # 
+  #
   # @method create_builder_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c 
-  # @return [FFI::Pointer(BuilderRef)] 
+  # @param [FFI::Pointer(ContextRef)] c
+  # @return [FFI::Pointer(BuilderRef)]
   # @scope class
   attach_function :create_builder_in_context, :LLVMCreateBuilderInContext, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method create_builder()
-  # @return [FFI::Pointer(BuilderRef)] 
+  # @return [FFI::Pointer(BuilderRef)]
   # @scope class
   attach_function :create_builder, :LLVMCreateBuilder, [], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method position_builder(builder, block, instr)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @param [FFI::Pointer(BasicBlockRef)] block 
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @param [FFI::Pointer(BasicBlockRef)] block
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @return [nil]
   # @scope class
   attach_function :position_builder, :LLVMPositionBuilder, [:pointer, :pointer, :pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method position_builder_before(builder, instr)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @return [nil]
   # @scope class
   attach_function :position_builder_before, :LLVMPositionBuilderBefore, [:pointer, :pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method position_builder_at_end(builder, block)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @param [FFI::Pointer(BasicBlockRef)] block 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @param [FFI::Pointer(BasicBlockRef)] block
+  # @return [nil]
   # @scope class
   attach_function :position_builder_at_end, :LLVMPositionBuilderAtEnd, [:pointer, :pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_insert_block(builder)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @return [FFI::Pointer(BasicBlockRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @return [FFI::Pointer(BasicBlockRef)]
   # @scope class
   attach_function :get_insert_block, :LLVMGetInsertBlock, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method clear_insertion_position(builder)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @return [nil]
   # @scope class
   attach_function :clear_insertion_position, :LLVMClearInsertionPosition, [:pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method insert_into_builder(builder, instr)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @return [nil]
   # @scope class
   attach_function :insert_into_builder, :LLVMInsertIntoBuilder, [:pointer, :pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method insert_into_builder_with_name(builder, instr, name)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @param [FFI::Pointer(ValueRef)] instr 
-  # @param [String] name 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @param [FFI::Pointer(ValueRef)] instr
+  # @param [String] name
+  # @return [nil]
   # @scope class
   attach_function :insert_into_builder_with_name, :LLVMInsertIntoBuilderWithName, [:pointer, :pointer, :string], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method dispose_builder(builder)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @return [nil]
   # @scope class
   attach_function :dispose_builder, :LLVMDisposeBuilder, [:pointer], :void
-  
+
   # Metadata
-  # 
+  #
   # @method set_current_debug_location(builder, l)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @param [FFI::Pointer(ValueRef)] l 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @param [FFI::Pointer(ValueRef)] l
+  # @return [nil]
   # @scope class
   attach_function :set_current_debug_location, :LLVMSetCurrentDebugLocation, [:pointer, :pointer], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_current_debug_location(builder)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_current_debug_location, :LLVMGetCurrentDebugLocation, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_inst_debug_location(builder, inst)
-  # @param [FFI::Pointer(BuilderRef)] builder 
-  # @param [FFI::Pointer(ValueRef)] inst 
-  # @return [nil] 
+  # @param [FFI::Pointer(BuilderRef)] builder
+  # @param [FFI::Pointer(ValueRef)] inst
+  # @return [nil]
   # @scope class
   attach_function :set_inst_debug_location, :LLVMSetInstDebugLocation, [:pointer, :pointer], :void
-  
+
   # Terminators
-  # 
+  #
   # @method build_ret_void(builder_ref)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_ret_void, :LLVMBuildRetVoid, [:pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_ret(builder_ref, v)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] v
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_ret, :LLVMBuildRet, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_aggregate_ret(builder_ref, ret_vals, n)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(*ValueRef)] ret_vals 
-  # @param [Integer] n 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(*ValueRef)] ret_vals
+  # @param [Integer] n
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_aggregate_ret, :LLVMBuildAggregateRet, [:pointer, :pointer, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_br(builder_ref, dest)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(BasicBlockRef)] dest 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(BasicBlockRef)] dest
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_br, :LLVMBuildBr, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_cond_br(builder_ref, if_, then_, else_)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] if_ 
-  # @param [FFI::Pointer(BasicBlockRef)] then_ 
-  # @param [FFI::Pointer(BasicBlockRef)] else_ 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] if_
+  # @param [FFI::Pointer(BasicBlockRef)] then_
+  # @param [FFI::Pointer(BasicBlockRef)] else_
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_cond_br, :LLVMBuildCondBr, [:pointer, :pointer, :pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_switch(builder_ref, v, else_, num_cases)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [FFI::Pointer(BasicBlockRef)] else_ 
-  # @param [Integer] num_cases 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [FFI::Pointer(BasicBlockRef)] else_
+  # @param [Integer] num_cases
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_switch, :LLVMBuildSwitch, [:pointer, :pointer, :pointer, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_indirect_br(b, addr, num_dests)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(ValueRef)] addr 
-  # @param [Integer] num_dests 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(ValueRef)] addr
+  # @param [Integer] num_dests
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_indirect_br, :LLVMBuildIndirectBr, [:pointer, :pointer, :uint], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_invoke(builder_ref, fn, args, num_args, then_, catch, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [FFI::Pointer(*ValueRef)] args 
-  # @param [Integer] num_args 
-  # @param [FFI::Pointer(BasicBlockRef)] then_ 
-  # @param [FFI::Pointer(BasicBlockRef)] catch 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [FFI::Pointer(*ValueRef)] args
+  # @param [Integer] num_args
+  # @param [FFI::Pointer(BasicBlockRef)] then_
+  # @param [FFI::Pointer(BasicBlockRef)] catch
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_invoke, :LLVMBuildInvoke, [:pointer, :pointer, :pointer, :uint, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_landing_pad(b, ty, pers_fn, num_clauses, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [FFI::Pointer(ValueRef)] pers_fn 
-  # @param [Integer] num_clauses 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [FFI::Pointer(ValueRef)] pers_fn
+  # @param [Integer] num_clauses
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_landing_pad, :LLVMBuildLandingPad, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_resume(b, exn)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(ValueRef)] exn 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(ValueRef)] exn
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_resume, :LLVMBuildResume, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_unreachable(builder_ref)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_unreachable, :LLVMBuildUnreachable, [:pointer], :pointer
-  
+
   # Add a case to the switch instruction
-  # 
+  #
   # @method add_case(switch, on_val, dest)
-  # @param [FFI::Pointer(ValueRef)] switch 
-  # @param [FFI::Pointer(ValueRef)] on_val 
-  # @param [FFI::Pointer(BasicBlockRef)] dest 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] switch
+  # @param [FFI::Pointer(ValueRef)] on_val
+  # @param [FFI::Pointer(BasicBlockRef)] dest
+  # @return [nil]
   # @scope class
   attach_function :add_case, :LLVMAddCase, [:pointer, :pointer, :pointer], :void
-  
+
   # Add a destination to the indirectbr instruction
-  # 
+  #
   # @method add_destination(indirect_br, dest)
-  # @param [FFI::Pointer(ValueRef)] indirect_br 
-  # @param [FFI::Pointer(BasicBlockRef)] dest 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] indirect_br
+  # @param [FFI::Pointer(BasicBlockRef)] dest
+  # @return [nil]
   # @scope class
   attach_function :add_destination, :LLVMAddDestination, [:pointer, :pointer], :void
-  
+
   # Add a catch or filter clause to the landingpad instruction
-  # 
+  #
   # @method add_clause(landing_pad, clause_val)
-  # @param [FFI::Pointer(ValueRef)] landing_pad 
-  # @param [FFI::Pointer(ValueRef)] clause_val 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] landing_pad
+  # @param [FFI::Pointer(ValueRef)] clause_val
+  # @return [nil]
   # @scope class
   attach_function :add_clause, :LLVMAddClause, [:pointer, :pointer], :void
-  
+
   # Set the 'cleanup' flag in the landingpad instruction
-  # 
+  #
   # @method set_cleanup(landing_pad, val)
-  # @param [FFI::Pointer(ValueRef)] landing_pad 
-  # @param [Integer] val 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] landing_pad
+  # @param [Integer] val
+  # @return [nil]
   # @scope class
   attach_function :set_cleanup, :LLVMSetCleanup, [:pointer, :int], :void
-  
+
   # Arithmetic
-  # 
+  #
   # @method build_add(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_add, :LLVMBuildAdd, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nsw_add(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nsw_add, :LLVMBuildNSWAdd, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nuw_add(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nuw_add, :LLVMBuildNUWAdd, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_f_add(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_f_add, :LLVMBuildFAdd, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_sub(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_sub, :LLVMBuildSub, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nsw_sub(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nsw_sub, :LLVMBuildNSWSub, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nuw_sub(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nuw_sub, :LLVMBuildNUWSub, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_f_sub(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_f_sub, :LLVMBuildFSub, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_mul(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_mul, :LLVMBuildMul, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nsw_mul(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nsw_mul, :LLVMBuildNSWMul, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nuw_mul(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nuw_mul, :LLVMBuildNUWMul, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_f_mul(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_f_mul, :LLVMBuildFMul, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_u_div(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_u_div, :LLVMBuildUDiv, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_s_div(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_s_div, :LLVMBuildSDiv, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_exact_s_div(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_exact_s_div, :LLVMBuildExactSDiv, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_f_div(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_f_div, :LLVMBuildFDiv, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_u_rem(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_u_rem, :LLVMBuildURem, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_s_rem(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_s_rem, :LLVMBuildSRem, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_f_rem(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_f_rem, :LLVMBuildFRem, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_shl(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_shl, :LLVMBuildShl, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_l_shr(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_l_shr, :LLVMBuildLShr, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_a_shr(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_a_shr, :LLVMBuildAShr, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_and(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_and, :LLVMBuildAnd, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_or(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_or, :LLVMBuildOr, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_xor(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_xor, :LLVMBuildXor, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_bin_op(b, op, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [Symbol from _enum_opcode_] op 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [Symbol from _enum_opcode_] op
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_bin_op, :LLVMBuildBinOp, [:pointer, :opcode, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_neg(builder_ref, v, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_neg, :LLVMBuildNeg, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nsw_neg(b, v, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nsw_neg, :LLVMBuildNSWNeg, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_nuw_neg(b, v, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_nuw_neg, :LLVMBuildNUWNeg, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_f_neg(builder_ref, v, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_f_neg, :LLVMBuildFNeg, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_not(builder_ref, v, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] v 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] v
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_not, :LLVMBuildNot, [:pointer, :pointer, :string], :pointer
-  
+
   # Memory
-  # 
+  #
   # @method build_malloc(builder_ref, ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_malloc, :LLVMBuildMalloc, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_array_malloc(builder_ref, ty, val, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_array_malloc, :LLVMBuildArrayMalloc, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_alloca(builder_ref, ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_alloca, :LLVMBuildAlloca, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_array_alloca(builder_ref, ty, val, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_array_alloca, :LLVMBuildArrayAlloca, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_free(builder_ref, pointer_val)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] pointer_val 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] pointer_val
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_free, :LLVMBuildFree, [:pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_load(builder_ref, pointer_val, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] pointer_val 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] pointer_val
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_load, :LLVMBuildLoad, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_store(builder_ref, val, ptr)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(ValueRef)] ptr 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(ValueRef)] ptr
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_store, :LLVMBuildStore, [:pointer, :pointer, :pointer], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_gep(b, pointer, indices, num_indices, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(ValueRef)] pointer 
-  # @param [FFI::Pointer(*ValueRef)] indices 
-  # @param [Integer] num_indices 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(ValueRef)] pointer
+  # @param [FFI::Pointer(*ValueRef)] indices
+  # @param [Integer] num_indices
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_gep, :LLVMBuildGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_in_bounds_gep(b, pointer, indices, num_indices, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(ValueRef)] pointer 
-  # @param [FFI::Pointer(*ValueRef)] indices 
-  # @param [Integer] num_indices 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(ValueRef)] pointer
+  # @param [FFI::Pointer(*ValueRef)] indices
+  # @param [Integer] num_indices
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_in_bounds_gep, :LLVMBuildInBoundsGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_struct_gep(b, pointer, idx, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [FFI::Pointer(ValueRef)] pointer 
-  # @param [Integer] idx 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [FFI::Pointer(ValueRef)] pointer
+  # @param [Integer] idx
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_struct_gep, :LLVMBuildStructGEP, [:pointer, :pointer, :uint, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_global_string(b, str, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [String] str 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [String] str
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_global_string, :LLVMBuildGlobalString, [:pointer, :string, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_global_string_ptr(b, str, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [String] str 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [String] str
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_global_string_ptr, :LLVMBuildGlobalStringPtr, [:pointer, :string, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_volatile(memory_access_inst)
-  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
-  # @return [Integer] 
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst
+  # @return [Integer]
   # @scope class
   attach_function :get_volatile, :LLVMGetVolatile, [:pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_volatile(memory_access_inst, is_volatile)
-  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
-  # @param [Integer] is_volatile 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst
+  # @param [Integer] is_volatile
+  # @return [nil]
   # @scope class
   attach_function :set_volatile, :LLVMSetVolatile, [:pointer, :int], :void
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_ordering(memory_access_inst)
-  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
-  # @return [Symbol from _enum_atomic_ordering_] 
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst
+  # @return [Symbol from _enum_atomic_ordering_]
   # @scope class
   attach_function :get_ordering, :LLVMGetOrdering, [:pointer], :atomic_ordering
-  
+
   # (Not documented)
-  # 
+  #
   # @method set_ordering(memory_access_inst, ordering)
-  # @param [FFI::Pointer(ValueRef)] memory_access_inst 
-  # @param [Symbol from _enum_atomic_ordering_] ordering 
-  # @return [nil] 
+  # @param [FFI::Pointer(ValueRef)] memory_access_inst
+  # @param [Symbol from _enum_atomic_ordering_] ordering
+  # @return [nil]
   # @scope class
   attach_function :set_ordering, :LLVMSetOrdering, [:pointer, :atomic_ordering], :void
-  
+
   # Casts
-  # 
+  #
   # @method build_trunc(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_trunc, :LLVMBuildTrunc, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_z_ext(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_z_ext, :LLVMBuildZExt, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_s_ext(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_s_ext, :LLVMBuildSExt, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_fp_to_ui(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_fp_to_ui, :LLVMBuildFPToUI, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_fp_to_si(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_fp_to_si, :LLVMBuildFPToSI, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_ui_to_fp(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_ui_to_fp, :LLVMBuildUIToFP, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_si_to_fp(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_si_to_fp, :LLVMBuildSIToFP, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_fp_trunc(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_fp_trunc, :LLVMBuildFPTrunc, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_fp_ext(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_fp_ext, :LLVMBuildFPExt, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_ptr_to_int(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_ptr_to_int, :LLVMBuildPtrToInt, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_int_to_ptr(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_int_to_ptr, :LLVMBuildIntToPtr, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_bit_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_bit_cast, :LLVMBuildBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_addr_space_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_addr_space_cast, :LLVMBuildAddrSpaceCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_z_ext_or_bit_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_z_ext_or_bit_cast, :LLVMBuildZExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_s_ext_or_bit_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_s_ext_or_bit_cast, :LLVMBuildSExtOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_trunc_or_bit_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_trunc_or_bit_cast, :LLVMBuildTruncOrBitCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_cast(b, op, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [Symbol from _enum_opcode_] op 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [Symbol from _enum_opcode_] op
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_cast, :LLVMBuildCast, [:pointer, :opcode, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_pointer_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_pointer_cast, :LLVMBuildPointerCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_int_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_int_cast, :LLVMBuildIntCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_fp_cast(builder_ref, val, dest_ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [FFI::Pointer(TypeRef)] dest_ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [FFI::Pointer(TypeRef)] dest_ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_fp_cast, :LLVMBuildFPCast, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # Comparisons
-  # 
+  #
   # @method build_i_cmp(builder_ref, op, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [Symbol from _enum_int_predicate_] op 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [Symbol from _enum_int_predicate_] op
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_i_cmp, :LLVMBuildICmp, [:pointer, :int_predicate, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_f_cmp(builder_ref, op, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [Symbol from _enum_real_predicate_] op 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [Symbol from _enum_real_predicate_] op
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_f_cmp, :LLVMBuildFCmp, [:pointer, :real_predicate, :pointer, :pointer, :string], :pointer
-  
+
   # Miscellaneous instructions
-  # 
+  #
   # @method build_phi(builder_ref, ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_phi, :LLVMBuildPhi, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_call(builder_ref, fn, args, num_args, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] fn 
-  # @param [FFI::Pointer(*ValueRef)] args 
-  # @param [Integer] num_args 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] fn
+  # @param [FFI::Pointer(*ValueRef)] args
+  # @param [Integer] num_args
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_call, :LLVMBuildCall, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_select(builder_ref, if_, then_, else_, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] if_ 
-  # @param [FFI::Pointer(ValueRef)] then_ 
-  # @param [FFI::Pointer(ValueRef)] else_ 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] if_
+  # @param [FFI::Pointer(ValueRef)] then_
+  # @param [FFI::Pointer(ValueRef)] else_
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_select, :LLVMBuildSelect, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_va_arg(builder_ref, list, ty, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] list 
-  # @param [FFI::Pointer(TypeRef)] ty 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] list
+  # @param [FFI::Pointer(TypeRef)] ty
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_va_arg, :LLVMBuildVAArg, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_extract_element(builder_ref, vec_val, index, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] vec_val 
-  # @param [FFI::Pointer(ValueRef)] index 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] vec_val
+  # @param [FFI::Pointer(ValueRef)] index
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_extract_element, :LLVMBuildExtractElement, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_insert_element(builder_ref, vec_val, elt_val, index, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] vec_val 
-  # @param [FFI::Pointer(ValueRef)] elt_val 
-  # @param [FFI::Pointer(ValueRef)] index 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] vec_val
+  # @param [FFI::Pointer(ValueRef)] elt_val
+  # @param [FFI::Pointer(ValueRef)] index
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_insert_element, :LLVMBuildInsertElement, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_shuffle_vector(builder_ref, v1, v2, mask, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] v1 
-  # @param [FFI::Pointer(ValueRef)] v2 
-  # @param [FFI::Pointer(ValueRef)] mask 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] v1
+  # @param [FFI::Pointer(ValueRef)] v2
+  # @param [FFI::Pointer(ValueRef)] mask
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_shuffle_vector, :LLVMBuildShuffleVector, [:pointer, :pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_extract_value(builder_ref, agg_val, index, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] agg_val 
-  # @param [Integer] index 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] agg_val
+  # @param [Integer] index
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_extract_value, :LLVMBuildExtractValue, [:pointer, :pointer, :uint, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_insert_value(builder_ref, agg_val, elt_val, index, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] agg_val 
-  # @param [FFI::Pointer(ValueRef)] elt_val 
-  # @param [Integer] index 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] agg_val
+  # @param [FFI::Pointer(ValueRef)] elt_val
+  # @param [Integer] index
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_insert_value, :LLVMBuildInsertValue, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_is_null(builder_ref, val, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_is_null, :LLVMBuildIsNull, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_is_not_null(builder_ref, val, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_is_not_null, :LLVMBuildIsNotNull, [:pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_ptr_diff(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref 
-  # @param [FFI::Pointer(ValueRef)] lhs 
-  # @param [FFI::Pointer(ValueRef)] rhs 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] builder_ref
+  # @param [FFI::Pointer(ValueRef)] lhs
+  # @param [FFI::Pointer(ValueRef)] rhs
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_ptr_diff, :LLVMBuildPtrDiff, [:pointer, :pointer, :pointer, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_fence(b, ordering, single_thread, name)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [Symbol from _enum_atomic_ordering_] ordering 
-  # @param [Integer] single_thread 
-  # @param [String] name 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [Symbol from _enum_atomic_ordering_] ordering
+  # @param [Integer] single_thread
+  # @param [String] name
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_fence, :LLVMBuildFence, [:pointer, :atomic_ordering, :int, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method build_atomic_rmw(b, op, ptr, val, ordering, single_thread)
-  # @param [FFI::Pointer(BuilderRef)] b 
-  # @param [Symbol from _enum_atomic_rmw_bin_op_] op 
-  # @param [FFI::Pointer(ValueRef)] ptr 
-  # @param [FFI::Pointer(ValueRef)] val 
-  # @param [Symbol from _enum_atomic_ordering_] ordering 
-  # @param [Integer] single_thread 
-  # @return [FFI::Pointer(ValueRef)] 
+  # @param [FFI::Pointer(BuilderRef)] b
+  # @param [Symbol from _enum_atomic_rmw_bin_op_] op
+  # @param [FFI::Pointer(ValueRef)] ptr
+  # @param [FFI::Pointer(ValueRef)] val
+  # @param [Symbol from _enum_atomic_ordering_] ordering
+  # @param [Integer] single_thread
+  # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_atomic_rmw, :LLVMBuildAtomicRMW, [:pointer, :atomic_rmw_bin_op, :pointer, :pointer, :atomic_ordering, :int], :pointer
-  
+
   # Changes the type of M so it can be passed to FunctionPassManagers and the
   # JIT.  They take ModuleProviders for historical reasons.
-  # 
+  #
   # @method create_module_provider_for_existing_module(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(ModuleProviderRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(ModuleProviderRef)]
   # @scope class
   attach_function :create_module_provider_for_existing_module, :LLVMCreateModuleProviderForExistingModule, [:pointer], :pointer
-  
+
   # Destroys the module M.
-  # 
+  #
   # @method dispose_module_provider(m)
-  # @param [FFI::Pointer(ModuleProviderRef)] m 
-  # @return [nil] 
+  # @param [FFI::Pointer(ModuleProviderRef)] m
+  # @return [nil]
   # @scope class
   attach_function :dispose_module_provider, :LLVMDisposeModuleProvider, [:pointer], :void
-  
+
   # @defgroup LLVMCCoreMemoryBuffers Memory Buffers
-  # 
+  #
   # @{
-  # 
+  #
   # @method create_memory_buffer_with_contents_of_file(path, out_mem_buf, out_message)
-  # @param [String] path 
-  # @param [FFI::Pointer(*MemoryBufferRef)] out_mem_buf 
-  # @param [FFI::Pointer(**CharS)] out_message 
-  # @return [Integer] 
+  # @param [String] path
+  # @param [FFI::Pointer(*MemoryBufferRef)] out_mem_buf
+  # @param [FFI::Pointer(**CharS)] out_message
+  # @return [Integer]
   # @scope class
   attach_function :create_memory_buffer_with_contents_of_file, :LLVMCreateMemoryBufferWithContentsOfFile, [:string, :pointer, :pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method create_memory_buffer_with_stdin(out_mem_buf, out_message)
-  # @param [FFI::Pointer(*MemoryBufferRef)] out_mem_buf 
-  # @param [FFI::Pointer(**CharS)] out_message 
-  # @return [Integer] 
+  # @param [FFI::Pointer(*MemoryBufferRef)] out_mem_buf
+  # @param [FFI::Pointer(**CharS)] out_message
+  # @return [Integer]
   # @scope class
   attach_function :create_memory_buffer_with_stdin, :LLVMCreateMemoryBufferWithSTDIN, [:pointer, :pointer], :int
-  
+
   # (Not documented)
-  # 
+  #
   # @method create_memory_buffer_with_memory_range(input_data, input_data_length, buffer_name, requires_null_terminator)
-  # @param [String] input_data 
-  # @param [Integer] input_data_length 
-  # @param [String] buffer_name 
-  # @param [Integer] requires_null_terminator 
-  # @return [FFI::Pointer(MemoryBufferRef)] 
+  # @param [String] input_data
+  # @param [Integer] input_data_length
+  # @param [String] buffer_name
+  # @param [Integer] requires_null_terminator
+  # @return [FFI::Pointer(MemoryBufferRef)]
   # @scope class
   attach_function :create_memory_buffer_with_memory_range, :LLVMCreateMemoryBufferWithMemoryRange, [:string, :ulong, :string, :int], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method create_memory_buffer_with_memory_range_copy(input_data, input_data_length, buffer_name)
-  # @param [String] input_data 
-  # @param [Integer] input_data_length 
-  # @param [String] buffer_name 
-  # @return [FFI::Pointer(MemoryBufferRef)] 
+  # @param [String] input_data
+  # @param [Integer] input_data_length
+  # @param [String] buffer_name
+  # @return [FFI::Pointer(MemoryBufferRef)]
   # @scope class
   attach_function :create_memory_buffer_with_memory_range_copy, :LLVMCreateMemoryBufferWithMemoryRangeCopy, [:string, :ulong, :string], :pointer
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_buffer_start(mem_buf)
-  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
-  # @return [String] 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf
+  # @return [String]
   # @scope class
   attach_function :get_buffer_start, :LLVMGetBufferStart, [:pointer], :string
-  
+
   # (Not documented)
-  # 
+  #
   # @method get_buffer_size(mem_buf)
-  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
-  # @return [Integer] 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf
+  # @return [Integer]
   # @scope class
   attach_function :get_buffer_size, :LLVMGetBufferSize, [:pointer], :ulong
-  
+
   # (Not documented)
-  # 
+  #
   # @method dispose_memory_buffer(mem_buf)
-  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf 
-  # @return [nil] 
+  # @param [FFI::Pointer(MemoryBufferRef)] mem_buf
+  # @return [nil]
   # @scope class
   attach_function :dispose_memory_buffer, :LLVMDisposeMemoryBuffer, [:pointer], :void
-  
+
   # Return the global pass registry, for use with initialization functions.
   #     @see llvm::PassRegistry::getPassRegistry
-  # 
+  #
   # @method get_global_pass_registry()
-  # @return [FFI::Pointer(PassRegistryRef)] 
+  # @return [FFI::Pointer(PassRegistryRef)]
   # @scope class
   attach_function :get_global_pass_registry, :LLVMGetGlobalPassRegistry, [], :pointer
-  
+
   # Constructs a new whole-module pass pipeline. This type of pipeline is
   #     suitable for link-time optimization and whole-module transformations.
   #     @see llvm::PassManager::PassManager
-  # 
+  #
   # @method create_pass_manager()
-  # @return [FFI::Pointer(PassManagerRef)] 
+  # @return [FFI::Pointer(PassManagerRef)]
   # @scope class
   attach_function :create_pass_manager, :LLVMCreatePassManager, [], :pointer
-  
+
   # Constructs a new function-by-function pass pipeline over the module
   #     provider. It does not take ownership of the module provider. This type of
   #     pipeline is suitable for code generation and JIT compilation tasks.
   #     @see llvm::FunctionPassManager::FunctionPassManager
-  # 
+  #
   # @method create_function_pass_manager_for_module(m)
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [FFI::Pointer(PassManagerRef)] 
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [FFI::Pointer(PassManagerRef)]
   # @scope class
   attach_function :create_function_pass_manager_for_module, :LLVMCreateFunctionPassManagerForModule, [:pointer], :pointer
-  
+
   # Deprecated: Use LLVMCreateFunctionPassManagerForModule instead.
-  # 
+  #
   # @method create_function_pass_manager(mp)
-  # @param [FFI::Pointer(ModuleProviderRef)] mp 
-  # @return [FFI::Pointer(PassManagerRef)] 
+  # @param [FFI::Pointer(ModuleProviderRef)] mp
+  # @return [FFI::Pointer(PassManagerRef)]
   # @scope class
   attach_function :create_function_pass_manager, :LLVMCreateFunctionPassManager, [:pointer], :pointer
-  
+
   # Initializes, executes on the provided module, and finalizes all of the
   #     passes scheduled in the pass manager. Returns 1 if any of the passes
   #     modified the module, 0 otherwise.
   #     @see llvm::PassManager::run(Module&)
-  # 
+  #
   # @method run_pass_manager(pm, m)
-  # @param [FFI::Pointer(PassManagerRef)] pm 
-  # @param [FFI::Pointer(ModuleRef)] m 
-  # @return [Integer] 
+  # @param [FFI::Pointer(PassManagerRef)] pm
+  # @param [FFI::Pointer(ModuleRef)] m
+  # @return [Integer]
   # @scope class
   attach_function :run_pass_manager, :LLVMRunPassManager, [:pointer, :pointer], :int
-  
+
   # Initializes all of the function passes scheduled in the function pass
   #     manager. Returns 1 if any of the passes modified the module, 0 otherwise.
   #     @see llvm::FunctionPassManager::doInitialization
-  # 
+  #
   # @method initialize_function_pass_manager(fpm)
-  # @param [FFI::Pointer(PassManagerRef)] fpm 
-  # @return [Integer] 
+  # @param [FFI::Pointer(PassManagerRef)] fpm
+  # @return [Integer]
   # @scope class
   attach_function :initialize_function_pass_manager, :LLVMInitializeFunctionPassManager, [:pointer], :int
-  
+
   # Executes all of the function passes scheduled in the function pass manager
   #     on the provided function. Returns 1 if any of the passes modified the
   #     function, false otherwise.
   #     @see llvm::FunctionPassManager::run(Function&)
-  # 
+  #
   # @method run_function_pass_manager(fpm, f)
-  # @param [FFI::Pointer(PassManagerRef)] fpm 
-  # @param [FFI::Pointer(ValueRef)] f 
-  # @return [Integer] 
+  # @param [FFI::Pointer(PassManagerRef)] fpm
+  # @param [FFI::Pointer(ValueRef)] f
+  # @return [Integer]
   # @scope class
   attach_function :run_function_pass_manager, :LLVMRunFunctionPassManager, [:pointer, :pointer], :int
-  
+
   # Finalizes all of the function passes scheduled in in the function pass
   #     manager. Returns 1 if any of the passes modified the module, 0 otherwise.
   #     @see llvm::FunctionPassManager::doFinalization
-  # 
+  #
   # @method finalize_function_pass_manager(fpm)
-  # @param [FFI::Pointer(PassManagerRef)] fpm 
-  # @return [Integer] 
+  # @param [FFI::Pointer(PassManagerRef)] fpm
+  # @return [Integer]
   # @scope class
   attach_function :finalize_function_pass_manager, :LLVMFinalizeFunctionPassManager, [:pointer], :int
-  
+
   # Frees the memory of a pass pipeline. For function pipelines, does not free
   #     the module provider.
   #     @see llvm::PassManagerBase::~PassManagerBase.
-  # 
+  #
   # @method dispose_pass_manager(pm)
-  # @param [FFI::Pointer(PassManagerRef)] pm 
-  # @return [nil] 
+  # @param [FFI::Pointer(PassManagerRef)] pm
+  # @return [nil]
   # @scope class
   attach_function :dispose_pass_manager, :LLVMDisposePassManager, [:pointer], :void
-  
+
   # Deprecated: Multi-threading can only be enabled/disabled with the compile
   #     time define LLVM_ENABLE_THREADS.  This function always returns
   #     LLVMIsMultithreaded().
-  # 
+  #
   # @method start_multithreaded()
-  # @return [Integer] 
+  # @return [Integer]
   # @scope class
   attach_function :start_multithreaded, :LLVMStartMultithreaded, [], :int
-  
+
   # Deprecated: Multi-threading can only be enabled/disabled with the compile
   #     time define LLVM_ENABLE_THREADS.
-  # 
+  #
   # @method stop_multithreaded()
-  # @return [nil] 
+  # @return [nil]
   # @scope class
   attach_function :stop_multithreaded, :LLVMStopMultithreaded, [], :void
-  
+
   # Check whether LLVM is executing in thread-safe mode or not.
   #     @see llvm::llvm_is_multithreaded
-  # 
+  #
   # @method is_multithreaded()
-  # @return [Integer] 
+  # @return [Integer]
   # @scope class
   attach_function :is_multithreaded, :LLVMIsMultithreaded, [], :int
-  
 end
