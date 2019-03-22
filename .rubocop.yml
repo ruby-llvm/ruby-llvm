@@ -3,6 +3,7 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
     - 'samples/**/*'
+    - 'lib/llvm/config.rb'
 
 Style/ClassAndModuleChildren:
   Enabled: false

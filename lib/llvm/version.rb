@@ -1,5 +1,5 @@
 module LLVM
-  LLVM_VERSION = "8"
-  LLVM_REQUIRED_VERSION = "8.0"
-  RUBY_LLVM_VERSION = "8.0.0"
+  LLVM_VERSION = "8".freeze
+  LLVM_REQUIRED_VERSION = "8.0".freeze
+  RUBY_LLVM_VERSION = "8.0.0".freeze
 end

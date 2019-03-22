@@ -147,11 +147,13 @@ module LLVM
       BasicBlock.from_ptr(ptr) unless ptr.null?
     end
 
-    def first_instruction  # deprecated
+    # deprecated
+    def first_instruction
       instructions.first
     end
 
-    def last_instruction  # deprecated
+    # deprecated
+    def last_instruction
       instructions.last
     end
 
@@ -483,7 +485,7 @@ module LLVM
     end
   end
 
-  def LLVM.const_missing(const)
+  def self.const_missing(const)
     case const.to_s
     when /Int(\d+)/
       width = Regexp.last_match(1).to_i
@@ -506,7 +508,7 @@ module LLVM
   ::LLVM::Int = const_get("Int#{bits}")
 
   # Creates a LLVM Int (subclass of ConstantInt) at the NATIVE_INT_SIZE from a integer (val).
-  def LLVM.Int(val)
+  def self.Int(val)
     case val
     when LLVM::ConstantInt then val
     when Integer then Int.from_i(val)
@@ -587,7 +589,7 @@ module LLVM
   end
 
   # Create a LLVM::Float from a Ruby Float (val).
-  def LLVM.Float(val)
+  def self.Float(val)
     Float.from_f(val)
   end
 
@@ -597,7 +599,7 @@ module LLVM
     end
   end
 
-  def LLVM.Double(val)
+  def self.Double(val)
     Double.from_f(val)
   end
 
@@ -862,6 +864,7 @@ module LLVM
     def gc=(name)
       C.set_gc(self, name)
     end
+
     def gc
       C.get_gc(self)
     end

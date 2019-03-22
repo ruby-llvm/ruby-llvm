@@ -41,23 +41,6 @@ Layout/ElseAlignment:
   Exclude:
     - 'lib/llvm/core/type.rb'
 
-# Offense count: 35
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAdjacentOneLineDefs, NumberOfEmptyLines.
-Layout/EmptyLineBetweenDefs:
-  Exclude:
-    - 'lib/llvm/core/value.rb'
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/for_ast.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/token.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Layout/EmptyLines:
@@ -92,29 +75,6 @@ Layout/EmptyLinesAroundModuleBody:
     - 'lib/llvm/support.rb'
     - 'lib/llvm/target_ffi.rb'
     - 'lib/llvm/transforms/scalar_ffi.rb'
-
-# Offense count: 33
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
-  Exclude:
-    - 'lib/llvm/core/value.rb'
-    - 'ruby-llvm.gemspec'
-    - 'samples/factorial.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/lexer.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/token.rb'
-    - 'test/equality_test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/MultilineBlockLayout:
-  Exclude:
-    - 'test/bitcode_test.rb'
 
 # Offense count: 9
 # Cop supports --auto-correct.
@@ -329,20 +289,6 @@ Naming/UncommunicativeBlockParamName:
 Naming/UncommunicativeMethodParamName:
   Enabled: false
 
-# Offense count: 30
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: snake_case, camelCase
-Naming/VariableName:
-  Exclude:
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/for_ast.rb'
-    - 'samples/kaleidescope/function_ast.rb'
-    - 'samples/kaleidescope/if_ast.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
 # Offense count: 12
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: snake_case, normalcase, non_integer
@@ -407,31 +353,6 @@ Style/ClassCheck:
     - 'lib/llvm/transforms/builder.rb'
     - 'test/module_test.rb'
 
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/ClassMethods:
-  Exclude:
-    - 'lib/llvm/core/value.rb'
-
-# Offense count: 3
-Style/ClassVars:
-  Exclude:
-    - 'samples/kaleidescope/lexer.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Keywords.
-# Keywords: TODO, FIXME, OPTIMIZE, HACK, REVIEW
-Style/CommentAnnotation:
-  Exclude:
-    - 'samples/kaleidescope/simple_ast.rb'
-
-# Offense count: 2
-Style/CommentedKeyword:
-  Exclude:
-    - 'lib/llvm/core/value.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
@@ -494,12 +415,6 @@ Style/IfUnlessModifier:
     - 'lib/llvm/transforms/builder.rb'
     - 'samples/kaleidescope/parser.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/InfiniteLoop:
-  Exclude:
-    - 'samples/kaleidescope/parser.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -520,38 +435,10 @@ Style/MethodCallWithoutArgsParentheses:
     - 'test/branch_test.rb'
     - 'test/module_test.rb'
 
-# Offense count: 21
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: require_parentheses, require_no_parentheses, require_no_parentheses_except_multiline
-Style/MethodDefParentheses:
-  Exclude:
-    - 'samples/kaleidescope/driver.rb'
-    - 'samples/kaleidescope/lexer.rb'
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
-    - 'samples/kaleidescope/token.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
 # Offense count: 1
 Style/MixinUsage:
   Exclude:
     - 'ext/ruby-llvm-support/Rakefile'
-
-# Offense count: 9
-# Cop supports --auto-correct.
-Style/MutableConstant:
-  Exclude:
-    - 'ext/ruby-llvm-support/Rakefile'
-    - 'lib/llvm/config.rb'
-    - 'lib/llvm/version.rb'
-    - 'samples/hello.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/NilComparison:
-  Exclude:
-    - 'samples/kaleidescope/variable_ast.rb'
 
 # Offense count: 13
 # Cop supports --auto-correct.
@@ -585,16 +472,6 @@ Style/ParallelAssignment:
     - 'samples/kaleidescope/prototype_ast.rb'
     - 'samples/kaleidescope/simple_ast.rb'
     - 'samples/kaleidescope/token.rb'
-    - 'samples/kaleidescope/variable_ast.rb'
-
-# Offense count: 17
-# Cop supports --auto-correct.
-# Configuration parameters: AllowSafeAssignment, AllowInMultilineConditions.
-Style/ParenthesesAroundCondition:
-  Exclude:
-    - 'samples/kaleidescope/parser.rb'
-    - 'samples/kaleidescope/prototype_ast.rb'
-    - 'samples/kaleidescope/simple_ast.rb'
     - 'samples/kaleidescope/variable_ast.rb'
 
 # Offense count: 19

@@ -85,7 +85,7 @@ LLVM_CONFIG_OPTS = [
   ['HOST_TARGET',   :string, '--host-target'],
   ['BUILD_MODE',    :string, '--build-mode'],
   ['CFLAGS',        :string, '--cflags'],
-]
+].freeze
 
 file CONFIG_MOD do
   open(CONFIG_MOD, 'w') do |f|
