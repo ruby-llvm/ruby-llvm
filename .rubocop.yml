@@ -2,7 +2,6 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   Exclude:
-    - 'lib/**/*ffi.rb'
     - 'samples/**/*'
 
 Style/ClassAndModuleChildren:
@@ -11,3 +10,17 @@ Style/ClassAndModuleChildren:
 Layout/EndAlignment:
   AutoCorrect: true
   EnforcedStyleAlignWith: variable
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Layout/AlignHash:
+  Enabled: false
+
+Style:
+  Exclude:
+    - 'lib/**/*ffi.rb'
+
+Layout/IndentationWidth:
+  Exclude:
+    - 'lib/**/*ffi.rb'

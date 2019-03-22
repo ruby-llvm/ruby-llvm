@@ -662,6 +662,7 @@ Style/TrailingCommaInHashLiteral:
   Exclude:
     - 'Rakefile'
     - 'test/equality_test.rb'
+    - 'lib/llvm/execution_engine.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
