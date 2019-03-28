@@ -186,9 +186,7 @@ module LLVM
     def initialize(mod, options = {})
       options = {
         :opt_level             => 2, # LLVMCodeGenLevelDefault
-        # code_model causes segfault with LLVMCodeModelDefault (0) so using
-        # LLVMCodeModelJITDefault (1) instead
-        :code_model            => 1,
+        :code_model            => 0,
         :no_frame_pointer_elim => false,
         :enable_fast_i_sel     => false,
         # TODO
