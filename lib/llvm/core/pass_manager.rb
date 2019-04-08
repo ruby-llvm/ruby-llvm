@@ -6,7 +6,7 @@ module LLVM
     #
     # @param [LLVM::ExecutionEngine, LLVM::TargetMachine] machine
     def initialize(machine = nil)
-      if !machine.nil?
+      if machine
         warn("[DEPRECATION] PassManager.new should be called without parameters")
       end
       @ptr = C.create_pass_manager()
