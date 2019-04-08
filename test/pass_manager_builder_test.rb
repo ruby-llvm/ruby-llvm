@@ -7,8 +7,7 @@ class PassManagerBuilderTest < Minitest::Test
     LLVM.init_jit
     @builder = LLVM::PassManagerBuilder.new
 
-    machine = LLVM::Target.by_name('x86-64').create_machine('x86-linux-gnu')
-    @pass_manager = LLVM::PassManager.new(machine)
+    @pass_manager = LLVM::PassManager.new
   end
 
   def teardown
