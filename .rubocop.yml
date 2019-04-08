@@ -5,9 +5,20 @@ AllCops:
     - 'samples/**/*'
     - 'lib/llvm/config.rb'
 
+# Style
 Style/ClassAndModuleChildren:
   Enabled: false
 
+Style/NegatedIf:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/NegatedWhile:
+  Enabled: false
+
+# Layout
 Layout/EndAlignment:
   AutoCorrect: true
   EnforcedStyleAlignWith: variable
@@ -18,6 +29,7 @@ Layout/EmptyLineAfterGuardClause:
 Layout/AlignHash:
   Enabled: false
 
+# Exceptions
 Style:
   Exclude:
     - 'lib/**/*ffi.rb'
