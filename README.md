@@ -1,3 +1,5 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/ruby-llvm/ruby-llvm/badge.svg)](https://snyk.io/test/github/ruby-llvm/ruby-llvm)
+
 Ruby-LLVM
 =========
 
