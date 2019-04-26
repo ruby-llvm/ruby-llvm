@@ -728,13 +728,13 @@ module LLVM
     end
 
     # Adds attr to this value's attributes.
-    def add_attribute(attr)
-      function_attributes.add(attr)
+    def add_attribute(attr, index = -1)
+      AttributeCollection.new(self, index).add(attr)
     end
 
     # Removes the given attribute from the function.
-    def remove_attribute(attr)
-      function_attributes.remove(attr)
+    def remove_attribute(attr, index = -1)
+      AttributeCollection.new(self, index).remove(attr)
     end
 
     def attribute_count
