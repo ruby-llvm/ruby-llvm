@@ -728,54 +728,88 @@ module LLVM
     end
 
     # Adds attr to this value's attributes.
-    def add_attribute(attr, param_index = 0)
-      attr_kind_id = attribute_id(attr)
-      ctx = Context.global
-      attr_ref = C.create_enum_attribute(ctx, attr_kind_id, 0)
-      C.add_attribute_at_index(@ptr, param_index, attr_ref)
+    def add_attribute(attr)
+      function_attributes.add(attr)
     end
 
     # Removes the given attribute from the function.
-    def remove_attribute(attr, param_index = 0)
-      attr_kind_id = attribute_id(attr)
-      C.remove_enum_attribute_at_index(self, param_index, attr_kind_id)
+    def remove_attribute(attr)
+      function_attributes.remove(attr)
     end
 
-    def attribute_count(attr_index = 0)
-      C.get_attribute_count_at_index(self, attr_index)
+    def attribute_count
+      function_attributes.count
     end
 
-    def attributes(param_index = 0)
-      count = attribute_count(param_index)
-      attr_refs = nil
-      FFI::MemoryPointer.new(:pointer, count) do |p|
-        C.get_attributes_at_index(self, param_index, p)
-        attr_refs = p.read_array_of_type(:pointer, :read_pointer, count)
+    def attributes
+      function_attributes.to_a
+    end
+
+    def function_attributes
+      AttributeCollection.new(self, -1)
+    end
+
+    def return_attributes
+      AttributeCollection.new(self, 0)
+    end
+
+    def param_attributes(index)
+      AttributeCollection.new(self, index)
+    end
+
+    class AttributeCollection
+
+      def initialize(fun, index)
+        @fun = fun
+        @index = index
       end
 
-      attr_refs.map { |e| C.get_enum_attribute_kind(e) }
-    end
+      def add(attr)
+        attr_kind_id = attribute_id(attr)
+        ctx = Context.global
+        attr_ref = C.create_enum_attribute(ctx, attr_kind_id, 0)
+        C.add_attribute_at_index(@fun, @index, attr_ref)
+      end
 
-    private
+      def remove(attr)
+        attr_kind_id = attribute_id(attr)
+        C.remove_enum_attribute_at_index(@fun, @index, attr_kind_id)
+      end
 
-    def attribute_name(attr_name)
-      attr_name = attr_name.to_s
-      if attr_name =~ /_attribute$/
-        attr_name.chomp('_attribute').tr('_', '')
-      else
-        attr_name
+      def count
+        C.get_attribute_count_at_index(@fun, @index)
+      end
+
+      def to_a
+        attr_refs = nil
+        n = count
+        FFI::MemoryPointer.new(:pointer, n) do |p|
+          C.get_attributes_at_index(@fun, @index, p)
+          attr_refs = p.read_array_of_type(:pointer, :read_pointer, n)
+        end
+
+        attr_refs.map { |e| C.get_enum_attribute_kind(e) }
+      end
+
+      private
+
+      def attribute_name(attr_name)
+        attr_name = attr_name.to_s
+        if attr_name =~ /_attribute$/
+          attr_name.chomp('_attribute').tr('_', '')
+        else
+          attr_name
+        end
+      end
+
+      def attribute_id(attr_name)
+        attr_mem = FFI::MemoryPointer.from_string(attribute_name(attr_name))
+        attr_kind_id = C.get_enum_attribute_kind_for_name(attr_mem, attr_mem.size - 1)
+
+        raise "No attribute named: #{attr_name}" if attr_kind_id.zero?
+        attr_kind_id
       end
     end
-
-    def attribute_id(attr_name)
-      attr_mem = FFI::MemoryPointer.from_string(attribute_name(attr_name))
-      attr_kind_id = C.get_enum_attribute_kind_for_name(attr_mem, attr_mem.size - 1)
-
-      raise "No attribute named: #{attr_name}" if attr_kind_id.zero?
-      attr_kind_id
-    end
-
-    public
 
     # @private
     class BasicBlockCollection
