@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.md LICENSE)
 
   s.add_dependency             'ffi',      '~> 1.10.0'
-  s.add_dependency             'rake',     '~> 12.0'
+  s.add_dependency             'rake',     '>= 12', '< 14'
 
   s.add_development_dependency 'ffi_gen',  '~> 1.2.0'
   s.add_development_dependency 'minitest', '~> 5.11.3'
