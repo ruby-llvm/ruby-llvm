@@ -28,7 +28,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    yard (0.9.19)
+    yard (0.9.24)
 
 PLATFORMS
   ruby
