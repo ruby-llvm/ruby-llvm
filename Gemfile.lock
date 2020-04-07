@@ -3,7 +3,7 @@ PATH
   specs:
     ruby-llvm (8.0.0)
       ffi (~> 1.10.0)
-      rake (~> 12.0)
+      rake (>= 12, < 14)
 
 GEM
   remote: http://rubygems.org/
@@ -21,7 +21,7 @@ GEM
       builder
       minitest (>= 5.0)
       ruby-progressbar
-    rake (12.3.2)
+    rake (13.0.1)
     ruby-progressbar (1.10.0)
     simplecov (0.16.1)
       docile (~> 1.1)
