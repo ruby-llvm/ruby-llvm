@@ -3903,17 +3903,6 @@ module LLVM::C
   # @scope class
   attach_function :set_gc, :LLVMSetGC, [:pointer, :string], :void
 
-  # Add an attribute to a function.
-  #
-  # @see llvm::Function::addAttribute()
-  #
-  # @method add_function_attr(fn, pa)
-  # @param [FFI::Pointer(ValueRef)] fn
-  # @param [Symbol from _enum_attribute_] pa
-  # @return [nil]
-  # @scope class
-  attach_function :add_function_attr, :LLVMAddFunctionAttr, [:pointer, :attribute], :void
-
   # Add a target-dependent attribute to a function
   # @see llvm::AttrBuilder::addAttribute()
   #
@@ -3924,25 +3913,6 @@ module LLVM::C
   # @return [nil]
   # @scope class
   attach_function :add_target_dependent_function_attr, :LLVMAddTargetDependentFunctionAttr, [:pointer, :string, :string], :void
-
-  # Obtain an attribute from a function.
-  #
-  # @see llvm::Function::getAttributes()
-  #
-  # @method get_function_attr(fn)
-  # @param [FFI::Pointer(ValueRef)] fn
-  # @return [Symbol from _enum_attribute_]
-  # @scope class
-  attach_function :get_function_attr, :LLVMGetFunctionAttr, [:pointer], :attribute
-
-  # Remove an attribute from a function.
-  #
-  # @method remove_function_attr(fn, pa)
-  # @param [FFI::Pointer(ValueRef)] fn
-  # @param [Symbol from _enum_attribute_] pa
-  # @return [nil]
-  # @scope class
-  attach_function :remove_function_attr, :LLVMRemoveFunctionAttr, [:pointer, :attribute], :void
 
   # Obtain the number of parameters in a function.
   #
@@ -4039,36 +4009,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_previous_param, :LLVMGetPreviousParam, [:pointer], :pointer
-
-  # Add an attribute to a function argument.
-  #
-  # @see llvm::Argument::addAttr()
-  #
-  # @method add_attribute(arg, pa)
-  # @param [FFI::Pointer(ValueRef)] arg
-  # @param [Symbol from _enum_attribute_] pa
-  # @return [nil]
-  # @scope class
-  attach_function :add_attribute, :LLVMAddAttribute, [:pointer, :attribute], :void
-
-  # Remove an attribute from a function argument.
-  #
-  # @see llvm::Argument::removeAttr()
-  #
-  # @method remove_attribute(arg, pa)
-  # @param [FFI::Pointer(ValueRef)] arg
-  # @param [Symbol from _enum_attribute_] pa
-  # @return [nil]
-  # @scope class
-  attach_function :remove_attribute, :LLVMRemoveAttribute, [:pointer, :attribute], :void
-
-  # Get an attribute from a function argument.
-  #
-  # @method get_attribute(arg)
-  # @param [FFI::Pointer(ValueRef)] arg
-  # @return [Symbol from _enum_attribute_]
-  # @scope class
-  attach_function :get_attribute, :LLVMGetAttribute, [:pointer], :attribute
 
   # Set the alignment for a function parameter.
   #
@@ -4561,26 +4501,6 @@ module LLVM::C
   # @return [Integer]
   # @scope class
   attach_function :get_instruction_call_conv, :LLVMGetInstructionCallConv, [:pointer], :uint
-
-  # (Not documented)
-  #
-  # @method add_instr_attribute(instr, index, attribute)
-  # @param [FFI::Pointer(ValueRef)] instr
-  # @param [Integer] index
-  # @param [Symbol from _enum_attribute_] attribute
-  # @return [nil]
-  # @scope class
-  attach_function :add_instr_attribute, :LLVMAddInstrAttribute, [:pointer, :uint, :attribute], :void
-
-  # (Not documented)
-  #
-  # @method remove_instr_attribute(instr, index, attribute)
-  # @param [FFI::Pointer(ValueRef)] instr
-  # @param [Integer] index
-  # @param [Symbol from _enum_attribute_] attribute
-  # @return [nil]
-  # @scope class
-  attach_function :remove_instr_attribute, :LLVMRemoveInstrAttribute, [:pointer, :uint, :attribute], :void
 
   # (Not documented)
   #
