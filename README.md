@@ -9,10 +9,10 @@ library. LLVM allows users to create just-in-time (JIT) compilers, ahead-of-time
 bindings can also be used to speed up Ruby code by compiling and loading
 computationally intensive algorithms on the fly.
 
-Requirements
-------------
-* LLVM 3.4, including libLLVM-3.4 (compile LLVM with --enable-shared).
-* In order to ensure the usability of JIT features (i.e. create_jit_compiler), compile LLVM with --enable-jit as well.
+Current version
+---------------
+
+This library currently binds to LLVM-10 (specifically llvm-c 10).
 
 About version numbers
 ---------------------
@@ -22,13 +22,26 @@ major and minor version of LLVM. The third digit refers to the ruby-llvm
 release itself. Because LLVM's api changes often, this coupling between
 LLVM and ruby-llvm versions is useful.
 
+Debian/Ubuntu
+-------------
+
+[LLVM Debian/Ubuntu Packages](https://apt.llvm.org/)
+
 Homebrew
 --------
+
 LLVM can be installed with Homebrew by executing `brew install llvm --shared`
+
+Source and other binaries
+-------------------------
+
+* [LLVM Download Page](https://releases.llvm.org/download.html)
+* If compiling from source the --enable-shared and --enable-jit flags may be needed.
 
 See Also
 --------
 * [The LLVM project](http://llvm.org)
+* [Mirror of llvm-c on github](https://github.com/llvm-mirror/llvm/tree/master/include/llvm-c)
 * [ffi-gen](https://github.com/neelance/ffi-gen) – Generate
   [FFI](https://github.com/ffi/ffi) bindings with LLVM and Clang
 

@@ -1,6 +1,12 @@
 ## [Unreleased]
 
-## [8.0.0.1] - 2019-03-28
+## [10.0.0] - 2020-06-19
+### Changed
+- LLVM Bindings upgraded to 10.0.0
+- update gem dependencies
+- remove some bindings to functions which no longer exist in llvm-c
+
+## [8.0.1] - 2019-03-28
 ### Changed
 - MCJITCompiler initialized with code_model 0 again
 - Allow PassManager.new to be called without a machine parameter
