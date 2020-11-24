@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-10.so.1", "LLVM-10"]
+  ffi_lib ["libLLVM-10.so.1", "libLLVM.so.10", "LLVM-10"]
 
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
