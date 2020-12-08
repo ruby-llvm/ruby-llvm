@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-llvm (10.0.0)
+    ruby-llvm-next (11.0.1)
       ffi (~> 1.13.1)
       rake (>= 12, < 14)
 
@@ -35,9 +35,9 @@ DEPENDENCIES
   ffi_gen (~> 1.2.0)
   minitest (~> 5.14.1)
   minitest-reporters (~> 1.4.2)
-  ruby-llvm!
+  ruby-llvm-next!
   simplecov
   yard (~> 0.9.8)
 
 BUNDLED WITH
-   1.17.3
+   2.1.2
