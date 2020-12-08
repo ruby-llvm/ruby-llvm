@@ -3,12 +3,12 @@ require File.expand_path('lib/llvm/version', File.dirname(__FILE__))
 Gem::Specification.new do |s|
   s.platform     = Gem::Platform::RUBY
 
-  s.name         = 'ruby-llvm'
+  s.name         = 'ruby-llvm-next'
   s.version      = LLVM::RUBY_LLVM_VERSION
   s.summary      = 'LLVM bindings for Ruby'
   s.description  = 'Ruby-LLVM is a Ruby language binding to the LLVM compiler infrastructure library.'
-  s.author       = 'Jeremy Voorhis'
-  s.email        = 'jvoorhis@gmail.com'
+  s.authors      = ['Jesse Johnson', 'Jeremy Voorhis']
+  s.email        = ['jesse@hightechsorcery.com', 'jvoorhis@gmail.com']
   s.homepage     = 'http://github.com/ruby-llvm/ruby-llvm'
 
   s.require_path = 'lib'
@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
 
   s.extensions   = %w(ext/ruby-llvm-support/Rakefile)
 
-  s.has_rdoc         = 'yard'
   s.extra_rdoc_files = %w(README.md LICENSE)
 
   s.add_dependency             'ffi',      '~> 1.13.1'
