@@ -3,7 +3,7 @@ require File.expand_path('lib/llvm/version', File.dirname(__FILE__))
 Gem::Specification.new do |s|
   s.platform     = Gem::Platform::RUBY
 
-  s.name         = 'ruby-llvm-next'
+  s.name         = 'ruby-llvm'
   s.version      = LLVM::RUBY_LLVM_VERSION
   s.summary      = 'LLVM bindings for Ruby'
   s.description  = 'Ruby-LLVM is a Ruby language binding to the LLVM compiler infrastructure library.'
