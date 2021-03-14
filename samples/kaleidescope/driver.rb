@@ -17,6 +17,7 @@ class Driver
     @module = LLVM::Module.new("Kaleidescope")
     @builder = LLVM::Builder.new
     @engine = LLVM::JITCompiler.new(@module)
+    @ins =  Array.new
     # We define a putchard (as per tutorial chapter 6), as we cant link it in by writing c
     # to do that we do need to define the putchar (stdlibc take a int as external first)
     putchar = @module.functions.add( "putchar" , [LLVM::Int] , LLVM::Int )
@@ -40,11 +41,11 @@ class Driver
       when "def"
         if function_ast = @parser.parseDefinition(token)
           if function_code = function_ast.code(@module ,@builder)
-            #puts "Read function definition:"
-            #function_code.dump
+            puts "Read function definition:"
+            function_code.dump
           end
           token = function_ast.to
-          #puts "Next Token #{token}"
+          puts "Next Token #{token}"
         else # Skip token for error recovery.
           token.next
         end
@@ -62,8 +63,10 @@ class Driver
         # Evaluate a top-level expression into an anonymous function.
         if functionAST = @parser.parseTopLevelExpr(token)
           if function = functionAST.code(@module ,@builder)
-            res = @engine.run_function function
-            puts "Evaluated #{functionAST.body} to #{res.to_f(LLVM::Double.type)}"
+            #puts function
+            @ins.push function
+           # res = @engine.run_function function
+#puts "Evaluated #{functionAST.body} to #{res.to_f(LLVM::Double.type)}"
           end
           token = functionAST.to
         else # Skip token for error recovery.
@@ -74,17 +77,19 @@ class Driver
   end
   def dump
     # create a main entry for the first expression
-    zero = @module.functions.last
-    raise "no" unless zero
+  #  zero = @module.functions.last
+ #  raise "no" unless zero
     @module.functions.add("main", [LLVM::Int], LLVM::Int) do |function , arg|
       function.basic_blocks.append.build do |builder|
         # Call putchar function to write out the char to stdout.
-        builder.call(zero)
+        @ins.each do|f| 
+         builder.call(f)
+        end
         builder.ret LLVM::Int(0)
       end
     end
-    
-    @module.dump
+      #File.open("out.ll", 'w+') {|f| f.write(@module.to_s)}
+      @module.dump
   end
 end
 
