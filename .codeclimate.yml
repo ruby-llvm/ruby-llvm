@@ -1,0 +1,2 @@
+- exclude_patterns: Exclude files and/or directories from analysis
+  - "samples/kaleidescope/"
