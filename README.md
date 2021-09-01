@@ -1,4 +1,6 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/ruby-llvm/ruby-llvm/badge.svg)](https://snyk.io/test/github/ruby-llvm/ruby-llvm)
+[![Code Climate Maintainability](https://codeclimate.com/github/ruby-llvm/ruby-llvm/badges/gpa.svg)](https://codeclimate.com/github/ruby-llvm/ruby-llvm)
+[![Code Climate Issue Count](https://codeclimate.com/github/ruby-llvm/ruby-llvm/badges/issue_count.svg)](https://codeclimate.com/github/ruby-llvm/ruby-llvm)
 
 Ruby-LLVM
 =========
