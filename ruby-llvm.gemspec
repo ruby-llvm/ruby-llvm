@@ -1,7 +1,8 @@
 require File.expand_path('lib/llvm/version', File.dirname(__FILE__))
 
 Gem::Specification.new do |s|
-  s.platform     = Gem::Platform::RUBY
+  s.platform = Gem::Platform::RUBY
+  s.required_ruby_version = '2.7'
 
   s.name         = 'ruby-llvm'
   s.version      = LLVM::RUBY_LLVM_VERSION
@@ -26,6 +27,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'ffi_gen',  '~> 1.2.0'
   s.add_development_dependency 'minitest', '~> 5.14.1'
   s.add_development_dependency 'minitest-reporters', '~> 1.4.2'
+  s.add_development_dependency 'rubocop', '~> 1.22.1'
+  s.add_development_dependency 'rubocop-minitest'
+  s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard', '~> 0.9.8'
 end

@@ -1,9 +1,16 @@
 inherit_from: .rubocop_todo.yml
 
+require:
+  - rubocop-performance
+  - rubocop-minitest
+
 AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
   Exclude:
     - 'samples/**/*'
     - 'lib/llvm/config.rb'
+    - 'tmp/*'
 
 # Style
 Style/ClassAndModuleChildren:
@@ -37,6 +44,11 @@ Style:
 Layout/IndentationWidth:
   Exclude:
     - 'lib/**/*ffi.rb'
+
+Style/RedundantBegin:
+  Exclude:
+    - 'lib/**/*ffi.rb'
+    - 'ext/ruby-llvm-support/Rakefile'
 
 # Naming
 Naming/MethodName:
