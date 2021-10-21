@@ -37,7 +37,7 @@ class FunctionTest < Minitest::Test
 
       fun.add_attribute(name)
       assert_equal 1, fun.attribute_count
-      assert_equal [30], fun.attributes
+      assert_equal [34], fun.attributes
 
       assert_equal false, fun.verify
 
