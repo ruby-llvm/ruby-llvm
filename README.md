@@ -14,7 +14,7 @@ computationally intensive algorithms on the fly.
 Current version
 ---------------
 
-This library currently binds to LLVM-11 (specifically llvm-c 11).
+This library currently binds to LLVM-13 (specifically llvm-c 13).
 
 About version numbers
 ---------------------
