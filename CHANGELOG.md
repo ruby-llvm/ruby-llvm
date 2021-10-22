@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [13.0.0] - 2021-10-21
+### Changed
+- LLVM Bindings upgraded to 11.0.0
+- update gem dependencies
+
 ## [10.0.0] - 2020-06-19
 ### Changed
 - LLVM Bindings upgraded to 10.0.0
