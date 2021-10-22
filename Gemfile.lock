@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     ruby-llvm (13.0.0)
-      ffi (~> 1.13.1)
+      ffi (~> 1.13)
       rake (>= 12, < 14)
 
 GEM
@@ -12,7 +12,7 @@ GEM
     ast (2.4.2)
     builder (3.2.4)
     docile (1.4.0)
-    ffi (1.13.1)
+    ffi (1.15.4)
     ffi_gen (1.2.0)
       ffi (~> 1.0)
     minitest (5.14.4)
