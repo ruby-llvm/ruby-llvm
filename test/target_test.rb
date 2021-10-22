@@ -71,13 +71,24 @@ class TargetTestCase < Minitest::Test
 
     Tempfile.open('emit') do |tmp|
       mach.emit(mod, tmp.path)
-      assert_match(/xorl\t%eax, %eax/, tmp.read)
+      data = tmp.read
+      assert_match(/xorl\t%eax, %eax/, data)
+      assert_equal 218, data.length
     end
 
-    skip "This changes from LLVM 11 to 13"
+    # despite the above test, in LLVM <= 11 the objdump output was:
+    # 00000000 <main>:
+    #    0:   66 31 c0                xor    %ax,%ax
+    #    3:   66 c3                   retw
+    # In LLVM 13, the objdump output is:
+    # 00000000 <main>:
+    #    0:   31 c0                   xor    %eax,%eax
+    #    2:   c3                      ret
     Tempfile.open('emit') do |tmp|
       mach.emit(mod, tmp.path, :object)
-      assert_match(/\x66\x31\xc0/, File.read(tmp.path, mode: 'rb'))
+      data = File.read(tmp.path, mode: 'rb')
+      assert_match(/\x31\xc0\xc3/, data)
+      assert_equal 528, data.length
     end
   end
 
