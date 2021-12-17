@@ -37,9 +37,11 @@ class TypeTestCase < Minitest::Test
     [LLVM.Function([LLVM::Int8], LLVM.Void), 'void (i8)'],
     [LLVM.Function([LLVM::Int8], LLVM::Int8), 'i8 (i8)'],
     [LLVM.Function([], LLVM::Int8), 'i8 ()'],
+    [LLVM.Function([], LLVM.Void), 'void ()'],
     [LLVM::Type.function([LLVM::Int1], LLVM.Void), 'void (i1)'],
     [LLVM::Type.function([LLVM::Int1], LLVM::Int1), 'i1 (i1)'],
     [LLVM::Type.function([], LLVM::Int1), 'i1 ()'],
+    [LLVM::Type.function([], LLVM.Void), 'void ()'],
   ].freeze
 
   describe "LLVM::Type#to_s" do
@@ -50,8 +52,8 @@ class TypeTestCase < Minitest::Test
       end
     end
 
-    it 'should have 20 tests' do
-      assert_equal 20, TO_S_TESTS.size
+    it 'should have 22 dynamic tests' do
+      assert_equal 22, TO_S_TESTS.size
     end
   end
 
