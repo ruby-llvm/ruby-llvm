@@ -53,3 +53,15 @@ Style/RedundantBegin:
 # Naming
 Naming/MethodName:
   Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Exclude:
+    - 'lib/**/*ffi.rb'
+    - 'ext/ruby-llvm-support/Rakefile'
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Exclude:
+    - 'lib/**/*ffi.rb'
+    - 'ext/ruby-llvm-support/Rakefile'
