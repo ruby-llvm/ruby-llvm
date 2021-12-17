@@ -40,6 +40,10 @@ module LLVM
       C.dump_value(self)
     end
 
+    def to_s
+      C.print_value_to_string(self)
+    end
+
     # Returns whether the value is constant.
     def constant?
       case C.is_constant(self)
@@ -482,6 +486,16 @@ module LLVM
     # Conversion to pointer.
     def int_to_ptr(type)
       ConstantExpr.from_ptr(C.const_int_to_ptr(self, type))
+    end
+
+    # constant zext
+    def zext(type)
+      self.class.from_ptr(C.const_z_ext(self, type))
+    end
+
+    # constant sext
+    def sext(type)
+      self.class.from_ptr(C.const_s_ext(self, type))
     end
   end
 
