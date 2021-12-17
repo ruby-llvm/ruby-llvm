@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LLVM
   class Context
     def initialize(ptr = nil)

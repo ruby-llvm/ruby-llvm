@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'llvm/core/bitcode_ffi'
 
 module LLVM

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Interprocedural optimization (IPO)
 require 'llvm'
 require 'llvm/core'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LLVMTagFactory < YARD::Tags::DefaultFactory
   def parse_tag(name, text)
     case name

@@ -451,13 +451,6 @@ Style/ExplicitBlockArgument:
   Exclude:
     - 'lib/llvm/core/value.rb'
 
-# Offense count: 51
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, always_true, never
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
 # Offense count: 1
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LLVM
   class Builder
     # Important: Call #dispose to free backend memory after use.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'llvm'
 require 'llvm/core'
 require 'llvm/transforms/builder_ffi'
