@@ -59,6 +59,11 @@ module LLVM
       C.dump_type(self)
     end
 
+    # Build string of LLVM type representation.
+    def to_s
+      C.print_type_to_string(self)
+    end
+
     # Creates an array type of Type with the given size.
     def self.array(ty, sz = 0)
       from_ptr(C.array_type(LLVM::Type(ty), sz), :array)
