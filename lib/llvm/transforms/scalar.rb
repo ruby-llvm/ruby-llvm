@@ -148,5 +148,15 @@ module LLVM
     def basicaa!
       C.add_basic_alias_analysis_pass(self)
     end
+
+    # @LLVMpass mergefunc
+    def mergefunc!
+      C.add_merge_functions_pass(self)
+    end
+
+  end
+
+  module C
+    attach_function :add_merge_functions_pass, :LLVMAddMergeFunctionsPass, [:pointer], :void
   end
 end

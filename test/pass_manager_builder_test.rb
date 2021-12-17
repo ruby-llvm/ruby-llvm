@@ -50,4 +50,23 @@ class PassManagerBuilderTest < Minitest::Test
       @builder.build_with_lto(@pass_manager, false, 0)
     end
   end
+
+  PASSES = [
+    'always_inline!',
+    'adce!',
+    'tailcallelim!',
+    'fun_attrs!',
+    'mergefunc!',
+  ].freeze
+
+  describe "PassManager Passes" do
+    before do
+      assert @pass_manager = LLVM::PassManager.new
+    end
+    PASSES.each do |pass|
+      it "should return '#{pass}'" do
+        assert_nil @pass_manager.send(pass)
+      end
+    end
+  end
 end
