@@ -1,9 +1,19 @@
 ## [Unreleased]
+### Changed
+- LLVM::Type#to_s now shows LLVM IR type
+- LLVM::Value#to_s now shows LLVM IR value
+- added ConstantInt#zext
+- added ConstantInt#sext
+- added PassManager#mergefunc! pass
 
 ## [13.0.0] - 2021-10-21
 ### Changed
-- LLVM Bindings upgraded to 11.0.0
+- LLVM Bindings upgraded to 13.0.0
 - update gem dependencies
+
+## [11.0.0] - 2020-12-07
+### Changed
+- LLVM Bindings upgraded to 11.0.0
 
 ## [10.0.0] - 2020-06-19
 ### Changed
