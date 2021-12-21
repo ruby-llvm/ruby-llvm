@@ -1,6 +1,8 @@
 ## [Unreleased]
 ### Changed
-## [113.0.1] - 2021-12-21
+
+## [13.0.1] - 2021-12-21
+### Changed
 - LLVM::Type#to_s now shows LLVM IR type
 - LLVM::Value#to_s now shows LLVM IR value
 - added ConstantInt#zext
