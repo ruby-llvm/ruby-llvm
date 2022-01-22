@@ -71,3 +71,4 @@ Style/TrailingCommaInHashLiteral:
 Metrics/ClassLength:
   Exclude:
     - 'lib/llvm/core/builder.rb'
+    - 'test/instruction_test.rb'
