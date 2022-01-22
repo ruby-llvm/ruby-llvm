@@ -65,7 +65,11 @@ module LLVM
     # @param [LLVM::Value] val The value to return
     # @return [LLVM::Instruction]
     # @LLVMinst ret
-    def ret(val)
+    def ret(val = nil)
+      unless [LLVM::Value, NilClass].any? { |c| val.is_a?(c) }
+        raise ArgumentError, "Trying to build LLVM ret with non-value: #{val.inspect}"
+      end
+
       Instruction.from_ptr(C.build_ret(self, val))
     end
 
