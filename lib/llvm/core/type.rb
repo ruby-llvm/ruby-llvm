@@ -66,6 +66,10 @@ module LLVM
       C.print_type_to_string(self)
     end
 
+    def aggregate?
+      [:struct, :array].include?(kind)
+    end
+
     # Creates an array type of Type with the given size.
     def self.array(ty, sz = 0)
       from_ptr(C.array_type(LLVM::Type(ty), sz), :array)

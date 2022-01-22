@@ -17,42 +17,49 @@ class StructTestCase < Minitest::Test
     assert_equal 2, struct.element_types.size
     assert_equal LLVM::Int.type, struct.element_types[0]
     assert_equal LLVM::Float.type, struct.element_types[1]
+    assert struct.aggregate?
   end
 
   def test_named_struct
     struct = LLVM::Struct(LLVM::Int, LLVM::Float, "struct100")
     assert_instance_of LLVM::StructType, struct
     assert_equal "struct100", struct.name
+    assert struct.aggregate?
   end
 
   def test_deferred_element_type_setting
     struct = LLVM::Struct("struct200")
     struct.element_types = [LLVM::Int, LLVM::Float]
     assert_equal 2, struct.element_types.size
+    assert struct.aggregate?
   end
 
   def test_unpacked_constant_struct_from_size
     struct = LLVM::ConstantStruct.const(2, LLVM_UNPACKED) { |i| LLVM::Int(i) }
     assert_instance_of LLVM::ConstantStruct, struct
     assert_equal 2, struct.operands.size
+    assert struct.type.aggregate?
   end
 
   def test_unpacked_constant_struct_from_struct
     struct = LLVM::ConstantStruct.const([LLVM::Int(0), LLVM::Int(1)], LLVM_UNPACKED)
     assert_instance_of LLVM::ConstantStruct, struct
     assert_equal 2, struct.operands.size
+    assert struct.type.aggregate?
   end
 
   def test_packed_constant_struct_from_size
     struct = LLVM::ConstantStruct.const(2, LLVM_PACKED) { |i| LLVM::Int(i) }
     assert_instance_of LLVM::ConstantStruct, struct
     assert_equal 2, struct.operands.size
+    assert struct.type.aggregate?
   end
 
   def test_packed_constant_struct_from_struct
     struct = LLVM::ConstantStruct.const([LLVM::Int(0), LLVM::Int(1)], LLVM_PACKED)
     assert_instance_of LLVM::ConstantStruct, struct
     assert_equal 2, struct.operands.size
+    assert struct.type.aggregate?
   end
 
   def test_constant_named_struct
@@ -61,6 +68,7 @@ class StructTestCase < Minitest::Test
     assert_instance_of LLVM::ConstantStruct, struct
     assert_equal 1, struct.operands.size
     assert_equal struct_ty, struct.type
+    assert struct_ty.aggregate?
   end
 
   def test_struct_values
