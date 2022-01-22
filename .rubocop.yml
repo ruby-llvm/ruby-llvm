@@ -65,3 +65,9 @@ Style/TrailingCommaInHashLiteral:
   Exclude:
     - 'lib/**/*ffi.rb'
     - 'ext/ruby-llvm-support/Rakefile'
+
+# Offense count: 1
+# Configuration parameters: CountComments, CountAsOne.
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/llvm/core/builder.rb'
