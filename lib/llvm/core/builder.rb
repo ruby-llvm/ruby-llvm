@@ -89,7 +89,8 @@ module LLVM
     # @return [LLVM::Instruction]
     # @LLVMinst br
     def br(block)
-      raise "Block must not be nil" if block.nil?
+      raise ArgumentError, "Trying to build LLVM br with non-block: #{block.inspect}" if !block.is_a?(LLVM::BasicBlock)
+
       Instruction.from_ptr(
         C.build_br(self, block))
     end
@@ -111,8 +112,31 @@ module LLVM
     # @return [LLVM::Instruction]
     # @LLVMinst br
     def cond(cond, iftrue, iffalse)
+      raise ArgumentError, "Trying to build LLVM cond br with non-block (true branch): #{iftrue.inspect}" if !iftrue.is_a?(LLVM::BasicBlock)
+
+      raise ArgumentError, "Trying to build LLVM cond br with non-block (false branch): #{iffalse.inspect}" if !iffalse.is_a?(LLVM::BasicBlock)
+
+      cond2 = cond_condition(cond)
+
       Instruction.from_ptr(
-        C.build_cond_br(self, cond, iftrue, iffalse))
+        C.build_cond_br(self, cond2, iftrue, iffalse))
+    end
+
+    private def cond_condition(cond) # rubocop:disable Style/AccessModifierDeclarations
+      case cond
+      when LLVM::Value
+        cond_type = cond.type
+        if (cond_type.kind != :integer) || (cond_type.width != 1)
+          raise ArgumentError, "Trying to build LLVM cond br with non-i1 condition: #{cond_type}"
+        end
+        cond
+      when true
+        LLVM::Int1.from_i(1)
+      when false
+        LLVM::Int1.from_i(0)
+      else
+        raise ArgumentError, "Trying to build LLVM cond br with non-value condition: #{cond.inspect}"
+      end
     end
 
     # @LLVMinst switch

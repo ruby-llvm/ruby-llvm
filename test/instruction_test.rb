@@ -70,4 +70,68 @@ class InstructionTestCase < Minitest::Test
     assert_match(/ret void/, fn.to_s)
   end
 
+  def test_br_with_non_block
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        assert_raises(ArgumentError) do
+          builder.br(LLVM::Int64.from_i(0))
+        end
+
+        assert_raises(ArgumentError) do
+          builder.br(nil)
+        end
+      end
+    end
+  end
+
+  def test_cond_with_non_blocks
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      true_branch = fn.basic_blocks.append("true_branch")
+      false_branch = fn.basic_blocks.append("false_branch")
+      fn.basic_blocks.append.build do |builder|
+        assert_raises(ArgumentError) do
+          builder.cond(LLVM::Int1.from_i(1), true_branch, nil)
+        end
+
+        assert_raises(ArgumentError) do
+          builder.cond(LLVM::Int1.from_i(0), nil, false_branch)
+        end
+      end
+    end
+  end
+
+  def test_cond_with_bad_condition
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      true_branch = fn.basic_blocks.append("true_branch")
+      false_branch = fn.basic_blocks.append("false_branch")
+      fn.basic_blocks.append.build do |builder|
+        assert_raises(ArgumentError) do
+          builder.cond(nil, true_branch, false_branch)
+        end
+
+        assert_raises(ArgumentError) do
+          builder.cond(LLVM::Int64.from_i(0), true_branch, false_branch)
+        end
+
+        builder.cond(true, true_branch, false_branch)
+        builder.cond(false, true_branch, false_branch)
+      end
+    end
+  end
+
+  def test_cond_with_good_condition
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      true_branch = fn.basic_blocks.append("true_branch")
+      false_branch = fn.basic_blocks.append("false_branch")
+      fn.basic_blocks.append.build do |builder|
+        builder.cond(LLVM::Int1.from_i(1), true_branch, false_branch)
+        builder.cond(LLVM::Int1.from_i(0), true_branch, false_branch)
+        builder.cond(true, true_branch, false_branch)
+        builder.cond(false, true_branch, false_branch)
+        test = builder.icmp(:eq, LLVM::Int64.from_i(0), LLVM::Int64.from_i(0))
+        builder.cond(test, true_branch, false_branch)
+      end
+    end
+  end
+
 end
