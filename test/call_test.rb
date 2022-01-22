@@ -81,4 +81,23 @@ class CallTestCase < Minitest::Test
     assert_equal ENV["PATH"], run_function_on_module(test_module, "test_function").to_ptr.read_pointer.read_string
   end
 
+  def test_call_with_nonfunction
+    test_module = define_module("test_module") do |host_module|
+      define_function(host_module, "test_function", [], LLVM.Void) do |builder, function|
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        assert_raises(ArgumentError) do
+          builder.call(nil)
+        end
+        assert_raises(ArgumentError) do
+          builder.call("test")
+        end
+        assert_raises(ArgumentError) do
+          builder.call(LLVM::Int64.from_i(0))
+        end
+        builder.ret nil
+      end
+    end
+  end
+
 end

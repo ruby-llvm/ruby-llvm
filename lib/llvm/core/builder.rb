@@ -835,7 +835,8 @@ module LLVM
     # @param [LLVM::Instruction]
     # @LLVMinst call
     def call(fun, *args)
-      raise "No fun" if fun.nil?
+      raise ArgumentError, "Trying to build LLVM call with non-function: #{fun.inspect}" if !fun.is_a?(LLVM::Function)
+
       if args.last.kind_of? String
         name = args.pop
       else
