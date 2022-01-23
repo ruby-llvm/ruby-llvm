@@ -1,4 +1,3 @@
-- version: 2
-- exclude_patterns:
+version: 2
+exclude_patterns:
   - "samples/kaleidescope/"
-
