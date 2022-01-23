@@ -899,6 +899,16 @@ module LLVM
     # @return [LLVM::Instruction] The extracted element
     # @LLVMinst extractelement
     def extract_element(vector, idx, name = "")
+      error = if !vector.is_a?(LLVM::Value)
+        "non-value: #{vector.inspect}"
+      elsif vector.type.kind != :vector
+        "non-vector: #{vector.type.kind}"
+      elsif !idx.is_a?(LLVM::Value)
+        "index: #{idx}"
+      end
+
+      raise ArgumentError, "Error building extract_element with #{error}" if error
+
       Instruction.from_ptr(C.build_extract_element(self, vector, idx, name))
     end
 
@@ -932,6 +942,16 @@ module LLVM
     # @return [LLVM::Instruction] The extracted value
     # @LLVMinst extractvalue
     def extract_value(aggregate, idx, name = "")
+      error = if !aggregate.is_a?(LLVM::Value)
+        "non-value: #{aggregate.inspect}"
+      elsif !aggregate.type.aggregate?
+        "non-aggregate: #{aggregate.type.kind}"
+      elsif !idx.is_a?(Integer) || idx.negative?
+        "index: #{idx}"
+      end
+
+      raise ArgumentError, "Error building extract_value with #{error}" if error
+
       Instruction.from_ptr(C.build_extract_value(self, aggregate, idx, name))
     end
 

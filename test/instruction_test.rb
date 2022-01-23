@@ -134,4 +134,52 @@ class InstructionTestCase < Minitest::Test
     end
   end
 
+  def test_exactract_value_with_bad_params
+    vec = LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(1)])
+    arr = LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int(0), LLVM::Int(1)])
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        assert_raises(ArgumentError) do
+          builder.extract_value(LLVM::Struct(LLVM::Int64, LLVM::Int64), 0)
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_value(nil, 0)
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_value(vec, 0)
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_value(arr, nil)
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_value(arr, -1)
+        end
+      end
+    end
+  end
+
+  def test_exactract_element_with_bad_params
+    vec = LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(1)])
+    arr = LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int(0), LLVM::Int(1)])
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        assert_raises(ArgumentError) do
+          builder.extract_element(LLVM::Struct(LLVM::Int64, LLVM::Int64), LLVM::Int32.from_i(0))
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_element(nil, LLVM::Int32.from_i(0))
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_element(arr, LLVM::Int32.from_i(0))
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_element(vec, nil)
+        end
+        assert_raises(ArgumentError) do
+          builder.extract_element(vec, 0)
+        end
+      end
+    end
+  end
+
 end
