@@ -24,7 +24,10 @@ module LLVM
     # @param  [LLVM::Instruction] instruction
     # @return [LLVM::Builder]
     def position(block, instruction)
-      raise "Block must not be nil" if block.nil?
+      raise ArgumentError, "Block must be LLVM::BasicBlock" if !block.is_a?(LLVM::BasicBlock)
+
+      raise ArgumentError, "Instruction must be LLVM::Instruction" if !instruction.is_a?(LLVM::Instruction)
+
       C.position_builder(self, block, instruction)
       self
     end
@@ -34,7 +37,8 @@ module LLVM
     # @param  [LLVM::Instruction] instruction
     # @return [LLVM::Builder]
     def position_before(instruction)
-      raise "Instruction must not be nil" if instruction.nil?
+      raise ArgumentError, "Instruction must be LLVM::Instruction" if !instruction.is_a?(LLVM::Instruction)
+
       C.position_builder_before(self, instruction)
       self
     end
@@ -44,7 +48,8 @@ module LLVM
     # @param  [LLVM::BasicBlock] block
     # @return [LLVM::Builder]
     def position_at_end(block)
-      raise "Block must not be nil" if block.nil?
+      raise ArgumentError, "Block must be LLVM::BasicBlock" if !block.is_a?(LLVM::BasicBlock)
+
       C.position_builder_at_end(self, block)
       self
     end

@@ -86,4 +86,43 @@ class BasicBlockTestCase < Minitest::Test
     end
   end
 
+  def test_basic_block_position
+    @module.functions.add("test_basic_block", [], LLVM.Void) do |fn|
+      coll = fn.basic_blocks
+
+      block1 = coll.append
+      block2 = coll.append
+
+      block1.build do |builder|
+        inst = builder.add(LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
+
+        # TODO: why do these cause sporadic segfaults
+        # builder.position_before(inst)
+        # builder.position(block1, inst)
+
+        builder.position_at_end(block1)
+        builder.position_at_end(block2)
+      end
+    end
+  end
+
+  def test_basic_block_position_with_bad_paran
+    @module.functions.add("test_basic_block", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        assert_raises(ArgumentError) do
+          builder.position_at_end(nil)
+        end
+        assert_raises(ArgumentError) do
+          builder.position_at_end(0)
+        end
+        assert_raises(ArgumentError) do
+          builder.position_before(nil)
+        end
+        assert_raises(ArgumentError) do
+          builder.position_before(0)
+        end
+      end
+    end
+  end
+
 end
