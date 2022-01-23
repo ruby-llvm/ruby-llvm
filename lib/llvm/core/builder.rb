@@ -899,13 +899,7 @@ module LLVM
     # @return [LLVM::Instruction] The extracted element
     # @LLVMinst extractelement
     def extract_element(vector, idx, name = "")
-      error = if !vector.is_a?(LLVM::Value)
-        "non-value: #{vector.inspect}"
-      elsif vector.type.kind != :vector
-        "non-vector: #{vector.type.kind}"
-      elsif !idx.is_a?(LLVM::Value)
-        "index: #{idx}"
-      end
+      error = element_error(vector, idx)
 
       raise ArgumentError, "Error building extract_element with #{error}" if error
 
@@ -920,7 +914,25 @@ module LLVM
     # @return [LLVM::Instruction] A vector the same type as 'vector'
     # @LLVMinst insertelement
     def insert_element(vector, elem, idx, name = "")
+      error = element_error(vector, idx)
+
+      error ||= if !elem.is_a?(LLVM::Value)
+        "elem: #{elem.inspect}"
+      end
+
+      raise ArgumentError, "Error building insert_element with #{error}" if error
+
       Instruction.from_ptr(C.build_insert_element(self, vector, elem, idx, name))
+    end
+
+    private def element_error(vector, idx) # rubocop:disable Style/AccessModifierDeclarations
+      if !vector.is_a?(LLVM::Value)
+        "non-value: #{vector.inspect}"
+      elsif vector.type.kind != :vector
+        "non-vector: #{vector.type.kind}"
+      elsif !idx.is_a?(LLVM::Value)
+        "index: #{idx}"
+      end
     end
 
     # Shuffle two vectors according to a given mask
@@ -937,18 +949,12 @@ module LLVM
 
     # Extract the value of a member field from an aggregate value
     # @param [LLVM::Value] aggregate An aggregate value
-    # @param [LLVM::Value] idx The index of the member to extract
+    # @param [Integer] idx The index of the member to extract
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] The extracted value
     # @LLVMinst extractvalue
     def extract_value(aggregate, idx, name = "")
-      error = if !aggregate.is_a?(LLVM::Value)
-        "non-value: #{aggregate.inspect}"
-      elsif !aggregate.type.aggregate?
-        "non-aggregate: #{aggregate.type.kind}"
-      elsif !idx.is_a?(Integer) || idx.negative?
-        "index: #{idx}"
-      end
+      error = value_error(aggregate, idx)
 
       raise ArgumentError, "Error building extract_value with #{error}" if error
 
@@ -958,12 +964,30 @@ module LLVM
     # Insert a value into an aggregate value's member field
     # @param [LLVM::Value] aggregate An aggregate value
     # @param [LLVM::Value] elem The value to insert into 'aggregate'
-    # @param [LLVM::Value] idx The index at which to insert the value
+    # @param [Integer] idx The index at which to insert the value
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] An aggregate value of the same type as 'aggregate'
     # @LLVMinst insertvalue
     def insert_value(aggregate, elem, idx, name = "")
+      error = value_error(aggregate, idx)
+
+      error ||= if !elem.is_a?(LLVM::Value)
+        "elem: #{elem.inspect}"
+      end
+
+      raise ArgumentError, "Error building insert_value with #{error}" if error
+
       Instruction.from_ptr(C.build_insert_value(self, aggregate, elem, idx, name))
+    end
+
+    private def value_error(aggregate, idx) # rubocop:disable Style/AccessModifierDeclarations
+      if !aggregate.is_a?(LLVM::Value)
+        "non-value: #{aggregate.inspect}"
+      elsif !aggregate.type.aggregate?
+        "non-aggregate: #{aggregate.type.kind}"
+      elsif !idx.is_a?(Integer) || idx.negative?
+        "index: #{idx}"
+      end
     end
 
     # Check if a value is null
