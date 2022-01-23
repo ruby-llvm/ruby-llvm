@@ -1,2 +1,4 @@
-- exclude_patterns: Exclude files and/or directories from analysis
+- version: 2
+- exclude_patterns:
   - "samples/kaleidescope/"
+
