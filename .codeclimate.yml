@@ -8,5 +8,9 @@ checks:
     enabled: true
     config:
       threshold: 100
+  method-lines:
+    enabled: true
+    config:
+      threshold: 35
 exclude_patterns:
   - "samples/kaleidescope/"
