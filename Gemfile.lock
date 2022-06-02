@@ -15,8 +15,8 @@ GEM
     ffi (1.15.5)
     ffi_gen (1.2.0)
       ffi (~> 1.0)
-    minitest (5.14.4)
-    minitest-reporters (1.4.3)
+    minitest (5.15.0)
+    minitest-reporters (1.5.0)
       ansi
       builder
       minitest (>= 5.0)
@@ -28,13 +28,13 @@ GEM
     rake (13.0.6)
     regexp_parser (2.5.0)
     rexml (3.2.5)
-    rubocop (1.22.3)
+    rubocop (1.30.0)
       parallel (~> 1.10)
-      parser (>= 3.0.0.0)
+      parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
-      rexml
-      rubocop-ast (>= 1.12.0, < 2.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.18.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.18.0)
@@ -61,9 +61,9 @@ PLATFORMS
 
 DEPENDENCIES
   ffi_gen (~> 1.2.0)
-  minitest (~> 5.14.1)
-  minitest-reporters (~> 1.4.2)
-  rubocop (~> 1.22.1)
+  minitest (~> 5.15.0)
+  minitest-reporters (~> 1.5.0)
+  rubocop (~> 1.30.0)
   rubocop-minitest
   rubocop-performance
   ruby-llvm!
