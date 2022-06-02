@@ -4,7 +4,7 @@ require File.expand_path('lib/llvm/version', File.dirname(__FILE__))
 
 Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
-  s.required_ruby_version = '2.7'
+  s.required_ruby_version = '>= 2.7'
 
   s.name         = 'ruby-llvm'
   s.version      = LLVM::RUBY_LLVM_VERSION
