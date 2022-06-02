@@ -95,6 +95,7 @@ class BasicBlockTestCase < Minitest::Test
 
       block1.build do |builder|
         inst = builder.add(LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
+        assert inst
 
         # TODO: why do these cause sporadic segfaults
         # builder.position_before(inst)

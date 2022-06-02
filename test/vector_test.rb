@@ -18,14 +18,14 @@ class VectorTestCase < Minitest::Test
     vector = LLVM::ConstantVector.const(2) { |i| LLVM::Int(i) }
     assert_instance_of LLVM::ConstantVector, vector
     assert_equal 2, vector.size
-    refute vector.type.aggregate?
+    refute_predicate vector.type, :aggregate?
   end
 
   def test_constant_vector_from_array
     vector = LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(1)])
     assert_instance_of LLVM::ConstantVector, vector
     assert_equal 2, vector.size
-    refute vector.type.aggregate?
+    refute_predicate vector.type, :aggregate?
   end
 
   def test_vector_elements

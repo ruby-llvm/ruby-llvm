@@ -78,7 +78,7 @@ class CallTestCase < Minitest::Test
         builder.ret(builder.call(external, parameter))
       end
     end
-    assert_equal ENV["PATH"], run_function_on_module(test_module, "test_function").to_ptr.read_pointer.read_string
+    assert_equal ENV.fetch("PATH", nil), run_function_on_module(test_module, "test_function").to_ptr.read_pointer.read_string
   end
 
   def test_call_with_nonfunction

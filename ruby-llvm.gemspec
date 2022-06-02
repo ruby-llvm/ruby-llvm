@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.files        = Dir['lib/**/*.rb']
   s.files       += %w(ext/ruby-llvm-support/Rakefile ext/ruby-llvm-support/support.cpp)
-  s.test_files   = Dir['test/**/*.rb']
 
   s.extensions   = %w(ext/ruby-llvm-support/Rakefile)
 
@@ -34,4 +33,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard', '~> 0.9.8'
+  s.metadata['rubygems_mfa_required'] = 'true'
 end

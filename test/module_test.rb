@@ -33,7 +33,7 @@ class ModuleTestCase < Minitest::Test
         # unnamed_addr
         assert !var.unnamed_addr?
         var.unnamed_addr = true
-        assert var.unnamed_addr?
+        assert_predicate var, :unnamed_addr?
 
         assert (var.dll_storage_class == :default)
         var.dll_storage_class = :dll_import
@@ -42,7 +42,7 @@ class ModuleTestCase < Minitest::Test
         # global_constant
         assert !var.global_constant?
         var.global_constant = true
-        assert var.global_constant?
+        assert_predicate var, :global_constant?
 
         assert_output("", "Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.\n") do
           var.global_constant = 0
