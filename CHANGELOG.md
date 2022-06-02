@@ -1,6 +1,19 @@
 ## [Unreleased]
 ### Changed
 
+## [13.0.2] - 2022-06-02
+### Changed
+- ruby version is >= 2.7
+- Error handling for Builder#ret
+- Error handling for Builder#call
+- Error handling for Builder#br
+- Error handling for Builder#cond
+- Error handling for extract element/value
+- Error handling for insert element/value
+- Error handling for position, position_at_end, position_before
+- default to "ret void" for Builder#ret
+- add Type#aggregate?
+
 ## [13.0.1] - 2021-12-21
 ### Changed
 - LLVM::Type#to_s now shows LLVM IR type
