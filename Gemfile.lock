@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-llvm (13.0.2)
+    ruby-llvm (14.0.0)
       ffi (~> 1.13)
       rake (>= 12, < 14)
 
@@ -15,7 +15,8 @@ GEM
     ffi (1.15.5)
     ffi_gen (1.2.0)
       ffi (~> 1.0)
-    minitest (5.15.0)
+    json (2.6.2)
+    minitest (5.16.2)
     minitest-reporters (1.5.0)
       ansi
       builder
@@ -28,7 +29,8 @@ GEM
     rake (13.0.6)
     regexp_parser (2.5.0)
     rexml (3.2.5)
-    rubocop (1.30.0)
+    rubocop (1.31.2)
+      json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -37,11 +39,11 @@ GEM
       rubocop-ast (>= 1.18.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.18.0)
+    rubocop-ast (1.19.1)
       parser (>= 3.1.1.0)
-    rubocop-minitest (0.20.0)
+    rubocop-minitest (0.20.1)
       rubocop (>= 0.90, < 2.0)
-    rubocop-performance (1.14.0)
+    rubocop-performance (1.14.3)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.11.0)
@@ -51,7 +53,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    unicode-display_width (2.1.0)
+    unicode-display_width (2.2.0)
     webrick (1.7.0)
     yard (0.9.28)
       webrick (~> 1.7.0)
@@ -60,15 +62,15 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  ffi_gen (~> 1.2.0)
-  minitest (~> 5.15.0)
-  minitest-reporters (~> 1.5.0)
-  rubocop (~> 1.30.0)
+  ffi_gen (~> 1.2)
+  minitest (~> 5.16)
+  minitest-reporters (~> 1.5)
+  rubocop (~> 1.31)
   rubocop-minitest
   rubocop-performance
   ruby-llvm!
   simplecov
-  yard (~> 0.9.8)
+  yard (~> 0.9)
 
 BUNDLED WITH
    2.3.5
