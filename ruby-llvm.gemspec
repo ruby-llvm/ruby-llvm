@@ -25,13 +25,13 @@ Gem::Specification.new do |s|
   s.add_dependency             'ffi',      '~> 1.13'
   s.add_dependency             'rake',     '>= 12', '< 14'
 
-  s.add_development_dependency 'ffi_gen',  '~> 1.2.0'
-  s.add_development_dependency 'minitest', '~> 5.15.0'
-  s.add_development_dependency 'minitest-reporters', '~> 1.5.0'
-  s.add_development_dependency 'rubocop', '~> 1.30.0'
+  s.add_development_dependency 'ffi_gen',  '~> 1.2'
+  s.add_development_dependency 'minitest', '~> 5.16'
+  s.add_development_dependency 'minitest-reporters', '~> 1.5'
+  s.add_development_dependency 'rubocop', '~> 1.31'
   s.add_development_dependency 'rubocop-minitest'
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'yard', '~> 0.9.8'
+  s.add_development_dependency 'yard', '~> 0.9'
   s.metadata['rubygems_mfa_required'] = 'true'
 end

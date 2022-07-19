@@ -21,7 +21,9 @@ end
 require "minitest/autorun"
 require 'minitest/reporters'
 
-Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
+if !ENV['RM_INFO']
+  Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
+end
 
 require "llvm/core"
 require "llvm/execution_engine"
