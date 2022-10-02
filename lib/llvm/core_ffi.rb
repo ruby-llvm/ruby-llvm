@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-14.so.1", "libLLVM.so.14", "LLVM-14"]
+  ffi_lib ["libLLVM-15.so.1", "libLLVM.so.15", "LLVM-15"]
 
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -410,7 +410,10 @@ module LLVM::C
     :vector, 13,
     :metadata, 14,
     :x86_mmx, 15,
-    :token, 16
+    :token, 16,
+    :scalable_vector, 17,
+    :bfloat, 18,
+    :x86_amx, 19,
   ]
 
   # (Not documented)
@@ -3014,15 +3017,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method const_f_add(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_f_add, :LLVMConstFAdd, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
   # @method const_sub(lhs_constant, rhs_constant)
   # @param [FFI::Pointer(ValueRef)] lhs_constant
   # @param [FFI::Pointer(ValueRef)] rhs_constant
@@ -3050,15 +3044,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method const_f_sub(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_f_sub, :LLVMConstFSub, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
   # @method const_mul(lhs_constant, rhs_constant)
   # @param [FFI::Pointer(ValueRef)] lhs_constant
   # @param [FFI::Pointer(ValueRef)] rhs_constant
@@ -3083,78 +3068,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nuw_mul, :LLVMConstNUWMul, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_f_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_f_mul, :LLVMConstFMul, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_u_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_u_div, :LLVMConstUDiv, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_s_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_s_div, :LLVMConstSDiv, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_exact_s_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_exact_s_div, :LLVMConstExactSDiv, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_f_div(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_f_div, :LLVMConstFDiv, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_u_rem(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_u_rem, :LLVMConstURem, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_s_rem(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_s_rem, :LLVMConstSRem, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_f_rem(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_f_rem, :LLVMConstFRem, [:pointer, :pointer], :pointer
 
   # (Not documented)
   #
@@ -3460,27 +3373,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_shuffle_vector, :LLVMConstShuffleVector, [:pointer, :pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_extract_value(agg_constant, idx_list, num_idx)
-  # @param [FFI::Pointer(ValueRef)] agg_constant
-  # @param [FFI::Pointer(*UInt)] idx_list
-  # @param [Integer] num_idx
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_extract_value, :LLVMConstExtractValue, [:pointer, :pointer, :uint], :pointer
-
-  # (Not documented)
-  #
-  # @method const_insert_value(agg_constant, element_value_constant, idx_list, num_idx)
-  # @param [FFI::Pointer(ValueRef)] agg_constant
-  # @param [FFI::Pointer(ValueRef)] element_value_constant
-  # @param [FFI::Pointer(*UInt)] idx_list
-  # @param [Integer] num_idx
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_insert_value, :LLVMConstInsertValue, [:pointer, :pointer, :pointer, :uint], :pointer
 
   # (Not documented)
   #

@@ -4,13 +4,18 @@ require "test_helper"
 
 class MemoryAccessTestCase < Minitest::Test
 
-  def setup
-    LLVM.init_jit
+  def test_simple_memory_access
+    assert_equal 1 + 2, simple_memory_access_function(1, 2).to_i
   end
 
-  def test_memory_access
-    assert_equal 1 + 2, simple_memory_access_function(1, 2).to_i
+  def test_array_memory_access
     assert_equal 3 + 4, array_memory_access_function(3, 4).to_i
+  end
+
+  private
+
+  def setup
+    LLVM.init_jit
   end
 
   def simple_memory_access_function(value1, value2)

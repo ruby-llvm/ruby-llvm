@@ -1,6 +1,22 @@
 ## [Unreleased]
 ### Changed
 
+## [15.0.0] - 2022-10-29
+### Added
+- debug gem
+- add "2" version for several operations
+    - build_load2, build_gep2, build_inbounded_gep2, build_struct_gep2, build_call2, build_invoke2
+
+### Changed
+- LLVM 15
+- Pointers only support opaque mode
+    - Type#element_type returns void for pointers 
+- Order for building is now: clang++-15 clang++ g++
+- updated various development gems: rubocop, minitest, etc
+
+### Removed
+- builder#build_with_lto
+
 ## [13.0.2] - 2022-06-02
 ### Changed
 - ruby version is >= 2.7

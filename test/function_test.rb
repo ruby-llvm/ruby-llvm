@@ -13,12 +13,18 @@ end
 
 class FunctionTest < Minitest::Test
 
+  def test_to_s
+    with_function [], LLVM.Void do |fun|
+      assert_equal "declare void @fun()\n", fun.to_s
+    end
+  end
+
   def test_type
     with_function [], LLVM.Void do |fun|
       type = fun.type
-
-      assert_instance_of LLVM::Type, type
-      assert_equal :pointer,  type.kind
+      assert_instance_of LLVM::FunctionType, type
+      assert_equal 'void ()', type.to_s
+      assert_equal :function, type.kind
       assert_equal :function, type.element_type.kind
     end
   end
@@ -28,7 +34,9 @@ class FunctionTest < Minitest::Test
       type = fun.function_type
 
       assert_instance_of LLVM::FunctionType, type
+      assert_equal 'void ()', type.to_s
       assert_equal :function, type.kind
+      assert_equal :function, type.element_type.kind
     end
   end
 
@@ -52,31 +60,35 @@ class FunctionTest < Minitest::Test
   end
 
   def test_add_attribute_old_name
-    helper_test_attribute(:no_unwind_attribute, 35)
+    helper_test_attribute(:no_unwind_attribute, 39)
   end
 
   def test_add_attribute_new_name
-    helper_test_attribute(:nounwind, 35)
-    helper_test_attribute(:readnone, 42)
-    helper_test_attribute(:readonly, 43)
-    helper_test_attribute(:willreturn, 64)
+    helper_test_attribute(:nounwind, 39)
+    helper_test_attribute(:readnone, 47)
+    helper_test_attribute(:readonly, 48)
+    helper_test_attribute(:willreturn, 68)
   end
 
 end
 
 class FunctionTypeTest < Minitest::Test
 
-  def test_return_type
+  def test_return_type_void
     with_function [], LLVM.Void do |fun|
-      type = fun.function_type
-      assert_equal LLVM.Void, type.return_type
+      retty = fun.function_type.return_type
+      assert_equal LLVM.Void, retty
+      assert_equal 'void', retty.to_s
     end
+  end
 
+  def test_return_type_i32
     with_function [], LLVM::Int32 do |fun|
       retty = fun.function_type.return_type
 
       assert_kind_of LLVM::IntType, retty
       assert_equal 32, retty.width
+      assert_equal 'i32', retty.to_s
     end
   end
 

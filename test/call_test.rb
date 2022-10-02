@@ -16,6 +16,9 @@ class CallTestCase < Minitest::Test
         builder.ret(LLVM::Int(1))
       end
     end
+    assert function = test_module.functions["test_function"]
+    assert_equal :function, function.type.kind
+    assert_equal 'i32 ()', function.return_type.to_s
     assert_equal 1, run_function_on_module(test_module, "test_function").to_i
   end
 
