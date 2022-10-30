@@ -751,18 +751,17 @@ module LLVM
       @basic_block_collection ||= BasicBlockCollection.new(self)
     end
 
-    def type
-      # Type.from_ptr(C.type_of(self), :function)
-      # TODO: Deprecated but what to replace this with?
+    def function_type
       Type.from_ptr(C.get_element_type(self), :function)
     end
 
-    def function_type
-      type
+    # In LLVM 15, not overriding this yields a pointer type instead of a function type
+    def type
+      function_type
     end
 
     def return_type
-      type
+      type.return_type
     end
 
     # Adds attr to this value's attributes.

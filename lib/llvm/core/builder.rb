@@ -929,7 +929,7 @@ module LLVM
     def call2(type, fun, *args)
       raise ArgumentError, "Trying to build LLVM call with non-function: #{fun.inspect}" if !fun.is_a?(LLVM::Function)
 
-      type ||= fun.return_type
+      type ||= fun.function_type
       must_be_type!(type)
 
       if args.last.kind_of? String

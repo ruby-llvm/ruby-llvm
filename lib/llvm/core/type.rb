@@ -11,13 +11,12 @@ module LLVM
       ty = case kind
       when :integer
         IntType.allocate
-      when :function then FunctionType.allocate
-           when :struct   then StructType.allocate
-           # when :void, :pointer, :array, :vector, :half, :label, :x86mmx, :x86amx, :float, :double
-           #  allocate
-           else
-             # raise "THIS #{kind}"
-             allocate
+      when :function
+        FunctionType.allocate
+      when :struct
+        StructType.allocate
+      else
+        allocate
       end
       ty.instance_variable_set(:@ptr, ptr)
       ty.instance_variable_set(:@kind, kind)
@@ -154,10 +153,7 @@ module LLVM
 
   class FunctionType < Type
     def return_type
-      # dump
-      # raise "ABOUT TO CRASH"
-      get = C.get_return_type(self)
-      Type.from_ptr(get, nil)
+      Type.from_ptr(C.get_return_type(self))
     end
 
     def element_type

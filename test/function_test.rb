@@ -37,6 +37,17 @@ class FunctionTest < Minitest::Test
       assert_equal 'void ()', type.to_s
       assert_equal :function, type.kind
       assert_equal :function, type.element_type.kind
+      assert_equal LLVM.Void, type.return_type
+      assert_equal :void, type.return_type.kind
+    end
+  end
+
+  def test_function_type_pointer
+    with_function [], LLVM.Pointer(LLVM::Int8) do |fun|
+      assert_equal :function, fun.type.kind
+      assert_equal :function, fun.type.element_type.kind
+      assert_equal :function, fun.function_type.kind
+      assert_equal :pointer, fun.function_type.return_type.kind
     end
   end
 
