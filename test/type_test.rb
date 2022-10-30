@@ -11,9 +11,23 @@ class TypeTestCase < Minitest::Test
     pointee = pointer.element_type
 
     assert_equal :pointer, pointer.kind
-    assert_equal :integer, pointee.kind
+    assert_equal :void, pointee.kind
+  end
 
-    assert_nil pointee.element_type
+  def test_element_type_unsupported
+    assert_raises do
+      LLVM.Void.element_type
+    end
+  end
+
+  def test_element_type_array
+    array = LLVM::Array(LLVM::Int, 2)
+    assert_equal :integer, array.element_type.kind
+  end
+
+  def test_element_type_vector
+    vector = LLVM::Vector(LLVM::Int, 2)
+    assert_equal :integer, vector.element_type.kind
   end
 
   TO_S_TESTS = [
@@ -30,11 +44,14 @@ class TypeTestCase < Minitest::Test
     [LLVM.Vector(LLVM::Int8, 42), '<42 x i8>'],
     [LLVM::Type.vector(LLVM::Int1, 42), '<42 x i1>'],
 
-    [LLVM.Void, 'void'],
     [LLVM::Type.void, 'void'],
+    [LLVM::Type.label, 'label'],
+    [LLVM::Type.x86_mmx, 'x86_mmx'],
+    [LLVM::Type.x86_amx, 'x86_amx'],
+    [LLVM.Void, 'void'],
 
-    [LLVM.Pointer(LLVM::Int8), 'i8*'],
-    [LLVM::Type.pointer(LLVM::Int1), 'i1*'],
+    [LLVM.Pointer(LLVM::Int8), 'ptr'],
+    [LLVM::Type.pointer(LLVM::Int1), 'ptr'],
 
     [LLVM.Function([LLVM::Int8], LLVM.Void), 'void (i8)'],
     [LLVM.Function([LLVM::Int8], LLVM::Int8), 'i8 (i8)'],
@@ -53,9 +70,19 @@ class TypeTestCase < Minitest::Test
         assert_equal string, type.to_s
       end
     end
+  end
 
-    it 'should have 22 dynamic tests' do
-      assert_equal 22, TO_S_TESTS.size
+  describe 'void type' do
+    it 'should have kind :void' do
+      type = LLVM.Void
+      assert_equal :void, type.kind
+    end
+  end
+
+  describe 'label type' do
+    it 'should have kind :void' do
+      type = LLVM::Type.label
+      assert_equal :label, type.kind
     end
   end
 

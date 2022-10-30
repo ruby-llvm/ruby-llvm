@@ -7,6 +7,13 @@ class DoubleTestCase < Minitest::Test
     LLVM.init_jit
   end
 
+  def test_const_double
+    assert d = LLVM::Double.from_f(-1)
+    assert_equal "double -1.000000e+00", d.to_s
+    assert_equal :double, d.type.kind
+    assert_predicate d, :constant?
+  end
+
   def test_double
     mod = LLVM::Module.new("Double Test")
     mod.functions.add(:sin, [LLVM::Double], LLVM::Double)

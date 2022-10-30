@@ -182,4 +182,16 @@ class InstructionTestCase < Minitest::Test
     end
   end
 
+  def test_types_alloca_load_store
+    fn = @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        alloca = builder.alloca(LLVM::Int, "test")
+        assert_equal :pointer, alloca.type.kind
+        assert_equal LLVM::Type(LLVM::Int), alloca.allocated_type
+        load = builder.load(alloca)
+        assert_equal LLVM::Type(LLVM::Int), load.type
+      end
+    end
+  end
+
 end

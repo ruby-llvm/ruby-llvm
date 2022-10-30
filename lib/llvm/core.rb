@@ -51,6 +51,57 @@ module LLVM
     # const char *LLVMGetStringAttributeValue
     # (LLVMAttributeRef A, unsigned *Length);
     attach_function :get_string_attribute_value, :LLVMGetStringAttributeValue, [:pointer, :pointer], :pointer
+
+    # LLVMValueRef LLVMBuildLoad2(LLVMBuilderRef, LLVMTypeRef Ty, LLVMValueRef PointerVal, const char *Name);
+    attach_function :build_load2, :LLVMBuildLoad2, [:pointer, :pointer, :pointer, :string], :pointer
+
+    # LLVMValueRef LLVMBuildGEP2(LLVMBuilderRef B, LLVMTypeRef Ty,
+    #                            LLVMValueRef Pointer, LLVMValueRef *Indices,
+    #                            unsigned NumIndices, const char *Name);
+    attach_function :build_gep2, :LLVMBuildGEP2, [:pointer, :pointer, :pointer, :pointer, :uint, :string], :pointer
+
+    # LLVMValueRef LLVMBuildInBoundsGEP2(LLVMBuilderRef B, LLVMTypeRef Ty,
+    #                                    LLVMValueRef Pointer, LLVMValueRef *Indices,
+    #                                    unsigned NumIndices, const char *Name);
+    attach_function :build_inbounds_gep2, :LLVMBuildInBoundsGEP2, [:pointer, :pointer, :pointer, :pointer, :uint, :string], :pointer
+
+    # LLVMValueRef LLVMBuildStructGEP2(LLVMBuilderRef B, LLVMTypeRef Ty,
+    #                                  LLVMValueRef Pointer, unsigned Idx,
+    #                                  const char *Name);
+    attach_function :build_struct_gep2, :LLVMBuildStructGEP2, [:pointer, :pointer, :pointer, :uint, :string], :pointer
+
+    # LLVMValueRef LLVMBuildCall2(LLVMBuilderRef, LLVMTypeRef, LLVMValueRef Fn,
+    #                             LLVMValueRef *Args, unsigned NumArgs,
+    #                             const char *Name);
+    attach_function :build_call2, :LLVMBuildCall2, [:pointer, :pointer, :pointer, :pointer, :uint, :string], :pointer
+
+    # LLVMValueRef LLVMBuildInvoke2(LLVMBuilderRef, LLVMTypeRef Ty, LLVMValueRef Fn,
+    #                               LLVMValueRef *Args, unsigned NumArgs,
+    #                               LLVMBasicBlockRef Then, LLVMBasicBlockRef Catch,
+    #                               const char *Name);
+    attach_function :build_invoke2, :LLVMBuildInvoke2, [:pointer, :pointer, :pointer, :pointer, :uint, :pointer, :pointer, :string], :pointer
+
+    # LLVMTypeRef LLVMGlobalGetValueType(LLVMValueRef Global);
+    attach_function :global_get_value_type, :LLVMGlobalGetValueType, [:pointer], :pointer
+
+    # LLVMTypeRef LLVMGetGEPSourceElementType(LLVMValueRef GEP);
+    attach_function :get_gep_source_element_type, :LLVMGetGEPSourceElementType, [:pointer], :pointer
+
+    # (Not documented)
+    #
+    # @method x86amx_type()
+    # @return [FFI::Pointer(TypeRef)]
+    # @scope class
+    attach_function :x86amx_type, :LLVMX86AMXType, [], :pointer
+
+    # LLVMTypeRef LLVMGetAllocatedType(LLVMValueRef Alloca);
+    attach_function :get_allocated_type, :LLVMGetAllocatedType, [:pointer], :pointer
+
+    # LLVMTypeRef LLVMGlobalGetValueType(LLVMValueRef Global);
+    attach_function :get_value_type, :LLVMGlobalGetValueType, [:pointer], :pointer
+
+    # LLVMValueRef LLVMGetAggregateElement(LLVMValueRef C, unsigned Idx);
+    attach_function :get_aggregate_element, :LLVMGetAggregateElement, [:pointer, :int], :pointer
   end
 
   # Yields a pointer suitable for storing an LLVM output message.

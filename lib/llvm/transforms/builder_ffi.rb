@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-14.so.1", "libLLVM.so.14", "LLVM-14"]
+  ffi_lib ["libLLVM-15.so.1", "libLLVM.so.15", "LLVM-15"]
 
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -103,15 +103,4 @@ module LLVM::C
   # @return [nil]
   # @scope class
   attach_function :pass_manager_builder_populate_module_pass_manager, :LLVMPassManagerBuilderPopulateModulePassManager, [OpaquePassManagerBuilder, :pointer], :void
-
-  # See llvm::PassManagerBuilder::populateLTOPassManager.
-  #
-  # @method pass_manager_builder_populate_lto_pass_manager(pmb, pm, internalize, run_inliner)
-  # @param [OpaquePassManagerBuilder] pmb
-  # @param [FFI::Pointer(PassManagerRef)] pm
-  # @param [Integer] internalize
-  # @param [Integer] run_inliner
-  # @return [nil]
-  # @scope class
-  attach_function :pass_manager_builder_populate_lto_pass_manager, :LLVMPassManagerBuilderPopulateLTOPassManager, [OpaquePassManagerBuilder, :pointer, :int, :int], :void
 end

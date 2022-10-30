@@ -169,12 +169,20 @@ module LLVM
     #   unwind instruction occurs
     # @LLVMinst invoke
     def invoke(fun, args, normal, exception, name = "")
+      invoke2(nil, fun, args, normal, exception, name)
+    end
+
+    def invoke2(type, fun, args, normal, exception, name = "")
+      raise ArgumentError, "Trying to build LLVM call with non-function: #{fun.inspect}" if !fun.is_a?(LLVM::Function)
+
+      type ||= fun.return_type
+      must_be_type!(type)
+
       s = args.size
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * s) do |args_ptr|
         args_ptr.write_array_of_pointer(args)
-        return Instruction.from_ptr(
-          C.build_invoke(self,
-            fun, args_ptr, s, normal, exception, name))
+        ins = C.build_invoke2(self, type, fun, args_ptr, s, normal, exception, name)
+        return Instruction.from_ptr(ins)
       end
     end
 
@@ -524,7 +532,17 @@ module LLVM
     #   a value of the pointer's type.
     # @LLVMinst load
     def load(ptr, name = "")
-      Instruction.from_ptr(C.build_load(self, ptr, name))
+      load2(nil, ptr, name)
+    end
+
+    def load2(type, ptr, name = "")
+      must_be_value!(ptr)
+
+      type ||= infer_type(ptr)
+      must_be_type!(type)
+
+      load = C.build_load2(self, type, ptr, name)
+      Instruction.from_ptr(load)
     end
 
     # Store a value at a given pointer
@@ -546,11 +564,29 @@ module LLVM
     # @LLVMinst gep
     # @see http://llvm.org/docs/GetElementPtr.html
     def gep(ptr, indices, name = "")
+      gep2(nil, ptr, indices, name)
+    end
+
+    # Obtain a pointer to the element at the given indices
+    # @param [LLVM::Type] type An LLVM::Type
+    # @param [LLVM::Value] ptr A pointer to an aggregate value
+    # @param [Array<LLVM::Value>] indices Ruby array of LLVM::Value representing
+    #   indices into the aggregate
+    # @param [String] name The name of the result in LLVM IR
+    # @return [LLVM::Instruction] The resulting pointer
+    # @LLVMinst gep2
+    # @see http://llvm.org/docs/GetElementPtr.html
+    def gep2(type, ptr, indices, name)
+      must_be_value!(ptr)
+
+      type ||= must_infer_type!(ptr)
+      must_be_type!(type)
+
       indices = Array(indices)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
         indices_ptr.write_array_of_pointer(indices)
-        return Instruction.from_ptr(
-          C.build_gep(self, ptr, indices_ptr, indices.size, name))
+        ins = C.build_gep2(self, type, ptr, indices_ptr, indices.size, name)
+        return Instruction.from_ptr(ins)
       end
     end
 
@@ -564,25 +600,44 @@ module LLVM
     # @LLVMinst gep
     # @see http://llvm.org/docs/GetElementPtr.html
     def inbounds_gep(ptr, indices, name = "")
+      inbounds_gep2(nil, ptr, indices, name)
+    end
+
+    def inbounds_gep2(type, ptr, indices, name = "")
+      must_be_value!(ptr)
+
+      type = must_infer_type!(ptr)
+      must_be_type!(type)
+
       indices = Array(indices)
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
         indices_ptr.write_array_of_pointer(indices)
-        return Instruction.from_ptr(
-          C.build_in_bounds_gep(self, ptr, indices_ptr, indices.size, name))
+        ins = C.build_inbounds_gep2(self, type, ptr, indices_ptr, indices.size, name)
+        return Instruction.from_ptr(ins)
       end
     end
 
     # Builds a struct getelementptr Instruction.
     #
-    # @param  [LLVM::Value] pointer A pointer to a structure
+    # @param  [LLVM::Value] ptr A pointer to a structure
     # @param  [LLVM::Value] idx     Unsigned integer representing the index of a
     #   structure member
     # @param  [String]      name    The name of the result in LLVM IR
     # @return [LLVM::Instruction]   The resulting pointer
     # @LLVMinst gep
     # @see http://llvm.org/docs/GetElementPtr.html
-    def struct_gep(pointer, idx, name = "")
-      Instruction.from_ptr(C.build_struct_gep(self, pointer, idx, name))
+    def struct_gep(ptr, idx, name = "")
+      struct_gep2(nil, ptr, idx, name)
+    end
+
+    def struct_gep2(type, ptr, idx, name)
+      must_be_value!(ptr)
+
+      type ||= must_infer_type!(ptr)
+      must_be_type!(type)
+
+      ins = C.build_struct_gep2(self, type, ptr, idx, name)
+      Instruction.from_ptr(ins)
     end
 
     # Creates a global string initialized to a given value.
@@ -868,7 +923,14 @@ module LLVM
     # @param [LLVM::Instruction]
     # @LLVMinst call
     def call(fun, *args)
+      call2(nil, fun, *args)
+    end
+
+    def call2(type, fun, *args)
       raise ArgumentError, "Trying to build LLVM call with non-function: #{fun.inspect}" if !fun.is_a?(LLVM::Function)
+
+      type ||= fun.function_type
+      must_be_type!(type)
 
       if args.last.kind_of? String
         name = args.pop
@@ -878,7 +940,8 @@ module LLVM
 
       args_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size)
       args_ptr.write_array_of_pointer(args)
-      CallInst.from_ptr(C.build_call(self, fun, args_ptr, args.size, name))
+      ins = C.build_call2(self, type, fun, args_ptr, args.size, name)
+      CallInst.from_ptr(ins)
     end
 
     # Return a value based on a condition. This differs from 'cond' in that
@@ -908,7 +971,8 @@ module LLVM
 
       raise ArgumentError, "Error building extract_element with #{error}" if error
 
-      Instruction.from_ptr(C.build_extract_element(self, vector, idx, name))
+      ins = C.build_extract_element(self, vector, idx, name)
+      Instruction.from_ptr(ins)
     end
 
     # Insert an element into a vector
@@ -927,17 +991,8 @@ module LLVM
 
       raise ArgumentError, "Error building insert_element with #{error}" if error
 
-      Instruction.from_ptr(C.build_insert_element(self, vector, elem, idx, name))
-    end
-
-    private def element_error(vector, idx) # rubocop:disable Style/AccessModifierDeclarations
-      if !vector.is_a?(LLVM::Value)
-        "non-value: #{vector.inspect}"
-      elsif vector.type.kind != :vector
-        "non-vector: #{vector.type.kind}"
-      elsif !idx.is_a?(LLVM::Value)
-        "index: #{idx}"
-      end
+      ins = C.build_insert_element(self, vector, elem, idx, name)
+      Instruction.from_ptr(ins)
     end
 
     # Shuffle two vectors according to a given mask
@@ -963,7 +1018,8 @@ module LLVM
 
       raise ArgumentError, "Error building extract_value with #{error}" if error
 
-      Instruction.from_ptr(C.build_extract_value(self, aggregate, idx, name))
+      ins = C.build_extract_value(self, aggregate, idx, name)
+      Instruction.from_ptr(ins)
     end
 
     # Insert a value into an aggregate value's member field
@@ -982,17 +1038,8 @@ module LLVM
 
       raise ArgumentError, "Error building insert_value with #{error}" if error
 
-      Instruction.from_ptr(C.build_insert_value(self, aggregate, elem, idx, name))
-    end
-
-    private def value_error(aggregate, idx) # rubocop:disable Style/AccessModifierDeclarations
-      if !aggregate.is_a?(LLVM::Value)
-        "non-value: #{aggregate.inspect}"
-      elsif !aggregate.type.aggregate?
-        "non-aggregate: #{aggregate.type.kind}"
-      elsif !idx.is_a?(Integer) || idx.negative?
-        "index: #{idx}"
-      end
+      ins = C.build_insert_value(self, aggregate, elem, idx, name)
+      Instruction.from_ptr(ins)
     end
 
     # Check if a value is null
@@ -1019,6 +1066,80 @@ module LLVM
     #   pointers
     def ptr_diff(lhs, rhs, name = "")
       Instruction.from_ptr(C.build_ptr_diff(lhs, rhs, name))
+    end
+
+    private
+
+    private def must_be_value!(value)
+      raise "must be a Value, got #{value.class.name}" unless Value === value
+    end
+
+    private def must_be_type!(type)
+      type2 = LLVM.Type(type)
+      raise "must be a Type (LLVMTypeRef), got #{type2.class.name}" unless Type === type2
+    end
+
+    private def must_infer_type!(value)
+      infer_type(value)
+    end
+
+    private def infer_type(ptr)
+      case ptr
+      when GlobalVariable
+        Type.from_ptr(C.global_get_value_type(ptr))
+      when Instruction
+        must_infer_instruction_type!(ptr)
+      else
+        raise "#{ptr.class.name} #{ptr}"
+      end
+    end
+
+    private def must_infer_instruction_type!(ptr)
+      case ptr.opcode
+      when :get_element_ptr
+        must_infer_gep!(ptr)
+      when :alloca
+        Type.from_ptr(C.get_allocated_type(ptr))
+      when :load
+        ptr.type
+      else
+        raise "Inferring type for instruction not currently supported: #{ptr.opcode} #{ptr}"
+      end
+    end
+
+    private def must_infer_gep!(ptr)
+      source_type = Type.from_ptr(C.get_gep_source_element_type(ptr))
+      case source_type.kind
+      when :integer
+        source_type
+      when :struct
+        raise "Cannot currently infer type from gep of struct"
+      when :array, :vector
+        source_type.element_type
+      else
+        debugger
+      end
+    end
+
+    private def element_error(vector, idx) # rubocop:disable Style/AccessModifierDeclarations
+      if !vector.is_a?(LLVM::Value)
+        "non-value: #{vector.inspect}"
+      elsif vector.type.kind != :vector
+        "non-vector: #{vector.type.kind}"
+      elsif !idx.is_a?(LLVM::Value)
+        "index: #{idx}"
+      end
+    end
+
+    private def value_error(aggregate, idx) # rubocop:disable Style/AccessModifierDeclarations
+      if !aggregate.is_a?(LLVM::Value)
+        "non-value: #{aggregate.inspect}"
+        # TODO: fix this
+      elsif !aggregate.type.aggregate?
+        "non-aggregate: #{aggregate.type.kind}"
+      elsif !idx.is_a?(Integer) || idx.negative?
+        "index: #{idx}"
+      end
     end
   end
 end

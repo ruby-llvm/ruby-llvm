@@ -26,6 +26,10 @@ module LLVM
       Type.from_ptr(C.type_of(self), nil)
     end
 
+    def allocated_type
+      Type.from_ptr(C.get_allocated_type(self), nil)
+    end
+
     # Returns the value's name.
     def name
       C.get_value_name(self)
@@ -314,6 +318,10 @@ module LLVM
 
     def size
       C.get_array_length(type)
+    end
+
+    def [](idx)
+      self.class.from_ptr(C.get_aggregate_element(self, idx))
     end
   end
 
@@ -631,6 +639,10 @@ module LLVM
       vals = LLVM::Support.allocate_pointers(size_or_values, &block)
       from_ptr C.const_named_struct(type, vals, vals.size / vals.type_size)
     end
+
+    def [](idx)
+      self.class.from_ptr(C.get_aggregate_element(self, idx))
+    end
   end
 
   class ConstantVector < Constant
@@ -645,6 +657,10 @@ module LLVM
 
     def size
       C.get_vector_size(type)
+    end
+
+    def [](idx)
+      self.class.from_ptr(C.get_aggregate_element(self, idx))
     end
   end
 
@@ -735,12 +751,17 @@ module LLVM
       @basic_block_collection ||= BasicBlockCollection.new(self)
     end
 
-    def type
-      Type.from_ptr(C.type_of(self), :pointer)
+    def function_type
+      Type.from_ptr(C.get_element_type(self), :function)
     end
 
-    def function_type
-      type.element_type
+    # In LLVM 15, not overriding this yields a pointer type instead of a function type
+    def type
+      function_type
+    end
+
+    def return_type
+      type.return_type
     end
 
     # Adds attr to this value's attributes.
@@ -961,6 +982,10 @@ module LLVM
     def previous
       ptr = C.get_previous_instruction(self)
       LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+    end
+
+    def opcode
+      C.get_instruction_opcode(self)
     end
   end
 
