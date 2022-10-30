@@ -9,8 +9,8 @@ module LLVM
     # @return [LLVM::Module]
     def self.parse_bitcode(path_or_memory_buffer)
       memory_buffer = case path_or_memory_buffer
-                      when MemoryBuffer then path_or_memory_buffer
-                      else MemoryBuffer.from_file(path_or_memory_buffer)
+      when MemoryBuffer then path_or_memory_buffer
+      else MemoryBuffer.from_file(path_or_memory_buffer)
       end
       FFI::MemoryPointer.new(:pointer) do |mod_ref|
         FFI::MemoryPointer.new(:pointer) do |msg_ref|

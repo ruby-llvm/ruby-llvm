@@ -3,7 +3,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
 begin
-  require "ruby-debug"
+  require "debug"
 rescue LoadError
   # Ignore ruby-debug is case it's not installed
 end
@@ -47,9 +47,11 @@ def define_module(module_name)
 end
 
 def define_function(host_module, function_name, argument_types, return_type)
-  host_module.functions.add(function_name, argument_types, return_type) do |function, *arguments|
+  function = host_module.functions.add(function_name, argument_types, return_type) do |function, *arguments|
     yield(LLVM::Builder.new, function, *arguments)
   end
+  function.verify!
+  function
 end
 
 def run_function_on_module(host_module, function_name, *argument_values)

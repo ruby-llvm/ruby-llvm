@@ -36,6 +36,10 @@ Layout/EmptyLineAfterGuardClause:
 Layout/HashAlignment:
   Enabled: false
 
+Layout/CaseIndentation:
+  Enabled: true
+  EnforcedStyle: end
+
 # Exceptions
 Style:
   Exclude:

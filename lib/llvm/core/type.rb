@@ -5,14 +5,18 @@ module LLVM
     include PointerIdentity
 
     # @private
-    def self.from_ptr(ptr, kind)
+    def self.from_ptr(ptr, kind = nil)
       return if ptr.null?
       kind ||= C.get_type_kind(ptr)
       ty = case kind
-      when :integer  then IntType.allocate
-      when :function then FunctionType.allocate
-      when :struct   then StructType.allocate
-      else allocate
+      when :integer
+        IntType.allocate
+      when :function
+        FunctionType.allocate
+      when :struct
+        StructType.allocate
+      else
+        allocate
       end
       ty.instance_variable_set(:@ptr, ptr)
       ty.instance_variable_set(:@kind, kind)
@@ -36,8 +40,13 @@ module LLVM
     # Returns the type of this types elements (works only for Pointer, Vector, and Array types.)
     def element_type
       case kind
-      when :pointer, :vector, :array
-        Type.from_ptr(C.get_element_type(self), nil)
+      when :vector, :array
+        element_type = C.get_element_type(self)
+        Type.from_ptr(element_type)
+      when :pointer
+        LLVM.Void
+      else
+        raise "element_type not supported for kind: #{kind}"
       end
     end
 
@@ -113,6 +122,21 @@ module LLVM
       from_ptr(C.void_type, :void)
     end
 
+    def self.label
+      from_ptr(C.label_type, :label)
+    end
+
+    def self.x86_mmx
+      from_ptr(C.x86mmx_type, :x86mmx)
+    end
+
+    def self.x86_amx
+      from_ptr(C.x86amx_type, :x86amx)
+    end
+    # def self.opaque_pointer
+    #  from_ptr(C.opaque_type, :pointer)
+    # end
+
     def self.rec
       h = opaque
       ty = yield h
@@ -129,7 +153,11 @@ module LLVM
 
   class FunctionType < Type
     def return_type
-      Type.from_ptr(C.get_return_type(self), nil)
+      Type.from_ptr(C.get_return_type(self))
+    end
+
+    def element_type
+      self
     end
 
     def argument_types
