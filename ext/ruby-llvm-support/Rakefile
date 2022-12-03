@@ -56,7 +56,7 @@ LLVM_CONFIG = find_llvm_config
 CXX         = find_cxx
 
 def invoke_llvm_config(options)
-  `#{LLVM_CONFIG} #{options}`.tr("\n", " ")
+  `#{LLVM_CONFIG} #{options}`.tr("\n", " ").strip
 end
 
 def llvm_lib_name
@@ -77,8 +77,9 @@ desc "Build the shared library and config module"
 task :default => [SUPPORT_LIB, CONFIG_MOD]
 
 file SUPPORT_LIB => %w(support.cpp) do |task|
-  sh "#{CXX} -shared #{task.prerequisites.join(' ')} -l#{llvm_lib_name} " \
-     "#{invoke_llvm_config('--cxxflags --ldflags')} -fPIC -o #{SUPPORT_LIB}"
+  clang_stdlib = CXX =~ /^clang++/ ? "-stdlib=libc++" : ""
+  sh "#{CXX} -O3 -shared #{task.prerequisites.join(' ')} -l#{llvm_lib_name} " \
+     "#{invoke_llvm_config('--cxxflags --ldflags')} -fPIC #{clang_stdlib} -o #{SUPPORT_LIB}"
 end
 
 LLVM_CONFIG_OPTS = [
