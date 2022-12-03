@@ -1,6 +1,10 @@
 ## [Unreleased]
 ### Changed
 
+## [15.0.1] - 2022-12-03
+### Changed
+- Fix to compiling ruby-llvm-support with clang++
+
 ## [15.0.0] - 2022-10-29
 ### Added
 - debug gem
