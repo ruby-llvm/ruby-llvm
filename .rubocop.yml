@@ -11,6 +11,7 @@ AllCops:
     - 'samples/**/*'
     - 'lib/llvm/config.rb'
     - 'tmp/*'
+    - vendor/bundle/**/*
 
 # Style
 Style/ClassAndModuleChildren:
@@ -24,6 +25,10 @@ Style/IfUnlessModifier:
 
 Style/NegatedWhile:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - lib/llvm/**/*_ffi.rb
 
 # Layout
 Layout/EndAlignment:
