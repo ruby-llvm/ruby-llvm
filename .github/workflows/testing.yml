@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-
 jobs:
   test:
     runs-on: ${{ matrix.os }}-latest
