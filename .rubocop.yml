@@ -82,3 +82,9 @@ Metrics/ClassLength:
   CountAsOne: ['array', 'hash']
   Exclude:
     - 'lib/llvm/core/builder.rb'
+
+# Gemspec
+
+# Not sold on usefulness: https://github.com/rubocop/rubocop/pull/11469
+Gemspec/DevelopmentDependencies:
+  Enabled: false
