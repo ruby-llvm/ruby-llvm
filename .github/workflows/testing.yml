@@ -36,14 +36,20 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - run: bundle install
-      - run: cd ext/ruby-llvm-support && rake
+      - run: |
+          pushd .
+          cd ext/ruby-llvm-support && rake
+          popd
+          bundle exec rake
         if: matrix.os == 'ubuntu'
       - run: |
           echo "$LDFLAGS"
           echo "$CPPFLAGS"
+          pushd .
           cd ext/ruby-llvm-support && rake
+          popd
+          bundle exec rake
         env:
           LDFLAGS: "-L/usr/local/opt/llvm/lib"
           CPPFLAGS: "-I/usr/local/opt/llvm/include"
         if: matrix.os == 'macos'
-      - run: bundle exec rake
