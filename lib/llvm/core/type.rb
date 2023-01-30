@@ -79,6 +79,10 @@ module LLVM
       [:struct, :array].include?(kind)
     end
 
+    def opaque?
+      C.is_opaque_struct(self) != 0
+    end
+
     # Creates an array type of Type with the given size.
     def self.array(ty, sz = 0)
       from_ptr(C.array_type(LLVM::Type(ty), sz), :array)

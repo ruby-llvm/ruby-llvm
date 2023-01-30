@@ -1121,7 +1121,7 @@ module LLVM
       end
     end
 
-    private def element_error(vector, idx) # rubocop:disable Style/AccessModifierDeclarations
+    def element_error(vector, idx)
       if !vector.is_a?(LLVM::Value)
         "non-value: #{vector.inspect}"
       elsif vector.type.kind != :vector
@@ -1131,7 +1131,7 @@ module LLVM
       end
     end
 
-    private def value_error(aggregate, idx) # rubocop:disable Style/AccessModifierDeclarations
+    def value_error(aggregate, idx)
       if !aggregate.is_a?(LLVM::Value)
         "non-value: #{aggregate.inspect}"
         # TODO: fix this
