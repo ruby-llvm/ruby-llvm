@@ -13,4 +13,4 @@ jobs:
           bundler-cache: true
       - run: bundle install
       - name: Rubocop
-        run: rubocop
+        run: bundle exec rubocop
