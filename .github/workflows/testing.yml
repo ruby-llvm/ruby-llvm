@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}-latest
@@ -23,6 +25,8 @@ jobs:
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
           export LDFLAGS="-L$(brew --prefix llvm)/lib"
           export CPPFLAGS="-I$(brew --prefix llvm)/include"
+          echo "$LDFLAGS"
+          echo "$CPPFLAGS"
       - name: Install LLVM on ubuntu
         if: matrix.os == 'ubuntu'
         run: |
@@ -34,9 +38,14 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - run: bundle install
+      - run: cd ext/ruby-llvm-support && rake
+        if: matrix.os == 'ubuntu'
       - run: |
-          echo "$PATH"
           echo "$LDFLAGS"
           echo "$CPPFLAGS"
           cd ext/ruby-llvm-support && rake
+        env:
+          LDFLAGS: "-L/usr/local/opt/llvm/lib"
+          CPPFLAGS: "-I/usr/local/opt/llvm/include"
+        if: matrix.os == 'macos'
       - run: bundle exec rake
