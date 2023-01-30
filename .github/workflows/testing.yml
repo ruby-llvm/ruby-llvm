@@ -25,4 +25,5 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - run: bundle install
+      - run: cd ext/ruby-llvm-support && rake
       - run: bundle exec rake
