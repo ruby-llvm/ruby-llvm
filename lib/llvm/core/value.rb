@@ -291,7 +291,7 @@ module LLVM
   module Support
     def allocate_pointers(size_or_values, &block)
       if size_or_values.is_a?(Integer)
-        raise ArgumentError, 'block not given' unless block_given?
+        raise ArgumentError, 'block not given' unless block
         size = size_or_values
         values = (0...size).map { |i| yield i }
       else
@@ -832,7 +832,7 @@ module LLVM
 
       def attribute_name(attr_name)
         attr_name = attr_name.to_s
-        if attr_name =~ /_attribute$/
+        if /_attribute$/.match?(attr_name)
           attr_name.chomp('_attribute').tr('_', '')
         else
           attr_name
