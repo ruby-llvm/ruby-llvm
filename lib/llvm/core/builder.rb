@@ -1070,20 +1070,20 @@ module LLVM
 
     private
 
-    private def must_be_value!(value)
+    def must_be_value!(value)
       raise "must be a Value, got #{value.class.name}" unless Value === value
     end
 
-    private def must_be_type!(type)
+    def must_be_type!(type)
       type2 = LLVM.Type(type)
       raise "must be a Type (LLVMTypeRef), got #{type2.class.name}" unless Type === type2
     end
 
-    private def must_infer_type!(value)
+    def must_infer_type!(value)
       infer_type(value)
     end
 
-    private def infer_type(ptr)
+    def infer_type(ptr)
       case ptr
       when GlobalVariable
         Type.from_ptr(C.global_get_value_type(ptr))
@@ -1094,7 +1094,7 @@ module LLVM
       end
     end
 
-    private def must_infer_instruction_type!(ptr)
+    def must_infer_instruction_type!(ptr)
       case ptr.opcode
       when :get_element_ptr
         must_infer_gep!(ptr)
@@ -1107,7 +1107,7 @@ module LLVM
       end
     end
 
-    private def must_infer_gep!(ptr)
+    def must_infer_gep!(ptr)
       source_type = Type.from_ptr(C.get_gep_source_element_type(ptr))
       case source_type.kind
       when :integer

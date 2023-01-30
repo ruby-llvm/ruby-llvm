@@ -26,6 +26,10 @@ Style/IfUnlessModifier:
 Style/NegatedWhile:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - lib/llvm/**/*_ffi.rb
+
 # Layout
 Layout/EndAlignment:
   AutoCorrect: true
