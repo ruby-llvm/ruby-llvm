@@ -21,6 +21,24 @@ class StructTestCase < Minitest::Test
     assert_equal "{ i32, float }", struct.to_s
   end
 
+  def test_empty_struct
+    struct = LLVM::Struct()
+    assert_instance_of LLVM::StructType, struct
+    assert_equal 0, struct.element_types.size
+    assert_predicate struct, :aggregate?
+    refute_predicate struct, :opaque?
+    assert_equal "{}", struct.to_s
+  end
+
+  def test_opaque_struct
+    struct = LLVM::Struct("mystery")
+    assert_instance_of LLVM::StructType, struct
+    assert_equal 0, struct.element_types.size
+    assert_predicate struct, :aggregate?
+    assert_predicate struct, :opaque?
+    assert_equal "%mystery = type opaque", struct.to_s
+  end
+
   def test_named_struct
     struct = LLVM::Struct(LLVM::Int, LLVM::Float, "struct100")
     assert_instance_of LLVM::StructType, struct
