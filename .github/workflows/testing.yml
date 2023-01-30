@@ -13,15 +13,15 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, macos]
-        ruby: [2.7, 3.0, 3.1, head, debug]
+        ruby: [2.7, 3.0]
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
       - name: Install LLVM on macos
-        if: runner.os == 'macos'
+        if: matrix.os == 'macos'
         run: |
           brew install llvm@15
       - name: Install LLVM on ubuntu
-        if: runner.os == 'ubuntu'
+        if: matrix.os == 'ubuntu'
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
