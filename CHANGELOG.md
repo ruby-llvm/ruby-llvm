@@ -1,5 +1,12 @@
 ## [Unreleased]
 ### Changed
+### Added
+- LLVM::Type.named(name) to get an existing type - Calls GetTypeByName2
+- LLVM::Type packed_struct? opaque_struct? literal_struct?
+- Tests for structs and named types
+- error checking for array and vector sizes
+- GitHub dependabot integration
+- GitHub preliminary CI
 
 ## [15.0.1] - 2022-12-03
 ### Changed
