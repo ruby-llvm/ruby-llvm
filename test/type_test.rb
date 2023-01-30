@@ -31,10 +31,14 @@ class TypeTestCase < Minitest::Test
   end
 
   TO_S_TESTS = [
+    [LLVM.Struct(), '{}'],
+    [LLVM.Struct("test"), '%test = type opaque'],
     [LLVM.Struct(LLVM::Int32, LLVM::Int32), '{ i32, i32 }'],
     [LLVM.Struct(LLVM::Int32, LLVM::Int32, "s1"), '%s1 = type { i32, i32 }'],
     [LLVM::Type.struct([LLVM::Int32, LLVM::Int32], true), '<{ i32, i32 }>'],
     [LLVM::Type.struct([LLVM::Int32, LLVM::Int32], true, "s2"), '%s2 = type <{ i32, i32 }>'],
+    [LLVM::Type.struct([], false), '{}'],
+    [LLVM::Type.struct([], true), '<{}>'],
 
     [LLVM.Array(LLVM::Int8), '[0 x i8]'],
     [LLVM.Array(LLVM::Int8, 42), '[42 x i8]'],
@@ -61,6 +65,8 @@ class TypeTestCase < Minitest::Test
     [LLVM::Type.function([LLVM::Int1], LLVM::Int1), 'i1 (i1)'],
     [LLVM::Type.function([], LLVM::Int1), 'i1 ()'],
     [LLVM::Type.function([], LLVM.Void), 'void ()'],
+
+    [LLVM.Struct(LLVM::Int32, LLVM::Type.array(LLVM::Float)), '{ i32, [0 x float] }'],
   ].freeze
 
   describe "LLVM::Type#to_s" do

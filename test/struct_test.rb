@@ -18,6 +18,9 @@ class StructTestCase < Minitest::Test
     assert_equal LLVM::Int.type, struct.element_types[0]
     assert_equal LLVM::Float.type, struct.element_types[1]
     assert_predicate struct, :aggregate?
+    refute_predicate struct, :opaque_struct?
+    refute_predicate struct, :packed_struct?
+    assert_predicate struct, :literal_struct?
     assert_equal "{ i32, float }", struct.to_s
   end
 
@@ -26,7 +29,9 @@ class StructTestCase < Minitest::Test
     assert_instance_of LLVM::StructType, struct
     assert_equal 0, struct.element_types.size
     assert_predicate struct, :aggregate?
-    refute_predicate struct, :opaque?
+    refute_predicate struct, :opaque_struct?
+    refute_predicate struct, :packed_struct?
+    assert_predicate struct, :literal_struct?
     assert_equal "{}", struct.to_s
   end
 
@@ -35,7 +40,9 @@ class StructTestCase < Minitest::Test
     assert_instance_of LLVM::StructType, struct
     assert_equal 0, struct.element_types.size
     assert_predicate struct, :aggregate?
-    assert_predicate struct, :opaque?
+    assert_predicate struct, :opaque_struct?
+    refute_predicate struct, :packed_struct?
+    refute_predicate struct, :literal_struct?
     assert_equal "%mystery = type opaque", struct.to_s
   end
 
@@ -51,12 +58,37 @@ class StructTestCase < Minitest::Test
     assert_equal "%thing.0 = type opaque", find_same_namestruct.to_s
   end
 
+  def test_packed_struct
+    struct = LLVM::Type.struct([LLVM::Int, LLVM::Float], true)
+    assert_instance_of LLVM::StructType, struct
+    assert_nil struct.name
+    assert_predicate struct, :aggregate?
+    refute_predicate struct, :opaque_struct?
+    assert_predicate struct, :packed_struct?
+    assert_predicate struct, :literal_struct?
+    assert_equal "<{ i32, float }>", struct.to_s
+  end
+
   def test_named_struct
     struct = LLVM::Struct(LLVM::Int, LLVM::Float, "struct100")
     assert_instance_of LLVM::StructType, struct
     assert_equal "struct100", struct.name
     assert_predicate struct, :aggregate?
+    refute_predicate struct, :opaque_struct?
+    refute_predicate struct, :packed_struct?
+    refute_predicate struct, :literal_struct?
     assert_equal "%struct100 = type { i32, float }", struct.to_s
+  end
+
+  def test_packed_named_struct
+    struct = LLVM::Type.struct([LLVM::Int, LLVM::Float], true, 'packed.struct')
+    assert_instance_of LLVM::StructType, struct
+    assert_equal "packed.struct", struct.name
+    assert_predicate struct, :aggregate?
+    refute_predicate struct, :opaque_struct?
+    assert_predicate struct, :packed_struct?
+    refute_predicate struct, :literal_struct?
+    assert_equal "%packed.struct = type <{ i32, float }>", struct.to_s
   end
 
   def test_deferred_element_type_setting

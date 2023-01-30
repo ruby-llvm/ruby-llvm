@@ -79,12 +79,24 @@ module LLVM
       [:struct, :array].include?(kind)
     end
 
-    def opaque?
-      C.is_opaque_struct(self) != 0
+    def opaque_struct?
+      C.is_opaque_struct(self)
+    end
+
+    def packed_struct?
+      C.is_packed_struct(self)
+    end
+
+    def literal_struct?
+      C.is_literal_struct(self)
     end
 
     # Creates an array type of Type with the given size.
+    # arrays can be size >= 0, https://llvm.org/docs/LangRef.html#array-type
     def self.array(ty, sz = 0)
+      sz = sz.to_i
+      raise ArgumentError, "LLVM Array size must be >= 0" if sz.negative?
+
       from_ptr(C.array_type(LLVM::Type(ty), sz), :array)
     end
 
@@ -94,7 +106,11 @@ module LLVM
     end
 
     # Creates a vector type of Type with the given element count.
+    # vectors can be size > 0, https://llvm.org/docs/LangRef.html#vector-type
     def self.vector(ty, element_count)
+      element_count = element_count.to_i
+      raise ArgumentError, "LLVM Vector size must be > 0" unless element_count.positive?
+
       from_ptr(C.vector_type(LLVM::Type(ty), element_count), :vector)
     end
 

@@ -104,6 +104,36 @@ module LLVM
     attach_function :get_aggregate_element, :LLVMGetAggregateElement, [:pointer, :int], :pointer
 
     attach_function :get_type_by_name2, :LLVMGetTypeByName2, [:pointer, :string], :pointer
+
+    # Determine whether a structure is packed.
+    #
+    # @see llvm::StructType::isPacked()
+    #
+    # @method is_packed_struct(struct_ty)
+    # @param [FFI::Pointer(TypeRef)] struct_ty
+    # @return [Bool]
+    # @scope class
+    attach_function :is_packed_struct, :LLVMIsPackedStruct, [:pointer], :bool
+
+    # Determine whether a structure is opaque.
+    #
+    # @see llvm::StructType::isOpaque()
+    #
+    # @method is_opaque_struct(struct_ty)
+    # @param [FFI::Pointer(TypeRef)] struct_ty
+    # @return [Bool]
+    # @scope class
+    attach_function :is_opaque_struct, :LLVMIsOpaqueStruct, [:pointer], :bool
+
+    # Determine whether a structure is literal.
+    #
+    # @see llvm::StructType::isLiteral()
+    #
+    # @method is_literal_struct(struct_ty)
+    # @param [FFI::Pointer(TypeRef)] struct_ty
+    # @return [Bool]
+    # @scope class
+    attach_function :is_literal_struct, :LLVMIsLiteralStruct, [:pointer], :bool
   end
 
   # Yields a pointer suitable for storing an LLVM output message.

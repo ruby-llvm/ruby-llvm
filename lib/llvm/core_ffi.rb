@@ -1651,26 +1651,6 @@ module LLVM::C
   # @scope class
   attach_function :struct_get_type_at_index, :LLVMStructGetTypeAtIndex, [:pointer, :uint], :pointer
 
-  # Determine whether a structure is packed.
-  #
-  # @see llvm::StructType::isPacked()
-  #
-  # @method is_packed_struct(struct_ty)
-  # @param [FFI::Pointer(TypeRef)] struct_ty
-  # @return [Integer]
-  # @scope class
-  attach_function :is_packed_struct, :LLVMIsPackedStruct, [:pointer], :int
-
-  # Determine whether a structure is opaque.
-  #
-  # @see llvm::StructType::isOpaque()
-  #
-  # @method is_opaque_struct(struct_ty)
-  # @param [FFI::Pointer(TypeRef)] struct_ty
-  # @return [Integer]
-  # @scope class
-  attach_function :is_opaque_struct, :LLVMIsOpaqueStruct, [:pointer], :int
-
   # Obtain the type of elements within a sequential type.
   #
   # This works on array, vector, and pointer types.
