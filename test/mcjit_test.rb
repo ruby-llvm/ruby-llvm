@@ -97,6 +97,14 @@ class MCJITTestCase < Minitest::Test
     main_mod = LLVM::Module.new('main')
     engine = LLVM::MCJITCompiler.new(main_mod, :opt_level => 0)
     assert_match(/^e-/, engine.data_layout.to_s)
-    assert_match(/gnu/, engine.target_machine.triple)
+    matcher = case FFI::Platform::OS
+    when 'darwin'
+      /apple-darwin/
+    when 'linux'
+      /gnu/
+    else
+      raise "New platform: #{FFI::Platform::OS}"
+    end
+    assert_match(matcher, engine.target_machine.triple)
   end
 end
