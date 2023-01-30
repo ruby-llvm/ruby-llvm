@@ -16,6 +16,10 @@ jobs:
         ruby: [2.7, 3.0, 3.1, head, debug]
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1.7.0
+        with:
+          version: "15.0"
       - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@477b21f02be01bcb8030d50f37cfec92bfa615b6
         with:
