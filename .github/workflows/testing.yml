@@ -20,6 +20,7 @@ jobs:
         if: matrix.os == 'macos'
         run: |
           brew install llvm@15
+          echo "/opt/homebrew/opt/llvm/bin" >> $GITHUB_PATH
       - name: Install LLVM on ubuntu
         if: matrix.os == 'ubuntu'
         run: |
@@ -31,5 +32,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - run: bundle install
-      - run: cd ext/ruby-llvm-support && rake
+      - run: |
+          echo "$PATH"
+          cd ext/ruby-llvm-support && rake
       - run: bundle exec rake
