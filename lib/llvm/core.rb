@@ -102,6 +102,8 @@ module LLVM
 
     # LLVMValueRef LLVMGetAggregateElement(LLVMValueRef C, unsigned Idx);
     attach_function :get_aggregate_element, :LLVMGetAggregateElement, [:pointer, :int], :pointer
+
+    attach_function :get_type_by_name2, :LLVMGetTypeByName2, [:pointer, :string], :pointer
   end
 
   # Yields a pointer suitable for storing an LLVM output message.

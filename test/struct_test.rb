@@ -39,6 +39,18 @@ class StructTestCase < Minitest::Test
     assert_equal "%mystery = type opaque", struct.to_s
   end
 
+  def test_existing_struct
+    first_struct = LLVM::Struct("thing")
+    assert_equal "%thing = type opaque", first_struct.to_s
+    same_name_struct = LLVM::Struct("thing")
+    assert_equal "%thing.0 = type opaque", same_name_struct.to_s
+
+    find_first_struct = LLVM::Type.named("thing")
+    assert_equal "%thing = type opaque", find_first_struct.to_s
+    find_same_namestruct = LLVM::Type.named("thing.0")
+    assert_equal "%thing.0 = type opaque", find_same_namestruct.to_s
+  end
+
   def test_named_struct
     struct = LLVM::Struct(LLVM::Int, LLVM::Float, "struct100")
     assert_instance_of LLVM::StructType, struct

@@ -121,6 +121,14 @@ module LLVM
       end
     end
 
+    def self.opaque_struct(name)
+      from_ptr(C.struct_create_named(Context.global, name.to_s), :struct)
+    end
+
+    def self.named(name)
+      from_ptr(C.get_type_by_name2(Context.global, name.to_s), nil)
+    end
+
     # Creates a void type.
     def self.void
       from_ptr(C.void_type, :void)

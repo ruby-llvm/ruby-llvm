@@ -1,5 +1,8 @@
 ## [Unreleased]
 ### Changed
+### Added
+- LLVM::Type.named(name) to get an existing type - Calls GetTypeByName2
+- Tests for opaque struct, empty struct and named types
 
 ## [15.0.1] - 2022-12-03
 ### Changed
