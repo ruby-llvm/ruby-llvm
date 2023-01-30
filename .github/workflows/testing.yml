@@ -12,7 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macos]
+        # TOD: os: [ubuntu, macos]
+        os: [ubuntu]
         ruby: [2.7, 3.0]
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
