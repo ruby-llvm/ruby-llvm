@@ -56,6 +56,11 @@ class TypeTestCase < Minitest::Test
 
     [LLVM.Pointer(LLVM::Int8), 'ptr'],
     [LLVM::Type.pointer(LLVM::Int1), 'ptr'],
+    [LLVM::Type.pointer(LLVM::Int1, 1), 'ptr addrspace(1)'],
+    [LLVM.Pointer(), 'ptr'],
+    [LLVM::Type.pointer, 'ptr'],
+    [LLVM::Type.ptr, 'ptr'],
+    [LLVM::Type.ptr(1), 'ptr addrspace(1)'],
 
     [LLVM.Function([LLVM::Int8], LLVM.Void), 'void (i8)'],
     [LLVM.Function([LLVM::Int8], LLVM::Int8), 'i8 (i8)'],
@@ -65,6 +70,8 @@ class TypeTestCase < Minitest::Test
     [LLVM::Type.function([LLVM::Int1], LLVM::Int1), 'i1 (i1)'],
     [LLVM::Type.function([], LLVM::Int1), 'i1 ()'],
     [LLVM::Type.function([], LLVM.Void), 'void ()'],
+    [LLVM::Type.function([], LLVM::Int1, varargs: true), 'i1 (...)'],
+    [LLVM::Type.function([], LLVM.Void, varargs: true), 'void (...)'],
 
     [LLVM.Struct(LLVM::Int32, LLVM::Type.array(LLVM::Float)), '{ i32, [0 x float] }'],
   ].freeze
