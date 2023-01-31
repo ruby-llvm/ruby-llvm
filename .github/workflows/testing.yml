@@ -12,8 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TOD: os: [ubuntu, macos]
-        os: [ubuntu]
+        os: [ubuntu, macos]
         ruby: [2.7, 3.0]
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
@@ -22,10 +21,22 @@ jobs:
         run: |
           brew install llvm@15
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
-          export LDFLAGS="-L$(brew --prefix llvm)/lib"
-          export CPPFLAGS="-I$(brew --prefix llvm)/include"
-          echo "$LDFLAGS"
-          echo "$CPPFLAGS"
+          sudo mkdir -p /opt/local/
+          sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
+          # ffi will only look for files in a small set of directories, so llvm needs to be there
+          # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
+          # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
+          # this uses /opt/local/lib -> /usr/local/opt/llvm/lib
+      - name: 'MacOS debug'
+        if:
+          matrix.os == 'macos'
+        run: |
+          echo $(llvm-config --ldflags)
+          echo $(brew --repository)
+          echo $(brew --prefix llvm)
+          ls -l /usr/local/Cellar/llvm/15.0.7_1/lib/libLLVM.dylib
+          ls -l $(brew --prefix llvm)/lib/libLLVM.dylib
+          ls -l /opt/local/lib/libLLVM.dylib
       - name: Install LLVM on ubuntu
         if: matrix.os == 'ubuntu'
         run: |
@@ -37,20 +48,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - run: bundle install
-      - run: |
-          pushd .
-          cd ext/ruby-llvm-support && rake
-          popd
-          bundle exec rake
-        if: matrix.os == 'ubuntu'
-      - run: |
-          echo "$LDFLAGS"
-          echo "$CPPFLAGS"
-          pushd .
-          cd ext/ruby-llvm-support && rake
-          popd
-          bundle exec rake
-        env:
-          LDFLAGS: "-L/usr/local/opt/llvm/lib"
-          CPPFLAGS: "-I/usr/local/opt/llvm/include"
-        if: matrix.os == 'macos'
+      - run: cd ext/ruby-llvm-support && bundle exec rake
+        name: "Build support library"
+      - run: bundle exec rake
+        name: "Run tests"
