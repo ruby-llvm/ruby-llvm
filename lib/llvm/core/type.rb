@@ -101,8 +101,17 @@ module LLVM
     end
 
     # Creates the pointer type of Type with the given address space.
-    def self.pointer(ty, address_space = 0)
-      from_ptr(C.pointer_type(LLVM::Type(ty), address_space), :pointer)
+    def self.pointer(ty = nil, address_space = 0)
+      if ty
+        from_ptr(C.pointer_type(LLVM::Type(ty), address_space), :pointer)
+      else
+        ptr(address_space)
+      end
+    end
+
+    # opaque pointer
+    def self.ptr(address_space = 0)
+      from_ptr(C.pointer_type(void, address_space), :pointer)
     end
 
     # Creates a vector type of Type with the given element count.
@@ -245,7 +254,7 @@ module LLVM
   end
 
   # Shortcut to Type.pointer.
-  def Pointer(ty)
+  def Pointer(ty = nil)
     LLVM::Type.pointer(ty)
   end
 
