@@ -12,14 +12,6 @@ module LLVM::C
     end
   end
 
-  # See llvm::createArgumentPromotionPass function.
-  #
-  # @method add_argument_promotion_pass(pm)
-  # @param [FFI::Pointer(PassManagerRef)] pm
-  # @return [nil]
-  # @scope class
-  attach_function :add_argument_promotion_pass, :LLVMAddArgumentPromotionPass, [:pointer], :void
-
   # See llvm::createConstantMergePass function.
   #
   # @method add_constant_merge_pass(pm)
@@ -75,14 +67,6 @@ module LLVM::C
   # @return [nil]
   # @scope class
   attach_function :add_global_optimizer_pass, :LLVMAddGlobalOptimizerPass, [:pointer], :void
-
-  # See llvm::createIPConstantPropagationPass function.
-  #
-  # @method add_ip_constant_propagation_pass(pm)
-  # @param [FFI::Pointer(PassManagerRef)] pm
-  # @return [nil]
-  # @scope class
-  attach_function :add_ip_constant_propagation_pass, :LLVMAddIPConstantPropagationPass, [:pointer], :void
 
   # See llvm::createPruneEHPass function.
   #

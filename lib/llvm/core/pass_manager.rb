@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require "llvm/transforms/ipo"
+require "llvm/transforms/scalar"
+require "llvm/transforms/utils"
+require "llvm/transforms/vectorize"
+
 module LLVM
   # The PassManager runs a queue of passes on a module. See
   # http://llvm.org/docs/Passes.html for the list of available passes.

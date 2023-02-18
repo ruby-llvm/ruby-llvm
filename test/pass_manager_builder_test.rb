@@ -53,13 +53,7 @@ class PassManagerBuilderTest < Minitest::Test
     end
   end
 
-  PASSES = [
-    'always_inline!',
-    'adce!',
-    'tailcallelim!',
-    'fun_attrs!',
-    'mergefunc!',
-  ].freeze
+  PASSES = LLVM::PassManager.new.methods.grep(/\S!$/).freeze
 
   describe "PassManager Passes" do
     before do

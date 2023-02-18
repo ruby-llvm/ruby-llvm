@@ -27,7 +27,6 @@ end
 
 require "llvm/core"
 require "llvm/execution_engine"
-require "llvm/transforms/scalar"
 
 class Minitest::Test
 
