@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-llvm (15.0.4)
+    ruby-llvm (16.0.0)
       ffi (~> 1.13)
       rake (>= 12, < 14)
 

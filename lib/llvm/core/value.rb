@@ -595,7 +595,7 @@ module LLVM
 
     # Negation.
     def -@
-      self.class.from_ptr(C.const_f_neg(self))
+      raise "constant fneg removed in LLVM 16"
     end
 
     # Returns the result of adding this ConstantReal to rhs.

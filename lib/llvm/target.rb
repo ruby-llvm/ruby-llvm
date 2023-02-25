@@ -22,8 +22,21 @@ module LLVM
     #
     # @param [String]      target      Target name in LLVM format, e.g. "X86", "ARM" or "PowerPC".
     # @param [true, false] asm_printer Initialize corresponding AsmPrinter.
+
+    module TargetModule
+      extend FFI::Library
+      ffi_lib ["libLLVM-16.so.1", "libLLVM.so.16", "LLVM-16"]
+
+      def self.safe_attach_function(*args)
+        attach_function(*args)
+      rescue FFI::NotFoundError => e
+        warn(e.to_s)
+      end
+    end
+
     def self.init(target, asm_printer = false)
-      C.module_eval do
+      target_module = TargetModule.dup
+      target_module.module_eval do
         attach_function :"initialize_target_info_#{target}",
             :"LLVMInitialize#{target}TargetInfo", [], :void
         attach_function :"initialize_target_#{target}",
@@ -33,11 +46,13 @@ module LLVM
 
         attach_function :"initialize_#{target}_asm_printer",
             :"LLVMInitialize#{target}AsmPrinter", [], :void
-        attach_function :"initialize_#{target}_asm_parser",
+        safe_attach_function :"initialize_#{target}_asm_parser",
             :"LLVMInitialize#{target}AsmParser", [], :void
-        attach_function :"initialize_#{target}_disassembler",
+        safe_attach_function :"initialize_#{target}_disassembler",
             :"LLVMInitialize#{target}Disassembler", [], :void
       end
+
+      C.extend(target_module)
 
       begin
         %W(initialize_target_info_#{target}
