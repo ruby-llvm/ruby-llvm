@@ -164,14 +164,6 @@ module LLVM::C
   # @scope class
   attach_function :add_loop_unroll_pass, :LLVMAddLoopUnrollPass, [:pointer], :void
 
-  # See llvm::createLoopUnswitchPass function.
-  #
-  # @method add_loop_unswitch_pass(pm)
-  # @param [FFI::Pointer(PassManagerRef)] pm
-  # @return [nil]
-  # @scope class
-  attach_function :add_loop_unswitch_pass, :LLVMAddLoopUnswitchPass, [:pointer], :void
-
   # See llvm::createMemCpyOptPass function.
   #
   # @method add_mem_cpy_opt_pass(pm)
@@ -245,14 +237,6 @@ module LLVM::C
   # @scope class
   attach_function :add_scalar_repl_aggregates_pass_with_threshold, :LLVMAddScalarReplAggregatesPassWithThreshold, [:pointer, :int], :void
 
-  # See llvm::createSimplifyLibCallsPass function.
-  #
-  # @method add_simplify_lib_calls_pass(pm)
-  # @param [FFI::Pointer(PassManagerRef)] pm
-  # @return [nil]
-  # @scope class
-  attach_function :add_simplify_lib_calls_pass, :LLVMAddSimplifyLibCallsPass, [:pointer], :void
-
   # See llvm::createTailCallEliminationPass function.
   #
   # @method add_tail_call_elimination_pass(pm)
@@ -260,14 +244,6 @@ module LLVM::C
   # @return [nil]
   # @scope class
   attach_function :add_tail_call_elimination_pass, :LLVMAddTailCallEliminationPass, [:pointer], :void
-
-  # See llvm::createConstantPropagationPass function.
-  #
-  # @method add_constant_propagation_pass(pm)
-  # @param [FFI::Pointer(PassManagerRef)] pm
-  # @return [nil]
-  # @scope class
-  attach_function :add_constant_propagation_pass, :LLVMAddConstantPropagationPass, [:pointer], :void
 
   # See llvm::demotePromoteMemoryToRegisterPass function.
   #

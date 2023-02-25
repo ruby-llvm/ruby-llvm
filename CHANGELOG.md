@@ -1,6 +1,38 @@
 ## [Unreleased]
 ### Changed
 ### Added
+- Tests for adding pass manager passes - catches pass removals and certain bugs
+- Additional documentation for passes
+- Missing passes:
+  - dce!
+  - bdce!
+  - scalarizer!
+  - mldst_motion!
+  - new_gvn!
+  - instsimplify!
+  - loop_reroll!
+  - loop_unroll_and_jam!
+  - loweratomic!
+  - partially_inline_libcalls!
+  - verify!
+  - early_cse_memssa!
+  - scoped_noalias_aa!
+  - lower_constant_intrinsics!
+  - mergereturn!
+  - lowerswitch!
+  - add_discriminators!
+  - called_value_propagation!
+- Warnings on removed passes:
+  - arg_promote!
+  - ipcp! 
+  - loop_unswitch! 
+  - simplify_libcalls! 
+  - constprop! 
+  - bb_vectorize!
+- Bug fixes for passes:
+  - dae!
+  - internalize!
+  - scalarrepl_threshold!
 
 ## [15.0.2] - 2022-01-30
 ### Changed
