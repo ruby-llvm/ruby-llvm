@@ -3,14 +3,6 @@
 require "test_helper"
 require "llvm/core"
 
-
-def with_function(arguments, retty, &block)
-  mod = LLVM::Module.new('test')
-  fun = mod.functions.add('fun', arguments, retty)
-  block.yield(fun)
-  mod.dispose
-end
-
 class FunctionTest < Minitest::Test
 
   def test_to_s
@@ -58,7 +50,8 @@ class FunctionTest < Minitest::Test
 
       fun.add_attribute(name)
       assert_equal 1, fun.attribute_count
-      assert_equal [attribute_id], fun.attributes
+      assert_equal [LLVM::Attribute.new(name)], fun.attributes
+      assert_equal [attribute_id], fun.attributes.map(&:kind_id)
 
       assert_predicate fun, :valid?
 
@@ -71,14 +64,13 @@ class FunctionTest < Minitest::Test
   end
 
   def test_add_attribute_old_name
-    helper_test_attribute(:no_unwind_attribute, 39)
+    helper_test_attribute(:no_unwind_attribute, 36)
   end
 
   def test_add_attribute_new_name
-    helper_test_attribute(:nounwind, 39)
-    helper_test_attribute(:readnone, 47)
-    helper_test_attribute(:readonly, 48)
-    helper_test_attribute(:willreturn, 68)
+    helper_test_attribute(:nounwind, 36)
+    helper_test_attribute(:willreturn, 66)
+    helper_test_attribute(:mustprogress, 15)
   end
 
   def test_invalid_function

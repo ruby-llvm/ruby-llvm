@@ -2,6 +2,11 @@
 ### Changed
 ### Added
 
+## [16.0.0] - 2022-05-31
+### Changed
+- Bindings updated to LLVM 16
+- Function attributes returns an array of LLVM::Attribute instead of integers
+
 ## [15.0.4] - 2022-05-14
 ### Changed
 - Fixed segfaults when value type expected to be instruction but was globalvairable

@@ -36,6 +36,15 @@ class Minitest::Test
   LLVM_FALSE = 0
   LLVM_TRUE = 1
 
+  private
+
+  def with_function(arguments, retty, &block)
+    mod = LLVM::Module.new('test')
+    fun = mod.functions.add('fun', arguments, retty)
+    block.yield(fun)
+    mod.dispose
+  end
+
 end
 
 def define_module(module_name)

@@ -84,7 +84,7 @@ module LLVM
     # /** See llvm::createPruneEHPass function. */
     # void LLVMAddPruneEHPass(LLVMPassManagerRef PM);
     def prune_eh!
-      C.add_prune_eh_pass(self)
+      warn('prune_eh! / LLVMAddPruneEHPass was removed in LLVM 16')
     end
 
     # @LLVMpass ipsccp

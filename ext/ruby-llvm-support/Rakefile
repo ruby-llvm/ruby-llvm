@@ -84,11 +84,14 @@ file SUPPORT_LIB => %w(support.cpp) do |task|
 end
 
 LLVM_CONFIG_OPTS = [
+  ['VERSION',      :string, '--version'],
   ['COMPONENTS',    :array,  '--components'],
   ['TARGETS_BUILT', :array,  '--targets-built'],
   ['HOST_TARGET',   :string, '--host-target'],
   ['BUILD_MODE',    :string, '--build-mode'],
   ['CFLAGS',        :string, '--cflags'],
+  ['CXXFLAGS',      :string, '--cxxflags'],
+  ['LDFLAGS',      :string, '--ldflags'],
 ].freeze
 
 file CONFIG_MOD do
