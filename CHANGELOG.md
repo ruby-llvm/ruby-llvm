@@ -1,6 +1,9 @@
 ## [Unreleased]
 ### Changed
 ### Added
+
+## [15.0.3] - 2022-02-24
+### Added
 - Tests for adding pass manager passes - catches pass removals and certain bugs
 - Additional documentation for passes
 - Missing passes:
