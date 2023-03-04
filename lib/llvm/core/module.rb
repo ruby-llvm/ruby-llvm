@@ -24,6 +24,16 @@ module LLVM
       @ptr = nil
     end
 
+    def inspect
+      {
+        triple: triple,
+        globals: globals.count,
+        functions: functions.count,
+        lines: to_s.lines.size,
+        valid: valid?,
+      }.to_s
+    end
+
     # Get module triple.
     #
     # @return [String]

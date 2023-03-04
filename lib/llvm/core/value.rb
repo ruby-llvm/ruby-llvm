@@ -412,22 +412,22 @@ module LLVM
 
     # Unsigned division.
     def udiv(rhs)
-      self.class.from_ptr(C.const_u_div(self, rhs))
+      raise "constant udiv removed in LLVM 15"
     end
 
     # Signed division.
     def /(rhs)
-      self.class.from_ptr(C.const_s_div(self, rhs))
+      raise "constant sdiv removed in LLVM 15"
     end
 
     # Unsigned remainder.
     def urem(rhs)
-      self.class.from_ptr(C.const_u_rem(self, rhs))
+      raise "constant urem removed in LLVM 15"
     end
 
     # Signed remainder.
     def rem(rhs)
-      self.class.from_ptr(C.const_s_rem(self, rhs))
+      raise "constant srem removed in LLVM 15"
     end
 
     # Boolean negation.
@@ -507,6 +507,17 @@ module LLVM
     def sext(type)
       self.class.from_ptr(C.const_s_ext(self, type))
     end
+    alias_method :ext, :sext
+
+    # constant trunc
+    def trunc(type)
+      self.class.from_ptr(C.const_trunc(self, type))
+    end
+
+    # LLVMValueRef LLVMConstSIToFP(LLVMValueRef ConstantVal, LLVMTypeRef ToType);
+    def to_f(type)
+      self.class.from_ptr(C.const_si_to_fp(self, type))
+    end
   end
 
   def self.const_missing(const)
@@ -564,22 +575,22 @@ module LLVM
 
     # Returns the result of adding this ConstantReal to rhs.
     def +(rhs)
-      self.class.from_ptr(C.const_f_add(self, rhs))
+      raise "constant fadd removed in LLVM 15"
     end
 
     # Returns the result of multiplying this ConstantReal by rhs.
     def *(rhs)
-      self.class.from_ptr(C.const_f_mul(self, rhs))
+      raise "constant fmul removed in LLVM 15"
     end
 
     # Returns the result of dividing this ConstantReal by rhs.
     def /(rhs)
-      self.class.from_ptr(C.const_f_div(self, rhs))
+      raise "constant fdiv removed in LLVM 15"
     end
 
     # Remainder.
     def rem(rhs)
-      self.class.from_ptr(C.const_f_rem(self, rhs))
+      raise "constant frem removed in LLVM 15"
     end
 
     # Floating point comparison using the predicate specified via the first
@@ -603,6 +614,24 @@ module LLVM
     def fcmp(pred, rhs)
       self.class.from_ptr(C.llmv_const_f_cmp(pred, self, rhs))
     end
+
+    # constant FPToSI
+    # LLVMValueRef LLVMConstFPToSI(LLVMValueRef ConstantVal, LLVMTypeRef ToType);
+    def to_i(type)
+      self.class.from_ptr(C.const_fp_to_si(self, type))
+    end
+
+    # Constant FPExt
+    # this is a signed extension
+    def ext(type)
+      self.class.from_ptr(C.const_fp_ext(self, type))
+    end
+    alias_method :sext, :ext
+
+    def trunc(type)
+      self.class.from_ptr(C.const_fp_trunc(self, type))
+    end
+
   end
 
   class Float < ConstantReal
@@ -938,6 +967,17 @@ module LLVM
 
     def gc
       C.get_gc(self)
+    end
+
+    def inspect
+      {
+        signature: to_s.lines[attribute_count == 0 ? 0 : 1],
+        type: type.to_s,
+        attributes: attribute_count,
+        valid: valid?,
+        blocks: basic_blocks.size,
+        lines: to_s.lines.size,
+      }.to_s
     end
   end
 

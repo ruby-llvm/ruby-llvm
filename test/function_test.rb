@@ -60,13 +60,13 @@ class FunctionTest < Minitest::Test
       assert_equal 1, fun.attribute_count
       assert_equal [attribute_id], fun.attributes
 
-      assert_equal false, fun.verify
+      assert_predicate fun, :valid?
 
       fun.remove_attribute(name)
       assert_equal 0, fun.attribute_count
       assert_equal [], fun.attributes
 
-      assert_equal false, fun.verify
+      assert_predicate fun, :valid?
     end
   end
 
@@ -79,6 +79,20 @@ class FunctionTest < Minitest::Test
     helper_test_attribute(:readnone, 47)
     helper_test_attribute(:readonly, 48)
     helper_test_attribute(:willreturn, 68)
+  end
+
+  def test_invalid_function
+    with_function [], LLVM.Void do |fun|
+      assert_equal 0, fun.basic_blocks.size
+      assert entry = fun.basic_blocks.append
+
+      entry.build do |builder|
+        builder.ret(LLVM::Int(1))
+      end
+      assert_equal(1, LLVM::C.verify_function(fun, :return_status))
+      refute_predicate fun, :valid?
+      refute_predicate fun, :verify
+    end
   end
 
 end
