@@ -22,7 +22,7 @@ GEM
     irb (1.6.2)
       reline (>= 0.3.0)
     json (2.6.3)
-    minitest (5.17.0)
+    minitest (5.18.0)
     minitest-reporters (1.6.0)
       ansi
       builder
