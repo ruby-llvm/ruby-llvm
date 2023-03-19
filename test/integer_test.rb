@@ -25,4 +25,54 @@ class IntegerTestCase < Minitest::Test
     assert_equal :integer, sext.type.kind
     assert_equal 64, sext.type.width
   end
+
+  def test_const_int
+    assert i = LLVM::Int64.from_i(-1)
+    assert_equal "i64 -1", i.to_s
+    assert_equal :integer, i.type.kind
+    assert_equal 64, i.type.width
+    assert_predicate i, :constant?
+  end
+
+  def test_const_int_bitcast
+    assert_equal "double 0.000000e+00", LLVM::Int64.from_i(0).bitcast_to(LLVM::Double).to_s
+    assert_equal "double 4.940660e-324", LLVM::Int64.from_i(1).bitcast_to(LLVM::Double).to_s
+    assert_equal "double 0xFFFFFFFFFFFFFFFF", LLVM::Int64.from_i(-1).bitcast_to(LLVM::Double).to_s
+  end
+
+  def test_const_int_to_f
+    assert_equal "double 0.000000e+00", LLVM::Int64.from_i(0).to_f(LLVM::Double).to_s
+    assert_equal "double 1.000000e+00", LLVM::Int64.from_i(1).to_f(LLVM::Double).to_s
+    assert_equal "double -1.000000e+00", LLVM::Int64.from_i(-1).to_f(LLVM::Double).to_s
+
+    assert_equal "float 0.000000e+00", LLVM::Int64.from_i(0).to_f(LLVM::Float).to_s
+    assert_equal "float 1.000000e+00", LLVM::Int64.from_i(1).to_f(LLVM::Float).to_s
+    assert_equal "float -1.000000e+00", LLVM::Int64.from_i(-1).to_f(LLVM::Float).to_s
+
+    assert_equal "double 0x43E0000000000000", LLVM::Int64.from_i((2**63) - 1).to_f(LLVM::Double).to_s
+    assert_equal "double 0x43E0000000000000", LLVM::Int64.from_i((2**63) - 512).to_f(LLVM::Double).to_s
+    assert_equal "double 0x43DFFFFFFFFFFFFF", LLVM::Int64.from_i((2**63) - 513).to_f(LLVM::Double).to_s
+  end
+
+  def test_const_double_null
+    assert_equal "i64 0", LLVM::Constant.null(LLVM::Int64).to_s
+  end
+
+  def test_const_trunc
+    assert i = LLVM::Int64.from_i(-1)
+    assert_equal "i64 -1", i.to_s
+    assert_equal "i8 -1", i.trunc(LLVM::Int8).to_s
+
+    assert i = LLVM::Int64.from_i(128)
+    assert_equal "i64 128", i.to_s
+    assert_equal "i8 -128", i.trunc(LLVM::Int8).to_s
+
+    assert i = LLVM::Int64.from_i(129)
+    assert_equal "i64 129", i.to_s
+    assert_equal "i8 -127", i.trunc(LLVM::Int8).to_s
+
+    assert i = LLVM::Int64.from_i(-129)
+    assert_equal "i64 -129", i.to_s
+    assert_equal "i8 127", i.trunc(LLVM::Int8).to_s
+  end
 end

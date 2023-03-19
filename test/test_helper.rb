@@ -41,7 +41,7 @@ end
 def define_module(module_name)
   new_module = LLVM::Module.new(module_name)
   yield new_module
-  new_module.verify
+  assert_predicate new_module, :valid?
   new_module
 end
 
@@ -49,7 +49,7 @@ def define_function(host_module, function_name, argument_types, return_type)
   function = host_module.functions.add(function_name, argument_types, return_type) do |function, *arguments|
     yield(LLVM::Builder.new, function, *arguments)
   end
-  function.verify!
+  assert_predicate function, :valid?
   function
 end
 

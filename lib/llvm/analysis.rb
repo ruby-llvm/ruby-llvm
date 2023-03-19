@@ -20,6 +20,10 @@ module LLVM
       do_verification(:abort_process)
     end
 
+    def valid?
+      verify.nil?
+    end
+
     private
 
     def do_verification(action)
@@ -42,10 +46,14 @@ module LLVM
       do_verification(:abort_process)
     end
 
+    def valid?
+      verify
+    end
+
     private
 
     def do_verification(action)
-      C.verify_function(self, action) != 0
+      C.verify_function(self, action).zero?
     end
   end
 end
