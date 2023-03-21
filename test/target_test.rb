@@ -1,4 +1,3 @@
-# encoding: ascii-8bit
 # frozen_string_literal: true
 
 require "test_helper"
@@ -10,8 +9,6 @@ class TargetTestCase < Minitest::Test
 
   def setup
     LLVM::Target.init('X86', true)
-
-    @x86 = LLVM::Target.by_name('x86')
   end
 
   def test_init_native
@@ -19,19 +16,31 @@ class TargetTestCase < Minitest::Test
     LLVM::Target.init_native(true)
   end
 
-  if LLVM::CONFIG::TARGETS_BUILT.include?('ARM')
-    def test_init_arm
-      LLVM::Target.init('ARM')
-      LLVM::Target.init('ARM', true)
-
-      arm_target = LLVM::Target.by_name('arm')
-      assert_equal 'arm', arm_target.name
-    end
-  end
-
   def test_init_all
     LLVM::Target.init_all
     LLVM::Target.init_all(true)
+  end
+
+  TARGET_CHECKS = {
+    'X86' => %w[x86-64 x86],
+    'AMDGPU' => %w[amdgcn r600],
+    'RISCV' => %w[riscv64 riscv32],
+    'WebAssembly' => %w[wasm64 wasm32],
+    'PowerPC' => %w[ppc64le ppc64 ppc32le ppc32],
+  }.freeze
+
+  LLVM::CONFIG::TARGETS_BUILT.each do |arch|
+    define_method("test_init_#{arch}") do
+      LLVM::Target.init(arch)
+      LLVM::Target.init(arch, true)
+
+      check_targets = TARGET_CHECKS[arch] || [arch.downcase]
+
+      check_targets.each do |target_name|
+        assert arch_target = LLVM::Target.by_name(target_name)
+        assert_equal target_name, arch_target.name
+      end
+    end
   end
 
   def test_each
@@ -41,26 +50,47 @@ class TargetTestCase < Minitest::Test
     assert targets.count > 0
   end
 
-  def test_target
-    assert_equal 'x86', @x86.name
-    assert_equal "32-bit X86: Pentium-Pro and above", @x86.description
-    assert_equal true, @x86.jit?
-    assert_equal true, @x86.target_machine?
-    assert_equal true, @x86.asm_backend?
+  def test_target_x86
+    assert x86 = LLVM::Target.by_name('x86')
+    assert_equal 'x86', x86.name
+    assert_equal "32-bit X86: Pentium-Pro and above", x86.description
+    assert_equal true, x86.jit?
+    assert_equal true, x86.target_machine?
+    assert_equal true, x86.asm_backend?
   end
 
-  def test_target_machine
-    @x86 = LLVM::Target.by_name('x86')
-    mach = @x86.create_machine('x86-linux-gnu', 'i686')
+  def test_target_x86_64
+    assert x86_64 = LLVM::Target.by_name('x86-64')
+    assert_equal 'x86-64', x86_64.name
+    assert_equal "64-bit X86: EM64T and AMD64", x86_64.description
+    assert_equal true, x86_64.jit?
+    assert_equal true, x86_64.target_machine?
+    assert_equal true, x86_64.asm_backend?
+  end
 
-    assert_equal @x86, mach.target
+  def test_target_machine_x86
+    assert x86 = LLVM::Target.by_name('x86')
+    assert mach = x86.create_machine('x86-linux-gnu', 'i686')
+
+    assert_equal x86, mach.target
     assert_equal 'x86-linux-gnu', mach.triple
     assert_equal 'i686', mach.cpu
     assert_equal '', mach.features
   end
 
-  def test_emit
-    mach = @x86.create_machine('x86-linux-gnu')
+  def test_target_machine_x86_64
+    assert x86_64 = LLVM::Target.by_name('x86-64')
+    assert mach = x86_64.create_machine('x86-64-linux-gnu', 'i686')
+
+    assert_equal x86_64, mach.target
+    assert_equal 'x86-64-linux-gnu', mach.triple
+    assert_equal 'i686', mach.cpu
+    assert_equal '', mach.features
+  end
+
+  def test_emit_x86
+    assert x86 = LLVM::Target.by_name('x86')
+    assert mach = x86.create_machine('x86-linux-gnu')
 
     mod = define_module('test') do |mod|
       define_function(mod, 'main', [], LLVM::Int) do |builder, fun|
@@ -88,8 +118,35 @@ class TargetTestCase < Minitest::Test
     Tempfile.open('emit') do |tmp|
       mach.emit(mod, tmp.path, :object)
       data = File.read(tmp.path, mode: 'rb')
-      assert_match(/\x31\xc0\xc3/, data)
+      assert_match(/\x31\xc0\xc3/n, data)
       assert_equal 528, data.length
+    end
+  end
+
+  def test_emit_x86_64
+    assert x86 = LLVM::Target.by_name('x86-64')
+    assert mach = x86.create_machine('x86-64-linux-gnu')
+
+    mod = define_module('test') do |mod|
+      define_function(mod, 'main', [], LLVM::Int) do |builder, fun|
+        entry = fun.basic_blocks.append
+        builder.position_at_end(entry)
+        builder.ret(LLVM::Int(0))
+      end
+    end
+
+    Tempfile.open('emit') do |tmp|
+      mach.emit(mod, tmp.path)
+      data = tmp.read
+      assert_match(/xorl\t%eax, %eax/, data)
+      assert_equal 218, data.length
+    end
+
+    Tempfile.open('emit') do |tmp|
+      mach.emit(mod, tmp.path, :object)
+      data = File.read(tmp.path, mode: 'rb')
+      assert_match(/\x31\xc0\xc3/n, data)
+      assert_equal 744, data.length
     end
   end
 

@@ -63,6 +63,9 @@ Style/RedundantBegin:
 Naming/MethodName:
   Enabled: false
 
+Naming/VariableNumber:
+  Enabled: false
+
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
   Exclude:
