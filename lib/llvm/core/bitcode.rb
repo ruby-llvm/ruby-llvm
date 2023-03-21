@@ -36,6 +36,28 @@ module LLVM
       end
       status == 0
     end
+
+    def self.parse_ir(path_or_memory_buffer, context = Context.global)
+      memory_buffer = case path_or_memory_buffer
+      when MemoryBuffer then path_or_memory_buffer
+      else MemoryBuffer.from_file(path_or_memory_buffer)
+      end
+      FFI::MemoryPointer.new(:pointer) do |mod_ref|
+        FFI::MemoryPointer.new(:pointer) do |msg_ref|
+          status = C.parse_ir_in_context(context, memory_buffer, mod_ref, msg_ref)
+          raise msg_ref.get_pointer(0).get_string(0) if status
+          return from_ptr(mod_ref.get_pointer(0))
+        end
+      end
+    end
+
+    def write_ir!(filename)
+      FFI::MemoryPointer.new(:pointer) do |msg_ref|
+        status = C.print_module_to_file(self, filename, msg_ref)
+        raise msg_ref.get_pointer(0).get_string(0) if status != 0
+      end
+      self
+    end
   end
 
   # @private
