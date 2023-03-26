@@ -22,5 +22,11 @@ class BitcodeTestCase < Minitest::Test
       result = run_function_on_module(new_module, "test_function").to_i
       assert_equal 1, result
     end
+    Tempfile.open("ir") do |tmp|
+      assert test_module.write_ir!(tmp.path)
+      new_module = LLVM::Module.parse_ir(tmp.path)
+      result = run_function_on_module(new_module, "test_function").to_i
+      assert_equal 1, result
+    end
   end
 end

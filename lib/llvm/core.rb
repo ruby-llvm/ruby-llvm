@@ -134,6 +134,20 @@ module LLVM
     # @return [Bool]
     # @scope class
     attach_function :is_literal_struct, :LLVMIsLiteralStruct, [:pointer], :bool
+
+    # /**
+    #  * Read LLVM IR from a memory buffer and convert it into an in-memory Module
+    #  * object. Returns 0 on success.
+    #  * Optionally returns a human-readable description of any errors that
+    #  * occurred during parsing IR. OutMessage must be disposed with
+    #  * LLVMDisposeMessage.
+    #  *
+    #  * @see llvm::ParseIR()
+    #  */
+    # LLVMBool LLVMParseIRInContext(LLVMContextRef ContextRef,
+    #                               LLVMMemoryBufferRef MemBuf, LLVMModuleRef *OutM,
+    #                               char **OutMessage);
+    attach_function :parse_ir_in_context, :LLVMParseIRInContext, [:pointer, :pointer, :pointer, :pointer], :bool
   end
 
   # Yields a pointer suitable for storing an LLVM output message.
