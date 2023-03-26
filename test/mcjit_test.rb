@@ -7,19 +7,6 @@ class MCJITTestCase < Minitest::Test
     LLVM.init_jit(true)
   end
 
-  def create_square_function_module
-    LLVM::Module.new('square').tap do |mod|
-      mod.functions.add(:square, [LLVM::Int], LLVM::Int) do |fun, x|
-        fun.basic_blocks.append.build do |builder|
-          n = builder.mul(x, x)
-          builder.ret(n)
-        end
-      end
-
-      mod.verify!
-    end
-  end
-
   def test_simple_function
     mod = create_square_function_module
 
@@ -30,20 +17,14 @@ class MCJITTestCase < Minitest::Test
   end
 
   def test_functions_named
-    mod = LLVM::Module.new('foo').tap do |mod|
-      mod.functions.add(:foo, [], LLVM::Int)
-      mod.verify!
-    end
+    mod = create_square_function_module
 
     engine = LLVM::MCJITCompiler.new(mod, :opt_level => 0)
 
-    # TODO: fix or replace find_function
-    skip
-
-    ['foo', :foo].each do |name|
+    ['square', :square].each do |name|
       engine.functions[name].tap do |fun|
-        assert fun, "function named #{name.inspect}"
-        assert_equal 'foo', fun.name
+        assert fun, "function named #{name.inspect} exists"
+        assert_equal name.to_s, fun.name
       end
     end
   end
@@ -70,11 +51,8 @@ class MCJITTestCase < Minitest::Test
   end
 
   def test_remove_module
-    mod1 = LLVM::Module.new('foo')
-    mod2 = LLVM::Module.new('bar')
-
-    foo = mod1.functions.add(:foo, [], LLVM::Int)
-    bar = mod2.functions.add(:bar, [], LLVM::Int)
+    mod1 = create_square_function_module
+    mod2 = create_cube_function_module
 
     engine = LLVM::MCJITCompiler.new(mod1, :opt_level => 0)
 
@@ -82,15 +60,12 @@ class MCJITTestCase < Minitest::Test
       assert_equal engine.modules, ret, '#<< returns self'
     end
 
-    # TODO: fix or replace find_function
-    skip
-
-    refute_nil engine.functions[:bar]
+    refute_nil engine.functions[:cube]
     engine.modules.delete(mod2).tap do |ret|
       assert_instance_of LLVM::Module, ret, '#delete returns module'
       assert_equal mod2, ret
     end
-    assert_nil engine.functions[:bar]
+    assert_nil engine.functions[:cube]
   end
 
   def test_accessors
@@ -106,5 +81,34 @@ class MCJITTestCase < Minitest::Test
       raise "New platform: #{FFI::Platform::OS}"
     end
     assert_match(matcher, engine.target_machine.triple)
+  end
+
+  private
+
+  def create_square_function_module
+    LLVM::Module.new('square').tap do |mod|
+      mod.functions.add(:square, [LLVM::Int], LLVM::Int) do |fun, x|
+        fun.basic_blocks.append.build do |builder|
+          n = builder.mul(x, x)
+          builder.ret(n)
+        end
+      end
+
+      mod.verify!
+    end
+  end
+
+  def create_cube_function_module
+    LLVM::Module.new('cube').tap do |mod|
+      mod.functions.add(:cube, [LLVM::Int], LLVM::Int) do |fun, x|
+        fun.basic_blocks.append.build do |builder|
+          n2 = builder.mul(x, x)
+          n3 = builder.mul(n2, x)
+          builder.ret(n3)
+        end
+      end
+
+      mod.verify!
+    end
   end
 end
