@@ -563,6 +563,7 @@ module LLVM
     # @return [LLVM::Instruction] The resulting pointer
     # @LLVMinst gep
     # @see http://llvm.org/docs/GetElementPtr.html
+    # may return Instruction or GlobalVariable
     def gep(ptr, indices, name = "")
       gep2(nil, ptr, indices, name)
     end
@@ -576,6 +577,7 @@ module LLVM
     # @return [LLVM::Instruction] The resulting pointer
     # @LLVMinst gep2
     # @see http://llvm.org/docs/GetElementPtr.html
+    # may return Instruction or GlobalVariable
     def gep2(type, ptr, indices, name)
       must_be_value!(ptr)
 

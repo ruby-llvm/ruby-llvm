@@ -81,7 +81,7 @@ Style/TrailingCommaInHashLiteral:
 # Metrics
 
 Metrics/ClassLength:
-  Max: 200
+  Max: 210
   CountAsOne: ['array', 'hash']
   Exclude:
     - 'lib/llvm/core/builder.rb'

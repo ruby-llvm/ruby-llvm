@@ -12,6 +12,26 @@ module LLVM
       val
     end
 
+    def self.from_ptr_kind(ptr)
+      return if ptr.null?
+
+      kind = C.get_value_kind(ptr)
+      case kind
+      when :instruction
+        Instruction.from_ptr(ptr)
+      when :const_int
+        Int.from_ptr(ptr)
+      when :const_fp
+        Float.from_ptr(ptr)
+      when :poison
+        Poison.from_ptr(ptr)
+      when :global_variable
+        GlobalValue.from_ptr(ptr)
+      else
+        raise "from_ptr_kind cannot handle: #{kind}"
+      end
+    end
+
     # Returns the Value type. This is abstract and is overidden by its subclasses.
     def self.type
       raise NotImplementedError, "#{name}.type() is abstract."
@@ -24,6 +44,11 @@ module LLVM
     # Returns the value's type.
     def type
       Type.from_ptr(C.type_of(self), nil)
+    end
+
+    # Returns the value's kind.
+    def kind
+      C.get_value_kind(self)
     end
 
     def allocated_type
@@ -1006,6 +1031,12 @@ module LLVM
   end
 
   class Instruction < User
+
+    def self.from_ptr(ptr)
+      kind = C.get_value_kind(ptr)
+      kind == :instruction ? super : LLVM::Value.from_ptr_kind(ptr)
+    end
+
     # Returns the parent of the instruction (a BasicBlock).
     def parent
       ptr = C.get_instruction_parent(self)
@@ -1027,6 +1058,14 @@ module LLVM
     def opcode
       C.get_instruction_opcode(self)
     end
+
+    def inspect
+      { self.class.name => { opcode: opcode, ptr: @ptr } }.to_s
+    end
+  end
+
+  class Poison < Value
+
   end
 
   class CallInst < Instruction
