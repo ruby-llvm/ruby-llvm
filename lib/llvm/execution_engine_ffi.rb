@@ -58,8 +58,8 @@ module LLVM::C
   # :mcjmm ::
   #   (OpaqueMCJITMemoryManager)
   class MCJITCompilerOptions < FFI::Struct
-    layout :opt_level, :uint,
-           :code_model, :char,
+    layout :opt_level, :codegen_opt_level,
+           :code_model, :code_model,
            :no_frame_pointer_elim, :int,
            :enable_fast_i_sel, :int,
            :mcjmm, OpaqueMCJITMemoryManager

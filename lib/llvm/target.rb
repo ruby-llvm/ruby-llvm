@@ -209,6 +209,23 @@ module LLVM
     # ffi_gen autodetects :string, which is too weak to be usable
     # with LLVMDisposeMessage
     attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [OpaqueTargetData], :pointer
+
+    enum :codegen_opt_level, [
+      :codegen_level_none, 0,
+      :codegen_level_less, 1,
+      :codegen_level_default, 2,
+      :codegen_level_aggressive, 3,
+    ]
+
+    enum :code_model, [
+      :code_model_default, 0,
+      :code_model_jit_default, 1,
+      :code_model_tiny, 2,
+      :code_model_small, 3,
+      :code_model_kernel, 4,
+      :code_model_medium, 5,
+      :code_model_large, 6,
+    ]
   end
 
   class TargetDataLayout

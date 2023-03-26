@@ -187,12 +187,11 @@ module LLVM
     # @return [ExecutionEngine] Execution engine
     def initialize(mod, options = {})
       options = {
-        :opt_level             => 2, # LLVMCodeGenLevelDefault
-        :code_model            => 0,
-        :no_frame_pointer_elim => false,
-        :enable_fast_i_sel     => false,
-        # TODO
-        #:mcjmm                 => nil,
+        opt_level: :codegen_level_default,
+        code_model: :code_model_default,
+        no_frame_pointer_elim: false,
+        enable_fast_i_sel: false,
+        mcjmm: nil,
       }.merge(options)
 
       super
