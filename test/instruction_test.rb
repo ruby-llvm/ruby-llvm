@@ -194,4 +194,55 @@ class InstructionTestCase < Minitest::Test
     end
   end
 
+  # some builder instructions do not return instruction values
+  # int math with constants returns constants, or poison
+  def test_builder_returns_non_instruction_ints
+    fn = @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        ops = [:add, :sub, :mul]
+        prefixes = ['', :nsw_, :nuw_]
+
+        prefixes.product(ops).map(&:join).each do |op|
+          assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
+          assert_equal LLVM::Int32, inst.class
+          assert_equal "i32 0", inst.to_s
+        end
+
+        [:sdiv, :exact_sdiv, :udiv].each do |op|
+          assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(1))
+          assert_equal LLVM::Int32, inst.class
+          assert_equal "i32 0", inst.to_s
+
+          assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
+          assert_equal LLVM::Poison, inst.class
+          assert_equal "i32 poison", inst.to_s
+        end
+      end
+    end
+  end
+
+  # some builder instructions do not return instruction values
+  # float math with constants returns constants
+  def test_builder_returns_non_instruction_floats
+    fn = @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        [:fadd, :fsub, :fmul].each do |op|
+          assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(0))
+          assert_equal LLVM::Float, inst.class
+          assert_equal "float 0.000000e+00", inst.to_s
+        end
+
+        [:fdiv, :frem].each do |op|
+          assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(1))
+          assert_equal LLVM::Float, inst.class
+          assert_equal "float 0.000000e+00", inst.to_s
+
+          assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(0))
+          assert_equal LLVM::Float, inst.class
+          assert_equal 'float 0x7FF8000000000000', inst.to_s
+        end
+      end
+    end
+  end
+
 end

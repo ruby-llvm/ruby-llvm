@@ -94,12 +94,12 @@ class BasicBlockTestCase < Minitest::Test
       block2 = coll.append
 
       block1.build do |builder|
-        inst = builder.add(LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
-        assert inst
+        assert inst = builder.ret
+        assert_equal LLVM::Instruction, inst.class
+        assert_equal :ret, inst.opcode
 
-        # TODO: why do these cause sporadic segfaults
-        # builder.position_before(inst)
-        # builder.position(block1, inst)
+        builder.position_before(inst)
+        builder.position(block1, inst)
 
         builder.position_at_end(block1)
         builder.position_at_end(block2)

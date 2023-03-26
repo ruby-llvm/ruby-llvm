@@ -148,6 +148,42 @@ module LLVM
     #                               LLVMMemoryBufferRef MemBuf, LLVMModuleRef *OutM,
     #                               char **OutMessage);
     attach_function :parse_ir_in_context, :LLVMParseIRInContext, [:pointer, :pointer, :pointer, :pointer], :bool
+
+    enum :value_kind, [
+      :argument, 0,
+      :basic_block, 1,
+      :memory_use, 2,
+      :memory_def, 3,
+      :memory_phi, 4,
+      :function, 5,
+      :global_alias, 6,
+      :global_ifunc, 7,
+      :global_variable, 8,
+      :block_address, 9,
+      :const_expr, 10,
+      :const_array, 11,
+      :const_struct, 12,
+      :const_vector, 13,
+      :undef, 14,
+      :const_aggregregate_zero, 15,
+      :const_data_array, 16,
+      :const_data_vector, 17,
+      :const_int, 18,
+      :const_fp, 19,
+      :const_null, 20,
+      :const_none, 21,
+      :metadata, 22,
+      :inline_asm, 23,
+      :instruction, 24,
+      :poison, 25,
+    ]
+
+    # /**
+    #  * Obtain the enumerated type of a Value instance.
+    #  *
+    #  * @see llvm::Value::getValueID()
+    #  */
+    attach_function :get_value_kind, :LLVMGetValueKind, [:pointer], :value_kind
   end
 
   # Yields a pointer suitable for storing an LLVM output message.
