@@ -19,7 +19,7 @@ jobs:
       - name: Install LLVM on macos
         if: matrix.os == 'macos'
         run: |
-          brew install llvm@15
+          brew install llvm@15 || true
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
           sudo mkdir -p /opt/local/
           sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
@@ -31,7 +31,7 @@ jobs:
         if:
           matrix.os == 'macos'
         run: |
-          echo $(llvm-config-15 --ldflags)
+          echo $(llvm-config --ldflags)
           echo $(brew --repository)
           echo $(brew --prefix llvm)
           ls -l /usr/local/Cellar/llvm/15.*/lib/libLLVM.dylib
