@@ -25,8 +25,8 @@ jobs:
           echo "$PATH"
           echo "/usr/local/opt/llvm/bin" >> $GITHUB_PATH
           echo "$PATH"
-          sudo mkdir -p /opt/local/
-          sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
+          sudo mkdir -pv /opt/local/
+          sudo ln -sv $(brew --prefix llvm)/lib /opt/local/lib
 #          echo "$(brew --prefix llvm)/bin" >>"${GITHUB_PATH}"
         #  echo "$GITHUB_PATH"
         #  brew list | grep llvm
