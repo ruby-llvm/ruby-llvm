@@ -20,7 +20,7 @@ jobs:
         if: matrix.os == 'macos'
         run: |
           brew list | grep llvm
-          brew list | grep llvm15 || brew install llvm@15
+          (brew list | grep llvm15) && brew install llvm@15
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
           sudo mkdir -p /opt/local/
           sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
