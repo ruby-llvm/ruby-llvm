@@ -42,6 +42,7 @@ jobs:
         run: |
           echo $(brew --repository)
           echo $(brew --prefix llvm)
+          echo "$PATH"
           echo $(llvm-config --ldflags)
           ls -l /usr/local/Cellar/llvm/15.*/lib/libLLVM.dylib
           ls -l $(brew --prefix llvm)/lib/libLLVM.dylib
