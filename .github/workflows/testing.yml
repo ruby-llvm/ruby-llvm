@@ -31,7 +31,7 @@ jobs:
         if:
           matrix.os == 'macos'
         run: |
-          echo $(llvm-config --ldflags)
+          echo $(llvm-config-15 --ldflags)
           echo $(brew --repository)
           echo $(brew --prefix llvm)
           ls -l /usr/local/Cellar/llvm/15.*/lib/libLLVM.dylib
