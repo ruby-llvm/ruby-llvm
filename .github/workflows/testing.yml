@@ -20,15 +20,15 @@ jobs:
         if: matrix.os == 'macos'
         run: |
           brew list | grep llvm
-          brew reinstall llvm@15
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
           sudo mkdir -p /opt/local/
           sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
-          # ffi will only look for files in a small set of directories, so llvm needs to be there
-          # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
-          # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
-          # this uses /opt/local/lib -> /usr/local/opt/llvm/lib
-          #           (brew list | grep llvm15) && brew install llvm@15
+        # ffi will only look for files in a small set of directories, so llvm needs to be there
+        # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
+        # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
+        # this uses /opt/local/lib -> /usr/local/opt/llvm/lib
+        #           (brew list | grep llvm15) && brew install llvm@15
+        #  brew reinstall llvm@15
       - name: 'MacOS debug'
         if:
           matrix.os == 'macos'
