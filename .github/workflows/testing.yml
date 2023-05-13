@@ -40,6 +40,7 @@ jobs:
         if:
           matrix.os == 'macos'
         run: |
+          brew info llvm
           echo $(brew --repository)
           echo $(brew --prefix llvm)
           echo "$PATH"
