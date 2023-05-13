@@ -204,17 +204,17 @@ class InstructionTestCase < Minitest::Test
 
         prefixes.product(ops).map(&:join).each do |op|
           assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
-          assert_equal LLVM::Int32, inst.class
+          assert_instance_of LLVM::Int32, inst
           assert_equal "i32 0", inst.to_s
         end
 
         [:sdiv, :exact_sdiv, :udiv].each do |op|
           assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(1))
-          assert_equal LLVM::Int32, inst.class
+          assert_instance_of LLVM::Int32, inst
           assert_equal "i32 0", inst.to_s
 
           assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
-          assert_equal LLVM::Poison, inst.class
+          assert_instance_of LLVM::Poison, inst
           assert_equal "i32 poison", inst.to_s
         end
       end
@@ -228,17 +228,17 @@ class InstructionTestCase < Minitest::Test
       fn.basic_blocks.append.build do |builder|
         [:fadd, :fsub, :fmul].each do |op|
           assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(0))
-          assert_equal LLVM::Float, inst.class
+          assert_instance_of LLVM::Float, inst
           assert_equal "float 0.000000e+00", inst.to_s
         end
 
         [:fdiv, :frem].each do |op|
           assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(1))
-          assert_equal LLVM::Float, inst.class
+          assert_instance_of LLVM::Float, inst
           assert_equal "float 0.000000e+00", inst.to_s
 
           assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(0))
-          assert_equal LLVM::Float, inst.class
+          assert_instance_of LLVM::Float, inst
           assert_equal 'float 0x7FF8000000000000', inst.to_s
         end
       end

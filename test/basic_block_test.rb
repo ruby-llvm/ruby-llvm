@@ -95,7 +95,7 @@ class BasicBlockTestCase < Minitest::Test
 
       block1.build do |builder|
         assert inst = builder.ret
-        assert_equal LLVM::Instruction, inst.class
+        assert_instance_of LLVM::Instruction, inst
         assert_equal :ret, inst.opcode
 
         builder.position_before(inst)
