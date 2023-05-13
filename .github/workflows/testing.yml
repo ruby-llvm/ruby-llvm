@@ -27,6 +27,8 @@ jobs:
           echo "$PATH"
           sudo mkdir -pv /opt/local/
           sudo ln -sv $(brew --prefix llvm)/lib /opt/local/lib
+          brew reinstall llvm@15
+          brew info llvm@15
 #          echo "$(brew --prefix llvm)/bin" >>"${GITHUB_PATH}"
         #  echo "$GITHUB_PATH"
         #  brew list | grep llvm
