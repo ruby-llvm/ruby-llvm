@@ -20,9 +20,9 @@ jobs:
         if: matrix.os == 'macos'
         run: |
           brew install llvm@15
-          echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
-          sudo mkdir -p /opt/local/
-          sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
+          echo "$(brew --prefix llvm@15)/bin" >> $GITHUB_PATH
+          sudo mkdir -pv /opt/local/
+          sudo ln -sv $(brew --prefix llvm@15)/lib /opt/local/lib
           # ffi will only look for files in a small set of directories, so llvm needs to be there
           # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
           # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
@@ -31,11 +31,13 @@ jobs:
         if:
           matrix.os == 'macos'
         run: |
-          echo $(llvm-config --ldflags)
           echo $(brew --repository)
-          echo $(brew --prefix llvm)
-          ls -l /usr/local/Cellar/llvm/15.*/lib/libLLVM.dylib
-          ls -l $(brew --prefix llvm)/lib/libLLVM.dylib
+          echo $(brew --prefix llvm@15)
+          echo $(brew info llvm@15)
+          echo "$PATH"
+          echo $(llvm-config --ldflags)
+          ls -l /usr/local/Cellar/llvm@15/15.*/lib/libLLVM.dylib
+          ls -l $(brew --prefix llvm@15)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
       - name: Install LLVM on ubuntu
         if: matrix.os == 'ubuntu'
