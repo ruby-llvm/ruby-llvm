@@ -22,7 +22,7 @@ jobs:
           echo "HELLO"
           echo "WORLD"
           echo "$(brew --prefix llvm)/bin"
-          echo "$(brew --prefix llvm)/bin" >> "${GITHUB_PATH}"
+          echo "$(brew --prefix llvm)/bin" >>"${GITHUB_PATH}"
           sudo mkdir -p /opt/local/
           sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
         #  echo "$GITHUB_PATH"
