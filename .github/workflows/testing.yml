@@ -19,10 +19,10 @@ jobs:
       - name: Install LLVM on macos
         if: matrix.os == 'macos'
         run: |
-          brew list | grep llvm
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
           sudo mkdir -p /opt/local/
           sudo ln -s $(brew --prefix llvm)/lib /opt/local/lib
+        #  brew list | grep llvm
         # ffi will only look for files in a small set of directories, so llvm needs to be there
         # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
         # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
