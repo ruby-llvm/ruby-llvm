@@ -27,6 +27,8 @@ module LLVM
           :LLVMInitializeNativeTarget, [], :void
       attach_function :initialize_native_asm_printer,
           :LLVMInitializeNativeAsmPrinter, [], :void
+
+      attach_function :get_enum_attribute_name_for_kind, :LLVMGetEnumAttributeNameForKind, [:uint], :string
     end
   end
 

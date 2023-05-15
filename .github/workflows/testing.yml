@@ -45,6 +45,14 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 15
+      - name: 'Ubuntu debug'
+        if:
+          matrix.os == 'ubuntu'
+        run: |
+          ls -alF /usr/lib/llvm-15/include/
+          dpkg -l | egrep 'c\+\+|g\+\+|gcc|llvm|build-essential'
+          ls -alF /usr/include/c++/11/cstddef
+          ls -alF /usr/lib/llvm-*/include/
       - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
         with:

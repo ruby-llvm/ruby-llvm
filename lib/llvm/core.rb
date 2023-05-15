@@ -24,9 +24,16 @@ module LLVM
     # (LLVMContextRef C, unsigned KindID, uint64_t Val);
     attach_function :create_enum_attribute, :LLVMCreateEnumAttribute, [:pointer, :uint, :uint64], :pointer
 
+    # LLVMAttributeRef LLVMCreateStringAttribute(LLVMContextRef C,
+    #   const char *K, unsigned KLength,
+    #   const char *V, unsigned VLength);
+    attach_function :create_string_attribute, :LLVMCreateStringAttribute, [:pointer, :string, :uint, :string, :uint], :pointer
+
     # unsigned LLVMGetEnumAttributeKindForName
     # (const char *Name, size_t SLen);
     attach_function :get_enum_attribute_kind_for_name, :LLVMGetEnumAttributeKindForName, [:pointer, :size_t], :uint
+
+    attach_function :get_last_enum_attribute_kind, :LLVMGetLastEnumAttributeKind, [], :uint
 
     # unsigned LLVMGetAttributeCountAtIndex
     # (LLVMValueRef F, LLVMAttributeIndex Idx);
@@ -42,15 +49,19 @@ module LLVM
 
     # uint64_t LLVMGetEnumAttributeValue
     # (LLVMAttributeRef A);
-    attach_function :get_enum_attribute_value, :LLVMGetEnumAttributeKind, [:pointer], :uint64
+    attach_function :get_enum_attribute_value, :LLVMGetEnumAttributeValue, [:pointer], :uint64
 
     # const char *LLVMGetStringAttributeKind
     # (LLVMAttributeRef A, unsigned *Length);
-    attach_function :get_string_attribute_kind, :LLVMGetStringAttributeKind, [:pointer, :pointer], :pointer
+    attach_function :get_string_attribute_kind, :LLVMGetStringAttributeKind, [:pointer, :pointer], :string
 
     # const char *LLVMGetStringAttributeValue
     # (LLVMAttributeRef A, unsigned *Length);
-    attach_function :get_string_attribute_value, :LLVMGetStringAttributeValue, [:pointer, :pointer], :pointer
+    attach_function :get_string_attribute_value, :LLVMGetStringAttributeValue, [:pointer, :pointer], :string
+
+    attach_function :is_enum_attribute, :LLVMIsEnumAttribute, [:pointer], :bool
+    attach_function :is_string_attribute, :LLVMIsStringAttribute, [:pointer], :bool
+    attach_function :is_type_attribute, :LLVMIsTypeAttribute, [:pointer], :bool
 
     # LLVMValueRef LLVMBuildLoad2(LLVMBuilderRef, LLVMTypeRef Ty, LLVMValueRef PointerVal, const char *Name);
     attach_function :build_load2, :LLVMBuildLoad2, [:pointer, :pointer, :pointer, :string], :pointer
@@ -229,4 +240,5 @@ module LLVM
   require 'llvm/core/builder'
   require 'llvm/core/pass_manager'
   require 'llvm/core/bitcode'
+  require 'llvm/core/attribute'
 end

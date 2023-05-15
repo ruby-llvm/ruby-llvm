@@ -3,6 +3,7 @@
  */
 
 #include <llvm/Support/TargetSelect.h>
+#include <llvm/IR/Attributes.h>
 
 extern "C" {
   void LLVMInitializeAllTargetInfos() {
@@ -27,6 +28,12 @@ extern "C" {
 
   void LLVMInitializeNativeAsmPrinter() {
     llvm::InitializeNativeTargetAsmPrinter();
+  }
+
+  const char* LLVMGetEnumAttributeNameForKind(const unsigned KindID) {
+    const auto AttrKind = (llvm::Attribute::AttrKind) KindID;
+    const auto S = llvm::Attribute::getNameFromAttrKind(AttrKind);
+    return S.data();
   }
 }
 
