@@ -2,6 +2,27 @@
 ### Changed
 ### Added
 
+## [15.0.4] - 2022-05-14
+### Changed
+- Fixed segfaults when value type expected to be instruction but was globalvairable
+- inspect values should be more useful than raw pointer for modules, functions, instructions
+- Fixed tests 
+- raise on use of deprecated constant expressions
+
+### Added
+- Add LLVM::Value#kind which calls LLVMGetValueKind and returns a symbol
+- Add LLVM::Module.parse_ir and LLVM::Module#write_ir!
+- More workflow tests - including ruby 3.2
+- Several additional Target tests
+- valid? method for modules and functions
+- ConstantInt#trunc
+- ConstantInt#ext alias for ConstantInt#sext
+- ConstantInt#to_f to const convert to float type
+- ConstantReal#to_i to const convert to int type
+- ConstantReal#trunc
+- ConstantReal#ext / ConstantReal#sext
+- Many more tests
+
 ## [15.0.3] - 2022-02-24
 ### Added
 - Tests for adding pass manager passes - catches pass removals and certain bugs
