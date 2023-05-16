@@ -5,18 +5,22 @@ require "test_helper"
 class AttributeTestCase < Minitest::Test
 
   ATTRIBUTE_KINDS = [
-    [:readnone, 47],
-    [:readonly, 48],
+    :readnone,
+    :readonly,
+    :willreturn,
+    :nounwind,
+    :mustprogress
   ].freeze
 
   def test_create_enums
-    ATTRIBUTE_KINDS.each do |pair|
-      attr = LLVM::Attribute.create_enum(pair[0])
-      assert_equal pair[1], attr.kind
+    ATTRIBUTE_KINDS.each do |attr_name|
+      attr = LLVM::Attribute.create_enum(attr_name)
+      assert_equal attr_name, attr.kind.to_sym
       assert_instance_of LLVM::Attribute, attr
       assert_predicate attr, :enum?
       refute_predicate attr, :string?
       refute_predicate attr, :type?
+      assert_equal "#{attr_name}(0)", attr.inspect
     end
   end
 
@@ -33,17 +37,8 @@ class AttributeTestCase < Minitest::Test
     refute_predicate attr, :enum?
     refute_predicate attr, :type?
     assert_equal v, attr.value
+    assert_equal '"unsafe-fp-math" = "false"', attr.inspect
   end
 
-  def test_create_type
-    # k = "unsafe-fp-math"
-    # v = "false"
-    # attr = LLVM::Attribute.create_string(k, v)
-    # assert_instance_of LLVM::Attribute, attr
-    # assert_predicate attr, :type?
-    # refute_predicate attr, :string?
-    # refute_predicate attr, :enum?
-    # assert_equal v, attr.value
-  end
 
 end
