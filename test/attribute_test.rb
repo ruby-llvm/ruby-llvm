@@ -9,7 +9,7 @@ class AttributeTestCase < Minitest::Test
     :readonly,
     :willreturn,
     :nounwind,
-    :mustprogress
+    :mustprogress,
   ].freeze
 
   def test_create_enums
@@ -39,6 +39,5 @@ class AttributeTestCase < Minitest::Test
     assert_equal v, attr.value
     assert_equal '"unsafe-fp-math" = "false"', attr.inspect
   end
-
 
 end
