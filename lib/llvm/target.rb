@@ -30,7 +30,7 @@ module LLVM
       def self.safe_attach_function(*args)
         attach_function(*args)
       rescue FFI::NotFoundError => e
-        warn(e.to_s)
+        warn(e)
       end
     end
 
