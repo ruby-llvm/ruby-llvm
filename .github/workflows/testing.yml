@@ -39,7 +39,7 @@ jobs:
           echo $(brew info llvm@16)
           echo "$PATH"
           echo $(llvm-config --ldflags)
-          ls -l /usr/local/Cellar/llvm@16/16.*/lib/libLLVM.dylib
+          ls -l /usr/local/Cellar/llvm@*/*/lib/libLLVM.dylib
           ls -l $(brew --prefix llvm@16)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
       - name: Install LLVM on ubuntu
@@ -52,7 +52,7 @@ jobs:
         if:
           matrix.os == 'ubuntu'
         run: |
-          ls -alF /usr/lib/llvm-15/include/
+          ls -alF /usr/lib/llvm-*/include/
           dpkg -l | egrep 'c\+\+|g\+\+|gcc|llvm|build-essential'
           ls -alF /usr/include/c++/11/cstddef
           ls -alF /usr/lib/llvm-*/include/
