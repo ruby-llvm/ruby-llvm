@@ -856,9 +856,16 @@ module LLVM
       end
 
       def add(attr)
-        attr_kind_id = attribute_id(attr)
-        ctx = Context.global
-        attr_ref = C.create_enum_attribute(ctx, attr_kind_id, 0)
+        attr_ref = case attr
+        when Attribute
+          attr
+        when Symbol
+          attr_kind_id = attribute_id(attr)
+          ctx = Context.global
+          C.create_enum_attribute(ctx, attr_kind_id, 0)
+        else
+          raise "Adding unknown attribute type"
+        end
         C.add_attribute_at_index(@fun, @index, attr_ref)
       end
 
@@ -879,7 +886,7 @@ module LLVM
           attr_refs = p.read_array_of_type(:pointer, :read_pointer, n)
         end
 
-        attr_refs.map { |e| C.get_enum_attribute_kind(e) }
+        attr_refs.map { |e| Attribute.send(:from_ptr, e) }
       end
 
       private

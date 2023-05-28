@@ -21,6 +21,49 @@ class AttributeTestCase < Minitest::Test
       refute_predicate attr, :string?
       refute_predicate attr, :type?
       assert_equal "#{attr_name}(0)", attr.inspect
+      assert_equal LLVM::Attribute.new(attr_name), attr
+    end
+  end
+
+  def test_function_readnone
+    attr = LLVM::Attribute.create_enum(:readnone)
+    with_function [], LLVM.Void do |fun|
+      fun.add_attribute(attr)
+      assert_equal(['readnone'], fun.attributes.map(&:to_s))
+      assert_equal "; Function Attrs: readnone\ndeclare void @fun() #0\n", fun.to_s
+    end
+  end
+
+  def test_function_memory
+    vals = [
+      "; Function Attrs: memory(none)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: read)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: write)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: readwrite)\ndeclare void @fun() #0\n",
+
+      "; Function Attrs: memory(inaccessiblemem: read)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: read, inaccessiblemem: read)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: write, inaccessiblemem: read)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: readwrite, inaccessiblemem: read)\ndeclare void @fun() #0\n",
+
+      "; Function Attrs: memory(inaccessiblemem: write)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: read, inaccessiblemem: write)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: write, inaccessiblemem: write)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: readwrite, inaccessiblemem: write)\ndeclare void @fun() #0\n",
+
+      "; Function Attrs: memory(inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: read, inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: write, inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
+      "; Function Attrs: memory(argmem: readwrite, inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
+
+      "; Function Attrs: memory(read, argmem: none, inaccessiblemem: none)\ndeclare void @fun() #0\n",
+    ]
+    vals.each.with_index do |val, index|
+      attr = LLVM::Attribute.create_enum(:memory, index)
+      with_function [], LLVM.Void do |fun|
+        fun.add_attribute(attr)
+        assert_equal(val, fun.to_s)
+      end
     end
   end
 

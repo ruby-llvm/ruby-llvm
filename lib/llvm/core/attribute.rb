@@ -7,6 +7,15 @@ module LLVM
 
     class << self
 
+      def new(from)
+        case from
+        when String, Symbol
+          create_enum(from)
+        else
+          raise "Not implemented to create Attribute from #{from.class}"
+        end
+      end
+
       def create_enum(kind, value = 0, context = Context.global)
         attr_id = attribute_id(kind)
         ptr = C.create_enum_attribute(context, attr_id, value)
@@ -80,6 +89,15 @@ module LLVM
       return "\"#{kind}\" = \"#{value}\"" if string?
       return "#{kind}(#{value})" if enum?
       super
+    end
+
+    def to_s
+      return kind if enum?
+      super
+    end
+
+    def kind_id
+      enum_kind_id
     end
 
     private
