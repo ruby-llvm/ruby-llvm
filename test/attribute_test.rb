@@ -14,7 +14,7 @@ class AttributeTestCase < Minitest::Test
 
   def test_create_enums
     ATTRIBUTE_KINDS.each do |attr_name|
-      attr = LLVM::Attribute.create_enum(attr_name)
+      attr = LLVM::Attribute.enum(attr_name)
       assert_equal attr_name, attr.kind.to_sym
       assert_instance_of LLVM::Attribute, attr
       assert_predicate attr, :enum?
@@ -26,7 +26,7 @@ class AttributeTestCase < Minitest::Test
   end
 
   def test_function_readnone
-    attr = LLVM::Attribute.create_enum(:readnone)
+    attr = LLVM::Attribute.enum(:readnone)
     with_function [], LLVM.Void do |fun|
       fun.add_attribute(attr)
       assert_equal(['readnone'], fun.attributes.map(&:to_s))
@@ -59,7 +59,7 @@ class AttributeTestCase < Minitest::Test
       "; Function Attrs: memory(read, argmem: none, inaccessiblemem: none)\ndeclare void @fun() #0\n",
     ]
     vals.each.with_index do |val, index|
-      attr = LLVM::Attribute.create_enum(:memory, index)
+      attr = LLVM::Attribute.enum(:memory, index)
       with_function [], LLVM.Void do |fun|
         fun.add_attribute(attr)
         assert_equal(val, fun.to_s)
@@ -74,7 +74,7 @@ class AttributeTestCase < Minitest::Test
   def test_create_string
     k = "unsafe-fp-math"
     v = "false"
-    attr = LLVM::Attribute.create_string(k, v)
+    attr = LLVM::Attribute.string(k, v)
     assert_instance_of LLVM::Attribute, attr
     assert_predicate attr, :string?
     refute_predicate attr, :enum?
