@@ -27,6 +27,7 @@ class TargetTestCase < Minitest::Test
     'RISCV' => %w[riscv64 riscv32],
     'WebAssembly' => %w[wasm64 wasm32],
     'PowerPC' => %w[ppc64le ppc64 ppc32le ppc32],
+    'LoongArch' => %w[loongarch64 loongarch32],
   }.freeze
 
   LLVM::CONFIG::TARGETS_BUILT.each do |arch|
@@ -80,10 +81,10 @@ class TargetTestCase < Minitest::Test
 
   def test_target_machine_x86_64
     assert x86_64 = LLVM::Target.by_name('x86-64')
-    assert mach = x86_64.create_machine('x86-64-linux-gnu', 'i686')
+    assert mach = x86_64.create_machine('x86_64-pc-linux-gnu', 'i686')
 
     assert_equal x86_64, mach.target
-    assert_equal 'x86-64-linux-gnu', mach.triple
+    assert_equal 'x86_64-pc-linux-gnu', mach.triple
     assert_equal 'i686', mach.cpu
     assert_equal '', mach.features
   end
@@ -125,7 +126,7 @@ class TargetTestCase < Minitest::Test
 
   def test_emit_x86_64
     assert x86 = LLVM::Target.by_name('x86-64')
-    assert mach = x86.create_machine('x86-64-linux-gnu')
+    assert mach = x86.create_machine('x86_64-pc-linux-gnu')
 
     mod = define_module('test') do |mod|
       define_function(mod, 'main', [], LLVM::Int) do |builder, fun|
@@ -146,7 +147,7 @@ class TargetTestCase < Minitest::Test
       mach.emit(mod, tmp.path, :object)
       data = File.read(tmp.path, mode: 'rb')
       assert_match(/\x31\xc0\xc3/n, data)
-      assert_equal 744, data.length
+      assert_equal 752, data.length
     end
   end
 

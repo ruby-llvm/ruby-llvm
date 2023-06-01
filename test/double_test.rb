@@ -51,7 +51,27 @@ class DoubleTestCase < Minitest::Test
   end
 
   def test_const_fneg
-    assert_equal LLVM.Double(-1), -LLVM.Double(1)
+    assert_raises(StandardError) do
+      assert_equal LLVM.Double(-1), -LLVM.Double(1)
+    end
+  end
+
+  def test_const_math
+    assert_raises(StandardError) do
+      LLVM.Double(1) + LLVM.Double(1)
+    end
+    assert_raises(StandardError) do
+      LLVM.Double(1) * LLVM.Double(1)
+    end
+    assert_raises(StandardError) do
+      LLVM.Double(0) - LLVM.Double(1)
+    end
+    assert_raises(StandardError) do
+      LLVM.Double(0) / LLVM.Double(1)
+    end
+    assert_raises(StandardError) do
+      LLVM.Double(0).frem(LLVM.Double(1))
+    end
   end
 
   def test_double

@@ -19,37 +19,40 @@ jobs:
       - name: Install LLVM on macos
         if: matrix.os == 'macos'
         run: |
-          brew install llvm@15
-          echo "$(brew --prefix llvm@15)/bin" >> $GITHUB_PATH
-          sudo mkdir -pv /opt/local/
-          sudo ln -sv $(brew --prefix llvm@15)/lib /opt/local/lib
+          brew update --auto-update
+          brew install llvm@16
+          echo "$(brew --prefix llvm@16)/bin" >> $GITHUB_PATH
+          sudo mkdir -p /opt/local/
+          sudo ln -s $(brew --prefix llvm@16)/lib /opt/local/lib
           # ffi will only look for files in a small set of directories, so llvm needs to be there
           # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
           # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
           # this uses /opt/local/lib -> /usr/local/opt/llvm/lib
+        env:
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       - name: 'MacOS debug'
         if:
           matrix.os == 'macos'
         run: |
           echo $(brew --repository)
-          echo $(brew --prefix llvm@15)
-          echo $(brew info llvm@15)
+          echo $(brew --prefix llvm@16)
+          echo $(brew info llvm@16)
           echo "$PATH"
           echo $(llvm-config --ldflags)
-          ls -l /usr/local/Cellar/llvm@15/15.*/lib/libLLVM.dylib
-          ls -l $(brew --prefix llvm@15)/lib/libLLVM.dylib
+          ls -l /usr/local/Cellar/llvm@*/*/lib/libLLVM.dylib
+          ls -l $(brew --prefix llvm@16)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
       - name: Install LLVM on ubuntu
         if: matrix.os == 'ubuntu'
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 15
+          sudo ./llvm.sh 16
       - name: 'Ubuntu debug'
         if:
           matrix.os == 'ubuntu'
         run: |
-          ls -alF /usr/lib/llvm-15/include/
+          ls -alF /usr/lib/llvm-*/include/
           dpkg -l | egrep 'c\+\+|g\+\+|gcc|llvm|build-essential'
           ls -alF /usr/include/c++/11/cstddef
           ls -alF /usr/lib/llvm-*/include/

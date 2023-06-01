@@ -7,13 +7,34 @@ module LLVM
 
     class << self
 
-      def create_enum(kind, value = 0, context = Context.global)
+      def new(from)
+        case from
+        when String, Symbol
+          enum(from)
+        else
+          raise "Not implemented to create Attribute from #{from.class}"
+        end
+      end
+
+      # create a memory attribute from a hash where the keys are:
+      #   argmem, inaccessiblemem, memory
+      # and the valid values are:
+      #   read, write, readwrite
+      def memory(opts = {})
+        opts = opts.transform_keys(&:to_sym)
+        val = bit_value(opts[:argmem]) | (bit_value(opts[:inaccessiblemem]) << 2) | (bit_value(opts[:memory]) << 4)
+        enum(:memory, val)
+      end
+
+      # create enum attribute with optional value and context
+      def enum(kind, value = 0, context = Context.global)
         attr_id = attribute_id(kind)
         ptr = C.create_enum_attribute(context, attr_id, value)
         from_ptr(ptr)
       end
 
-      def create_string(key, value, context = Context.global)
+      # create string attribute with key and value
+      def string(key, value, context = Context.global)
         key = key.to_s
         value = value.to_s
         ptr = C.create_string_attribute(context, key, key.size, value, value.size)
@@ -50,6 +71,24 @@ module LLVM
         attr_kind_id
       end
 
+      # returns correct 2 bits of memory value:
+      #   0 = none
+      #   1 = read
+      #   2 = write
+      #   3 = readwrite
+      def bit_value(maybe_value)
+        case maybe_value.to_s
+        when 'read'
+          1
+        when 'write'
+          2
+        when 'readwrite'
+          3
+        else
+          0
+        end
+      end
+
     end
 
     def kind
@@ -80,6 +119,15 @@ module LLVM
       return "\"#{kind}\" = \"#{value}\"" if string?
       return "#{kind}(#{value})" if enum?
       super
+    end
+
+    def to_s
+      return kind if enum?
+      super
+    end
+
+    def kind_id
+      enum_kind_id
     end
 
     private
