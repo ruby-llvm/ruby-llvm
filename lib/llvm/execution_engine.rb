@@ -280,7 +280,7 @@ module LLVM
 
     # Creates a GenericValue from a Ruby boolean.
     def self.from_b(b)
-      from_i(b ? 1 : 0, LLVM::Int1, false)
+      from_i(b ? 1 : 0, type: LLVM::Int1, signed: false)
     end
 
     # Creates a GenericValue from an FFI::Pointer pointing to some arbitrary value.
