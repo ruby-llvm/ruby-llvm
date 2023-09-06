@@ -22,8 +22,8 @@ class GenericValueTestCase < Minitest::Test
   end
 
   def test_from_bool
-    assert_equal true, LLVM::GenericValue.from_b(true).to_b
-    assert_equal false, LLVM::GenericValue.from_b(false).to_b
+    assert LLVM::GenericValue.from_b(true).to_b
+    refute LLVM::GenericValue.from_b(false).to_b
   end
 
 end
