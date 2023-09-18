@@ -37,19 +37,15 @@ module LLVM
     def self.init(target, asm_printer = false)
       target_module = TargetModule.dup
       target_module.module_eval do
-        attach_function :"initialize_target_info_#{target}",
-            :"LLVMInitialize#{target}TargetInfo", [], :void
-        attach_function :"initialize_target_#{target}",
-            :"LLVMInitialize#{target}Target", [], :void
-        attach_function :"initialize_target_#{target}_mc",
-            :"LLVMInitialize#{target}TargetMC", [], :void
+        attach_function :"initialize_target_info_#{target}", :"LLVMInitialize#{target}TargetInfo", [], :void
+        attach_function :"initialize_target_#{target}", :"LLVMInitialize#{target}Target", [], :void
+        attach_function :"initialize_target_#{target}_mc", :"LLVMInitialize#{target}TargetMC", [], :void
 
-        attach_function :"initialize_#{target}_asm_printer",
-            :"LLVMInitialize#{target}AsmPrinter", [], :void
-        safe_attach_function :"initialize_#{target}_asm_parser",
-            :"LLVMInitialize#{target}AsmParser", [], :void
-        safe_attach_function :"initialize_#{target}_disassembler",
-            :"LLVMInitialize#{target}Disassembler", [], :void
+        if asm_printer
+          attach_function(:"initialize_#{target}_asm_printer", :"LLVMInitialize#{target}AsmPrinter", [], :void)
+        end
+        safe_attach_function :"initialize_#{target}_asm_parser", :"LLVMInitialize#{target}AsmParser", [], :void
+        safe_attach_function :"initialize_#{target}_disassembler", :"LLVMInitialize#{target}Disassembler", [], :void
       end
 
       C.extend(target_module)
