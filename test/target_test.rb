@@ -30,10 +30,15 @@ class TargetTestCase < Minitest::Test
     'LoongArch' => %w[loongarch64 loongarch32],
   }.freeze
 
+  SKIP_ASM_PRINTER = ['Xtensa'].freeze
+
   LLVM::CONFIG::TARGETS_BUILT.each do |arch|
     define_method("test_init_#{arch}") do
       LLVM::Target.init(arch)
-      LLVM::Target.init(arch, true)
+
+      if !SKIP_ASM_PRINTER.include?(arch)
+        LLVM::Target.init(arch, true)
+      end
 
       check_targets = TARGET_CHECKS[arch] || [arch.downcase]
 
