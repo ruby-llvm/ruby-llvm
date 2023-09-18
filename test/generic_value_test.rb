@@ -21,4 +21,9 @@ class GenericValueTestCase < Minitest::Test
     assert_in_delta 2.2, LLVM::GenericValue.from_d(2.2).to_f(LLVM::Double), 1e-6
   end
 
+  def test_from_bool
+    assert_equal true, LLVM::GenericValue.from_b(true).to_b
+    assert_equal false, LLVM::GenericValue.from_b(false).to_b
+  end
+
 end
