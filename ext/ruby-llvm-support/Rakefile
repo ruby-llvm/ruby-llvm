@@ -76,10 +76,9 @@ CLEAN.include(SUPPORT_LIB, CONFIG_MOD)
 desc "Build the shared library and config module"
 task :default => [SUPPORT_LIB, CONFIG_MOD]
 
-# -I/usr/lib/llvm-14/include/c++/v1/ is needed for CI
 file SUPPORT_LIB => %w(support.cpp) do |task|
   sh "#{CXX} -O3 -shared #{task.prerequisites.join(' ')} -l#{llvm_lib_name} " \
-     "#{invoke_llvm_config('--cxxflags --ldflags')} -I/usr/lib/llvm-14/include/c++/v1/ -fPIC -o #{SUPPORT_LIB}"
+     "#{invoke_llvm_config('--cxxflags --ldflags')} -fPIC -o #{SUPPORT_LIB}"
 end
 
 LLVM_CONFIG_OPTS = [
