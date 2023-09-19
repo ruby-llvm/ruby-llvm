@@ -52,6 +52,8 @@ jobs:
         if:
           matrix.os == 'ubuntu'
         run: |
+          clang --version
+          which clang
           ls -alF /usr/lib/llvm-*/include/
           dpkg -l | egrep 'c\+\+|g\+\+|gcc|llvm|build-essential'
           ls -alF /usr/include/c++/11/cstddef
