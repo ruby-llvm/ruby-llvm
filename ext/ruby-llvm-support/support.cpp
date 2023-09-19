@@ -2,6 +2,7 @@
  * Extended bindings for LLVM.
  */
 
+#include <cstdlib>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/IR/Attributes.h>
 
