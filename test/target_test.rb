@@ -53,7 +53,7 @@ class TargetTestCase < Minitest::Test
     targets = LLVM::Target.each
 
     assert_instance_of Enumerator, targets
-    assert targets.count > 0
+    assert_operator targets.count, :>, 0
   end
 
   def test_target_x86
