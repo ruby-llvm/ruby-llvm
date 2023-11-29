@@ -2,7 +2,7 @@
 
 require 'test_helper'
 require 'llvm/config'
-require 'llvm/transforms/builder'
+require 'llvm/transforms/pass_manager_builder'
 
 class PassManagerBuilderTest < Minitest::Test
   def setup
@@ -32,11 +32,13 @@ class PassManagerBuilderTest < Minitest::Test
   end
 
   def test_build
-    @builder.build(@pass_manager)
+    assert_raises(LLVM::DeprecationError) do
+      @builder.build(@pass_manager)
+    end
   end
 
   def test_build_with_lto
-    assert_raises do
+    assert_raises(LLVM::DeprecationError) do
       @builder.build_with_lto(@pass_manager)
     end
   end
@@ -60,8 +62,10 @@ class PassManagerBuilderTest < Minitest::Test
       assert @pass_manager = LLVM::PassManager.new
     end
     PASSES.each do |pass|
-      it "should return '#{pass}'" do
-        assert_nil @pass_manager.send(pass)
+      it "should raise DeprecationError for '#{pass}'" do
+        assert_raises(LLVM::DeprecationError) do
+          @pass_manager.send(pass)
+        end
       end
     end
   end

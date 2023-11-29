@@ -25,7 +25,7 @@ module LLVM
 
     module TargetModule
       extend FFI::Library
-      ffi_lib ["libLLVM-16.so.1", "libLLVM.so.16", "LLVM-16"]
+      ffi_lib ["libLLVM-17.so.1", "libLLVM.so.17", "LLVM-17"]
 
       def self.safe_attach_function(*args)
         attach_function(*args)

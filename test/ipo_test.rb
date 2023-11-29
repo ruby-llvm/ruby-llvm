@@ -42,10 +42,10 @@ class IPOTestCase < Minitest::Test
 
     # optimize
     engine = LLVM::MCJITCompiler.new(mod)
-    passm  = LLVM::PassManager.new(engine)
+    pass_builder = LLVM::PassBuilder.new
 
-    passm.gdce!
-    passm.run(mod)
+    pass_builder.gdce!
+    pass_builder.run(mod, engine.target_machine)
 
     fns = mod.functions.to_a
     assert fns.include?(fn1)

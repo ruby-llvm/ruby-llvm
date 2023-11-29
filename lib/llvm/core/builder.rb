@@ -939,18 +939,18 @@ module LLVM
     end
 
     private def call2_infer_function_and_type(type, fun)
-      fun = insert_block.parent.global_parent.functions[fun.to_s] unless fun.is_a?(LLVM::Value)
+      fun2 = fun.is_a?(LLVM::Value) ? fun : insert_block.parent.global_parent.functions[fun.to_s]
 
-      msg = "Function provided to call instruction was neither a value nor a function name: #{fun.inspect}"
-      raise ArgumentError, msg if fun.nil?
+      msg = "Function provided to call instruction was neither a value nor a function name:"
+      raise ArgumentError, "#{msg} #{fun}" if fun2.nil?
 
-      msg = "Type must be provided to call2 when function argument is not a function type: #{fun.inspect}"
-      raise ArgumentError, msg if !fun.is_a?(Function) && type.nil?
+      msg = "Type must be provided to call2 when function argument is not a function type:"
+      raise ArgumentError, "#{msg} #{fun}" if !fun2.is_a?(Function) && type.nil?
 
-      type ||= fun.function_type
+      type ||= fun2.function_type
       must_be_type!(type)
 
-      [type, fun]
+      [type, fun2]
     end
 
     def call2(type, fun, *args)

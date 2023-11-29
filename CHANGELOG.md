@@ -2,6 +2,16 @@
 ### Changed
 ### Added
 
+## [17.0.0] - 2024-01-01
+### Changed
+- Switch to LLVM 17
+### Added
+- PassBuilder class for New Pass Manager (https://llvm.org/docs/NewPassManager.html)
+### Breaking Changes
+- PassManager most methods will raise exceptions
+- PassManagerBuilder #build and #build_with_lto will raise exceptions
+- Users must switch to PassBuilder
+
 ## [16.0.1] - 2023-12-11
 ### Changed
 - Fix GenericValue.from_b. (@seven1m)
