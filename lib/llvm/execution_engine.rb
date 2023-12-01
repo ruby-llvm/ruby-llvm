@@ -204,7 +204,7 @@ module LLVM
         if type.width <= 8
           :int8
         else
-          "int#{type.width}".to_sym
+          :"int#{type.width}"
         end
       else
         type.kind
