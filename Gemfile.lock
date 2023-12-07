@@ -19,8 +19,9 @@ GEM
     ffi_gen (1.2.0)
       ffi (~> 1.0)
     io-console (0.6.0)
-    irb (1.6.4)
-      reline (>= 0.3.0)
+    irb (1.10.1)
+      rdoc
+      reline (>= 0.3.8)
     json (2.7.0)
     language_server-protocol (3.17.0.3)
     minitest (5.20.0)
@@ -33,11 +34,15 @@ GEM
     parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
+    psych (5.1.1.1)
+      stringio
     racc (1.7.3)
     rainbow (3.1.1)
     rake (13.1.0)
+    rdoc (6.6.1)
+      psych (>= 4.0.0)
     regexp_parser (2.8.2)
-    reline (0.3.3)
+    reline (0.4.1)
       io-console (~> 0.5)
     rexml (3.2.6)
     rubocop (1.58.0)
@@ -65,6 +70,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
+    stringio (3.1.0)
     unicode-display_width (2.5.0)
     yard (0.9.34)
 
