@@ -1,5 +1,8 @@
 ## [Unreleased]
 ### Changed
+- call instruction uses function calling convention by default
+- add test for invoke / invoke2
+- call instructions can use function names instead of functions
 ### Added
 - Added builder support for the fneg instruction.
 

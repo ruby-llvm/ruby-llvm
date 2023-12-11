@@ -121,6 +121,11 @@ module LLVM
       fun.remove_attribute(attr, index)
     end
 
+    # Get the parent module of a global variable, including functions
+    def global_parent
+      LLVM::Module.from_ptr(C.get_global_parent(self))
+    end
+
     private
 
     # get function this param belongs to
@@ -798,6 +803,11 @@ module LLVM
     def call_conv=(conv)
       C.set_function_call_conv(self, conv)
       conv
+    end
+
+    # gets the calling convention of the function
+    def call_conv
+      C.get_function_call_conv(self)
     end
 
     # Returns an Enumerable of the BasicBlocks in this function.
