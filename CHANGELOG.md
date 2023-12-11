@@ -1,10 +1,20 @@
 ## [Unreleased]
 ### Changed
-- call instruction uses function calling convention by default
-- add test for invoke / invoke2
-- call instructions can use function names instead of functions
+### Added
+
+## [16.0.1] - 2023-12-11
+### Changed
+- Fix GenericValue.from_b. (@seven1m)
+- Fix build issues. (@seven1m)
+- Call instruction uses function calling convention by default.
+- Call instructions can use function names instead of functions.
+- Add test for invoke / invoke2.
 ### Added
 - Added builder support for the fneg instruction.
+
+## [16.0.0] - 2023-06-01
+- Update to LLVM 16.
+- Several other related things.
 
 ## [15.0.4] - 2022-05-14
 ### Changed
