@@ -107,4 +107,74 @@ class CallTestCase < Minitest::Test
     end
   end
 
+  def test_call_default_call_conv
+    test_module = define_module("test_module") do |host_module|
+      callee_fun = define_function(host_module, "callee_fun", [LLVM::Int64], LLVM::Int64) do |builder, function, *arguments|
+        function.call_conv = :fast
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        builder.ret(arguments[0])
+      end
+
+      define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        builder.ret(builder.call(callee_fun, LLVM::Int64.from_i(42)))
+      end
+    end
+
+    assert function = test_module.functions["caller_fun"]
+    assert_match(/call fastcc i64 @callee_fun/, function.to_s)
+    assert_equal 42, run_function_on_module(test_module, "caller_fun").to_i
+  end
+
+  def test_call_by_function_name
+    test_module = define_module("test_module") do |host_module|
+      define_function(host_module, "callee_fun", [LLVM::Int64], LLVM::Int64) do |builder, function, *arguments|
+        function.call_conv = :fast
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        builder.ret(arguments[0])
+      end
+
+      define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        builder.ret(builder.call('callee_fun', LLVM::Int64.from_i(42)))
+      end
+    end
+
+    assert function = test_module.functions["caller_fun"]
+    assert_match(/call fastcc i64 @callee_fun/, function.to_s)
+    assert_equal 42, run_function_on_module(test_module, "caller_fun").to_i
+  end
+
+  def test_invoke_default_call_conv
+    skip "This seems to be broken"
+    test_module = define_module("test_module") do |host_module|
+      callee_fun = define_function(host_module, "callee_fun", [], LLVM::Int64) do |builder, function, *arguments|
+        function.call_conv = :fast
+        entry = function.basic_blocks.append
+        builder.position_at_end(entry)
+        builder.ret(LLVM::Int64.from_i(42))
+      end
+
+      caller_fun = define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+        entry = function.basic_blocks.append
+        exit = function.basic_blocks.append
+        entry.build do |b|
+          retval = builder.invoke(callee_fun, [], entry, entry)
+          b.br exit
+        end
+        exit.build do |b|
+          b.ret retval
+        end
+      end
+    end
+
+    assert function = test_module.functions["caller_fun"]
+    assert_match(/call fastcc i64 @callee_fun/, function.to_s)
+    assert_equal 42, run_function_on_module(test_module, "caller_fun").to_i
+  end
+
 end

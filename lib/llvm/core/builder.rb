@@ -127,7 +127,7 @@ module LLVM
         C.build_cond_br(self, cond2, iftrue, iffalse))
     end
 
-    private def cond_condition(cond) # rubocop:disable Style/AccessModifierDeclarations
+    private def cond_condition(cond)
       case cond
       when LLVM::Value
         cond_type = cond.type
@@ -938,22 +938,41 @@ module LLVM
       call2(nil, fun, *args)
     end
 
-    def call2(type, fun, *args)
-      raise ArgumentError, "Trying to build LLVM call with non-function: #{fun.inspect}" if !fun.is_a?(LLVM::Function)
+    private def call2_infer_function_and_type(type, fun)
+      fun = insert_block.parent.global_parent.functions[fun.to_s] unless fun.is_a?(LLVM::Value)
+
+      msg = "Function provided to call instruction was neither a value nor a function name: #{fun.inspect}"
+      raise ArgumentError, msg if fun.nil?
+
+      msg = "Type must be provided to call2 when function argument is not a function type: #{fun.inspect}"
+      raise ArgumentError, msg if !fun.is_a?(Function) && type.nil?
 
       type ||= fun.function_type
       must_be_type!(type)
 
-      if args.last.kind_of? String
-        name = args.pop
+      [type, fun]
+    end
+
+    def call2(type, fun, *args)
+      type, fun = call2_infer_function_and_type(type, fun)
+
+      name = if args.last.kind_of? String
+        args.pop
       else
-        name = ""
+        ""
       end
 
       args_ptr = FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size)
       args_ptr.write_array_of_pointer(args)
       ins = C.build_call2(self, type, fun, args_ptr, args.size, name)
-      CallInst.from_ptr(ins)
+
+      call_inst = CallInst.from_ptr(ins)
+
+      if fun.is_a?(Function)
+        call_inst.call_conv = fun.call_conv
+      end
+
+      call_inst
     end
 
     # Return a value based on a condition. This differs from 'cond' in that

@@ -91,3 +91,6 @@ Metrics/ClassLength:
 # Not sold on usefulness: https://github.com/rubocop/rubocop/pull/11469
 Gemspec/DevelopmentDependencies:
   Enabled: false
+
+Style/AccessModifierDeclarations:
+  Enabled: false
