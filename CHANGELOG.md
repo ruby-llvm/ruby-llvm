@@ -1,6 +1,7 @@
 ## [Unreleased]
 ### Changed
 ### Added
+- Added builder support for the fneg instruction.
 
 ## [15.0.4] - 2022-05-14
 ### Changed

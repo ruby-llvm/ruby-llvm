@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class InstructionTestCase < Minitest::Test
+class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
   def setup
     LLVM.init_jit
     @module = LLVM::Module.new("InstructionTestCase")
@@ -237,12 +237,62 @@ class InstructionTestCase < Minitest::Test
           assert_instance_of LLVM::Float, inst
           assert_equal "float 0.000000e+00", inst.to_s
 
+          # 0 / 0 == nan
           assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(0))
           assert_instance_of LLVM::Float, inst
           assert_equal 'float 0x7FF8000000000000', inst.to_s
         end
+        builder.ret
       end
     end
+    assert_predicate fn, :valid?
+  end
+
+  def test_fdiv_nan_inf
+    fn = @module.functions.add("test_fdiv", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        # fdiv 1 / 0 == +inf
+        assert inst = builder.fdiv(LLVM::Float.from_f(1), LLVM::Float.from_f(0))
+        assert_instance_of LLVM::Float, inst
+        assert_equal 'float 0x7FF0000000000000', inst.to_s
+
+        # fdiv -1 / 0 == -inf
+        assert inst = builder.fdiv(LLVM::Float.from_f(-1), LLVM::Float.from_f(0))
+        assert_instance_of LLVM::Float, inst
+        assert_equal 'float 0xFFF0000000000000', inst.to_s
+
+        builder.ret
+      end
+    end
+    assert_predicate fn, :valid?
+  end
+
+  def test_frem_nan_inf
+    fn = @module.functions.add("test_frem", [], LLVM.Void) do |fn|
+      fn.basic_blocks.append.build do |builder|
+        # frem 1 / 0 == nan
+        assert inst = builder.frem(LLVM::Float.from_f(1), LLVM::Float.from_f(0))
+        assert_instance_of LLVM::Float, inst
+        assert_equal 'float 0x7FF8000000000000', inst.to_s
+
+        # rem -1 / 0 == nan
+        assert inst = builder.frem(LLVM::Float.from_f(-1), LLVM::Float.from_f(0))
+        assert_instance_of LLVM::Float, inst
+        assert_equal 'float 0x7FF8000000000000', inst.to_s
+
+        builder.ret
+      end
+    end
+    assert_predicate fn, :valid?
+  end
+
+  def test_fneg
+    fn = @module.functions.add("test_fneg", [LLVM::Double], LLVM::Double) do |fn, param|
+      fn.basic_blocks.append.build do |builder|
+        builder.ret builder.fneg param
+      end
+    end
+    assert_predicate fn, :valid?
   end
 
 end

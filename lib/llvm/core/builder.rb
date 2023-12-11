@@ -389,6 +389,16 @@ module LLVM
       Instruction.from_ptr(C.build_f_rem(self, lhs, rhs, name))
     end
 
+    # The ‘fneg’ instruction returns the negation of its operand.
+    # @param [LLVM::Value] lhs Floating point or vector of floating points
+    # @param [String] name Name of the result in LLVM IR
+    # @return [LLVM::Instruction] The floating point negation
+    # @LLVMinst fneg
+    # https://llvm.org/docs/LangRef.html#fneg-instruction
+    def fneg(lhs, name = "")
+      Instruction.from_ptr(C.build_f_neg(self, lhs, name))
+    end
+
     # @param [LLVM::Value] lhs Integer or vector of integers
     # @param [LLVM::Value] rhs Integer or vector of integers
     # @param [String] name Name of the result in LLVM IR
