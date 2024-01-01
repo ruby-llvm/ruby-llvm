@@ -11,15 +11,15 @@ GEM
     ansi (1.5.0)
     ast (2.4.2)
     builder (3.2.4)
-    debug (1.8.0)
-      irb (>= 1.5.0)
-      reline (>= 0.3.1)
+    debug (1.9.1)
+      irb (~> 1.10)
+      reline (>= 0.3.8)
     docile (1.4.0)
     ffi (1.16.3)
     ffi_gen (1.2.0)
       ffi (~> 1.0)
     io-console (0.7.1)
-    irb (1.10.1)
+    irb (1.11.0)
       rdoc
       reline (>= 0.3.8)
     json (2.7.1)
@@ -34,7 +34,7 @@ GEM
     parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
-    psych (5.1.1.1)
+    psych (5.1.2)
       stringio
     racc (1.7.3)
     rainbow (3.1.1)
