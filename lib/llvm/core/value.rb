@@ -869,12 +869,16 @@ module LLVM
         attr_ref = case attr
         when Attribute
           attr
-        when Symbol
+        when Symbol, String
           attr_kind_id = attribute_id(attr)
-          ctx = Context.global
-          C.create_enum_attribute(ctx, attr_kind_id, 0)
+          if attr_kind_id.is_a?(Integer)
+            ctx = Context.global
+            C.create_enum_attribute(ctx, attr_kind_id, 0)
+          else
+            attr_kind_id
+          end
         else
-          raise "Adding unknown attribute type"
+          raise "Adding unknown attribute type: #{attr.inspect}"
         end
         C.add_attribute_at_index(@fun, @index, attr_ref)
       end
@@ -911,12 +915,31 @@ module LLVM
       end
 
       def attribute_id(attr_name)
+        upgrade = upgrade_attr(attr_name)
+        return upgrade if upgrade
+
         attr_mem = FFI::MemoryPointer.from_string(attribute_name(attr_name))
         attr_kind_id = C.get_enum_attribute_kind_for_name(attr_mem, attr_mem.size - 1)
 
         raise "No attribute named: #{attr_name}" if attr_kind_id.zero?
         attr_kind_id
       end
+
+      # Upgrade attributes from before LLVM 16
+      # readnone, readonly, writeonly
+      def upgrade_attr(attr)
+        case attr.to_sym
+        when :readnone
+          LLVM::Attribute.memory
+        when :readonly
+          LLVM::Attribute.memory(memory: :read)
+        when :writeonly
+          LLVM::Attribute.memory(memory: :write)
+        when :inaccessiblememonly
+          LLVM::Attribute.memory(inaccessiblemem: :readwrite)
+        end
+      end
+
     end
 
     # @private

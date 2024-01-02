@@ -68,7 +68,7 @@ class AttributeTestCase < Minitest::Test
   end
 
   def test_last_enum
-    assert_equal 84, LLVM::Attribute.last_enum
+    assert_equal 85, LLVM::Attribute.last_enum
   end
 
   def test_create_string

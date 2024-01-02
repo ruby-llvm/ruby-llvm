@@ -6,6 +6,8 @@ module LLVM
   require 'llvm/version'
   require 'llvm/support'
 
+  class DeprecationError < StandardError; end
+
   module PointerIdentity
     # @private
     def to_ptr

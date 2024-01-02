@@ -31,10 +31,7 @@ task :generate_ffi do
 
     # Transformations
     'analysis_ffi.rb'             => %w(Analysis.h),
-    'transforms/ipo_ffi.rb'       => %w(Transforms/IPO.h),
-    'transforms/scalar_ffi.rb'    => %w(Transforms/Scalar.h),
-    'transforms/vectorize_ffi.rb' => %w(Transforms/Vectorize.h),
-    'transforms/builder_ffi.rb'   => %w(Transforms/PassManagerBuilder.h),
+    'transforms/pass_builder_ffi.rb' => %w(Transforms/PassBuilder.h),
 
     # Code generation
     'target_ffi.rb'               => %w(Target.h TargetMachine.h),
