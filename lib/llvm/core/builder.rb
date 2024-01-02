@@ -189,7 +189,7 @@ module LLVM
     # Builds an unwind Instruction.
     # @LLVMinst unwind
     def unwind
-      Instruction.from_ptr(C.build_unwind(self))
+      raise DeprecationError
     end
 
     # Generates an instruction with no defined semantics. Can be used to
