@@ -1,5 +1,6 @@
 ## [Unreleased]
 ### Changed
+- Deprecate unwind instruction
 ### Added
 
 ## [17.0.0] - 2024-01-01
