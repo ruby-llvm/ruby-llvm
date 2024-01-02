@@ -570,7 +570,7 @@ module LLVM
 
   # Native integer type
   bits = FFI.type_size(:int) * 8
-  ::LLVM::Int = const_get("Int#{bits}")
+  ::LLVM::Int = const_get(:"Int#{bits}")
 
   # Creates a LLVM Int (subclass of ConstantInt) at the NATIVE_INT_SIZE from a integer (val).
   def self.Int(val)
