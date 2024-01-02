@@ -33,7 +33,7 @@ class TargetTestCase < Minitest::Test
   SKIP_ASM_PRINTER = ['Xtensa'].freeze
 
   LLVM::CONFIG::TARGETS_BUILT.each do |arch|
-    define_method("test_init_#{arch}") do
+    define_method(:"test_init_#{arch}") do
       LLVM::Target.init(arch)
 
       if !SKIP_ASM_PRINTER.include?(arch)
