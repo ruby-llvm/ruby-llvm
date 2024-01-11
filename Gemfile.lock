@@ -31,7 +31,7 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     parallel (1.24.0)
-    parser (3.2.2.4)
+    parser (3.3.0.2)
       ast (~> 2.4.1)
       racc
     psych (5.1.2)
