@@ -20,6 +20,15 @@ Rake::TestTask.new do |t|
   t.test_files = FileList["test/**/*_test.rb"]
 end
 
+desc 'test sample files'
+task 'test:samples' do
+  system("ruby samples/hello.rb") || exit!(1)
+  system("ruby samples/factorial.rb 1") || exit!(1)
+
+  # TODO: fix fp
+  # system("ruby samples/fp.rb") || exit!(1)
+end
+
 desc 'Regenerate FFI bindings'
 task :generate_ffi do
   require 'ffi_gen'

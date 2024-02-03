@@ -65,3 +65,5 @@ jobs:
         name: "Build support library"
       - run: bundle exec rake
         name: "Run tests"
+      - run: bundle exec rake test:samples
+        name: "Run samples"
