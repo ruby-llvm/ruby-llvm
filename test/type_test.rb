@@ -79,7 +79,7 @@ class TypeTestCase < Minitest::Test
   describe "LLVM::Type#to_s" do
     TO_S_TESTS.each do |(type, string)|
       it "should return '#{string}'" do
-        assert type.is_a?(LLVM::Type)
+        assert_kind_of LLVM::Type, type
         assert_equal string, type.to_s
       end
     end
