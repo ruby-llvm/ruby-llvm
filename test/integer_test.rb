@@ -65,14 +65,104 @@ class IntegerTestCase < Minitest::Test
 
     assert i = LLVM::Int64.from_i(128)
     assert_equal "i64 128", i.to_s
-    assert_equal "i8 -128", i.trunc(LLVM::Int8).to_s
+    assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
 
     assert i = LLVM::Int64.from_i(129)
     assert_equal "i64 129", i.to_s
-    assert_equal "i8 -127", i.trunc(LLVM::Int8).to_s
+    assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
 
     assert i = LLVM::Int64.from_i(-129)
     assert_equal "i64 -129", i.to_s
-    assert_equal "i8 127", i.trunc(LLVM::Int8).to_s
+    assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
   end
+
+  def test_const_add
+    assert_equal "i64 3", (LLVM::Int64.from_i(2) + LLVM::Int64.from_i(1)).to_s
+    assert_equal "i8 -128", LLVM::Int8.from_i(127).add(LLVM::Int8.from_i(1)).to_s
+  end
+
+  def test_const_nsw_add
+    assert_equal "i64 3", LLVM::Int64.from_i(2).nsw_add(LLVM::Int64.from_i(1)).to_s
+    assert_equal "i8 -128", LLVM::Int8.from_i(127).nsw_add(LLVM::Int8.from_i(1)).to_s
+  end
+
+  def test_const_nuw_add
+    assert_equal "i64 3", LLVM::Int64.from_i(2).nuw_add(LLVM::Int64.from_i(1)).to_s
+    assert_equal "i8 -128", LLVM::Int8.from_i(127).nuw_add(LLVM::Int8.from_i(1)).to_s
+  end
+
+  def test_const_sub
+    assert_equal "i64 1", (LLVM::Int64.from_i(2) - LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_nsw_sub
+    assert_equal "i64 1", LLVM::Int64.from_i(2).nsw_sub(LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_nuw_sub
+    assert_equal "i64 1", LLVM::Int64.from_i(2).nuw_sub(LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_mul
+    assert_equal "i64 2", (LLVM::Int64.from_i(2) * LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_nuw_mul
+    assert_equal "i64 2", LLVM::Int64.from_i(2).nuw_mul(LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_nsw_mul
+    assert_equal "i64 2", LLVM::Int64.from_i(2).nsw_mul(LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_sdiv
+    assert_equal "i64 2", (LLVM::Int64.from_i(2) / LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_udiv
+    assert_equal "i64 2", LLVM::Int64.from_i(2).udiv(LLVM::Int64.from_i(1)).to_s
+  end
+
+  def test_const_neg
+    assert_equal LLVM::Int64.from_i(-1), -LLVM::Int64.from_i(1)
+    assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).nsw_neg
+    assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).nuw_neg
+    assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).neg
+  end
+
+  def test_const_rem
+    assert_equal LLVM::Int8.from_i(1), LLVM::Int8.from_i(4).rem(LLVM::Int8.from_i(3))
+  end
+
+  def test_const_urem
+    assert_equal LLVM::Int8.from_i(1), LLVM::Int8.from_i(4).urem(LLVM::Int8.from_i(3))
+  end
+
+  # boolean negation
+  def test_const_not
+    assert_equal LLVM::Int8.from_i(-1), ~LLVM::Int8.from_i(0)
+    assert_equal LLVM::TRUE, ~LLVM::FALSE
+    assert_equal LLVM::FALSE, ~LLVM::TRUE
+  end
+
+  def test_const_and
+    assert_equal LLVM::Int8.from_i(0), LLVM::Int8.from_i(2) & LLVM::Int8.from_i(1)
+  end
+
+  def test_const_or
+    assert_equal LLVM::Int8.from_i(3), LLVM::Int8.from_i(2) | LLVM::Int8.from_i(1)
+  end
+
+  def test_const_xor
+    assert_equal LLVM::Int8.from_i(3), LLVM::Int8.from_i(2) ^ LLVM::Int8.from_i(1)
+    assert_equal LLVM::Int8.from_i(-127), LLVM::Int8.from_i(-127) ^ LLVM::Int8.from_i(0)
+    assert_equal LLVM::Int8.from_i(-127), LLVM::Int8.from_i(0) ^ LLVM::Int8.from_i(-127)
+    assert_equal LLVM::Int8.from_i(91), LLVM::Int8.from_i(32) ^ LLVM::Int8.from_i(123)
+  end
+
+  # TODO: this is not correct
+  def test_const_all_ones
+    assert_equal LLVM::Int8.from_i(-1), LLVM::Int8.all_ones
+  end
+
 end
