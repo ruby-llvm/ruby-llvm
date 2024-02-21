@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-17.so.1", "libLLVM.so.17", "LLVM-17"]
+  ffi_lib ["libLLVM-18.so.1", "libLLVM.so.18", "LLVM-18"]
 
   def self.attach_function(name, *_)
     begin; super; rescue FFI::NotFoundError => e
@@ -3051,24 +3051,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method const_and(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_and, :LLVMConstAnd, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_or(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_or, :LLVMConstOr, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
   # @method const_xor(lhs_constant, rhs_constant)
   # @param [FFI::Pointer(ValueRef)] lhs_constant
   # @param [FFI::Pointer(ValueRef)] rhs_constant
@@ -3107,24 +3089,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method const_l_shr(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_l_shr, :LLVMConstLShr, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_a_shr(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_a_shr, :LLVMConstAShr, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
   # @method const_gep(constant_val, constant_indices, num_indices)
   # @param [FFI::Pointer(ValueRef)] constant_val
   # @param [FFI::Pointer(*ValueRef)] constant_indices
@@ -3151,78 +3115,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_trunc, :LLVMConstTrunc, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_s_ext(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_s_ext, :LLVMConstSExt, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_z_ext(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_z_ext, :LLVMConstZExt, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_fp_trunc(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_fp_trunc, :LLVMConstFPTrunc, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_fp_ext(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_fp_ext, :LLVMConstFPExt, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_ui_to_fp(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_ui_to_fp, :LLVMConstUIToFP, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_si_to_fp(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_si_to_fp, :LLVMConstSIToFP, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_fp_to_ui(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_fp_to_ui, :LLVMConstFPToUI, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_fp_to_si(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_fp_to_si, :LLVMConstFPToSI, [:pointer, :pointer], :pointer
 
   # (Not documented)
   #
@@ -3262,24 +3154,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method const_z_ext_or_bit_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_z_ext_or_bit_cast, :LLVMConstZExtOrBitCast, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_s_ext_or_bit_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_s_ext_or_bit_cast, :LLVMConstSExtOrBitCast, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
   # @method const_trunc_or_bit_cast(constant_val, to_type)
   # @param [FFI::Pointer(ValueRef)] constant_val
   # @param [FFI::Pointer(TypeRef)] to_type
@@ -3295,25 +3169,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_pointer_cast, :LLVMConstPointerCast, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_int_cast(constant_val, to_type, is_signed)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @param [Integer] is_signed
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_int_cast, :LLVMConstIntCast, [:pointer, :pointer, :int], :pointer
-
-  # (Not documented)
-  #
-  # @method const_fp_cast(constant_val, to_type)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(TypeRef)] to_type
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_fp_cast, :LLVMConstFPCast, [:pointer, :pointer], :pointer
 
   # (Not documented)
   #

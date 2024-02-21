@@ -195,6 +195,12 @@ module LLVM
     #  * @see llvm::Value::getValueID()
     #  */
     attach_function :get_value_kind, :LLVMGetValueKind, [:pointer], :value_kind
+
+    attach_function :get_poison, :LLVMGetPoison, [:pointer], :pointer
+
+    attach_function :const_int_get_sext_value, :LLVMConstIntGetSExtValue, [:pointer], :long_long
+
+    attach_function :const_int_get_zext_value, :LLVMConstIntGetZExtValue, [:pointer], :ulong_long
   end
 
   # Yields a pointer suitable for storing an LLVM output message.

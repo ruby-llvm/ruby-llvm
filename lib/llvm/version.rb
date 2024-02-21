@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module LLVM
-  LLVM_VERSION = "17"
-  LLVM_REQUIRED_VERSION = "17.0"
-  RUBY_LLVM_VERSION = "17.0.0"
+  LLVM_VERSION = "18"
+  LLVM_REQUIRED_VERSION = "18.1.0"
+  RUBY_LLVM_VERSION = "18.1.0"
 end

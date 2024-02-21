@@ -60,6 +60,10 @@ module LLVM
       ConstantExpr.from_ptr(C.const_null(self))
     end
 
+    def poison
+      ConstantExpr.from_ptr(C.get_poison(self))
+    end
+
     # Creates a pointer type with this type and the given address space.
     def pointer(address_space = 0)
       Type.pointer(self, address_space)
