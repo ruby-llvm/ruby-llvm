@@ -34,6 +34,7 @@ GEM
     parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
+    prism (0.24.0)
     psych (5.1.2)
       stringio
     racc (1.7.3)
@@ -56,8 +57,9 @@ GEM
       rubocop-ast (>= 1.30.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.0)
+      parser (>= 3.3.0.4)
+      prism (>= 0.24.0)
     rubocop-minitest (0.34.5)
       rubocop (>= 1.39, < 2.0)
       rubocop-ast (>= 1.30.0, < 2.0)
