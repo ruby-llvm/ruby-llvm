@@ -846,6 +846,18 @@ module LLVM
       function_attributes.to_a
     end
 
+    def readnone?
+      attributes.detect(&:readnone?)
+    end
+
+    def readonly?
+      attributes.detect(&:readonly?)
+    end
+
+    def writeonly?
+      attributes.detect(&:writeonly?)
+    end
+
     def function_attributes
       AttributeCollection.new(self, -1)
     end

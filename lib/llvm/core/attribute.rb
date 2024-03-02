@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module LLVM
+  # wrapper for LLVMAttributeRef
   class Attribute
 
     include PointerIdentity
@@ -98,7 +99,7 @@ module LLVM
     end
 
     def value
-      return C.get_enum_attribute_value(self) if enum?
+      return enum_value if enum?
       return string_value if string?
       raise
     end
@@ -116,21 +117,51 @@ module LLVM
     end
 
     def inspect
-      return "\"#{kind}\" = \"#{value}\"" if string?
-      return "#{kind}(#{value})" if enum?
-      super
+      to_s
     end
 
     def to_s
-      return kind if enum?
-      super
+      Support::C.get_attribute_as_string(self)
     end
 
     def kind_id
       enum_kind_id
     end
 
+    def ==(other)
+      super if self.class == other.class
+
+      # strings and symbols
+      return true if to_s == other.to_s
+
+      false
+    end
+
+    def readnone?
+      enum_kind == 'readnone' || (enum_kind == 'memory' && enum_value_mem_none?)
+    end
+
+    def readonly?
+      enum_kind == 'readonly' || (enum_kind == 'memory' && enum_value_mem_read?)
+    end
+
+    def writeonly?
+      enum_kind == 'writeonly' || (enum_kind == 'memory' && enum_value_mem_write?)
+    end
+
     private
+
+    def enum_value_mem_none?
+      (enum_value & 63).zero?
+    end
+
+    def enum_value_mem_read?
+      (enum_value & 21) != 0
+    end
+
+    def enum_value_mem_write?
+      (enum_value & 42) != 0
+    end
 
     def enum_kind_id
       C.get_enum_attribute_kind(self)
@@ -138,6 +169,10 @@ module LLVM
 
     def enum_kind
       Support::C.get_enum_attribute_name_for_kind(enum_kind_id)
+    end
+
+    def enum_value
+      C.get_enum_attribute_value(self)
     end
 
     # wraps get_string_attribute_kind

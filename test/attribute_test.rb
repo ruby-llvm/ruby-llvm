@@ -20,7 +20,8 @@ class AttributeTestCase < Minitest::Test
       assert_predicate attr, :enum?
       refute_predicate attr, :string?
       refute_predicate attr, :type?
-      assert_equal "#{attr_name}(0)", attr.inspect
+      assert_equal attr_name.to_s, attr.inspect
+      assert_equal attr_name.to_s, attr.to_s
       assert_equal LLVM::Attribute.new(attr_name), attr
     end
   end
@@ -31,39 +32,66 @@ class AttributeTestCase < Minitest::Test
       fun.add_attribute(attr)
       assert_equal(['readnone'], fun.attributes.map(&:to_s))
       assert_equal "; Function Attrs: readnone\ndeclare void @fun() #0\n", fun.to_s
+      assert_includes fun.attributes, attr
     end
   end
 
   def test_function_memory
-    vals = [
-      "; Function Attrs: memory(none)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: read)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: write)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: readwrite)\ndeclare void @fun() #0\n",
-
-      "; Function Attrs: memory(inaccessiblemem: read)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: read, inaccessiblemem: read)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: write, inaccessiblemem: read)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: readwrite, inaccessiblemem: read)\ndeclare void @fun() #0\n",
-
-      "; Function Attrs: memory(inaccessiblemem: write)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: read, inaccessiblemem: write)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: write, inaccessiblemem: write)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: readwrite, inaccessiblemem: write)\ndeclare void @fun() #0\n",
-
-      "; Function Attrs: memory(inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: read, inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: write, inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
-      "; Function Attrs: memory(argmem: readwrite, inaccessiblemem: readwrite)\ndeclare void @fun() #0\n",
-
-      "; Function Attrs: memory(read, argmem: none, inaccessiblemem: none)\ndeclare void @fun() #0\n",
-    ]
-    vals.each.with_index do |val, index|
+    63.times do |index|
       attr = LLVM::Attribute.enum(:memory, index)
       with_function [], LLVM.Void do |fun|
         fun.add_attribute(attr)
-        assert_equal(val, fun.to_s)
+        expected = "; Function Attrs: #{attr}\ndeclare void @fun() #0\n"
+        assert_equal(expected, fun.to_s)
       end
+    end
+  end
+
+  def test_function_memory_none
+    expected = "; Function Attrs: memory(none)\ndeclare void @fun() #0\n"
+    with_function [], LLVM.Void do |fun|
+      fun.add_attribute(attr_memory(0))
+      assert_equal(expected, fun.to_s)
+      assert_predicate(fun, :readnone?)
+      refute_predicate(fun, :readonly?)
+      refute_predicate(fun, :writeonly?)
+    end
+    with_function [], LLVM.Void do |fun|
+      fun.add_attribute(attr_memory(64))
+      assert_equal(expected, fun.to_s)
+      assert_predicate(fun, :readnone?)
+      refute_predicate(fun, :readonly?)
+      refute_predicate(fun, :writeonly?)
+    end
+  end
+
+  def test_function_memory_read
+    expected = "; Function Attrs: memory(read)\ndeclare void @fun() #0\n"
+    with_function [], LLVM.Void do |fun|
+      fun.add_attribute(attr_memory(21))
+      assert_equal(expected, fun.to_s)
+      assert_predicate(fun, :readonly?)
+      refute_predicate(fun, :readnone?)
+      refute_predicate(fun, :writeonly?)
+    end
+  end
+
+  def test_function_memory_write
+    expected = "; Function Attrs: memory(write)\ndeclare void @fun() #0\n"
+    with_function [], LLVM.Void do |fun|
+      fun.add_attribute(attr_memory(42))
+      assert_equal(expected, fun.to_s)
+      assert_predicate(fun, :writeonly?)
+      refute_predicate(fun, :readonly?)
+      refute_predicate(fun, :readnone?)
+    end
+  end
+
+  def test_function_memory_readwrite
+    expected = "; Function Attrs: memory(readwrite)\ndeclare void @fun() #0\n"
+    with_function [], LLVM.Void do |fun|
+      fun.add_attribute(attr_memory(63))
+      assert_equal(expected, fun.to_s)
     end
   end
 
@@ -80,7 +108,68 @@ class AttributeTestCase < Minitest::Test
     refute_predicate attr, :enum?
     refute_predicate attr, :type?
     assert_equal v, attr.value
-    assert_equal '"unsafe-fp-math" = "false"', attr.inspect
+    assert_equal k, attr.kind
+    assert_equal '"unsafe-fp-math"="false"', attr.inspect
+  end
+
+  def test_attribute_equality
+    assert_equal attr_readnone, attr_readnone
+    assert_equal attr_memnone, "memory(none)" # rubocop:disable Minitest/LiteralAsActualArgument
+    assert_equal "memory(none)", attr_memnone.to_s
+  end
+
+  def test_readnone
+    assert_predicate attr_readnone, :readnone?
+    refute_predicate attr_readnone, :readonly?
+    refute_predicate attr_readnone, :writeonly?
+
+    assert_predicate attr_memnone, :readnone?
+    refute_predicate attr_memnone, :readonly?
+    refute_predicate attr_memnone, :writeonly?
+  end
+
+  def test_readonly
+    assert_predicate attr_readonly, :readonly?
+    refute_predicate attr_readonly, :readnone?
+    refute_predicate attr_readonly, :writeonly?
+
+    mem_readonly = attr_memory(21)
+    assert_predicate mem_readonly, :readonly?
+    refute_predicate mem_readonly, :readnone?
+    refute_predicate mem_readonly, :writeonly?
+  end
+
+  def test_writeonly
+    refute_predicate attr_writeonly, :readonly?
+    refute_predicate attr_writeonly, :readnone?
+    assert_predicate attr_writeonly, :writeonly?
+
+    mem_writeonly = attr_memory(42)
+    refute_predicate mem_writeonly, :readonly?
+    refute_predicate mem_writeonly, :readnone?
+    assert_predicate mem_writeonly, :writeonly?
+  end
+
+  private
+
+  def attr_readnone
+    LLVM::Attribute.enum(:readnone)
+  end
+
+  def attr_readonly
+    LLVM::Attribute.enum(:readonly)
+  end
+
+  def attr_writeonly
+    LLVM::Attribute.enum(:writeonly)
+  end
+
+  def attr_memory(bits)
+    LLVM::Attribute.enum(:memory, bits)
+  end
+
+  def attr_memnone
+    attr_memory(0)
   end
 
 end
