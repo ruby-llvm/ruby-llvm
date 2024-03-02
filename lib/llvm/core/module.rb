@@ -24,6 +24,10 @@ module LLVM
       @ptr = nil
     end
 
+    def clone_module
+      Module.from_ptr(C.clone_module(self))
+    end
+
     def inspect
       {
         triple: triple,
