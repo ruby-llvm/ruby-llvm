@@ -92,4 +92,15 @@ class ModuleTestCase < Minitest::Test
     assert_equal 'e-p:32:32', mod.data_layout
   end
 
+  def test_clone
+    mod1 = LLVM::Module.new('mod')
+    mod1.globals.add(LLVM::Int32, 'a')
+    assert_match "@a = external global i32", mod1.to_s
+    mod2 = mod1.clone_module
+    assert_match "@a = external global i32", mod2.to_s
+    mod2.globals.add(LLVM::Int32, 'b')
+    assert_match "@b = external global i32", mod2.to_s
+    refute_match "@b = external global i32", mod1.to_s
+  end
+
 end

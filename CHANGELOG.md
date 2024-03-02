@@ -2,6 +2,7 @@
 ### Changed
 - Deprecate unwind instruction
 ### Added
+- LLVM::Module#clone_module to clone a module entirely.
 
 ## [17.0.0] - 2024-01-01
 ### Changed
