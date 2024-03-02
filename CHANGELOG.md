@@ -1,8 +1,13 @@
 ## [Unreleased]
 ### Changed
 - Deprecate unwind instruction
+- Attribute to_s and inspect call LLVM Attribute::getAsString() for a better and more consistent string
 ### Added
 - LLVM::Module#clone_module to clone a module entirely.
+- Attribute methods: readnone? readonly? writeonly? which work for new and old attributes
+- Function methods: readnone? readonly? writeonly? which work for new and old attributes
+- allow attribute comparisons to strings and symbols
+- more attribute tests
 
 ## [17.0.0] - 2024-01-01
 ### Changed
