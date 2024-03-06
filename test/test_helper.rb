@@ -51,6 +51,33 @@ class Minitest::Test
     mod.dispose
   end
 
+  def create_square_function_module
+    LLVM::Module.new('square').tap do |mod|
+      mod.functions.add(:square, [LLVM::Int], LLVM::Int) do |fun, x|
+        fun.basic_blocks.append.build do |builder|
+          n = builder.mul(x, x)
+          builder.ret(n)
+        end
+      end
+
+      mod.verify!
+    end
+  end
+
+  def create_cube_function_module
+    LLVM::Module.new('cube').tap do |mod|
+      mod.functions.add(:cube, [LLVM::Int], LLVM::Int) do |fun, x|
+        fun.basic_blocks.append.build do |builder|
+          n2 = builder.mul(x, x)
+          n3 = builder.mul(n2, x)
+          builder.ret(n3)
+        end
+      end
+
+      mod.verify!
+    end
+  end
+
 end
 
 def define_module(module_name)
