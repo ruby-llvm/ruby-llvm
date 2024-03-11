@@ -77,6 +77,7 @@ class CallTestCase < Minitest::Test
       global = host_module.globals.add(LLVM::Array(LLVM::Int8, 5), "path")
       global.linkage = :internal
       global.initializer = LLVM::ConstantArray.string("PATH")
+      refute_predicate global, :thread_local?
       external = host_module.functions.add("getenv", [LLVM::Pointer(LLVM::Int8)], LLVM::Pointer(LLVM::Int8))
       define_function(host_module, "test_function", [], LLVM::Pointer(LLVM::Int8)) do |builder, function, *arguments|
         entry = function.basic_blocks.append

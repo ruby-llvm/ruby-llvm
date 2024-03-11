@@ -2,6 +2,11 @@
 ### Changed
 - Deprecate unwind instruction
 - Attribute to_s and inspect call LLVM Attribute::getAsString() for a better and more consistent string
+- Switch to LLVM 18
+    - Breaking changes to optimizing inline and always-inline 
+    - Previously, an inliner-threshold of nil would be no inlining
+    - Currently, always-inline and inline are included, matching O0-3, unless disabled by parameter
+    - Changes to LLVM const functions
 ### Added
 - LLVM::Module#clone_module to clone a module entirely.
 - Attribute methods: readnone? readonly? writeonly? which work for new and old attributes

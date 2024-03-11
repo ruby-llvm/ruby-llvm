@@ -94,3 +94,7 @@ Gemspec/DevelopmentDependencies:
 
 Style/AccessModifierDeclarations:
   Enabled: false
+
+# this one is wrong
+Style/DoubleNegation:
+  Enabled: false

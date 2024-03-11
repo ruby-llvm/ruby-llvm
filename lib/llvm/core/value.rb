@@ -364,8 +364,21 @@ module LLVM
     end
 
     # Creates a ConstantInt from an integer.
-    def self.from_i(n, signed = true)
-      from_ptr(C.const_int(type, n, signed ? 1 : 0))
+    def self.from_i(int, signed = true)
+      width = type.width
+      return type.poison if !fits_width?(int, width, signed)
+
+      from_ptr(C.const_int(type, int, signed ? 1 : 0))
+    end
+
+    # does int fit in width
+    # allow 1 for signed i1 (though really it's -1 to 0)
+    def self.fits_width?(int, width, signed)
+      if signed
+        int.bit_length < width || int == 1
+      else
+        int >= 0 && int.bit_length <= width
+      end
     end
 
     def self.parse(str, radix = 10)
@@ -442,22 +455,22 @@ module LLVM
 
     # Unsigned division.
     def udiv(rhs)
-      raise "constant udiv removed in LLVM 15"
+      self.class.from_i(to_ui / rhs.to_ui, false)
     end
 
     # Signed division.
     def /(rhs)
-      raise "constant sdiv removed in LLVM 15"
+      self.class.from_i(to_si / rhs.to_si, true)
     end
 
     # Unsigned remainder.
     def urem(rhs)
-      raise "constant urem removed in LLVM 15"
+      self.class.from_i(to_ui % rhs.to_ui, false)
     end
 
     # Signed remainder.
     def rem(rhs)
-      raise "constant srem removed in LLVM 15"
+      self.class.from_i(to_si % rhs.to_si, true)
     end
 
     # Boolean negation.
@@ -468,15 +481,16 @@ module LLVM
     alias not ~
 
     # Integer AND.
+    # was: self.class.from_ptr(C.const_and(self, rhs))
     def &(rhs)
-      self.class.from_ptr(C.const_and(self, rhs))
+      self.class.from_i(to_i & rhs.to_i)
     end
 
     alias and &
 
     # Integer OR.
     def |(rhs)
-      self.class.from_ptr(C.const_or(self, rhs))
+      self.class.from_i(to_i | rhs.to_i)
     end
 
     alias or |
@@ -528,25 +542,45 @@ module LLVM
       ConstantExpr.from_ptr(C.const_int_to_ptr(self, type))
     end
 
+    def to_ui
+      to_i(false)
+    end
+
+    def to_si
+      to_i(true)
+    end
+
     # constant zext
+    # was: self.class.from_ptr(C.const_z_ext(self, type))
     def zext(type)
-      self.class.from_ptr(C.const_z_ext(self, type))
+      type.from_i(to_ui)
     end
 
     # constant sext
+    # was: self.class.from_ptr(C.const_s_ext(self, type))
     def sext(type)
-      self.class.from_ptr(C.const_s_ext(self, type))
+      type.from_i(to_si)
     end
     alias_method :ext, :sext
 
     # constant trunc
+    # was: self.class.from_ptr(C.const_trunc(self, type))
     def trunc(type)
-      self.class.from_ptr(C.const_trunc(self, type))
+      type.from_i(to_i)
     end
 
     # LLVMValueRef LLVMConstSIToFP(LLVMValueRef ConstantVal, LLVMTypeRef ToType);
+    # was: self.class.from_ptr(C.const_si_to_fp(self, type))
     def to_f(type)
-      self.class.from_ptr(C.const_si_to_fp(self, type))
+      type.from_f(to_i.to_f)
+    end
+
+    def to_i(signed = true)
+      if signed
+        C.const_int_get_sext_value(self)
+      else
+        C.const_int_get_zext_value(self)
+      end
     end
   end
 
@@ -600,27 +634,31 @@ module LLVM
 
     # Negation.
     def -@
-      raise "constant fneg removed in LLVM 16"
+      self.class.from_f(-to_f)
     end
 
     # Returns the result of adding this ConstantReal to rhs.
     def +(rhs)
-      raise "constant fadd removed in LLVM 15"
+      self.class.from_f(to_f + rhs.to_f)
+    end
+
+    def -(rhs)
+      self.class.from_f(to_f - rhs.to_f)
     end
 
     # Returns the result of multiplying this ConstantReal by rhs.
     def *(rhs)
-      raise "constant fmul removed in LLVM 15"
+      self.class.from_f(to_f * rhs.to_f)
     end
 
     # Returns the result of dividing this ConstantReal by rhs.
     def /(rhs)
-      raise "constant fdiv removed in LLVM 15"
+      self.class.from_f(to_f / rhs.to_f) # rubocop:disable Style/FloatDivision
     end
 
     # Remainder.
     def rem(rhs)
-      raise "constant frem removed in LLVM 15"
+      self.class.from_f(to_f.divmod(rhs.to_f).last)
     end
 
     # Floating point comparison using the predicate specified via the first
@@ -647,19 +685,31 @@ module LLVM
 
     # constant FPToSI
     # LLVMValueRef LLVMConstFPToSI(LLVMValueRef ConstantVal, LLVMTypeRef ToType);
+    # was: self.class.from_ptr(C.const_fp_to_si(self, type))
     def to_i(type)
-      self.class.from_ptr(C.const_fp_to_si(self, type))
+      type.from_i(to_f.to_i)
     end
 
     # Constant FPExt
     # this is a signed extension
+    # was: self.class.from_ptr(C.const_fp_ext(self, type))
     def ext(type)
-      self.class.from_ptr(C.const_fp_ext(self, type))
+      type.from_f(to_f)
     end
     alias_method :sext, :ext
 
+    # was: self.class.from_ptr(C.const_fp_trunc(self, type))
     def trunc(type)
-      self.class.from_ptr(C.const_fp_trunc(self, type))
+      type.from_f(to_f)
+    end
+
+    # get double from value
+    def to_f
+      double = nil
+      FFI::MemoryPointer.new(:bool, 1) do |loses_info|
+        double = C.const_real_get_double(self, loses_info)
+      end
+      double
     end
 
   end
