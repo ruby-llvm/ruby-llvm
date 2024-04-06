@@ -1,6 +1,9 @@
 ## [Unreleased]
 
-## [18.1.4] - 2024-05-09
+### Added
+- Enable CI for Ubuntu 24.04
+
+## [18.1.5] - 2024-05-09
 ### Changed
 - Upgrade to LLVM 18.1.5 minimum
 
