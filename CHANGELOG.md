@@ -1,4 +1,8 @@
 ## [Unreleased]
+### Added
+- partial_inliner! pass
+
+## [18.1.3] - 2024-04-06
 ### Changed
 - Deprecate unwind instruction
 - Attribute to_s and inspect call LLVM Attribute::getAsString() for a better and more consistent string

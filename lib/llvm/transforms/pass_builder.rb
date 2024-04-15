@@ -403,6 +403,17 @@ module LLVM
       add_pass('always-inline')
     end
 
+    # This pass performs partial inlining, typically by inlining an if statement
+    # that surrounds the body of the function.
+    # https://llvm.org/doxygen/PartialInlining_8h_source.html
+    # https://llvm.org/doxygen/PartialInlining_8cpp_source.html
+    # https://llvm.org/doxygen/PartialInlining_8h.html
+    # https://llvm.org/doxygen/PartialInlining_8cpp.html
+    # @return self
+    def partial_inliner!
+      add_pass('partial-inliner')
+    end
+
     # This pass looks for equivalent functions that are mergable and folds them.
     # https://llvm.org/docs/MergeFunctions.html
     # https://llvm.org/doxygen/MergeFunctions_8cpp_source.html
