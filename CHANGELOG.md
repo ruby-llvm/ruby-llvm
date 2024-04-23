@@ -1,4 +1,8 @@
 ## [Unreleased]
+
+## [18.1.4] - 2024-04-22
+### Changed
+- Upgrade to LLVM 18.1.4 minimum
 ### Added
 - partial_inliner! pass
 
