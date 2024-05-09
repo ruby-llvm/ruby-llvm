@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [18.1.4] - 2024-05-09
+### Changed
+- Upgrade to LLVM 18.1.5 minimum
+
 ## [18.1.4] - 2024-04-22
 ### Changed
 - Upgrade to LLVM 18.1.4 minimum
