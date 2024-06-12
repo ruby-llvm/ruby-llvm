@@ -1,8 +1,10 @@
 ## [Unreleased]
 
-## [18.1.7] - 2024-05-21
+## [18.1.7] - 2024-06-10
 ### Changed
 - Upgrade to LLVM 18.1.7 minimum
+### Added
+- Enable CI for Mac OS 14
 
 ## [18.1.6] - 2024-05-21
 ### Changed
