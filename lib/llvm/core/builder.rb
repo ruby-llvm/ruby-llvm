@@ -173,17 +173,32 @@ module LLVM
     end
 
     def invoke2(type, fun, args, normal, exception, name = "")
-      raise ArgumentError, "Trying to build LLVM call with non-function: #{fun.inspect}" if !fun.is_a?(LLVM::Function)
+      type, fun = call2_infer_function_and_type(type, fun)
 
-      type ||= fun.return_type
-      must_be_type!(type)
-
-      s = args.size
-      FFI::MemoryPointer.new(FFI.type_size(:pointer) * s) do |args_ptr|
+      arg_count = args.size
+      invoke_ins = nil
+      FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_count) do |args_ptr|
         args_ptr.write_array_of_pointer(args)
-        ins = C.build_invoke2(self, type, fun, args_ptr, s, normal, exception, name)
-        return Instruction.from_ptr(ins)
+        ins = C.build_invoke2(self, type, fun, args_ptr, arg_count, normal, exception, name)
+        invoke_ins = InvokeInst.from_ptr(ins)
       end
+
+      if fun.is_a?(Function)
+        invoke_ins.call_conv = fun.call_conv
+      end
+
+      invoke_ins
+    end
+
+    # @return LLVM::Value
+    def landing_pad(type, personality_function, num_clauses, name = '')
+      C.build_landing_pad(self, type, personality_function, num_clauses, name)
+    end
+
+    def landing_pad_cleanup(type, personality_function, num_clauses, name = '')
+      lp = landing_pad(type, personality_function, num_clauses, name)
+      C.set_cleanup(lp, 1)
+      lp
     end
 
     # Builds an unwind Instruction.

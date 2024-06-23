@@ -150,32 +150,40 @@ class CallTestCase < Minitest::Test
     assert_equal 42, run_function_on_module(test_module, "caller_fun").to_i
   end
 
-  def test_invoke_default_call_conv
-    skip "This seems to be broken"
-    test_module = define_module("test_module") do |host_module|
+  def test_invoke_missing_personality_function
+    test_module = define_invalid_module("test_module") do |host_module|
       callee_fun = define_function(host_module, "callee_fun", [], LLVM::Int64) do |builder, function, *arguments|
         function.call_conv = :fast
-        entry = function.basic_blocks.append
+        entry = function.basic_blocks.append('entry')
         builder.position_at_end(entry)
         builder.ret(LLVM::Int64.from_i(42))
       end
 
-      caller_fun = define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
-        entry = function.basic_blocks.append
-        exit = function.basic_blocks.append
+      # invalid because no personality function is set
+      caller_fun = define_invalid_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+        entry = function.basic_blocks.append('entry')
+        normal = function.basic_blocks.append('normal')
+        exception = function.basic_blocks.append('exception')
         entry.build do |b|
-          retval = builder.invoke(callee_fun, [], entry, entry)
-          b.br exit
+          b.invoke(callee_fun, [], normal, exception, 'invoking')
         end
-        exit.build do |b|
-          b.ret retval
+        normal.build do |b|
+          b.ret LLVM::Int64.from_i(0)
+        end
+        exception.build do |b|
+          b.landing_pad_cleanup(LLVM::Int64, nil, 0)
+          b.ret LLVM::Int64.from_i(-1)
         end
       end
     end
 
     assert function = test_module.functions["caller_fun"]
-    assert_match(/call fastcc i64 @callee_fun/, function.to_s)
-    assert_equal 42, run_function_on_module(test_module, "caller_fun").to_i
+    assert_match(/%invoking = invoke fastcc i64 @callee_fun()/, function.to_s)
+    assert_match(/^LandingPadInst needs to be in a function with a personality.\n/, test_module.verify)
+
+    # cannot run invalid module
+    # assert_equal 42, run_function_on_module(test_module, "callee_fun").to_i
+    # assert_equal 42, run_function_on_module(test_module, "caller_fun").to_i
   end
 
 end

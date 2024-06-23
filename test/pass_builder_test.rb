@@ -128,6 +128,23 @@ class PassBuilderTest < Minitest::Test
     @pass_builder.run(@module, @tm)
   end
 
+  # cannot be run
+  def test_dfsan_pass
+    @pass_builder.dfsan!
+    assert_equal 'dfsan', @pass_builder.pass_string
+  end
+
+  # cannot be run
+  def test_msan_pass
+    @pass_builder.msan!
+    assert_equal 'msan', @pass_builder.pass_string
+  end
+
+  def test_hypothetical_opt_x_pass
+    @pass_builder.o!('x')
+    assert_equal 'default<Ox>', @pass_builder.pass_string
+  end
+
   PASSES = LLVM::PassBuilder.new.methods.grep(/\S!$/).freeze
   OLD_PASSES = LLVM::PassManager.new.methods.grep(/\S!$/).freeze
   EXCEPT_PASSES = [:dfsan!, :msan!].freeze
