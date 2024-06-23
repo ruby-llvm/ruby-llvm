@@ -12,10 +12,6 @@ module LLVM::C
     end
   end
 
-  def for_each_value_subclass(macro)
-    macroARGUMENTmacroBASIC_BLOCKmacroINLINE_ASMmacroUSERmacroCONSTANTmacroBLOCK_ADDRESSmacroCONSTANT_AGGREGATE_ZEROmacroCONSTANT_ARRAYmacroCONSTANT_DATA_SEQUENTIALmacroCONSTANT_DATA_ARRAYmacroCONSTANT_DATA_VECTORmacroCONSTANT_EXPRmacroCONSTANT_FPmacroCONSTANT_INTmacroCONSTANT_POINTER_NULLmacroCONSTANT_STRUCTmacroCONSTANT_TOKEN_NONEmacroCONSTANT_VECTORmacroGLOBAL_VALUEmacroGLOBAL_ALIASmacroGLOBAL_OBJECTmacroFUNCTIONmacroGLOBAL_VARIABLEmacroUNDEF_VALUEmacroINSTRUCTIONmacroBINARY_OPERATORmacroCALL_INSTmacroINTRINSIC_INSTmacroDBG_INFO_INTRINSICmacroDBG_DECLARE_INSTmacroMEM_INTRINSICmacroMEM_CPY_INSTmacroMEM_MOVE_INSTmacroMEM_SET_INSTmacroCMP_INSTmacroF_CMP_INSTmacroI_CMP_INSTmacroEXTRACT_ELEMENT_INSTmacroGET_ELEMENT_PTR_INSTmacroINSERT_ELEMENT_INSTmacroINSERT_VALUE_INSTmacroLANDING_PAD_INSTmacroPHI_NODEmacroSELECT_INSTmacroSHUFFLE_VECTOR_INSTmacroSTORE_INSTmacroTERMINATOR_INSTmacroBRANCH_INSTmacroINDIRECT_BR_INSTmacroINVOKE_INSTmacroRETURN_INSTmacroSWITCH_INSTmacroUNREACHABLE_INSTmacroRESUME_INSTmacroCLEANUP_RETURN_INSTmacroCATCH_RETURN_INSTmacroFUNCLET_PAD_INSTmacroCATCH_PAD_INSTmacroCLEANUP_PAD_INSTmacroUNARY_INSTRUCTIONmacroALLOCA_INSTmacroCAST_INSTmacroADDR_SPACE_CAST_INSTmacroBIT_CAST_INSTmacroFP_EXT_INSTmacroFP_TO_SI_INSTmacroFP_TO_UI_INSTmacroFP_TRUNC_INSTmacroINT_TO_PTR_INSTmacroPTR_TO_INT_INSTmacroS_EXT_INSTmacroSI_TO_FP_INSTmacroTRUNC_INSTmacroUI_TO_FP_INSTmacroZ_EXT_INSTmacroEXTRACT_VALUE_INSTmacroLOAD_INSTmacroVA_ARG_INST
-  end
-
   # (Not documented)
   #
   # @method load_library_permanently(filename)
@@ -4570,20 +4566,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method build_invoke(builder_ref, fn, args, num_args, then_, catch, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref
-  # @param [FFI::Pointer(ValueRef)] fn
-  # @param [FFI::Pointer(*ValueRef)] args
-  # @param [Integer] num_args
-  # @param [FFI::Pointer(BasicBlockRef)] then_
-  # @param [FFI::Pointer(BasicBlockRef)] catch
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_invoke, :LLVMBuildInvoke, [:pointer, :pointer, :pointer, :uint, :pointer, :pointer, :string], :pointer
-
-  # (Not documented)
-  #
   # @method build_landing_pad(b, ty, pers_fn, num_clauses, name)
   # @param [FFI::Pointer(BuilderRef)] b
   # @param [FFI::Pointer(TypeRef)] ty
@@ -5038,16 +5020,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method build_load(builder_ref, pointer_val, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref
-  # @param [FFI::Pointer(ValueRef)] pointer_val
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_load, :LLVMBuildLoad, [:pointer, :pointer, :string], :pointer
-
-  # (Not documented)
-  #
   # @method build_store(builder_ref, val, ptr)
   # @param [FFI::Pointer(BuilderRef)] builder_ref
   # @param [FFI::Pointer(ValueRef)] val
@@ -5055,41 +5027,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_store, :LLVMBuildStore, [:pointer, :pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method build_gep(b, pointer, indices, num_indices, name)
-  # @param [FFI::Pointer(BuilderRef)] b
-  # @param [FFI::Pointer(ValueRef)] pointer
-  # @param [FFI::Pointer(*ValueRef)] indices
-  # @param [Integer] num_indices
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_gep, :LLVMBuildGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-
-  # (Not documented)
-  #
-  # @method build_in_bounds_gep(b, pointer, indices, num_indices, name)
-  # @param [FFI::Pointer(BuilderRef)] b
-  # @param [FFI::Pointer(ValueRef)] pointer
-  # @param [FFI::Pointer(*ValueRef)] indices
-  # @param [Integer] num_indices
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_in_bounds_gep, :LLVMBuildInBoundsGEP, [:pointer, :pointer, :pointer, :uint, :string], :pointer
-
-  # (Not documented)
-  #
-  # @method build_struct_gep(b, pointer, idx, name)
-  # @param [FFI::Pointer(BuilderRef)] b
-  # @param [FFI::Pointer(ValueRef)] pointer
-  # @param [Integer] idx
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_struct_gep, :LLVMBuildStructGEP, [:pointer, :pointer, :uint, :string], :pointer
 
   # (Not documented)
   #
@@ -5399,18 +5336,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_phi, :LLVMBuildPhi, [:pointer, :pointer, :string], :pointer
-
-  # (Not documented)
-  #
-  # @method build_call(builder_ref, fn, args, num_args, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref
-  # @param [FFI::Pointer(ValueRef)] fn
-  # @param [FFI::Pointer(*ValueRef)] args
-  # @param [Integer] num_args
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_call, :LLVMBuildCall, [:pointer, :pointer, :pointer, :uint, :string], :pointer
 
   # (Not documented)
   #
