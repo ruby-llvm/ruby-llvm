@@ -860,6 +860,22 @@ module LLVM
       C.get_function_call_conv(self)
     end
 
+    # Get personality function of function
+    # @note Experimental and unsupported
+    # @return LLVM::Function
+    def personality_function
+      ptr = C.get_personality_fn(self)
+      LLVM::Function.from_ptr(ptr)
+    end
+
+    # Set personality function of function
+    # @note Experimental and unsupported
+    # @return self
+    def personality_function=(personality_function)
+      C.set_personality_fn(self, personality_function)
+      self
+    end
+
     # Returns an Enumerable of the BasicBlocks in this function.
     def basic_blocks
       @basic_block_collection ||= BasicBlockCollection.new(self)
@@ -1181,6 +1197,9 @@ module LLVM
     def call_conv
       C.get_instruction_call_conv(self)
     end
+  end
+
+  class InvokeInst < CallInst
   end
 
   # @private

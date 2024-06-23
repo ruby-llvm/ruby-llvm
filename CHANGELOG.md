@@ -1,4 +1,10 @@
 ## [Unreleased]
+### Changed
+- Fixed segfault on invoke / invoke2 builder calls
+### Added
+- additional tests for PassBuilder
+- experimental support for landing_pad, landing_pad_cleanup, personality_function get/set
+- additional test helpers
 
 ## [18.1.7] - 2024-06-10
 ### Changed
