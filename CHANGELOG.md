@@ -2,6 +2,7 @@
 ### Changed
 - Fixed segfault on invoke / invoke2 builder calls
 - Upgrade to LLVM 18.1.8 minimum
+- Fixed samples/fp.rb so it works with call2
 ### Added
 - additional tests for PassBuilder
 - experimental support for landing_pad, landing_pad_cleanup, personality_function get/set

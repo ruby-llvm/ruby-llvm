@@ -23,10 +23,10 @@ mod.functions.add("add_one", [LLVM::Int], LLVM::Int) do |function, n|
 end
 
 # define a function that takes a function and executes it with the given argument
-# in effect implementing block logic. 
+# in effect implementing block logic.
 mod.functions.add("adder", [FP, LLVM::Int], LLVM::Int) do |function, fp, n|
   function.basic_blocks.append("entry").build do |b|
-    value = b.call(fp, n) # that's creating a block to call the function we received
+    value = b.call2(F, fp, n) # that's creating a block to call the function we received
     b.ret(value) # and we return the value that the function returned
   end
 end
