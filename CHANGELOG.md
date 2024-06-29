@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [18.1.8] - 2024-06-29
 ### Changed
 - Fixed segfault on invoke / invoke2 builder calls
 - Upgrade to LLVM 18.1.8 minimum
