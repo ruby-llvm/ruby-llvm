@@ -82,7 +82,6 @@ class BasicBlockTestCase < Minitest::Test
         assert_equal block1.instructions.first, insts[0]
         assert_equal block1.instructions.last,  insts[1]
       end
-
     end
   end
 
