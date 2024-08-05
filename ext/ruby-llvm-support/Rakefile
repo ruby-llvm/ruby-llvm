@@ -31,7 +31,6 @@ def find_llvm_config
   check_for('llvm-config',
             %W(llvm-config-#{LLVM_VERSION} llvm-config),
             'LLVM_CONFIG') do |llvm_config|
-
     begin
       actual_version = `#{llvm_config} --version`.strip
       actual_maj, actual_min, _ = actual_version.split('.')

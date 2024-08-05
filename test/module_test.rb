@@ -103,4 +103,32 @@ class ModuleTestCase < Minitest::Test
     refute_match "@b = external global i32", mod1.to_s
   end
 
+  def test_string_null_terminated
+    hello = LLVM::ConstantArray.string("Hello World!")
+    mod1 = LLVM::Module.new('mod')
+    mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+    assert_match '@hello = global [13 x i8] c"Hello World!\\00"', mod1.to_s
+  end
+
+  def test_string
+    hello = LLVM::ConstantArray.string("Hello World!", false)
+    mod1 = LLVM::Module.new('mod')
+    mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+    assert_match '@hello = global [12 x i8] c"Hello World!"', mod1.to_s
+  end
+
+  def test_string_in_context
+    context = LLVM::Context.new
+    hello = LLVM::ConstantArray.string_in_context(context, "Hello World!", false)
+    mod1 = LLVM::Module.new('mod')
+    mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+    assert_match '@hello = global [12 x i8] c"Hello World!"', mod1.to_s
+  end
+
 end

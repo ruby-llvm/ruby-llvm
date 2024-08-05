@@ -1,4 +1,6 @@
 ## [Unreleased]
+### Changed
+- Upgrade to LLVM 19
 
 ## [18.1.8] - 2024-06-29
 ### Changed

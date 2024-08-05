@@ -339,6 +339,10 @@ module LLVM
       from_ptr(C.const_string(str, str.length, null_terminate ? 0 : 1))
     end
 
+    def self.string_in_context(context, str, null_terminate = true)
+      from_ptr(C.const_string_in_context2(context, str, str.length, null_terminate ? 0 : 1))
+    end
+
     # ConstantArray.const(type, 3) {|i| ... } or
     # ConstantArray.const(type, [...])
     def self.const(type, size_or_values, &block)
@@ -359,6 +363,8 @@ module LLVM
   end
 
   class ConstantInt < Constant
+    extend Gem::Deprecate
+
     def self.all_ones
       from_ptr(C.const_all_ones(type))
     end
@@ -398,9 +404,11 @@ module LLVM
     end
 
     # "No unsigned wrap" negation.
+    # @deprecated
     def nuw_neg
       self.class.from_ptr(C.const_nuw_neg(self))
     end
+    deprecate :nuw_neg, "", 2025, 3
 
     # Addition.
     def +(rhs)
@@ -1232,7 +1240,6 @@ module LLVM
       C.add_case(self, val, block)
     end
   end
-
 
   # @private
   class IndirectBr < Instruction
