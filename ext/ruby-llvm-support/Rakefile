@@ -8,7 +8,7 @@ require File.expand_path('../../lib/llvm/version', File.dirname(__FILE__))
 include LLVM
 
 def check_for(what, variants, env_var)
-  variants = [ ENV[env_var], *variants ] if ENV.include?(env_var)
+  variants = [ENV[env_var], *variants] if ENV.include?(env_var)
 
   $stdout.print("checking for #{what}... ")
   $stdout.flush
@@ -20,16 +20,13 @@ def check_for(what, variants, env_var)
     end
   end
 
-  if result
-    result
-  else
-    raise "Cannot find #{what}: tried #{variants}"
-  end
+  raise "Cannot find #{what}: tried #{variants}" unless result
+  result
 end
 
 def find_llvm_config
   check_for('llvm-config',
-            %W(llvm-config-#{LLVM_VERSION} llvm-config),
+            %W[llvm-config-#{LLVM_VERSION} llvm-config],
             'LLVM_CONFIG') do |llvm_config|
     begin
       actual_version = `#{llvm_config} --version`.strip
@@ -45,8 +42,8 @@ def find_llvm_config
 end
 
 def find_cxx
-  check_for('C++ compiler', %W(clang++-#{LLVM_VERSION} clang++ g++), 'CXX') do |cxx|
-    system(cxx, "--version", out: File::NULL, err: File::NULL)
+  check_for('C++ compiler', %W[clang++-#{LLVM_VERSION} clang++ g++], 'CXX') do |cxx|
+    system(cxx, '--version', out: File::NULL, err: File::NULL)
     $?.success?
   end
 end
@@ -55,10 +52,13 @@ LLVM_CONFIG = find_llvm_config
 CXX         = find_cxx
 
 def invoke_llvm_config(options)
-  `#{LLVM_CONFIG} #{options}`.tr("\n", " ").strip
+  `#{LLVM_CONFIG} #{options}`.tr("\n", ' ').strip
 end
 
-def llvm_lib_name
+# llvm_lib_name
+# Are there any builds where invoke_llvm_config('--libs') will not be sufficient and manual search would still be
+# needed?
+private def _llvm_lib_name
   lib_dir = invoke_llvm_config('--libdir').strip
   lib_name = 'LLVM'
   versioned_lib_name = "#{lib_name}-#{LLVM_VERSION}"
@@ -72,12 +72,12 @@ CONFIG_MOD  = File.expand_path('../../lib/llvm/config.rb', File.dirname(__FILE__
 
 CLEAN.include(SUPPORT_LIB, CONFIG_MOD)
 
-desc "Build the shared library and config module"
-task :default => [SUPPORT_LIB, CONFIG_MOD]
+desc 'Build the shared library and config module'
+task default: [SUPPORT_LIB, CONFIG_MOD]
 
-file SUPPORT_LIB => %w(support.cpp) do |task|
-  sh "#{CXX} -O3 -shared #{task.prerequisites.join(' ')} -l#{llvm_lib_name} " \
-     "#{invoke_llvm_config('--cxxflags --ldflags')} -fPIC -o #{SUPPORT_LIB}"
+file SUPPORT_LIB => %w[support.cpp] do |task|
+  sh "#{CXX} -O3 -shared #{task.prerequisites.join(' ')} " \
+     "#{invoke_llvm_config('--libs --cxxflags --ldflags')} -fPIC -o #{SUPPORT_LIB}"
 end
 
 LLVM_CONFIG_OPTS = [
@@ -88,7 +88,8 @@ LLVM_CONFIG_OPTS = [
   ['BUILD_MODE',    :string, '--build-mode'],
   ['CFLAGS',        :string, '--cflags'],
   ['CXXFLAGS',      :string, '--cxxflags'],
-  ['LDFLAGS',      :string, '--ldflags'],
+  ['LDFLAGS',       :string, '--ldflags'],
+  ['LIBS',          :string, '--libs'],
 ].freeze
 
 file CONFIG_MOD do

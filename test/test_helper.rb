@@ -109,8 +109,9 @@ def define_invalid_function(host_module, function_name, argument_types, return_t
 end
 
 def run_function_on_module(host_module, function_name, *argument_values)
-  LLVM::MCJITCompiler.new(host_module).
-    run_function(host_module.functions[function_name], *argument_values)
+  LLVM::MCJITCompiler
+    .new(host_module)
+    .run_function(host_module.functions[function_name], *argument_values)
 end
 
 def run_function(argument_types, argument_values, return_type, &block)

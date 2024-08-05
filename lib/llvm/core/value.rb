@@ -368,7 +368,7 @@ module LLVM
     end
 
     def self.string_in_context(context, str, null_terminate = true)
-      from_ptr(C.const_string_in_context(context, str, str.length, null_terminate ? 0 : 1))
+      from_ptr(C.const_string_in_context2(context, str, str.length, null_terminate ? 0 : 1))
     end
 
     # ConstantArray.const(type, 3) {|i| ... } or

@@ -4,14 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-18.so.1", "libLLVM.so.18", "LLVM-18"]
-
-  def self.attach_function(name, *_)
-    begin; super; rescue FFI::NotFoundError => e
-      (class << self; self; end).class_eval { define_method(name) { |*_| raise e } }
-    end
-  end
-
+  ffi_lib ["LLVM-19", "libLLVM-19.so.1", "libLLVM.so.19", "libLLVM.so.19.1"]
   # @defgroup LLVMCAnalysis Analysis
   # @ingroup LLVMC
   #

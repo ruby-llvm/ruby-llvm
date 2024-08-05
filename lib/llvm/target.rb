@@ -25,8 +25,7 @@ module LLVM
 
     module TargetModule
       extend FFI::Library
-      ffi_lib ["libLLVM-18.so.1", "libLLVM.so.18", "LLVM-18"]
-
+      ffi_lib ["LLVM-19", "libLLVM-19.so.1", "libLLVM.so.19", "libLLVM.so.19.1"]
       def self.safe_attach_function(*args)
         attach_function(*args)
       rescue FFI::NotFoundError => e

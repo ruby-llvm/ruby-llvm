@@ -284,7 +284,7 @@ module LLVM
     # @param [Integer] dont_null_terminate
     # @return [FFI::Pointer(ValueRef)]
     # @scope class
-    attach_function :const_string_in_context, :LLVMConstStringInContext, [:pointer, :string, :size_t, :int], :pointer
+    attach_function :const_string_in_context2, :LLVMConstStringInContext2, [:pointer, :string, :size_t, :int], :pointer
 
     # Determine whether the specified constant instance is constant.
     #

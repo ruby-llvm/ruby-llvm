@@ -17,7 +17,9 @@ module LLVM
     # Verify that a module is valid, and abort the process if not.
     # @return [nil]
     def verify!
+      # :nocov:
       do_verification(:abort_process)
+      # :nocov:
     end
 
     def valid?
@@ -43,7 +45,9 @@ module LLVM
     # Verify that a function is valid, and abort the process if not.
     # @return [true, false]
     def verify!
+      # :nocov:
       do_verification(:abort_process)
+      # :nocov:
     end
 
     def valid?
