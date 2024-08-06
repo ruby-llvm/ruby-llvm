@@ -192,7 +192,7 @@ module LLVM
         :no_frame_pointer_elim => false,
         :enable_fast_i_sel     => false,
         # TODO
-        #:mcjmm                 => nil,
+        # :mcjmm                 => nil,
       }.merge(options)
 
       super

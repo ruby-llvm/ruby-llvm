@@ -31,7 +31,6 @@ def find_llvm_config
   check_for('llvm-config',
             %W(llvm-config-#{LLVM_VERSION} llvm-config),
             'LLVM_CONFIG') do |llvm_config|
-
     begin
       actual_version = `#{llvm_config} --version`.strip
       actual_maj, actual_min, _ = actual_version.split('.')
@@ -59,13 +58,17 @@ def invoke_llvm_config(options)
   `#{LLVM_CONFIG} #{options}`.tr("\n", " ").strip
 end
 
+# TODO: [LLVM 19] Fix this method
 def llvm_lib_name
-  lib_dir = invoke_llvm_config('--libdir').strip
-  lib_name = 'LLVM'
-  versioned_lib_name = "#{lib_name}-#{LLVM_VERSION}"
-  versioned_lib_pattern = "lib#{versioned_lib_name}.*"
-  versioned_lib_found = Dir.glob(File.join(lib_dir, versioned_lib_pattern)) != []
-  versioned_lib_found ? versioned_lib_name : lib_name
+  # lib_dir = invoke_llvm_config('--libdir').strip
+  'LLVM'
+  # versioned_lib_name = "#{lib_name}-#{LLVM_VERSION}"
+  # versioned_lib_pattern = "lib#{versioned_lib_name}.*"
+  # puts "checking: #{lib_dir} for #{versioned_lib_pattern}"
+  # versioned_lib_found = Dir.glob(File.join(lib_dir, versioned_lib_pattern)) != []
+  # puts versioned_lib_found
+  # puts versioned_lib_name
+  # versioned_lib_found ? versioned_lib_name : lib_name
 end
 
 SUPPORT_LIB = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")

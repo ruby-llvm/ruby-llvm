@@ -4,13 +4,13 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-18.so.1", "libLLVM.so.18", "LLVM-18"]
+  ffi_lib ["libLLVM-19.so.1", "libLLVM.so.19", "LLVM-19"]
 
-  def self.attach_function(name, *_)
-    begin; super; rescue FFI::NotFoundError => e
-      (class << self; self; end).class_eval { define_method(name) { |*_| raise e } }
-    end
-  end
+  # def self.attach_function(name, *_)
+  #   begin; super; rescue FFI::NotFoundError => e
+  #     (class << self; self; end).class_eval { define_method(name) { |*_| raise e } }
+  #   end
+  # end
 
   # This enum is provided for backwards-compatibility only. It has no effect.
   #

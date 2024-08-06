@@ -1233,7 +1233,6 @@ module LLVM
     end
   end
 
-
   # @private
   class IndirectBr < Instruction
     # Adds a basic block reference as a destination for this indirect branch.
