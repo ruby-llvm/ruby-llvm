@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
+require_relative '../execution_engine'
+
 module LLVM
+  # module C
+  #   class OpaqueGenericValue < FFI::Struct
+  #     layout :dummy, :char
+  #   end
+  #
+  #   attach_function :create_generic_value_of_int, :LLVMCreateGenericValueOfInt, [:pointer, :ulong_long, :int], OpaqueGenericValue
+  # end
+
   class Type
     include PointerIdentity
 
@@ -191,11 +201,23 @@ module LLVM
       h.refine(ty)
       ty
     end
+
+    def self.integer(width)
+      IntType.from_ptr(C.int_type(width), :integer)
+    end
   end
 
   class IntType < Type
     def width
       C.get_int_type_width(self)
+    end
+
+    def from_i(i, options = {})
+      LLVM::GenericValue.from_i(i, options)
+    end
+
+    def type
+      self
     end
   end
 

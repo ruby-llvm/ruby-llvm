@@ -597,19 +597,22 @@ module LLVM
   end
 
   def self.const_missing(const)
+    puts "HEY"
     case const.to_s
     when /Int(\d+)/
       width = Regexp.last_match(1).to_i
-      name  = "Int#{width}"
-      eval <<-KLASS
-        class #{name} < ConstantInt
-          def self.type
-            Type.from_ptr(C.int_type(#{width}), :integer)
-          end
-        end
-      KLASS
-      const_get(name)
+      LLVM::Type.integer(width)
+      # name  = "Int#{width}"
+      # eval <<-KLASS
+      #   class #{name} < ConstantInt
+      #     def self.type
+      #       Type.from_ptr(C.int_type(#{width}), :integer)
+      #     end
+      #   end
+      # KLASS
+      # const_get(name)
     else
+      debugger
       super
     end
   end
