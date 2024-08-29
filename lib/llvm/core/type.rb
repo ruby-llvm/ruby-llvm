@@ -214,7 +214,7 @@ module LLVM
       C.get_int_type_width(self)
     end
 
-    def from_i(i, options = {})
+    def from_i(int, options = {})
       signed = case options
       when true, false
         options
@@ -223,18 +223,42 @@ module LLVM
       else
         raise ArgumentError
       end
-      ptr = C.const_int(self, i, signed ? 1 : 0)
+      return poison if !fits_width?(int, width, signed)
+
+      ptr = C.const_int(self, int, signed ? 1 : 0)
       from_ptr(ptr)
+    end
+
+    private def fits_width?(int, width, signed)
+      if signed
+        int.bit_length < width || int == 1
+      else
+        int >= 0 && int.bit_length <= width
+      end
     end
 
     def from_ptr(ptr)
       ConstantInt.from_ptr(ptr)
     end
 
+    def parse(str, radix = 10)
+      from_ptr(C.const_int_of_string(self, str, radix))
+    end
+
     def type
       self
     end
   end
+
+  # class Float < Type
+  #   def self.from_f()
+  #     ConstantFloat.from_ptr(ptr)
+  #   end
+  #
+  #   def type
+  #     self
+  #   end
+  # end
 
   class FunctionType < Type
     def return_type
@@ -292,7 +316,9 @@ module LLVM
   def Type(ty)
     case ty
     when LLVM::Type then ty
-    else ty.type
+    else
+      #      debugger
+      ty.type
     end
   end
 

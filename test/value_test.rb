@@ -57,6 +57,12 @@ class ValueTestCase < Minitest::Test
     [LLVM::Type.pointer.null, 'ptr null'],
     [LLVM::Type.pointer.undef, 'ptr undef'],
     [LLVM::Type.pointer.poison, 'ptr poison'],
+
+
+    [LLVM::Int32.parse("42"), 'i32 42'],
+    # TODO: fix this
+    [LLVM::Int8.parse("128"), 'i8 -128'],
+
   ].freeze
 
   describe "LLVM::Value#to_s" do

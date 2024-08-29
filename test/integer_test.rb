@@ -65,16 +65,15 @@ class IntegerTestCase < Minitest::Test
 
     assert i = LLVM::Int64.from_i(128)
     assert_equal "i64 128", i.to_s
-    # TODO: assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
+    assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
 
     assert i = LLVM::Int64.from_i(129)
     assert_equal "i64 129", i.to_s
-    # TODO: assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
+    assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
 
     assert i = LLVM::Int64.from_i(-129)
     assert_equal "i64 -129", i.to_s
-    skip "TODO"
-    # TODO: assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
+    assert_equal "i8 poison", i.trunc(LLVM::Int8).to_s
   end
 
   def test_const_add

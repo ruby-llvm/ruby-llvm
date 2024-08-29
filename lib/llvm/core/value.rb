@@ -369,31 +369,31 @@ module LLVM
   class ConstantInt < Constant
     extend Gem::Deprecate
 
-    def type
-      super
-    end
-
-    def self.all_ones
-      from_ptr(C.const_all_ones(type))
-    end
-
-    # Creates a ConstantInt from an integer.
-    def self.from_i(int, signed = true)
-      width = type.width
-      return type.poison if !fits_width?(int, width, signed)
-
-      from_ptr(C.const_int(type, int, signed ? 1 : 0))
-    end
-
-    # does int fit in width
-    # allow 1 for signed i1 (though really it's -1 to 0)
-    def self.fits_width?(int, width, signed)
-      if signed
-        int.bit_length < width || int == 1
-      else
-        int >= 0 && int.bit_length <= width
-      end
-    end
+    # def type
+    #   super
+    # end
+    #
+    # def self.all_ones
+    #   from_ptr(C.const_all_ones(type))
+    # end
+    #
+    # # Creates a ConstantInt from an integer.
+    # def self.from_i(int, signed = true)
+    #   width = type.width
+    #   return type.poison if !fits_width?(int, width, signed)
+    #
+    #   from_ptr(C.const_int(type, int, signed ? 1 : 0))
+    # end
+    #
+    # # does int fit in width
+    # # allow 1 for signed i1 (though really it's -1 to 0)
+    # def self.fits_width?(int, width, signed)
+    #   if signed
+    #     int.bit_length < width || int == 1
+    #   else
+    #     int >= 0 && int.bit_length <= width
+    #   end
+    # end
 
     def self.parse(str, radix = 10)
       from_ptr(C.const_int_of_string(type, str, radix))
