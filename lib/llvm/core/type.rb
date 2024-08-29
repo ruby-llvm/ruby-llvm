@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../execution_engine'
-
 module LLVM
   # module C
   #   class OpaqueGenericValue < FFI::Struct
@@ -208,12 +206,29 @@ module LLVM
   end
 
   class IntType < Type
+    def all_ones
+      C.const_all_ones(self)
+    end
+
     def width
       C.get_int_type_width(self)
     end
 
     def from_i(i, options = {})
-      LLVM::GenericValue.from_i(i, options)
+      signed = case options
+      when true, false
+        options
+      when Hash
+        options.fetch(:signed, true)
+      else
+        raise ArgumentError
+      end
+      ptr = C.const_int(self, i, signed ? 1 : 0)
+      from_ptr(ptr)
+    end
+
+    def from_ptr(ptr)
+      ConstantInt.from_ptr(ptr)
     end
 
     def type

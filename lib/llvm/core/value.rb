@@ -369,6 +369,10 @@ module LLVM
   class ConstantInt < Constant
     extend Gem::Deprecate
 
+    def type
+      super
+    end
+
     def self.all_ones
       from_ptr(C.const_all_ones(type))
     end
@@ -495,14 +499,16 @@ module LLVM
     # Integer AND.
     # was: self.class.from_ptr(C.const_and(self, rhs))
     def &(rhs)
-      self.class.from_i(to_i & rhs.to_i)
+      width = [self.type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_i & rhs.to_i)
     end
 
     alias and &
 
     # Integer OR.
     def |(rhs)
-      self.class.from_i(to_i | rhs.to_i)
+      width = [self.type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_i | rhs.to_i)
     end
 
     alias or |
@@ -597,7 +603,6 @@ module LLVM
   end
 
   def self.const_missing(const)
-    puts "HEY"
     case const.to_s
     when /Int(\d+)/
       width = Regexp.last_match(1).to_i

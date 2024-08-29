@@ -63,7 +63,6 @@ class ValueTestCase < Minitest::Test
         assert_equal string, value.to_s
       end
     end
-    debugger
   end
 
 end
