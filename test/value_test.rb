@@ -14,6 +14,10 @@ class ValueTestCase < Minitest::Test
     [LLVM::Constant.undef(LLVM::Int32), 'i32 undef'],
     [LLVM::Constant.poison(LLVM::Int32), 'i32 poison'],
 
+    [LLVM::ConstantExpr.null(LLVM::Int32), 'i32 0'],
+    [LLVM::ConstantExpr.undef(LLVM::Int32), 'i32 undef'],
+    [LLVM::ConstantExpr.poison(LLVM::Int32), 'i32 poison'],
+
     [LLVM::Int32.type.null, 'i32 0'],
     [LLVM::Int32.type.undef, 'i32 undef'],
     [LLVM::Int32.type.poison, 'i32 poison'],
@@ -22,12 +26,16 @@ class ValueTestCase < Minitest::Test
     [LLVM::Constant.undef(LLVM::Pointer(LLVM::Int32)), 'ptr undef'],
     [LLVM::Constant.poison(LLVM::Pointer(LLVM::Int32)), 'ptr poison'],
 
+    [LLVM::ConstantExpr.null(LLVM::Pointer(LLVM::Int32)), 'ptr null'],
+    [LLVM::ConstantExpr.undef(LLVM::Pointer(LLVM::Int32)), 'ptr undef'],
+    [LLVM::ConstantExpr.poison(LLVM::Pointer(LLVM::Int32)), 'ptr poison'],
+
     [LLVM::Pointer(LLVM::Int8).null, 'ptr null'],
     [LLVM::Pointer(LLVM::Int8).undef, 'ptr undef'],
     [LLVM::Pointer(LLVM::Int8).poison, 'ptr poison'],
   ].freeze
 
-  describe "LLVM::Type#to_s" do
+  describe "LLVM::Value#to_s" do
     TO_S_TESTS.each do |(value, string)|
       it "should return '#{string}'" do
         assert_kind_of LLVM::Constant, value
