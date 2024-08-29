@@ -19,7 +19,9 @@ class ConversionsTestCase < Minitest::Test
   end
 
   def test_sext_to
-    integer_conversion_assertion(:sext, LLVM::Int1.from_i(1), LLVM::Int32, LLVM_SIGNED, -1)
+    integer_conversion_assertion(:sext, LLVM::Int1.from_i(-1), LLVM::Int32, LLVM_SIGNED, -1)
+    integer_conversion_assertion(:sext, LLVM::Int1.from_i(-1), LLVM::Int32, LLVM_UNSIGNED, 4_294_967_295)
+    integer_conversion_assertion(:sext, LLVM::Int8.from_i(-1), LLVM::Int16, LLVM_SIGNED, -1)
     integer_conversion_assertion(:sext, LLVM::Int8.from_i(-1), LLVM::Int16, LLVM_UNSIGNED, 65535)
   end
 

@@ -30,6 +30,9 @@ Style/FrozenStringLiteralComment:
   Exclude:
     - lib/llvm/**/*_ffi.rb
 
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
 # Layout
 Layout/EndAlignment:
   AutoCorrect: true

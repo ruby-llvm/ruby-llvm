@@ -1,4 +1,20 @@
 ## [Unreleased]
+### Changed
+- Align on alias_method over alias
+- Fix atomic_rmw_bin_op symbols - potentially BREAKING
+- Deprecate nuw_neg
+- LLVM::Int32 will be instance of LLVM::IntType
+- disentangle GlobalVariable and GlobalValue
+- update ConstantInt const methods
+- remove ConstantInt constructors - now responsibility of IntType
+- deprecate const icmp and fcmp
+
+### Added
+- minitest-fail-fast dev dependency
+- Types get #undef to create undef of that type
+- LLVM .i .float .double .ptr .void
+- Many tests
+- Value#undef?
 
 ## [18.1.8] - 2024-06-29
 ### Changed

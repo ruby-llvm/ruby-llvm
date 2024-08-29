@@ -2,6 +2,8 @@
 
 module LLVM
   class Builder
+    extend Gem::Deprecate
+
     # Important: Call #dispose to free backend memory after use.
     def initialize
       @ptr = C.create_builder()
@@ -494,9 +496,11 @@ module LLVM
     # @param [String] name Name of the result in LLVM IR
     # @return [LLVM::Instruction] The negated operand
     # @LLVMinst sub
+    # @deprecated
     def nuw_neg(arg, name = "")
       Instruction.from_ptr(C.build_nuw_neg(self, arg, name))
     end
+    deprecate :nuw_neg, "neg", 2025, 3
 
     # Boolean negation.
     # @param [LLVM::Value] arg Integer or vector of integers
@@ -1163,7 +1167,7 @@ module LLVM
       when :array, :vector
         source_type.element_type
       else
-        debugger
+        raise ArgumentError
       end
     end
 

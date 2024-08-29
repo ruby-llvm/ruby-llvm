@@ -57,11 +57,18 @@ module LLVM
 
     # Returns a null ConstantExpr of this type.
     def null
-      ConstantExpr.from_ptr(C.const_null(self))
+      # ConstantExpr.from_ptr(C.const_null(self))
+      Constant.null(self)
     end
 
     def poison
-      ConstantExpr.from_ptr(C.get_poison(self))
+      # ConstantExpr.from_ptr(C.get_poison(self))
+      Constant.poison(self)
+    end
+
+    def undef
+      # ConstantExpr.from_ptr(C.get_undef(self))
+      Constant.undef(self)
     end
 
     # Creates a pointer type with this type and the given address space.
@@ -71,7 +78,9 @@ module LLVM
 
     # Print the type's representation to stdout.
     def dump
+      # :nocov:
       C.dump_type(self)
+      # :nocov:
     end
 
     # Build string of LLVM type representation.
@@ -178,19 +187,90 @@ module LLVM
     #  from_ptr(C.opaque_type, :pointer)
     # end
 
-    def self.rec
-      h = opaque
-      ty = yield h
-      h.refine(ty)
-      ty
+    # def self.rec
+    #   h = opaque
+    #   ty = yield h
+    #   h.refine(ty)
+    #   ty
+    # end
+
+    def self.integer(width)
+      IntType.from_ptr(C.int_type(width), :integer)
     end
+
+    class << self
+      alias_method :i, :integer
+    end
+
+    def self.float
+      Type.from_ptr(C.float_type, kind: :float)
+    end
+
+    def self.double
+      Type.from_ptr(C.double_type, kind: :double)
+    end
+
   end
 
   class IntType < Type
+    def all_ones
+      from_ptr(C.const_all_ones(self))
+    end
+
     def width
       C.get_int_type_width(self)
     end
+
+    def from_i(int, options = {})
+      signed = case options
+      when true, false
+        options
+      when Hash
+        options.fetch(:signed, true)
+      else
+        raise ArgumentError
+      end
+      # return poison if !fits_width?(int, width, signed)
+
+      ptr = C.const_int(self, int, signed ? 1 : 0)
+      val = from_ptr(ptr)
+      val.to_i(signed) == int ? val : poison
+    end
+
+    # unused
+    private def fits_width?(int, width, signed)
+      # :nocov:
+      if signed
+        int.bit_length < width || int == 1
+      else
+        int >= 0 && int.bit_length <= width
+      end
+      # :nocov:
+    end
+
+    def from_ptr(ptr)
+      ConstantInt.from_ptr(ptr)
+    end
+
+    def parse(str, radix = 10)
+      # from_ptr(C.const_int_of_string(self, str, radix))
+      from_i(str.to_i(radix))
+    end
+
+    def type
+      self
+    end
   end
+
+  # class Float < Type
+  #   def self.from_f()
+  #     ConstantFloat.from_ptr(ptr)
+  #   end
+  #
+  #   def type
+  #     self
+  #   end
+  # end
 
   class FunctionType < Type
     def return_type
@@ -247,8 +327,10 @@ module LLVM
   # Creates a Type from the given object.
   def Type(ty)
     case ty
-    when LLVM::Type then ty
-    else ty.type
+    when LLVM::Type
+      ty
+    else
+      ty.type
     end
   end
 
@@ -287,4 +369,23 @@ module LLVM
     LLVM::Type.void
   end
 
+  def void
+    LLVM::Type.void
+  end
+
+  def i(width)
+    LLVM::Type.i(width)
+  end
+
+  def double
+    LLVM::Type.double
+  end
+
+  def float
+    LLVM::Type.float
+  end
+
+  def ptr
+    LLVM::Type.pointer
+  end
 end

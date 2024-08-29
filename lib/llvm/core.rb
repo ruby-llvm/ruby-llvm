@@ -201,6 +201,133 @@ module LLVM
     attach_function :const_int_get_sext_value, :LLVMConstIntGetSExtValue, [:pointer], :long_long
 
     attach_function :const_int_get_zext_value, :LLVMConstIntGetZExtValue, [:pointer], :ulong_long
+
+    # (Not documented)
+    #
+    # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:atomic_rmw_bin_op).</em>
+    #
+    # === Options:
+    # :xchg ::
+    #
+    # :add ::
+    #   < Set the new value and return the one old
+    # :sub ::
+    #   < Add a value and return the old one
+    # :and_ ::
+    #   < Subtract a value and return the old one
+    # :nand ::
+    #   < And a value and return the old one
+    # :or_ ::
+    #   < Not-And a value and return the old one
+    # :xor ::
+    #   < OR a value and return the old one
+    # :max ::
+    #   < Xor a value and return the old one
+    # :min ::
+    #   < Sets the value if it's greater than the
+    #                                original using a signed comparison and return
+    #                                the old one
+    # :u_max ::
+    #   < Sets the value if it's Smaller than the
+    #                                original using a signed comparison and return
+    #                                the old one
+    # :u_min ::
+    #   < Sets the value if it's greater than the
+    #                                original using an unsigned comparison and return
+    #                                the old one
+    #
+    # @method _enum_atomic_rmw_bin_op_
+    # @return [Symbol]
+    # @scope class
+    enum :atomic_rmw_bin_op, [
+      :xchg,
+      :add,
+      :sub,
+      :and,
+      :nand,
+      :or,
+      :xor,
+      :max,
+      :min,
+      :umax,
+      :umin,
+      :fadd,
+      :fsub,
+      :fmax,
+      :fmin,
+      :uincwrap,
+      :udecwrap,
+    ]
+
+    # (Not documented)
+    #
+    # @method build_atomic_rmw(b, op, ptr, val, ordering, single_thread)
+    # @param [FFI::Pointer(BuilderRef)] b
+    # @param [Symbol from _enum_atomic_rmw_bin_op_] op
+    # @param [FFI::Pointer(ValueRef)] ptr
+    # @param [FFI::Pointer(ValueRef)] val
+    # @param [Symbol from _enum_atomic_ordering_] ordering
+    # @param [Integer] single_thread
+    # @return [FFI::Pointer(ValueRef)]
+    # @scope class
+    attach_function :build_atomic_rmw, :LLVMBuildAtomicRMW, [:pointer, :atomic_rmw_bin_op, :pointer, :pointer, :atomic_ordering, :int], :pointer
+
+    # Create a ConstantDataSequential and initialize it with a string.
+    #
+    # @see llvm::ConstantDataArray::getString()
+    #
+    # @method const_string_in_context(c, str, length, dont_null_terminate)
+    # @param [FFI::Pointer(ContextRef)] c
+    # @param [String] str
+    # @param [Integer] length
+    # @param [Integer] dont_null_terminate
+    # @return [FFI::Pointer(ValueRef)]
+    # @scope class
+    attach_function :const_string_in_context, :LLVMConstStringInContext, [:pointer, :string, :size_t, :int], :pointer
+
+    # Determine whether the specified constant instance is constant.
+    #
+    # @method is_constant(val)
+    # @param [FFI::Pointer(ValueRef)] val
+    # @return [Integer]
+    # @scope class
+    attach_function :is_constant, :LLVMIsConstant, [:pointer], :bool
+
+    # Determine whether a value instance is undefined.
+    #
+    # @method is_undef(val)
+    # @param [FFI::Pointer(ValueRef)] val
+    # @return [Integer]
+    # @scope class
+    attach_function :is_undef, :LLVMIsUndef, [:pointer], :bool
+
+    # Determine whether a value instance is null.
+    #
+    # @see llvm::Constant::isNullValue()
+    #
+    # @method is_null(val)
+    # @param [FFI::Pointer(ValueRef)] val
+    # @return [Integer]
+    # @scope class
+    attach_function :is_null, :LLVMIsNull, [:pointer], :bool
+
+    attach_function :is_poison, :LLVMIsPoison, [:pointer], :bool
+
+    # (Not documented)
+    #
+    # @method is_thread_local(global_var)
+    # @param [FFI::Pointer(ValueRef)] global_var
+    # @return [Integer]
+    # @scope class
+    attach_function :is_thread_local, :LLVMIsThreadLocal, [:pointer], :bool
+
+    # (Not documented)
+    #
+    # @method is_global_constant(global_var)
+    # @param [FFI::Pointer(ValueRef)] global_var
+    # @return [Integer]
+    # @scope class
+    attach_function :is_global_constant, :LLVMIsGlobalConstant, [:pointer], :bool
   end
 
   # Yields a pointer suitable for storing an LLVM output message.

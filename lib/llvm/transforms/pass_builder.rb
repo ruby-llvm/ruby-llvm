@@ -161,7 +161,7 @@ module LLVM
 
     # @return self
     def loop_reroll!
-      add_pass('loop-reroll')
+      deprecated('loop-reroll pass was removed in LLVM 19')
     end
 
     # @return self
@@ -216,9 +216,12 @@ module LLVM
     end
 
     # @return self
-    def loweratomic!
+    def lower_atomic!
+      # TODO: change in LLVM-19
       add_pass('loweratomic')
     end
+
+    alias_method :loweratomic!, :lower_atomic!
 
     # @return self
     def partially_inline_libcalls!
@@ -393,9 +396,12 @@ module LLVM
     end
 
     # @return self
-    def lowerswitch!
+    def lower_switch!
+      # TODO: change in LLVM-19
       add_pass('lowerswitch')
     end
+
+    alias_method :lowerswitch!, :lower_switch!
 
     # Inlines functions marked as "always_inline".
     # https://llvm.org/doxygen/AlwaysInliner_8h_source.html
@@ -482,9 +488,26 @@ module LLVM
     alias sdp! strip_dead_prototypes!
 
     # @return self
-    # TODO: test this
-    def internalize!(_all_but_main = true) # rubocop:disable Style/OptionalBooleanParameter
-      add_pass('internalize')
+    # preserve_gv - true / false to support previous option of all_but_main
+    # otherwise preserve_gv is assumed to be an array of global variable names
+    # internalize<preserve-gv=GV>
+    # tests showing usage: https://github.com/llvm/llvm-project/blob/a4b429f9e4175a06cc95f054c5dab3d4bc8fa690/llvm/test/Transforms/Internalize/lists.ll#L17
+    def internalize!(preserve_gv = [])
+      preserved = case preserve_gv
+      when true
+        ['main']
+      when false
+        []
+      else
+        preserve_gv
+      end
+      preserved_string = preserved.map { |gv| "preserve-gv=#{gv}" }.join(';')
+
+      if preserved_string.empty?
+        add_pass('internalize')
+      else
+        add_pass("internalize<#{preserved_string}>")
+      end
     end
 
     # This pass implements interprocedural sparse conditional constant propagation and merging.
@@ -635,16 +658,22 @@ module LLVM
       deprecated('simplify_libcalls! / LLVMAddSimplifyLibCallsPass was removed from LLVM')
     end
 
+    # https://reviews.llvm.org/D21316
     def scalarrepl!
-      deprecated('TODO: scalarrepl')
+      deprecated('scalarrepl was removed from LLVM in 2016 - use sroa')
+      sroa!
     end
 
+    # https://reviews.llvm.org/D21316
     def scalarrepl_ssa!
-      deprecated('TODO: scalarrepl_ssa')
+      deprecated('scalarrepl_ssa was removed from LLVM in 2016 - use sroa')
+      sroa!
     end
 
+    # https://reviews.llvm.org/D21316
     def scalarrepl_threshold!(_threshold = 0)
-      deprecated('TODO: scalarrepl_threshold')
+      deprecated('scalarrepl_threshold was removed from LLVM in 2016 - use sroa')
+      sroa!
     end
 
     def bb_vectorize!

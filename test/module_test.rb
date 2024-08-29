@@ -103,4 +103,58 @@ class ModuleTestCase < Minitest::Test
     refute_match "@b = external global i32", mod1.to_s
   end
 
+  def test_string_null_terminated
+    hello = LLVM::ConstantArray.string("Hello World!")
+    mod1 = LLVM::Module.new('mod')
+    mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+    assert_match '@hello = global [13 x i8] c"Hello World!\\00"', mod1.to_s
+  end
+
+  def test_string
+    hello = LLVM::ConstantArray.string("Hello World!", false)
+    mod1 = LLVM::Module.new('mod')
+    mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+    assert_match '@hello = global [12 x i8] c"Hello World!"', mod1.to_s
+  end
+
+  def test_string_in_context
+    context = LLVM::Context.new
+    hello = LLVM::ConstantArray.string_in_context(context, "Hello World!", false)
+    mod1 = LLVM::Module.new('mod')
+    mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+    assert_match '@hello = global [12 x i8] c"Hello World!"', mod1.to_s
+  end
+
+  def test_global_var
+    context = LLVM::Context.new
+    hello = LLVM::ConstantArray.string_in_context(context, "Hello World!", false)
+    mod1 = LLVM::Module.new('mod')
+    global_var = mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+
+    assert global_var.is_a? LLVM::GlobalValue
+    assert global_var.is_a? LLVM::GlobalVariable
+
+    assert_nil global_var.section
+
+    assert_equal :external, global_var.linkage
+    assert_equal :default, global_var.visibility
+    assert_equal 0, global_var.alignment
+    assert_equal '[12 x i8] c"Hello World!"', global_var.initializer.to_s
+    assert_equal :default, global_var.dll_storage_class
+
+    assert_predicate global_var, :declaration?
+    refute_predicate global_var, :unnamed_addr?
+    refute_predicate global_var, :thread_local?
+    refute_predicate global_var, :global_constant?
+    assert_predicate global_var, :externally_initialized?
+  end
+
 end

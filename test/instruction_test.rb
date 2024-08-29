@@ -204,13 +204,13 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
 
         prefixes.product(ops).map(&:join).each do |op|
           assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
-          assert_instance_of LLVM::Int32, inst
+          assert_instance_of LLVM::ConstantInt, inst
           assert_equal "i32 0", inst.to_s
         end
 
         [:sdiv, :exact_sdiv, :udiv].each do |op|
           assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(1))
-          assert_instance_of LLVM::Int32, inst
+          assert_instance_of LLVM::ConstantInt, inst
           assert_equal "i32 0", inst.to_s
 
           assert inst = builder.send(op, LLVM::Int32.from_i(0), LLVM::Int32.from_i(0))
