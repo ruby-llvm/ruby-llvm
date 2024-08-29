@@ -57,11 +57,18 @@ module LLVM
 
     # Returns a null ConstantExpr of this type.
     def null
-      ConstantExpr.from_ptr(C.const_null(self))
+      # ConstantExpr.from_ptr(C.const_null(self))
+      Constant.null(self)
     end
 
     def poison
-      ConstantExpr.from_ptr(C.get_poison(self))
+      # ConstantExpr.from_ptr(C.get_poison(self))
+      Constant.poison(self)
+    end
+
+    def undef
+      # ConstantExpr.from_ptr(C.get_undef(self))
+      Constant.undef(self)
     end
 
     # Creates a pointer type with this type and the given address space.

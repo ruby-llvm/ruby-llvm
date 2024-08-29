@@ -123,11 +123,27 @@ class IntegerTestCase < Minitest::Test
     assert_equal "i64 2", LLVM::Int64.from_i(2).udiv(LLVM::Int64.from_i(1)).to_s
   end
 
+  NEG_TEST_NUMS = [-1, 0, 1, 127, -127].freeze
+
   def test_const_neg
-    assert_equal LLVM::Int64.from_i(-1), -LLVM::Int64.from_i(1)
+    NEG_TEST_NUMS.each do |n|
+      assert_equal LLVM::Int64.from_i(-n), -LLVM::Int64.from_i(n)
+    end
+  end
+
+  def test_const_nsw_neg
+    NEG_TEST_NUMS.each do |n|
+      assert_equal LLVM::Int64.from_i(-n), LLVM::Int64.from_i(n).nsw_neg
+    end
+  end
+
+  # This is likely not the expected behavior
+  def test_const_neg_and_nsw_neg_overflow
     assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).nsw_neg
-    assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).nuw_neg
     assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).neg
+    # debugger
+    # assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(128).nsw_neg
+    # assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(128).neg
   end
 
   def test_const_rem

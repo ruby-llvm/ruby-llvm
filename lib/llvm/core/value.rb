@@ -288,6 +288,10 @@ module LLVM
       from_ptr(C.get_undef(type))
     end
 
+    def self.poison(type)
+      from_ptr(C.get_poison(type))
+    end
+
     # Creates a null pointer constant of Type.
     def self.null_ptr(type)
       from_ptr(C.const_pointer_null(type))
@@ -408,7 +412,7 @@ module LLVM
     def nuw_neg
       self.class.from_ptr(C.const_nuw_neg(self))
     end
-    deprecate :nuw_neg, "", 2025, 3
+    deprecate :nuw_neg, "neg", 2025, 3
 
     # Addition.
     def +(rhs)

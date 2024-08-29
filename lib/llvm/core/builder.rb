@@ -500,7 +500,7 @@ module LLVM
     def nuw_neg(arg, name = "")
       Instruction.from_ptr(C.build_nuw_neg(self, arg, name))
     end
-    deprecate :nuw_neg, "", 2025, 3
+    deprecate :nuw_neg, "neg", 2025, 3
 
     # Boolean negation.
     # @param [LLVM::Value] arg Integer or vector of integers
