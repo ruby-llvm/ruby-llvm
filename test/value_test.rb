@@ -33,6 +33,26 @@ class ValueTestCase < Minitest::Test
     [LLVM::Pointer(LLVM::Int8).null, 'ptr null'],
     [LLVM::Pointer(LLVM::Int8).undef, 'ptr undef'],
     [LLVM::Pointer(LLVM::Int8).poison, 'ptr poison'],
+
+    [LLVM::Pointer().null, 'ptr null'],
+    [LLVM::Pointer().undef, 'ptr undef'],
+    [LLVM::Pointer().poison, 'ptr poison'],
+
+    [LLVM::Constant.null(LLVM.Pointer), 'ptr null'],
+    [LLVM::Constant.undef(LLVM.Pointer), 'ptr undef'],
+    [LLVM::Constant.poison(LLVM.Pointer), 'ptr poison'],
+
+    [LLVM::ConstantExpr.null(LLVM.Pointer), 'ptr null'],
+    [LLVM::ConstantExpr.undef(LLVM.Pointer), 'ptr undef'],
+    [LLVM::ConstantExpr.poison(LLVM.Pointer), 'ptr poison'],
+
+    [LLVM.Pointer.null, 'ptr null'],
+    [LLVM.Pointer.undef, 'ptr undef'],
+    [LLVM.Pointer.poison, 'ptr poison'],
+
+    [LLVM::Type.pointer.null, 'ptr null'],
+    [LLVM::Type.pointer.undef, 'ptr undef'],
+    [LLVM::Type.pointer.poison, 'ptr poison'],
   ].freeze
 
   describe "LLVM::Value#to_s" do
