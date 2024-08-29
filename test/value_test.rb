@@ -58,10 +58,14 @@ class ValueTestCase < Minitest::Test
     [LLVM::Type.pointer.undef, 'ptr undef'],
     [LLVM::Type.pointer.poison, 'ptr poison'],
 
-
     [LLVM::Int32.parse("42"), 'i32 42'],
-    # TODO: fix this
-    [LLVM::Int8.parse("128"), 'i8 -128'],
+    [LLVM::Int8.parse("127"), 'i8 127'],
+    [LLVM::Int8.parse("-128"), 'i8 -128'],
+    [LLVM::Int8.parse("128"), 'i8 poison'],
+    [LLVM::Int8.parse("-129"), 'i8 poison'],
+
+    [LLVM::Int32.parse("256").int_to_ptr, 'ptr inttoptr (i32 256 to ptr)'],
+    [LLVM::Int32.parse("256").int_to_ptr.ptr_to_int(LLVM::Int64), 'i64 ptrtoint (ptr inttoptr (i32 256 to ptr) to i64)'],
 
   ].freeze
 

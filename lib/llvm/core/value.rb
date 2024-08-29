@@ -394,10 +394,10 @@ module LLVM
     #     int >= 0 && int.bit_length <= width
     #   end
     # end
-
-    def self.parse(str, radix = 10)
-      from_ptr(C.const_int_of_string(type, str, radix))
-    end
+    #
+    # def self.parse(str, radix = 10)
+    #   from_ptr(C.const_int_of_string(type, str, radix))
+    # end
 
     # Negation.
     def -@
@@ -471,25 +471,25 @@ module LLVM
 
     # Unsigned division.
     def udiv(rhs)
-      width = [self.type.width, rhs.type.width].max
+      width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_ui / rhs.to_ui, false)
     end
 
     # Signed division.
     def /(rhs)
-      width = [self.type.width, rhs.type.width].max
+      width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_si / rhs.to_si, true)
     end
 
     # Unsigned remainder.
     def urem(rhs)
-      width = [self.type.width, rhs.type.width].max
+      width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_ui % rhs.to_ui, false)
     end
 
     # Signed remainder.
     def rem(rhs)
-      width = [self.type.width, rhs.type.width].max
+      width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_si % rhs.to_si, true)
     end
 
@@ -503,7 +503,7 @@ module LLVM
     # Integer AND.
     # was: self.class.from_ptr(C.const_and(self, rhs))
     def &(rhs)
-      width = [self.type.width, rhs.type.width].max
+      width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_i & rhs.to_i)
     end
 
@@ -511,7 +511,7 @@ module LLVM
 
     # Integer OR.
     def |(rhs)
-      width = [self.type.width, rhs.type.width].max
+      width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_i | rhs.to_i)
     end
 
@@ -560,7 +560,7 @@ module LLVM
     end
 
     # Conversion to pointer.
-    def int_to_ptr(type)
+    def int_to_ptr(type = LLVM.Pointer)
       ConstantExpr.from_ptr(C.const_int_to_ptr(self, type))
     end
 
@@ -621,7 +621,6 @@ module LLVM
       # KLASS
       # const_get(name)
     else
-      debugger
       super
     end
   end

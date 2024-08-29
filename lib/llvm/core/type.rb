@@ -207,7 +207,7 @@ module LLVM
 
   class IntType < Type
     def all_ones
-      C.const_all_ones(self)
+      from_ptr(C.const_all_ones(self))
     end
 
     def width
@@ -242,7 +242,8 @@ module LLVM
     end
 
     def parse(str, radix = 10)
-      from_ptr(C.const_int_of_string(self, str, radix))
+      # from_ptr(C.const_int_of_string(self, str, radix))
+      from_i(str.to_i(radix))
     end
 
     def type

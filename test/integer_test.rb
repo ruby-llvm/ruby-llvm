@@ -179,6 +179,7 @@ class IntegerTestCase < Minitest::Test
   # TODO: this is not correct
   def test_const_all_ones
     assert_equal LLVM::Int8.from_i(-1), LLVM::Int8.all_ones
+    assert_equal LLVM::Int8.from_i(-1).to_s, LLVM::Int8.all_ones.to_s
   end
 
 end

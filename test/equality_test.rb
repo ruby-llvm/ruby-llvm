@@ -9,7 +9,7 @@ class EqualityTestCase < Minitest::Test
   end
 
   class MyModule < LLVM::Module; end
-  # class MyInt < LLVM::Int32; end
+  class MyInt < LLVM::IntType; end
   class MyType < LLVM::Type; end
   class MyFunction < LLVM::Function; end
 
@@ -34,14 +34,14 @@ class EqualityTestCase < Minitest::Test
     int1 = LLVM::Int32.from_i(1)
     int2 = LLVM::Int32.from_ptr(int1.to_ptr)
     int3 = LLVM::Int32.from_i(2)
-    # TODO: int4 = MyInt.from_ptr(int1.to_ptr)
+    int4 = MyInt.from_ptr(int1.to_ptr)
 
-    # assert_equalities :equal     => [int1, int2, int4],
-    #                   :not_equal => [int1, int3],
-    #                   :same      => [int1, int1],
-    #                   :not_same  => [int1, int2, int3, int4],
-    #                   :eql       => [int1, int2],
-    #                   :not_eql   => [int1, int3]
+    assert_equalities :equal     => [int1, int2, int4],
+                      :not_equal => [int1, int3],
+                      :same      => [int1, int1],
+                      :not_same  => [int1, int2, int3, int4],
+                      :eql       => [int1, int2],
+                      :not_eql   => [int1, int3]
   end
 
   def test_module
