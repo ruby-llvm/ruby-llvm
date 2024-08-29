@@ -22,6 +22,10 @@ class ValueTestCase < Minitest::Test
     [LLVM::Int32.type.undef, 'i32 undef'],
     [LLVM::Int32.type.poison, 'i32 poison'],
 
+    [LLVM::Int32.null, 'i32 0'],
+    [LLVM::Int32.undef, 'i32 undef'],
+    [LLVM::Int32.poison, 'i32 poison'],
+
     [LLVM::Constant.null(LLVM::Pointer(LLVM::Int32)), 'ptr null'],
     [LLVM::Constant.undef(LLVM::Pointer(LLVM::Int32)), 'ptr undef'],
     [LLVM::Constant.poison(LLVM::Pointer(LLVM::Int32)), 'ptr poison'],

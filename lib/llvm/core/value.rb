@@ -471,22 +471,26 @@ module LLVM
 
     # Unsigned division.
     def udiv(rhs)
-      self.class.from_i(to_ui / rhs.to_ui, false)
+      width = [self.type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_ui / rhs.to_ui, false)
     end
 
     # Signed division.
     def /(rhs)
-      self.class.from_i(to_si / rhs.to_si, true)
+      width = [self.type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_si / rhs.to_si, true)
     end
 
     # Unsigned remainder.
     def urem(rhs)
-      self.class.from_i(to_ui % rhs.to_ui, false)
+      width = [self.type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_ui % rhs.to_ui, false)
     end
 
     # Signed remainder.
     def rem(rhs)
-      self.class.from_i(to_si % rhs.to_si, true)
+      width = [self.type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_si % rhs.to_si, true)
     end
 
     # Boolean negation.

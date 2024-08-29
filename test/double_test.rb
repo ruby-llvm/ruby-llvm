@@ -38,6 +38,7 @@ class DoubleTestCase < Minitest::Test
 
     assert_equal "i64 9223371761976867840", LLVM::Double.from_f(9_223_371_761_976_868_351.0).to_i(LLVM::Int64).to_s
     assert_equal "i64 9223372036854774784", LLVM::Double.from_f(9_223_372_036_854_775_295.0).to_i(LLVM::Int64).to_s
+    skip "TODO"
     # TODO: assert_equal "i64 poison", LLVM::Double.from_f(9_223_372_036_854_775_296.0).to_i(LLVM::Int64).to_s
   end
 
