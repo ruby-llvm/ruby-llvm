@@ -45,9 +45,11 @@ class TypeTestCase < Minitest::Test
       LLVM::Type.integer(42).from_i(0, 42)
     end
 
-    # TODO: add these tests
-    # assert_equal 'i8 -42"', LLVM::Int8.from_i(128, true).to_s
-    # assert_equal 'i8 -42"', LLVM::Int8.from_i(128, false).to_s
+    assert_equal 'i8 127', LLVM::Int8.from_i(127, true).to_s
+    assert_equal 'i8 127', LLVM::Int8.from_i(127, false).to_s
+    assert_equal 'i8 -128', LLVM::Int8.from_i(-128, true).to_s
+    assert_equal 'i8 poison', LLVM::Int8.from_i(-128, false).to_s
+    assert_equal 'i8 -128', LLVM::Int8.from_i(-128).to_s
   end
 
   TO_S_TESTS = [
