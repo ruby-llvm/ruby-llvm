@@ -14,6 +14,16 @@ class VectorTestCase < Minitest::Test
     end
   end
 
+  def test_empty_vector
+    assert_raises(ArgumentError) do
+      LLVM::ConstantVector.const(0)
+    end
+
+    assert_raises(ArgumentError) do
+      LLVM::ConstantVector.const([])
+    end
+  end
+
   def test_constant_vector_from_size
     vector = LLVM::ConstantVector.const(2) { |i| LLVM::Int(i) }
     check_const_vector(vector)

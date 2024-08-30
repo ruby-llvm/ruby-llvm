@@ -141,6 +141,8 @@ class IntegerTestCase < Minitest::Test
   def test_const_neg_and_nsw_neg_overflow
     assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).nsw_neg
     assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).neg
+    assert_equal LLVM::Int8.from_i(-128).to_s, LLVM::Int8.from_i(-128).nsw_neg.to_s
+    assert_equal LLVM::Int8.from_i(-128).to_s, LLVM::Int8.from_i(-128).neg.to_s
 
     assert_predicate LLVM::Int8.from_i(128), :poison?
     assert_predicate LLVM::Int8.from_i(-129), :poison?

@@ -68,7 +68,9 @@ module LLVM
 
     # Print the value's IR to stdout.
     def dump
+      # :nocov:
       C.dump_value(self)
+      # :nocov:
     end
 
     def to_s
@@ -86,9 +88,10 @@ module LLVM
     end
 
     # Returns whether the value is undefined.
-    def undefined?
+    def undef?
       C.is_undef(self)
     end
+    alias_method :undefined?, :undef?
 
     def poison?
       C.is_poison(self)
@@ -409,7 +412,9 @@ module LLVM
     # "No unsigned wrap" negation.
     # @deprecated
     def nuw_neg
+      # :nocov:
       self.class.from_ptr(C.const_nuw_neg(self))
+      # :nocov:
     end
     deprecate :nuw_neg, "neg", 2025, 3
 
@@ -779,6 +784,11 @@ module LLVM
 
     def self.const(size_or_values, &block)
       vals = LLVM::Support.allocate_pointers(size_or_values, &block)
+
+      # size 0, or empty values
+      # this will segfault in const_vector
+      raise ArgumentError if vals.size.zero? # rubocop:disable Style/ZeroLengthPredicate
+
       from_ptr(C.const_vector(vals, vals.size / vals.type_size))
     end
 

@@ -6,6 +6,50 @@ class ValueTestCase < Minitest::Test
 
   extend Minitest::Spec::DSL
 
+  def test_is_null
+    assert_predicate LLVM::Int32.null, :null?
+    assert_predicate LLVM::Int32.from_i(0), :null?
+    refute_predicate LLVM::Int32.from_i(1), :null?
+  end
+
+  def test_undef
+    assert_predicate LLVM::Int32.undef, :undef?
+    refute_predicate LLVM::Int32.from_i(1), :undef?
+    assert_predicate LLVM::Int32.undef, :undefined?
+    refute_predicate LLVM::Int32.from_i(1), :undefined?
+  end
+
+  def test_poison
+    assert_predicate LLVM::Int32.poison, :poison?
+    refute_predicate LLVM::Int32.from_i(1), :poison?
+  end
+
+  def test_constant
+    assert_predicate LLVM::Int32.null, :constant?
+    assert_predicate LLVM::Int32.undef, :constant?
+    assert_predicate LLVM::Int32.poison, :constant?
+    assert_predicate LLVM::Int32.from_i(1), :constant?
+  end
+
+  def test_kind
+    assert_equal :const_int, LLVM::Int32.null.kind
+    assert_equal :const_fp, LLVM::Float.type.null.kind
+    assert_equal :const_fp, LLVM::Double.type.null.kind
+    assert_equal :pointer, LLVM.Pointer.kind
+    assert_equal :const_null, LLVM.Pointer.null.kind
+    assert_equal :void, LLVM.Void.kind
+    assert_equal :poison, LLVM::Int32.poison.kind
+    assert_equal :undef, LLVM::Int32.undef.kind
+    assert_equal :struct, LLVM::Struct(LLVM::Int, LLVM::Float).kind
+
+    assert_equal :const_aggregregate_zero, LLVM::ConstantArray.const(LLVM::Int, []).kind
+    assert_equal :const_aggregregate_zero, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.null]).kind
+    assert_equal :const_aggregregate_zero, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.from_i(0)]).kind
+    assert_equal :const_data_array, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.from_i(1)]).kind
+
+    assert_equal :const_data_vector, LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(1)]).kind
+  end
+
   TO_S_TESTS = [
     [LLVM::FALSE, 'i1 false'],
     [LLVM::TRUE, 'i1 true'],
