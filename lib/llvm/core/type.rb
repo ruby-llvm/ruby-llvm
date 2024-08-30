@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 module LLVM
-  # module C
-  #   class OpaqueGenericValue < FFI::Struct
-  #     layout :dummy, :char
-  #   end
-  #
-  #   attach_function :create_generic_value_of_int, :LLVMCreateGenericValueOfInt, [:pointer, :ulong_long, :int], OpaqueGenericValue
-  # end
-
   class Type
     include PointerIdentity
 
@@ -86,7 +78,9 @@ module LLVM
 
     # Print the type's representation to stdout.
     def dump
+      # :nocov:
       C.dump_type(self)
+      # :nocov:
     end
 
     # Build string of LLVM type representation.
@@ -203,6 +197,15 @@ module LLVM
     def self.integer(width)
       IntType.from_ptr(C.int_type(width), :integer)
     end
+
+    def self.float
+      Type.from_ptr(C.float_type, kind: :float)
+    end
+
+    def self.double
+      Type.from_ptr(C.double_type, kind: :double)
+    end
+
   end
 
   class IntType < Type
@@ -223,18 +226,22 @@ module LLVM
       else
         raise ArgumentError
       end
-      return poison if !fits_width?(int, width, signed)
+      # return poison if !fits_width?(int, width, signed)
 
       ptr = C.const_int(self, int, signed ? 1 : 0)
-      from_ptr(ptr)
+      val = from_ptr(ptr)
+      val.to_i(signed) == int ? val : poison
     end
 
+    # unused
     private def fits_width?(int, width, signed)
+      # :nocov:
       if signed
         int.bit_length < width || int == 1
       else
         int >= 0 && int.bit_length <= width
       end
+      # :nocov:
     end
 
     def from_ptr(ptr)

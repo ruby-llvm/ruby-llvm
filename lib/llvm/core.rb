@@ -284,6 +284,34 @@ module LLVM
     # @return [FFI::Pointer(ValueRef)]
     # @scope class
     attach_function :const_string_in_context2, :LLVMConstStringInContext2, [:pointer, :string, :size_t, :int], :pointer
+
+    # Determine whether the specified constant instance is constant.
+    #
+    # @method is_constant(val)
+    # @param [FFI::Pointer(ValueRef)] val
+    # @return [Integer]
+    # @scope class
+    attach_function :is_constant, :LLVMIsConstant, [:pointer], :bool
+
+    # Determine whether a value instance is undefined.
+    #
+    # @method is_undef(val)
+    # @param [FFI::Pointer(ValueRef)] val
+    # @return [Integer]
+    # @scope class
+    attach_function :is_undef, :LLVMIsUndef, [:pointer], :bool
+
+    # Determine whether a value instance is null.
+    #
+    # @see llvm::Constant::isNullValue()
+    #
+    # @method is_null(val)
+    # @param [FFI::Pointer(ValueRef)] val
+    # @return [Integer]
+    # @scope class
+    attach_function :is_null, :LLVMIsNull, [:pointer], :bool
+
+    attach_function :is_poison, :LLVMIsPoison, [:pointer], :bool
   end
 
   # Yields a pointer suitable for storing an LLVM output message.

@@ -30,6 +30,16 @@ class TypeTestCase < Minitest::Test
     assert_equal :integer, vector.element_type.kind
   end
 
+  def test_size
+    assert_equal "i64 ptrtoint (ptr getelementptr (float, ptr null, i32 1) to i64)", LLVM::Type.float.size.to_s
+    assert_equal "i64 ptrtoint (ptr getelementptr (double, ptr null, i32 1) to i64)", LLVM::Type.double.size.to_s
+    assert_equal "i64 ptrtoint (ptr getelementptr (i42, ptr null, i32 1) to i64)", LLVM::Type.integer(42).size.to_s
+  end
+
+  def test_align
+    assert_equal "i64 ptrtoint (ptr getelementptr ({ i1, i64 }, ptr null, i64 0, i32 1) to i64)", LLVM::Int64.align.to_s
+  end
+
   TO_S_TESTS = [
     [LLVM.Struct(), '{}'],
     [LLVM.Struct("test"), '%test = type opaque'],
@@ -74,6 +84,9 @@ class TypeTestCase < Minitest::Test
     [LLVM::Type.function([], LLVM.Void, varargs: true), 'void (...)'],
 
     [LLVM.Struct(LLVM::Int32, LLVM::Type.array(LLVM::Float)), '{ i32, [0 x float] }'],
+
+    [LLVM::Int32.pointer, 'ptr'],
+    [LLVM::Int32.pointer(42), 'ptr addrspace(42)'],
   ].freeze
 
   describe "LLVM::Type#to_s" do

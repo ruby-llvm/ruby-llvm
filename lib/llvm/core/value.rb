@@ -77,26 +77,21 @@ module LLVM
 
     # Returns whether the value is constant.
     def constant?
-      case C.is_constant(self)
-      when 0 then false
-      when 1 then true
-      end
+      C.is_constant(self)
     end
 
     # Returns whether the value is null.
     def null?
-      case C.is_null(self)
-      when 0 then false
-      when 1 then true
-      end
+      C.is_null(self)
     end
 
     # Returns whether the value is undefined.
     def undefined?
-      case C.is_undef(self)
-      when 0 then false
-      when 1 then true
-      end
+      C.is_undef(self)
+    end
+
+    def poison?
+      C.is_poison(self)
     end
 
     # Adds attr to this value's attributes.

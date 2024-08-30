@@ -9,6 +9,9 @@ class ValueTestCase < Minitest::Test
   TO_S_TESTS = [
     [LLVM::FALSE, 'i1 false'],
     [LLVM::TRUE, 'i1 true'],
+    [LLVM::Int1.from_i(0), 'i1 false'],
+    [LLVM::Int1.from_i(-1), 'i1 true'],
+    [LLVM::Int1.from_i(1), 'i1 poison'],
 
     [LLVM::Constant.null(LLVM::Int32), 'i32 0'],
     [LLVM::Constant.undef(LLVM::Int32), 'i32 undef'],
@@ -25,6 +28,7 @@ class ValueTestCase < Minitest::Test
     [LLVM::Int32.null, 'i32 0'],
     [LLVM::Int32.undef, 'i32 undef'],
     [LLVM::Int32.poison, 'i32 poison'],
+    [LLVM::Int32.null_pointer, 'i32 null'],
 
     [LLVM::Constant.null(LLVM::Pointer(LLVM::Int32)), 'ptr null'],
     [LLVM::Constant.undef(LLVM::Pointer(LLVM::Int32)), 'ptr undef'],
