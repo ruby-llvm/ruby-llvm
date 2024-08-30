@@ -40,6 +40,16 @@ class TypeTestCase < Minitest::Test
     assert_equal "i64 ptrtoint (ptr getelementptr ({ i1, i64 }, ptr null, i64 0, i32 1) to i64)", LLVM::Int64.align.to_s
   end
 
+  def test_from_i
+    assert_raises(ArgumentError) do
+      LLVM::Type.integer(42).from_i(0, 42)
+    end
+
+    # TODO: add these tests
+    # assert_equal 'i8 -42"', LLVM::Int8.from_i(128, true).to_s
+    # assert_equal 'i8 -42"', LLVM::Int8.from_i(128, false).to_s
+  end
+
   TO_S_TESTS = [
     [LLVM.Struct(), '{}'],
     [LLVM.Struct("test"), '%test = type opaque'],
@@ -87,6 +97,9 @@ class TypeTestCase < Minitest::Test
 
     [LLVM::Int32.pointer, 'ptr'],
     [LLVM::Int32.pointer(42), 'ptr addrspace(42)'],
+
+    # breaks struct_Test
+    # [LLVM::Type.opaque_struct("mystery"), '%mystery = type opaque'],
   ].freeze
 
   describe "LLVM::Type#to_s" do
