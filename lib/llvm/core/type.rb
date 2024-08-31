@@ -160,10 +160,7 @@ module LLVM
     end
 
     def self.opaque_struct(name)
-      # TODO: test this once flakiness resolved
-      # :nocov:
       from_ptr(C.struct_create_named(Context.global, name.to_s), :struct)
-      # :nocov:
     end
 
     def self.named(name)

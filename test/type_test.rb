@@ -100,8 +100,7 @@ class TypeTestCase < Minitest::Test
     [LLVM::Int32.pointer, 'ptr'],
     [LLVM::Int32.pointer(42), 'ptr addrspace(42)'],
 
-    # breaks struct_Test
-    # [LLVM::Type.opaque_struct("mystery"), '%mystery = type opaque'],
+    [LLVM::Type.opaque_struct("hidden"), '%hidden = type opaque'],
   ].freeze
 
   describe "LLVM::Type#to_s" do
