@@ -372,4 +372,12 @@ module LLVM
   def i(width)
     LLVM::Type.i(width)
   end
+
+  def double
+    LLVM::Type.double
+  end
+
+  def float
+    LLVM::Type.float
+  end
 end
