@@ -178,6 +178,26 @@ class IntegerTestCase < Minitest::Test
     assert_equal LLVM::Int8.from_i(91), LLVM::Int8.from_i(32) ^ LLVM::Int8.from_i(123)
   end
 
+  def test_icmp
+    assert_raises(LLVM::DeprecationError) do
+      LLVM::Int8.from_i(2).icmp(:eq, LLVM::Int8.from_i(1))
+    end
+  end
+
+  def test_shl
+    assert_equal "i8 4", (LLVM::Int8.from_i(2) << LLVM::Int8.from_i(1)).to_s
+  end
+
+  def test_lshr
+    assert_equal "i8 1", (LLVM::Int8.from_i(2) >> LLVM::Int8.from_i(1)).to_s
+    assert_equal "i8 127", (LLVM::Int8.from_i(-2) >> LLVM::Int8.from_i(1)).to_s
+  end
+
+  def test_ashr
+    assert_equal "i8 1", LLVM::Int8.from_i(2).ashr(LLVM::Int8.from_i(1)).to_s
+    assert_equal "i8 -1", LLVM::Int8.from_i(-2).ashr(LLVM::Int8.from_i(1)).to_s
+  end
+
   # TODO: this is not correct
   def test_const_all_ones
     assert_equal LLVM::Int8.from_i(-1), LLVM::Int8.all_ones

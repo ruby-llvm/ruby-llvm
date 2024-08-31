@@ -526,21 +526,25 @@ module LLVM
 
     # Shift left.
     def <<(bits)
-      self.class.from_ptr(C.const_shl(self, bits))
+      width = [type.width, bits.type.width].max
+      LLVM::Type.integer(width).from_i(to_i << bits.to_i)
     end
 
     alias shl <<
 
     # Shift right.
-    def >>(bits)
-      self.class.from_ptr(C.const_l_shr(self, bits))
+    def lshr(bits)
+      width = [type.width, bits.type.width].max
+      LLVM::Type.integer(width).from_i(to_ui >> bits.to_i)
     end
 
-    alias shr >>
+    alias shr lshr
+    alias >> lshr
 
     # Arithmatic shift right.
     def ashr(bits)
-      self.class.from_ptr(C.const_a_shr(self, bits))
+      width = [type.width, bits.type.width].max
+      LLVM::Type.integer(width).from_i(to_i >> bits.to_i)
     end
 
     # Integer comparison using the predicate specified via the first parameter.
@@ -555,8 +559,8 @@ module LLVM
     #   :sge - signed greater than or equal to
     #   :slt - signed less than
     #   :sle - signed less than or equal to
-    def icmp(pred, rhs)
-      self.class.from_ptr(C.const_i_cmp(pred, self, rhs))
+    def icmp(_pred, _rhs)
+      raise DeprecationError
     end
 
     # Conversion to pointer.
