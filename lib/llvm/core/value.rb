@@ -706,8 +706,8 @@ module LLVM
     #   :sle  - unordered and less than or equal to
     #   :true - always true
     #   :false- always false
-    def fcmp(pred, rhs)
-      self.class.from_ptr(C.llmv_const_f_cmp(pred, self, rhs))
+    def fcmp(_pred, _rhs)
+      raise DeprecationError
     end
 
     # constant FPToSI

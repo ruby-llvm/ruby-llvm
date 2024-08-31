@@ -66,6 +66,12 @@ class DoubleTestCase < Minitest::Test
     assert_equal LLVM.Double(-3), LLVM.Double(-11).rem(LLVM.Double(-4))
   end
 
+  def test_const_fcmp
+    assert_raises(LLVM::DeprecationError) do
+      LLVM.Double(0).fcmp(:oeq, LLVM.Double(0))
+    end
+  end
+
   def test_double
     mod = LLVM::Module.new("Double Test")
     mod.functions.add(:sin, [LLVM::Double], LLVM::Double)
