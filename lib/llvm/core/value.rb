@@ -301,7 +301,7 @@ module LLVM
     end
 
     # @deprecated
-    alias bit_cast bitcast_to
+    alias_method :bit_cast, :bitcast_to
 
     # Returns the element pointer at the given indices of the constant.
     # For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
@@ -402,7 +402,7 @@ module LLVM
       self.class.from_ptr(C.const_neg(self))
     end
 
-    alias neg -@
+    alias_method :neg, :-@
 
     # "No signed wrap" negation.
     def nsw_neg
@@ -423,7 +423,7 @@ module LLVM
       self.class.from_ptr(C.const_add(self, rhs))
     end
 
-    alias add +
+    alias_method :add, :+
 
     # "No signed wrap" addition.
     def nsw_add(rhs)
@@ -440,7 +440,7 @@ module LLVM
       self.class.from_ptr(C.const_sub(self, rhs))
     end
 
-    alias sub -
+    alias_method :sub, :-
 
     # "No signed wrap" subtraction.
     def nsw_sub(rhs)
@@ -457,7 +457,7 @@ module LLVM
       self.class.from_ptr(C.const_mul(self, rhs))
     end
 
-    alias mul *
+    alias_method :mul, :*
 
     # "No signed wrap" multiplication.
     def nsw_mul(rhs)
@@ -498,7 +498,7 @@ module LLVM
       self.class.from_ptr(C.const_not(self))
     end
 
-    alias not ~
+    alias_method :not, :~
 
     # Integer AND.
     # was: self.class.from_ptr(C.const_and(self, rhs))
@@ -507,7 +507,7 @@ module LLVM
       LLVM::Type.integer(width).from_i(to_i & rhs.to_i)
     end
 
-    alias and &
+    alias_method :and, :&
 
     # Integer OR.
     def |(rhs)
@@ -515,14 +515,14 @@ module LLVM
       LLVM::Type.integer(width).from_i(to_i | rhs.to_i)
     end
 
-    alias or |
+    alias_method :or, :|
 
     # Integer XOR.
     def ^(rhs)
       self.class.from_ptr(C.const_xor(self, rhs))
     end
 
-    alias xor ^
+    alias_method :xor, :^
 
     # Shift left.
     def <<(bits)
@@ -530,7 +530,7 @@ module LLVM
       LLVM::Type.integer(width).from_i(to_i << bits.to_i)
     end
 
-    alias shl <<
+    alias_method :shl, :<<
 
     # Shift right.
     def lshr(bits)
@@ -538,8 +538,8 @@ module LLVM
       LLVM::Type.integer(width).from_i(to_ui >> bits.to_i)
     end
 
-    alias shr lshr
-    alias >> lshr
+    alias_method :shr, :lshr
+    alias_method :>>, :lshr
 
     # Arithmatic shift right.
     def ashr(bits)
@@ -1271,6 +1271,6 @@ module LLVM
       C.add_destination(self, dest)
     end
 
-    alias :<< :add_dest
+    alias_method :<<, :add_dest
   end
 end

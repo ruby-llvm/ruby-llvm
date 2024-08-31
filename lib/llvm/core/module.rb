@@ -81,7 +81,7 @@ module LLVM
         Type.from_ptr(C.get_type_by_name(@module, name.to_s), nil)
       end
 
-      alias [] named
+      alias_method :[], :named
     end
 
     # Returns an Enumerable of all the GlobalVariables in the module.

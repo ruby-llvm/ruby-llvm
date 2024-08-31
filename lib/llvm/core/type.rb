@@ -199,7 +199,7 @@ module LLVM
     end
 
     class << self
-      alias i integer
+      alias_method :i, :integer
     end
 
     def self.float
@@ -369,6 +369,10 @@ module LLVM
     LLVM::Type.void
   end
 
+  def void
+    LLVM::Type.void
+  end
+
   def i(width)
     LLVM::Type.i(width)
   end
@@ -379,5 +383,9 @@ module LLVM
 
   def float
     LLVM::Type.float
+  end
+
+  def ptr
+    LLVM::Type.pointer
   end
 end

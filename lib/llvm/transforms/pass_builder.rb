@@ -220,7 +220,7 @@ module LLVM
       add_pass('lower-atomic')
     end
 
-    alias loweratomic! lower_atomic!
+    alias_method :loweratomic!, :lower_atomic!
 
     # @return self
     def partially_inline_libcalls!
@@ -367,7 +367,7 @@ module LLVM
       add_pass('require<basic-aa>')
     end
 
-    alias basicaa! basic_aa!
+    alias_method :basicaa!, :basic_aa!
 
     # @return self
     def objc_arc_aa!
@@ -399,7 +399,7 @@ module LLVM
       add_pass('lower-switch')
     end
 
-    alias lowerswitch! lower_switch!
+    alias_method :lowerswitch!, :lower_switch!
 
     # Inlines functions marked as "always_inline".
     # https://llvm.org/doxygen/AlwaysInliner_8h_source.html
@@ -448,7 +448,7 @@ module LLVM
       add_pass('deadargelim')
     end
 
-    alias dae! deadargelim!
+    alias_method :dae!, :deadargelim!
 
     # ConstantMerge is designed to build up a map of available constants and eliminate duplicates when it is initialized.
     # https://llvm.org/doxygen/ConstantMerge_8cpp_source.html
@@ -458,7 +458,7 @@ module LLVM
       add_pass('constmerge')
     end
 
-    alias const_merge! constmerge!
+    alias_method :const_merge!, :constmerge!
 
     # Aggressive Dead Code Elimination
     # @return self
@@ -471,7 +471,7 @@ module LLVM
       add_pass('function-attrs')
     end
 
-    alias fun_attrs! function_attrs!
+    alias_method :fun_attrs!, :function_attrs!
 
     # @return self
     def strip!
@@ -483,7 +483,7 @@ module LLVM
       add_pass('strip-dead-prototypes')
     end
 
-    alias sdp! strip_dead_prototypes!
+    alias_method :sdp!, :strip_dead_prototypes!
 
     # @return self
     # preserve_gv - true / false to support previous option of all_but_main
@@ -529,7 +529,7 @@ module LLVM
       add_pass('globaldce')
     end
 
-    alias gdce! globaldce!
+    alias_method :gdce!, :globaldce!
 
     # Bit-Tracking Dead Code Elimination pass
     # @return self
@@ -550,7 +550,7 @@ module LLVM
       add_pass('argpromotion')
     end
 
-    alias arg_promote! argpromotion!
+    alias_method :arg_promote!, :argpromotion!
 
     # The inliner pass for the new pass manager.
     # https://llvm.org/doxygen/classllvm_1_1InlinerPass.html
@@ -715,7 +715,7 @@ module LLVM
       add_pass('lower-invoke')
     end
 
-    alias lowerinvoke! lower_invoke!
+    alias_method :lowerinvoke!, :lower_invoke!
 
     def lower_guard_intrinsic!
       add_pass('lower-guard-intrinsic')

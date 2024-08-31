@@ -101,6 +101,12 @@ class TypeTestCase < Minitest::Test
     [LLVM::Int32.pointer(42), 'ptr addrspace(42)'],
 
     [LLVM::Type.opaque_struct("hidden"), '%hidden = type opaque'],
+
+    [LLVM.i(1), "i1"],
+    [LLVM.float, "float"],
+    [LLVM.double, "double"],
+    [LLVM.ptr, "ptr"],
+    [LLVM.void, "void"],
   ].freeze
 
   describe "LLVM::Type#to_s" do
