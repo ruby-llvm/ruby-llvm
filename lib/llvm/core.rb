@@ -312,6 +312,22 @@ module LLVM
     attach_function :is_null, :LLVMIsNull, [:pointer], :bool
 
     attach_function :is_poison, :LLVMIsPoison, [:pointer], :bool
+
+    # (Not documented)
+    #
+    # @method is_thread_local(global_var)
+    # @param [FFI::Pointer(ValueRef)] global_var
+    # @return [Integer]
+    # @scope class
+    attach_function :is_thread_local, :LLVMIsThreadLocal, [:pointer], :bool
+
+    # (Not documented)
+    #
+    # @method is_global_constant(global_var)
+    # @param [FFI::Pointer(ValueRef)] global_var
+    # @return [Integer]
+    # @scope class
+    attach_function :is_global_constant, :LLVMIsGlobalConstant, [:pointer], :bool
   end
 
   # Yields a pointer suitable for storing an LLVM output message.

@@ -26,7 +26,7 @@ module LLVM
       when :poison
         Poison.from_ptr(ptr)
       when :global_variable
-        GlobalValue.from_ptr(ptr)
+        GlobalVariable.from_ptr(ptr)
       else
         raise "from_ptr_kind cannot handle: #{kind}"
       end
@@ -842,27 +842,6 @@ module LLVM
       C.set_alignment(self, bytes)
     end
 
-    def initializer
-      Value.from_ptr(C.get_initializer(self))
-    end
-
-    def initializer=(val)
-      C.set_initializer(self, val)
-    end
-
-    def global_constant?
-      C.is_global_constant(self) != 0
-    end
-
-    def global_constant=(flag)
-      if flag.kind_of?(Integer)
-        warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
-        flag = !flag.zero?
-      end
-
-      C.set_global_constant(self, flag ? 1 : 0)
-    end
-
     def unnamed_addr?
       C.has_unnamed_addr(self) != 0
     end
@@ -1165,18 +1144,38 @@ module LLVM
     end
 
     def initializer=(val)
+      raise ArgumentError unless val.is_a? Constant
+
       C.set_initializer(self, val)
     end
 
     def thread_local?
-      case C.is_thread_local(self)
-      when 0 then false
-      else true
-      end
+      C.is_thread_local(self)
     end
 
     def thread_local=(local)
       C.set_thread_local(self, local ? 1 : 0)
+    end
+
+    def global_constant?
+      C.is_global_constant(self)
+    end
+
+    def global_constant=(flag)
+      if flag.kind_of?(Integer)
+        warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
+        flag = !flag.zero?
+      end
+
+      C.set_global_constant(self, flag ? 1 : 0)
+    end
+
+    def externally_initialized?
+      C.is_externally_initialized(self)
+    end
+
+    def externally_initialized=(boolean)
+      C.set_externally_initialized(self, boolean)
     end
   end
 

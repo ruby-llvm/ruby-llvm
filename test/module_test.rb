@@ -131,4 +131,26 @@ class ModuleTestCase < Minitest::Test
     assert_match '@hello = global [12 x i8] c"Hello World!"', mod1.to_s
   end
 
+  def test_global_var
+    context = LLVM::Context.new
+    hello = LLVM::ConstantArray.string_in_context(context, "Hello World!", false)
+    mod1 = LLVM::Module.new('mod')
+    global_var = mod1.globals.add(hello, 'hello') do |var|
+      var.initializer = hello
+    end
+    assert global_var.is_a? LLVM::GlobalValue
+    assert global_var.is_a? LLVM::GlobalVariable
+    assert_predicate global_var, :declaration?
+    assert_equal :external, global_var.linkage
+    assert_nil global_var.section
+    assert_equal :default, global_var.visibility
+    assert_equal 0, global_var.alignment
+    assert_equal '[12 x i8] c"Hello World!"', global_var.initializer.to_s
+    refute_predicate global_var, :unnamed_addr?
+    assert_equal :default, global_var.dll_storage_class
+    refute_predicate global_var, :thread_local?
+    refute_predicate global_var, :global_constant?
+    assert_predicate global_var, :externally_initialized?
+  end
+
 end

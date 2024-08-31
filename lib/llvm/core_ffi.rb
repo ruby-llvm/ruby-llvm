@@ -3285,28 +3285,12 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method is_thread_local(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var
-  # @return [Integer]
-  # @scope class
-  attach_function :is_thread_local, :LLVMIsThreadLocal, [:pointer], :int
-
-  # (Not documented)
-  #
   # @method set_thread_local(global_var, is_thread_local)
   # @param [FFI::Pointer(ValueRef)] global_var
   # @param [Integer] is_thread_local
   # @return [nil]
   # @scope class
   attach_function :set_thread_local, :LLVMSetThreadLocal, [:pointer, :int], :void
-
-  # (Not documented)
-  #
-  # @method is_global_constant(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var
-  # @return [Integer]
-  # @scope class
-  attach_function :is_global_constant, :LLVMIsGlobalConstant, [:pointer], :int
 
   # (Not documented)
   #
