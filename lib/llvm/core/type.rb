@@ -198,6 +198,10 @@ module LLVM
       IntType.from_ptr(C.int_type(width), :integer)
     end
 
+    class << self
+      alias i integer
+    end
+
     def self.float
       Type.from_ptr(C.float_type, kind: :float)
     end
@@ -365,4 +369,7 @@ module LLVM
     LLVM::Type.void
   end
 
+  def i(width)
+    LLVM::Type.i(width)
+  end
 end
