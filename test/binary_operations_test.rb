@@ -3,7 +3,6 @@
 require "test_helper"
 
 class BasicOperationsTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -56,5 +55,4 @@ class BasicOperationsTestCase < Minitest::Test
       builder.ret(builder.send(operation, operand1, operand2))
     end
   end
-
 end

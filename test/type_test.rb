@@ -3,7 +3,6 @@
 require "test_helper"
 
 class TypeTestCase < Minitest::Test
-
   extend Minitest::Spec::DSL
 
   def test_element_type
@@ -131,5 +130,4 @@ class TypeTestCase < Minitest::Test
       assert_equal :label, type.kind
     end
   end
-
 end

@@ -35,7 +35,6 @@ require "llvm/core"
 require "llvm/execution_engine"
 
 class Minitest::Test
-
   LLVM_SIGNED = true
   LLVM_UNSIGNED = false
 
@@ -77,7 +76,6 @@ class Minitest::Test
       mod.verify!
     end
   end
-
 end
 
 def define_module(module_name)

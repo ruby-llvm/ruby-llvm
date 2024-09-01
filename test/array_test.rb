@@ -118,5 +118,4 @@ class ArrayTestCase < Minitest::Test
     assert_predicate array.type, :aggregate?
     assert_equal "[0 x i32] zeroinitializer", array.to_s
   end
-
 end

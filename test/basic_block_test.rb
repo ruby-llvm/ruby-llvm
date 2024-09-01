@@ -3,7 +3,6 @@
 require "test_helper"
 
 class BasicBlockTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
     @module = LLVM::Module.new("BasicBlockTestCase")
@@ -82,7 +81,6 @@ class BasicBlockTestCase < Minitest::Test
         assert_equal block1.instructions.first, insts[0]
         assert_equal block1.instructions.last,  insts[1]
       end
-
     end
   end
 
@@ -125,5 +123,4 @@ class BasicBlockTestCase < Minitest::Test
       end
     end
   end
-
 end

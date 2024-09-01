@@ -5,7 +5,6 @@ require 'llvm/core'
 module LLVM
   # wrapper around LLVMOrcLLJITRef
   class LLJit
-
     # create lljit
     # does not automatically dispose of lljit
     # if lljit was disposed, that would dispose of builder

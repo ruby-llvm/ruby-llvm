@@ -3,7 +3,6 @@
 require "test_helper"
 
 class AttributeTestCase < Minitest::Test
-
   ATTRIBUTE_KINDS = [
     :readnone,
     :readonly,
@@ -171,5 +170,4 @@ class AttributeTestCase < Minitest::Test
   def attr_memnone
     attr_memory(0)
   end
-
 end

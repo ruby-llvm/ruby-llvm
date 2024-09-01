@@ -87,5 +87,4 @@ class EqualityTestCase < Minitest::Test
                       :eql       => [fn1, fn2],
                       :not_eql   => [fn1, fn3]
   end
-
 end

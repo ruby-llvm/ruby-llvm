@@ -19,7 +19,7 @@ jobs:
       - name: Install LLVM on macos
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew update --auto-update
+          # brew update --auto-update
           brew install llvm@18
           echo "$(brew --prefix llvm@18)/bin" >> $GITHUB_PATH
           sudo mkdir -p /opt/local/

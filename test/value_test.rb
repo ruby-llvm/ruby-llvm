@@ -3,7 +3,6 @@
 require "test_helper"
 
 class ValueTestCase < Minitest::Test
-
   extend Minitest::Spec::DSL
 
   def test_is_null
@@ -115,8 +114,8 @@ class ValueTestCase < Minitest::Test
     [LLVM::Int32.parse("256").int_to_ptr, 'ptr inttoptr (i32 256 to ptr)'],
     [LLVM::Int32.parse("256").int_to_ptr.ptr_to_int(LLVM::Int64), 'i64 ptrtoint (ptr inttoptr (i32 256 to ptr) to i64)'],
 
-    [LLVM::ConstantReal.parse(LLVM::Float, "0"), "float 0.000000e+00"],
-    [LLVM::ConstantReal.parse(LLVM::Double, "0"), "double 0.000000e+00"],
+    [LLVM::Float.parse("0"), "float 0.000000e+00"],
+    [LLVM::Double.parse("0"), "double 0.000000e+00"],
   ].freeze
 
   describe "LLVM::Value#to_s" do
@@ -128,5 +127,4 @@ class ValueTestCase < Minitest::Test
       end
     end
   end
-
 end

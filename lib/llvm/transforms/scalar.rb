@@ -311,6 +311,5 @@ module LLVM
     def mergereturn!
       raise DeprecationError
     end
-
   end
 end

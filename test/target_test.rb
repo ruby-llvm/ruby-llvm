@@ -6,7 +6,6 @@ require 'llvm/version'
 require 'llvm/config'
 
 class TargetTestCase < Minitest::Test
-
   def setup
     LLVM::Target.init('X86', true)
   end

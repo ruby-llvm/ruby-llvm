@@ -3,7 +3,6 @@
 require "test_helper"
 
 class ConversionsTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -92,5 +91,4 @@ class ConversionsTestCase < Minitest::Test
       builder.ret(builder.send(operation, operand, return_type))
     end
   end
-
 end

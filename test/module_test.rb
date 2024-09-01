@@ -4,7 +4,6 @@ require "test_helper"
 require "tempfile"
 
 class ModuleTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -156,5 +155,4 @@ class ModuleTestCase < Minitest::Test
     refute_predicate global_var, :global_constant?
     assert_predicate global_var, :externally_initialized?
   end
-
 end

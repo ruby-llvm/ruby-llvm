@@ -4,7 +4,6 @@ require "test_helper"
 require 'llvm/lljit'
 
 class LLJitTest < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -27,5 +26,4 @@ class LLJitTest < Minitest::Test
     assert_equal("e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128", lljit.data_layout)
     assert_equal("", lljit.global_prefix)
   end
-
 end

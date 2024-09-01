@@ -228,18 +228,18 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
       fn.basic_blocks.append.build do |builder|
         [:fadd, :fsub, :fmul].each do |op|
           assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(0))
-          assert_instance_of LLVM::Float, inst
+          assert_instance_of LLVM::ConstantReal, inst
           assert_equal "float 0.000000e+00", inst.to_s
         end
 
         [:fdiv, :frem].each do |op|
           assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(1))
-          assert_instance_of LLVM::Float, inst
+          assert_instance_of LLVM::ConstantReal, inst
           assert_equal "float 0.000000e+00", inst.to_s
 
           # 0 / 0 == nan
           assert inst = builder.send(op, LLVM::Float.from_f(0), LLVM::Float.from_f(0))
-          assert_instance_of LLVM::Float, inst
+          assert_instance_of LLVM::ConstantReal, inst
           assert_equal 'float 0x7FF8000000000000', inst.to_s
         end
         builder.ret
@@ -253,12 +253,12 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
       fn.basic_blocks.append.build do |builder|
         # fdiv 1 / 0 == +inf
         assert inst = builder.fdiv(LLVM::Float.from_f(1), LLVM::Float.from_f(0))
-        assert_instance_of LLVM::Float, inst
+        assert_instance_of LLVM::ConstantReal, inst
         assert_equal 'float 0x7FF0000000000000', inst.to_s
 
         # fdiv -1 / 0 == -inf
         assert inst = builder.fdiv(LLVM::Float.from_f(-1), LLVM::Float.from_f(0))
-        assert_instance_of LLVM::Float, inst
+        assert_instance_of LLVM::ConstantReal, inst
         assert_equal 'float 0xFFF0000000000000', inst.to_s
 
         builder.ret
@@ -272,12 +272,12 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
       fn.basic_blocks.append.build do |builder|
         # frem 1 / 0 == nan
         assert inst = builder.frem(LLVM::Float.from_f(1), LLVM::Float.from_f(0))
-        assert_instance_of LLVM::Float, inst
+        assert_instance_of LLVM::ConstantReal, inst
         assert_equal 'float 0x7FF8000000000000', inst.to_s
 
         # rem -1 / 0 == nan
         assert inst = builder.frem(LLVM::Float.from_f(-1), LLVM::Float.from_f(0))
-        assert_instance_of LLVM::Float, inst
+        assert_instance_of LLVM::ConstantReal, inst
         assert_equal 'float 0x7FF8000000000000', inst.to_s
 
         builder.ret
@@ -294,5 +294,4 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
     end
     assert_predicate fn, :valid?
   end
-
 end

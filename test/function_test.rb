@@ -4,7 +4,6 @@ require "test_helper"
 require "llvm/core"
 
 class FunctionTest < Minitest::Test
-
   def test_to_s
     with_function [], LLVM.Void do |fun|
       assert_equal "declare void @fun()\n", fun.to_s
@@ -86,11 +85,9 @@ class FunctionTest < Minitest::Test
       refute_predicate fun, :verify
     end
   end
-
 end
 
 class FunctionTypeTest < Minitest::Test
-
   def test_return_type_void
     with_function [], LLVM.Void do |fun|
       retty = fun.function_type.return_type
@@ -130,5 +127,4 @@ class FunctionTypeTest < Minitest::Test
       assert !type.vararg?, 'should be false'
     end
   end
-
 end

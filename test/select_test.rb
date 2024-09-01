@@ -3,7 +3,6 @@
 require "test_helper"
 
 class SelectTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -20,5 +19,4 @@ class SelectTestCase < Minitest::Test
       builder.ret(builder.select(arguments.first, LLVM::Int(0), LLVM::Int(1)))
     end
   end
-
 end
