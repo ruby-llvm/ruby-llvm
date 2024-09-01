@@ -14,7 +14,7 @@ class TypeTestCase < Minitest::Test
   end
 
   def test_element_type_unsupported
-    assert_raises do
+    assert_raises(ArgumentError) do
       LLVM.Void.element_type
     end
   end

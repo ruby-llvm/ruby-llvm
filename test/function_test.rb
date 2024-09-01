@@ -45,7 +45,7 @@ class FunctionTest < Minitest::Test
   def helper_test_attribute(name, attribute_id)
     with_function [], LLVM.Void do |fun|
       assert_equal 0, fun.attribute_count
-      assert_equal [], fun.attributes
+      assert_empty fun.attributes
 
       fun.add_attribute(name)
       assert_equal 1, fun.attribute_count
@@ -56,7 +56,7 @@ class FunctionTest < Minitest::Test
 
       fun.remove_attribute(name)
       assert_equal 0, fun.attribute_count
-      assert_equal [], fun.attributes
+      assert_empty fun.attributes
 
       assert_predicate fun, :valid?
     end
@@ -109,7 +109,7 @@ class FunctionTypeTest < Minitest::Test
   def test_argument_types
     with_function [], LLVM.Void do |fun|
       types = fun.function_type.argument_types
-      assert_equal [], types
+      assert_empty types
     end
 
     with_function [LLVM::Int32], LLVM.Void do |fun|
@@ -124,7 +124,7 @@ class FunctionTypeTest < Minitest::Test
   def test_vararg
     with_function [], LLVM.Void do |fun|
       type = fun.function_type
-      assert !type.vararg?, 'should be false'
+      refute_predicate type, :vararg?, 'should be false'
     end
   end
 end

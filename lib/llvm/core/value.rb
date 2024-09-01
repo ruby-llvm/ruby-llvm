@@ -63,7 +63,6 @@ module LLVM
     # Sets the value's name to str.
     def name=(str)
       C.set_value_name(self, str)
-      str
     end
 
     # Print the value's IR to stdout.
@@ -210,11 +209,12 @@ module LLVM
       # Iterates through each Instruction in the collection.
       def each
         return to_enum :each unless block_given?
-        inst, last = first, last
+        inst = first
+        final = last
 
         while inst
           yield inst
-          break if inst == last
+          break if inst == final
           inst = inst.next
         end
 
@@ -828,7 +828,6 @@ module LLVM
     # Sets the function's calling convention and returns it.
     def call_conv=(conv)
       C.set_function_call_conv(self, conv)
-      conv
     end
 
     # gets the calling convention of the function
@@ -849,7 +848,6 @@ module LLVM
     # @return self
     def personality_function=(personality_function)
       C.set_personality_fn(self, personality_function)
-      self
     end
 
     # Returns an Enumerable of the BasicBlocks in this function.
@@ -1182,7 +1180,6 @@ module LLVM
     # Sets the call convention to conv.
     def call_conv=(conv)
       C.set_instruction_call_conv(self, conv)
-      conv
     end
 
     # Returns the call insatnce's call convention.

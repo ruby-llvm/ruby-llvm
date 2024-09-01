@@ -372,7 +372,7 @@ module LLVM
   require 'llvm/core/value'
   require 'llvm/core/builder'
   require 'llvm/core/pass_manager'
-  require 'llvm/transforms/pass_builder'
+  require 'llvm/pass_builder'
   require 'llvm/core/bitcode'
   require 'llvm/core/attribute'
 end

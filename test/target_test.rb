@@ -59,18 +59,18 @@ class TargetTestCase < Minitest::Test
     assert x86 = LLVM::Target.by_name('x86')
     assert_equal 'x86', x86.name
     assert_equal "32-bit X86: Pentium-Pro and above", x86.description
-    assert_equal true, x86.jit?
-    assert_equal true, x86.target_machine?
-    assert_equal true, x86.asm_backend?
+    assert_predicate x86, :jit?
+    assert_predicate x86, :target_machine?
+    assert_predicate x86, :asm_backend?
   end
 
   def test_target_x86_64
     assert x86_64 = LLVM::Target.by_name('x86-64')
     assert_equal 'x86-64', x86_64.name
     assert_equal "64-bit X86: EM64T and AMD64", x86_64.description
-    assert_equal true, x86_64.jit?
-    assert_equal true, x86_64.target_machine?
-    assert_equal true, x86_64.asm_backend?
+    assert_predicate x86_64, :jit?
+    assert_predicate x86_64, :target_machine?
+    assert_predicate x86_64, :asm_backend?
   end
 
   def test_target_machine_x86

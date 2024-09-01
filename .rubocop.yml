@@ -12,6 +12,9 @@ AllCops:
     - 'lib/llvm/config.rb'
     - 'tmp/*'
     - vendor/bundle/**/*
+    - lib/llvm/core/pass_manager.rb
+    - test/pass_manager_builder_test.rb
+    - lib/llvm/transforms/**
 
 # Style
 Style/ClassAndModuleChildren:
@@ -100,4 +103,10 @@ Style/AccessModifierDeclarations:
 
 # this one is wrong
 Style/DoubleNegation:
+  Enabled: false
+
+Style/YodaCondition:
+  Enabled: false
+
+Style/TrailingUnderscoreVariable:
   Enabled: false

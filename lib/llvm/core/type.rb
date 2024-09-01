@@ -26,9 +26,7 @@ module LLVM
     end
 
     # Returns a symbol representation of the types kind (ex. :pointer, :vector, :array.)
-    def kind
-      @kind
-    end
+    attr_reader :kind
 
     # Returns the size of the type.
     def size
@@ -48,7 +46,7 @@ module LLVM
       when :pointer
         LLVM.Void
       else
-        raise "element_type not supported for kind: #{kind}"
+        raise ArgumentError, "element_type not supported for kind: #{kind}"
       end
     end
 

@@ -2,7 +2,7 @@
 
 require 'test_helper'
 require 'llvm/config'
-require 'llvm/transforms/pass_builder'
+require 'llvm/pass_builder'
 require 'mkmf'
 
 class PassBuilderTest < Minitest::Test
