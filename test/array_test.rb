@@ -14,7 +14,7 @@ class ArrayTestCase < Minitest::Test
   end
 
   def test_constant_empty_array_from_size
-    array = LLVM::ConstantArray.const(LLVM::Int, 0) {}
+    array = LLVM::ConstantArray.const(LLVM::Int, 0) {} # rubocop:disable Lint/EmptyBlock
     empty_array_check(array)
   end
 

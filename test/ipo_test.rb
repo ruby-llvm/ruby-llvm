@@ -35,9 +35,9 @@ class IPOTestCase < Minitest::Test
     end
 
     fns = mod.functions.to_a
-    assert fns.include?(fn1)
-    assert fns.include?(fn2)
-    assert fns.include?(main)
+    assert_includes fns, fn1
+    assert_includes fns, fn2
+    assert_includes fns, main
 
     # optimize
     engine = LLVM::MCJITCompiler.new(mod)
@@ -47,8 +47,8 @@ class IPOTestCase < Minitest::Test
     pass_builder.run(mod, engine.target_machine)
 
     fns = mod.functions.to_a
-    assert fns.include?(fn1)
-    assert !fns.include?(fn2), 'fn2 should be eliminated'
-    assert fns.include?(main)
+    assert_includes fns, fn1
+    refute_includes fns, fn2, 'fn2 should be eliminated'
+    assert_includes fns, main
   end
 end

@@ -11,6 +11,7 @@
 - LLVM::Float will be instance of LLVM::RealType
 - LLVM::Double will be instance of LLVM::RealType
 - remove macos-12 from CI
+- RuboCop cleanup
 
 ### Added
 - minitest-fail-fast dev dependency

@@ -27,10 +27,10 @@ class ModuleTestCase < Minitest::Test
       mod.globals.add(LLVM::Int32, 'i') do |var|
         yielded = true
 
-        assert var.kind_of?(LLVM::GlobalVariable)
+        assert_kind_of LLVM::GlobalVariable, var
 
         # unnamed_addr
-        assert !var.unnamed_addr?
+        refute_predicate var, :unnamed_addr?
         var.unnamed_addr = true
         assert_predicate var, :unnamed_addr?
 
@@ -39,14 +39,14 @@ class ModuleTestCase < Minitest::Test
         assert (var.dll_storage_class == :dll_import)
 
         # global_constant
-        assert !var.global_constant?
+        refute_predicate var, :global_constant?
         var.global_constant = true
         assert_predicate var, :global_constant?
 
         assert_output("", "Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.\n") do
           var.global_constant = 0
         end
-        assert !var.global_constant?
+        refute_predicate var, :global_constant?
       end
     end
 
@@ -55,8 +55,8 @@ class ModuleTestCase < Minitest::Test
 
   def test_to_s
     mod = LLVM::Module.new('test_print')
-    assert_equal mod.to_s,
-      "; ModuleID = 'test_print'\nsource_filename = \"test_print\"\n"
+    assert_equal "; ModuleID = 'test_print'\nsource_filename = \"test_print\"\n",
+      mod.to_s
   end
 
   def test_dump
@@ -138,8 +138,8 @@ class ModuleTestCase < Minitest::Test
       var.initializer = hello
     end
 
-    assert global_var.is_a? LLVM::GlobalValue
-    assert global_var.is_a? LLVM::GlobalVariable
+    assert_kind_of LLVM::GlobalValue, global_var
+    assert_kind_of LLVM::GlobalVariable, global_var
 
     assert_nil global_var.section
 

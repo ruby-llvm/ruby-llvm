@@ -60,9 +60,9 @@ class ConversionsTestCase < Minitest::Test
   end
 
   def test_int64
-    integer_conversion_assertion(:zext, LLVM::Int64.from_i(2**62 + 123), LLVM::Int64, LLVM_SIGNED, 2**62 + 123)
+    integer_conversion_assertion(:zext, LLVM::Int64.from_i((2**62) + 123), LLVM::Int64, LLVM_SIGNED, (2**62) + 123)
     integer_conversion_assertion(:zext, LLVM::Int64.from_i(-2**62 - 123), LLVM::Int64, LLVM_SIGNED, -2**62 - 123)
-    integer_conversion_assertion(:zext, LLVM::Int64.from_i(2**63 + 123, false), LLVM::Int64, LLVM_UNSIGNED, 2**63 + 123)
+    integer_conversion_assertion(:zext, LLVM::Int64.from_i((2**63) + 123, false), LLVM::Int64, LLVM_UNSIGNED, (2**63) + 123)
   end
 
   def integer_conversion_assertion(operation, operand, return_type, signed, expected_result)
