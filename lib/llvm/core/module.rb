@@ -251,6 +251,5 @@ module LLVM
     def dump
       C.dump_module(self)
     end
-
   end
 end

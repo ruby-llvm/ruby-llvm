@@ -5,7 +5,6 @@ require 'llvm/core'
 
 module LLVM
   class PassManager
-
     # @LLVMpass lowerswitch
     # /** See llvm::createLowerSwitchPass function. */
     # void LLVMAddLowerSwitchPass(LLVMPassManagerRef PM);

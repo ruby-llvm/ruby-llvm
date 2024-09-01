@@ -11,6 +11,8 @@ module LLVM
       ty = case kind
       when :integer
         IntType.allocate
+      when :float, :double
+        RealType.allocate
       when :function
         FunctionType.allocate
       when :struct
@@ -203,13 +205,12 @@ module LLVM
     end
 
     def self.float
-      Type.from_ptr(C.float_type, kind: :float)
+      RealType.from_ptr(C.float_type, kind: :float)
     end
 
     def self.double
-      Type.from_ptr(C.double_type, kind: :double)
+      RealType.from_ptr(C.double_type, kind: :double)
     end
-
   end
 
   class IntType < Type
@@ -262,15 +263,25 @@ module LLVM
     end
   end
 
-  # class Float < Type
-  #   def self.from_f()
-  #     ConstantFloat.from_ptr(ptr)
-  #   end
-  #
-  #   def type
-  #     self
-  #   end
-  # end
+  class RealType < Type
+    # given an array of values, return the type that will fit all of them
+    # currently only works for floats and doubles
+    def self.fits(values)
+      values.detect { |v| v.type.to_s == 'double' } ? double : float
+    end
+
+    def from_f(value)
+      ConstantReal.from_ptr(C.const_real(self, value))
+    end
+
+    def parse(str)
+      ConstantReal.from_ptr(C.const_real_of_string(self, str))
+    end
+
+    def type
+      self
+    end
+  end
 
   class FunctionType < Type
     def return_type
@@ -373,19 +384,38 @@ module LLVM
     LLVM::Type.void
   end
 
-  def i(width)
-    LLVM::Type.i(width)
+  def i(width, value = nil)
+    type = LLVM::Type.i(width)
+    value ? type.from_i(value) : type
   end
 
-  def double
-    LLVM::Type.double
+  def double(value = nil)
+    type = LLVM::Type.double
+    value ? type.from_f(value) : type
   end
 
-  def float
-    LLVM::Type.float
+  def float(value = nil)
+    type = LLVM::Type.float
+    value ? type.from_f(value) : type
   end
 
   def ptr
     LLVM::Type.pointer
   end
+
+  # for compatibility
+  # Create a float LLVM::ContantReal from a Ruby Float (value).
+  def Float(value)
+    float(value)
+  end
+
+  # for compatibility
+  # Create a double LLVM::ContantReal from a Ruby Float (value).
+  def Double(value)
+    double(value)
+  end
+
+  # for compatibility
+  Float = float.freeze
+  Double = double.freeze
 end

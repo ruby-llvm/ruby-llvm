@@ -3,7 +3,6 @@
 require "test_helper"
 
 class GenericValueTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -25,5 +24,4 @@ class GenericValueTestCase < Minitest::Test
     assert LLVM::GenericValue.from_b(true).to_b
     refute LLVM::GenericValue.from_b(false).to_b
   end
-
 end

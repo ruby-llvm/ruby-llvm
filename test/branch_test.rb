@@ -3,7 +3,6 @@
 require "test_helper"
 
 class BranchTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -55,5 +54,4 @@ class BranchTestCase < Minitest::Test
       builder.ret(LLVM::Int(0))
     end
   end
-
 end

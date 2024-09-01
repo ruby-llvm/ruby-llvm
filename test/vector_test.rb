@@ -3,7 +3,6 @@
 require "test_helper"
 
 class VectorTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -138,5 +137,4 @@ class VectorTestCase < Minitest::Test
     assert_instance_of LLVM::Type, vector.type
     assert_equal "i32", vector.type.element_type.to_s
   end
-
 end

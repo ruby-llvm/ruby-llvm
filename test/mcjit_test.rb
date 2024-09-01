@@ -82,5 +82,4 @@ class MCJITTestCase < Minitest::Test
     end
     assert_match(matcher, engine.target_machine.triple)
   end
-
 end

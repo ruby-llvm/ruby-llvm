@@ -3,7 +3,6 @@
 require "test_helper"
 
 class IntegerTestCase < Minitest::Test
-
   def test_const_zext
     assert i = LLVM::Int8.from_i(-1)
     assert_equal 'i8 -1', i.to_s
@@ -203,5 +202,4 @@ class IntegerTestCase < Minitest::Test
     assert_equal LLVM::Int8.from_i(-1), LLVM::Int8.all_ones
     assert_equal LLVM::Int8.from_i(-1).to_s, LLVM::Int8.all_ones.to_s
   end
-
 end

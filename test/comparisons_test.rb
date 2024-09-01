@@ -3,7 +3,6 @@
 require "test_helper"
 
 class ComparisonsTestCase < Minitest::Test
-
   def setup
     LLVM.init_jit
   end
@@ -64,5 +63,4 @@ class ComparisonsTestCase < Minitest::Test
       builder.ret(builder.send(comparison_operation, comparison_operator, operand1, operand2))
     end
   end
-
 end

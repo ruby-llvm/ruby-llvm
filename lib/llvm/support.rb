@@ -3,7 +3,6 @@
 require 'llvm/core_ffi'
 
 module LLVM
-
   module Support
     # @private
 

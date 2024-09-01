@@ -20,9 +20,9 @@ module LLVM
       when :instruction
         Instruction.from_ptr(ptr)
       when :const_int
-        Int.from_ptr(ptr)
+        ConstantInt.from_ptr(ptr)
       when :const_fp
-        Float.from_ptr(ptr)
+        ConstantReal.from_ptr(ptr)
       when :poison
         Poison.from_ptr(ptr)
       when :global_variable
@@ -142,7 +142,6 @@ module LLVM
       return if index.nil?
       index + 1
     end
-
   end
 
   class Argument < Value
@@ -610,20 +609,12 @@ module LLVM
     end
   end
 
+  # creates LLVM::Int1, LLVM::Int64, etc
   def self.const_missing(const)
     case const.to_s
     when /Int(\d+)/
       width = Regexp.last_match(1).to_i
       LLVM::Type.integer(width)
-      # name  = "Int#{width}"
-      # eval <<-KLASS
-      #   class #{name} < ConstantInt
-      #     def self.type
-      #       Type.from_ptr(C.int_type(#{width}), :integer)
-      #     end
-      #   end
-      # KLASS
-      # const_get(name)
     else
       super
     end
@@ -650,42 +641,39 @@ module LLVM
   ::LLVM::FALSE = ::LLVM::Int1.from_i(0)
 
   class ConstantReal < Constant
-    # Creates a ConstantReal from a float of Type.
-    def self.from_f(n)
-      from_ptr(C.const_real(type, n))
-    end
-
-    def self.parse(type, str)
-      from_ptr(C.const_real_of_string(type, str))
-    end
-
     # Negation.
+    # fneg
     def -@
-      self.class.from_f(-to_f)
+      type.from_f(-to_f)
     end
 
     # Returns the result of adding this ConstantReal to rhs.
     def +(rhs)
-      self.class.from_f(to_f + rhs.to_f)
+      type = LLVM::RealType.fits([self.type, rhs.type])
+      type.from_f(to_f + rhs.to_f)
     end
 
     def -(rhs)
-      self.class.from_f(to_f - rhs.to_f)
+      type = LLVM::RealType.fits([self.type, rhs.type])
+      type.from_f(to_f - rhs.to_f)
     end
 
     # Returns the result of multiplying this ConstantReal by rhs.
     def *(rhs)
-      self.class.from_f(to_f * rhs.to_f)
+      type = LLVM::RealType.fits([self.type, rhs.type])
+      type.from_f(to_f * rhs.to_f)
     end
 
     # Returns the result of dividing this ConstantReal by rhs.
     def /(rhs)
-      self.class.from_f(to_f / rhs.to_f) # rubocop:disable Style/FloatDivision
+      type = LLVM::RealType.fits([self.type, rhs.type])
+      type.from_f(to_f / rhs.to_f) # rubocop:disable Style/FloatDivision
     end
 
     # Remainder.
     def rem(rhs)
-      self.class.from_f(to_f.divmod(rhs.to_f).last)
+      type = LLVM::RealType.fits([self.type, rhs.type])
+      type.from_f(to_f.divmod(rhs.to_f).last)
     end
 
     # Floating point comparison using the predicate specified via the first
@@ -738,29 +726,6 @@ module LLVM
       end
       double
     end
-
-  end
-
-  class Float < ConstantReal
-    # Return a Type representation of the float.
-    def self.type
-      Type.from_ptr(C.float_type, :float)
-    end
-  end
-
-  # Create a LLVM::Float from a Ruby Float (val).
-  def self.Float(val)
-    Float.from_f(val)
-  end
-
-  class Double < ConstantReal
-    def self.type
-      Type.from_ptr(C.double_type, :double)
-    end
-  end
-
-  def self.Double(val)
-    Double.from_f(val)
   end
 
   class ConstantStruct < Constant
@@ -948,7 +913,6 @@ module LLVM
     end
 
     class AttributeCollection
-
       def initialize(fun, index)
         @fun = fun
         @index = index
@@ -1028,7 +992,6 @@ module LLVM
           LLVM::Attribute.memory(inaccessiblemem: :readwrite)
         end
       end
-
     end
 
     # @private
@@ -1180,7 +1143,6 @@ module LLVM
   end
 
   class Instruction < User
-
     def self.from_ptr(ptr)
       kind = C.get_value_kind(ptr)
       kind == :instruction ? super : LLVM::Value.from_ptr_kind(ptr)
@@ -1214,7 +1176,6 @@ module LLVM
   end
 
   class Poison < Value
-
   end
 
   class CallInst < Instruction

@@ -175,5 +175,4 @@ class PassBuilderTest < Minitest::Test
       end
     end
   end
-
 end

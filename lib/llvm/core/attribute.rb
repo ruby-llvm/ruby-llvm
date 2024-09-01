@@ -3,11 +3,9 @@
 module LLVM
   # wrapper for LLVMAttributeRef
   class Attribute
-
     include PointerIdentity
 
     class << self
-
       def new(from)
         case from
         when String, Symbol
@@ -89,7 +87,6 @@ module LLVM
           0
         end
       end
-
     end
 
     def kind
@@ -188,6 +185,5 @@ module LLVM
         return C.get_string_attribute_value(self, size_ptr)
       end
     end
-
   end
 end

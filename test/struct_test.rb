@@ -3,7 +3,6 @@
 require "test_helper"
 
 class StructTestCase < Minitest::Test
-
   LLVM_UNPACKED = false
   LLVM_PACKED = true
 
@@ -203,5 +202,4 @@ class StructTestCase < Minitest::Test
       builder.ret(builder.fadd(builder.ui2fp(builder.load2(LLVM::Int32, address1), LLVM::Float), builder.load2(LLVM::Float, address2)))
     end
   end
-
 end

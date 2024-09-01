@@ -8,6 +8,8 @@
 - update ConstantInt const methods
 - remove ConstantInt constructors - now responsibility of IntType
 - deprecate const icmp and fcmp
+- LLVM::Float will be instance of LLVM::RealType
+- LLVM::Double will be instance of LLVM::RealType
 
 ### Added
 - minitest-fail-fast dev dependency

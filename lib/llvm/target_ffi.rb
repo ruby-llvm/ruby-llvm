@@ -624,5 +624,4 @@ module LLVM::C
   # @return [nil]
   # @scope class
   attach_function :add_analysis_passes, :LLVMAddAnalysisPasses, [OpaqueTargetMachine, :pointer], :void
-
 end

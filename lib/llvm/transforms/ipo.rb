@@ -113,6 +113,5 @@ module LLVM
     def strip!
       raise DeprecationError
     end
-
   end
 end
