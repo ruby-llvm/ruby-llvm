@@ -26,7 +26,7 @@ module LLVM
       when :poison
         Poison.from_ptr(ptr)
       when :global_variable
-        GlobalValue.from_ptr(ptr)
+        GlobalVariable.from_ptr(ptr)
       else
         raise "from_ptr_kind cannot handle: #{kind}"
       end
@@ -68,7 +68,9 @@ module LLVM
 
     # Print the value's IR to stdout.
     def dump
+      # :nocov:
       C.dump_value(self)
+      # :nocov:
     end
 
     def to_s
@@ -77,26 +79,22 @@ module LLVM
 
     # Returns whether the value is constant.
     def constant?
-      case C.is_constant(self)
-      when 0 then false
-      when 1 then true
-      end
+      C.is_constant(self)
     end
 
     # Returns whether the value is null.
     def null?
-      case C.is_null(self)
-      when 0 then false
-      when 1 then true
-      end
+      C.is_null(self)
     end
 
     # Returns whether the value is undefined.
-    def undefined?
-      case C.is_undef(self)
-      when 0 then false
-      when 1 then true
-      end
+    def undef?
+      C.is_undef(self)
+    end
+    alias_method :undefined?, :undef?
+
+    def poison?
+      C.is_poison(self)
     end
 
     # Adds attr to this value's attributes.
@@ -288,6 +286,10 @@ module LLVM
       from_ptr(C.get_undef(type))
     end
 
+    def self.poison(type)
+      from_ptr(C.get_poison(type))
+    end
+
     # Creates a null pointer constant of Type.
     def self.null_ptr(type)
       from_ptr(C.const_pointer_null(type))
@@ -299,7 +301,7 @@ module LLVM
     end
 
     # @deprecated
-    alias bit_cast bitcast_to
+    alias_method :bit_cast, :bitcast_to
 
     # Returns the element pointer at the given indices of the constant.
     # For more information on gep go to: http://llvm.org/docs/GetElementPtr.html
@@ -339,6 +341,10 @@ module LLVM
       from_ptr(C.const_string(str, str.length, null_terminate ? 0 : 1))
     end
 
+    def self.string_in_context(context, str, null_terminate = true)
+      from_ptr(C.const_string_in_context(context, str, str.length, null_terminate ? 0 : 1))
+    end
+
     # ConstantArray.const(type, 3) {|i| ... } or
     # ConstantArray.const(type, [...])
     def self.const(type, size_or_values, &block)
@@ -359,38 +365,44 @@ module LLVM
   end
 
   class ConstantInt < Constant
-    def self.all_ones
-      from_ptr(C.const_all_ones(type))
-    end
+    extend Gem::Deprecate
 
-    # Creates a ConstantInt from an integer.
-    def self.from_i(int, signed = true)
-      width = type.width
-      return type.poison if !fits_width?(int, width, signed)
-
-      from_ptr(C.const_int(type, int, signed ? 1 : 0))
-    end
-
-    # does int fit in width
-    # allow 1 for signed i1 (though really it's -1 to 0)
-    def self.fits_width?(int, width, signed)
-      if signed
-        int.bit_length < width || int == 1
-      else
-        int >= 0 && int.bit_length <= width
-      end
-    end
-
-    def self.parse(str, radix = 10)
-      from_ptr(C.const_int_of_string(type, str, radix))
-    end
+    # def type
+    #   super
+    # end
+    #
+    # def self.all_ones
+    #   from_ptr(C.const_all_ones(type))
+    # end
+    #
+    # # Creates a ConstantInt from an integer.
+    # def self.from_i(int, signed = true)
+    #   width = type.width
+    #   return type.poison if !fits_width?(int, width, signed)
+    #
+    #   from_ptr(C.const_int(type, int, signed ? 1 : 0))
+    # end
+    #
+    # # does int fit in width
+    # # allow 1 for signed i1 (though really it's -1 to 0)
+    # def self.fits_width?(int, width, signed)
+    #   if signed
+    #     int.bit_length < width || int == 1
+    #   else
+    #     int >= 0 && int.bit_length <= width
+    #   end
+    # end
+    #
+    # def self.parse(str, radix = 10)
+    #   from_ptr(C.const_int_of_string(type, str, radix))
+    # end
 
     # Negation.
     def -@
       self.class.from_ptr(C.const_neg(self))
     end
 
-    alias neg -@
+    alias_method :neg, :-@
 
     # "No signed wrap" negation.
     def nsw_neg
@@ -398,16 +410,20 @@ module LLVM
     end
 
     # "No unsigned wrap" negation.
+    # @deprecated
     def nuw_neg
+      # :nocov:
       self.class.from_ptr(C.const_nuw_neg(self))
+      # :nocov:
     end
+    deprecate :nuw_neg, "neg", 2025, 3
 
     # Addition.
     def +(rhs)
       self.class.from_ptr(C.const_add(self, rhs))
     end
 
-    alias add +
+    alias_method :add, :+
 
     # "No signed wrap" addition.
     def nsw_add(rhs)
@@ -424,7 +440,7 @@ module LLVM
       self.class.from_ptr(C.const_sub(self, rhs))
     end
 
-    alias sub -
+    alias_method :sub, :-
 
     # "No signed wrap" subtraction.
     def nsw_sub(rhs)
@@ -441,7 +457,7 @@ module LLVM
       self.class.from_ptr(C.const_mul(self, rhs))
     end
 
-    alias mul *
+    alias_method :mul, :*
 
     # "No signed wrap" multiplication.
     def nsw_mul(rhs)
@@ -455,22 +471,26 @@ module LLVM
 
     # Unsigned division.
     def udiv(rhs)
-      self.class.from_i(to_ui / rhs.to_ui, false)
+      width = [type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_ui / rhs.to_ui, false)
     end
 
     # Signed division.
     def /(rhs)
-      self.class.from_i(to_si / rhs.to_si, true)
+      width = [type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_si / rhs.to_si, true)
     end
 
     # Unsigned remainder.
     def urem(rhs)
-      self.class.from_i(to_ui % rhs.to_ui, false)
+      width = [type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_ui % rhs.to_ui, false)
     end
 
     # Signed remainder.
     def rem(rhs)
-      self.class.from_i(to_si % rhs.to_si, true)
+      width = [type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_si % rhs.to_si, true)
     end
 
     # Boolean negation.
@@ -478,47 +498,53 @@ module LLVM
       self.class.from_ptr(C.const_not(self))
     end
 
-    alias not ~
+    alias_method :not, :~
 
     # Integer AND.
     # was: self.class.from_ptr(C.const_and(self, rhs))
     def &(rhs)
-      self.class.from_i(to_i & rhs.to_i)
+      width = [type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_i & rhs.to_i)
     end
 
-    alias and &
+    alias_method :and, :&
 
     # Integer OR.
     def |(rhs)
-      self.class.from_i(to_i | rhs.to_i)
+      width = [type.width, rhs.type.width].max
+      LLVM::Type.integer(width).from_i(to_i | rhs.to_i)
     end
 
-    alias or |
+    alias_method :or, :|
 
     # Integer XOR.
     def ^(rhs)
       self.class.from_ptr(C.const_xor(self, rhs))
     end
 
-    alias xor ^
+    alias_method :xor, :^
 
     # Shift left.
     def <<(bits)
-      self.class.from_ptr(C.const_shl(self, bits))
+      width = [type.width, bits.type.width].max
+      LLVM::Type.integer(width).from_i(to_i << bits.to_i)
     end
 
-    alias shl <<
+    alias_method :shl, :<<
 
     # Shift right.
-    def >>(bits)
-      self.class.from_ptr(C.const_l_shr(self, bits))
+    def lshr(bits)
+      width = [type.width, bits.type.width].max
+      LLVM::Type.integer(width).from_i(to_ui >> bits.to_i)
     end
 
-    alias shr >>
+    alias_method :shr, :lshr
+    alias_method :>>, :lshr
 
     # Arithmatic shift right.
     def ashr(bits)
-      self.class.from_ptr(C.const_a_shr(self, bits))
+      width = [type.width, bits.type.width].max
+      LLVM::Type.integer(width).from_i(to_i >> bits.to_i)
     end
 
     # Integer comparison using the predicate specified via the first parameter.
@@ -533,12 +559,12 @@ module LLVM
     #   :sge - signed greater than or equal to
     #   :slt - signed less than
     #   :sle - signed less than or equal to
-    def icmp(pred, rhs)
-      self.class.from_ptr(C.const_i_cmp(pred, self, rhs))
+    def icmp(_pred, _rhs)
+      raise DeprecationError
     end
 
     # Conversion to pointer.
-    def int_to_ptr(type)
+    def int_to_ptr(type = LLVM.Pointer)
       ConstantExpr.from_ptr(C.const_int_to_ptr(self, type))
     end
 
@@ -588,15 +614,16 @@ module LLVM
     case const.to_s
     when /Int(\d+)/
       width = Regexp.last_match(1).to_i
-      name  = "Int#{width}"
-      eval <<-KLASS
-        class #{name} < ConstantInt
-          def self.type
-            Type.from_ptr(C.int_type(#{width}), :integer)
-          end
-        end
-      KLASS
-      const_get(name)
+      LLVM::Type.integer(width)
+      # name  = "Int#{width}"
+      # eval <<-KLASS
+      #   class #{name} < ConstantInt
+      #     def self.type
+      #       Type.from_ptr(C.int_type(#{width}), :integer)
+      #     end
+      #   end
+      # KLASS
+      # const_get(name)
     else
       super
     end
@@ -679,8 +706,8 @@ module LLVM
     #   :sle  - unordered and less than or equal to
     #   :true - always true
     #   :false- always false
-    def fcmp(pred, rhs)
-      self.class.from_ptr(C.llmv_const_f_cmp(pred, self, rhs))
+    def fcmp(_pred, _rhs)
+      raise DeprecationError
     end
 
     # constant FPToSI
@@ -761,6 +788,11 @@ module LLVM
 
     def self.const(size_or_values, &block)
       vals = LLVM::Support.allocate_pointers(size_or_values, &block)
+
+      # size 0, or empty values
+      # this will segfault in const_vector
+      raise ArgumentError if vals.size.zero? # rubocop:disable Style/ZeroLengthPredicate
+
       from_ptr(C.const_vector(vals, vals.size / vals.type_size))
     end
 
@@ -808,27 +840,6 @@ module LLVM
 
     def alignment=(bytes)
       C.set_alignment(self, bytes)
-    end
-
-    def initializer
-      Value.from_ptr(C.get_initializer(self))
-    end
-
-    def initializer=(val)
-      C.set_initializer(self, val)
-    end
-
-    def global_constant?
-      C.is_global_constant(self) != 0
-    end
-
-    def global_constant=(flag)
-      if flag.kind_of?(Integer)
-        warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
-        flag = !flag.zero?
-      end
-
-      C.set_global_constant(self, flag ? 1 : 0)
     end
 
     def unnamed_addr?
@@ -1133,18 +1144,38 @@ module LLVM
     end
 
     def initializer=(val)
+      raise ArgumentError unless val.is_a? Constant
+
       C.set_initializer(self, val)
     end
 
     def thread_local?
-      case C.is_thread_local(self)
-      when 0 then false
-      else true
-      end
+      C.is_thread_local(self)
     end
 
     def thread_local=(local)
       C.set_thread_local(self, local ? 1 : 0)
+    end
+
+    def global_constant?
+      C.is_global_constant(self)
+    end
+
+    def global_constant=(flag)
+      if flag.kind_of?(Integer)
+        warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
+        flag = !flag.zero?
+      end
+
+      C.set_global_constant(self, flag ? 1 : 0)
+    end
+
+    def externally_initialized?
+      C.is_externally_initialized(self)
+    end
+
+    def externally_initialized=(boolean)
+      C.set_externally_initialized(self, boolean)
     end
   end
 
@@ -1233,7 +1264,6 @@ module LLVM
     end
   end
 
-
   # @private
   class IndirectBr < Instruction
     # Adds a basic block reference as a destination for this indirect branch.
@@ -1241,6 +1271,6 @@ module LLVM
       C.add_destination(self, dest)
     end
 
-    alias :<< :add_dest
+    alias_method :<<, :add_dest
   end
 end

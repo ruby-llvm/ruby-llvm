@@ -1847,22 +1847,6 @@ module LLVM::C
   # @scope class
   attach_function :replace_all_uses_with, :LLVMReplaceAllUsesWith, [:pointer, :pointer], :void
 
-  # Determine whether the specified constant instance is constant.
-  #
-  # @method is_constant(val)
-  # @param [FFI::Pointer(ValueRef)] val
-  # @return [Integer]
-  # @scope class
-  attach_function :is_constant, :LLVMIsConstant, [:pointer], :int
-
-  # Determine whether a value instance is undefined.
-  #
-  # @method is_undef(val)
-  # @param [FFI::Pointer(ValueRef)] val
-  # @return [Integer]
-  # @scope class
-  attach_function :is_undef, :LLVMIsUndef, [:pointer], :int
-
   # (Not documented)
   #
   # @method is_a_argument(val)
@@ -2627,16 +2611,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :get_undef, :LLVMGetUndef, [:pointer], :pointer
-
-  # Determine whether a value instance is null.
-  #
-  # @see llvm::Constant::isNullValue()
-  #
-  # @method is_null(val)
-  # @param [FFI::Pointer(ValueRef)] val
-  # @return [Integer]
-  # @scope class
-  attach_function :is_null, :LLVMIsNull, [:pointer], :int
 
   # Obtain a constant that is a constant pointer pointing to NULL for a
   # specified type.
@@ -3454,28 +3428,12 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method is_thread_local(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var
-  # @return [Integer]
-  # @scope class
-  attach_function :is_thread_local, :LLVMIsThreadLocal, [:pointer], :int
-
-  # (Not documented)
-  #
   # @method set_thread_local(global_var, is_thread_local)
   # @param [FFI::Pointer(ValueRef)] global_var
   # @param [Integer] is_thread_local
   # @return [nil]
   # @scope class
   attach_function :set_thread_local, :LLVMSetThreadLocal, [:pointer, :int], :void
-
-  # (Not documented)
-  #
-  # @method is_global_constant(global_var)
-  # @param [FFI::Pointer(ValueRef)] global_var
-  # @return [Integer]
-  # @scope class
-  attach_function :is_global_constant, :LLVMIsGlobalConstant, [:pointer], :int
 
   # (Not documented)
   #

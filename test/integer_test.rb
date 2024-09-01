@@ -123,11 +123,29 @@ class IntegerTestCase < Minitest::Test
     assert_equal "i64 2", LLVM::Int64.from_i(2).udiv(LLVM::Int64.from_i(1)).to_s
   end
 
+  NEG_TEST_NUMS = [-1, 0, 1, 127, -127].freeze
+
   def test_const_neg
-    assert_equal LLVM::Int64.from_i(-1), -LLVM::Int64.from_i(1)
+    NEG_TEST_NUMS.each do |n|
+      assert_equal LLVM::Int64.from_i(-n), -LLVM::Int64.from_i(n)
+    end
+  end
+
+  def test_const_nsw_neg
+    NEG_TEST_NUMS.each do |n|
+      assert_equal LLVM::Int64.from_i(-n), LLVM::Int64.from_i(n).nsw_neg
+    end
+  end
+
+  # This is likely not the expected behavior
+  def test_const_neg_and_nsw_neg_overflow
     assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).nsw_neg
-    assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).nuw_neg
     assert_equal LLVM::Int8.from_i(-128), LLVM::Int8.from_i(-128).neg
+    assert_equal LLVM::Int8.from_i(-128).to_s, LLVM::Int8.from_i(-128).nsw_neg.to_s
+    assert_equal LLVM::Int8.from_i(-128).to_s, LLVM::Int8.from_i(-128).neg.to_s
+
+    assert_predicate LLVM::Int8.from_i(128), :poison?
+    assert_predicate LLVM::Int8.from_i(-129), :poison?
   end
 
   def test_const_rem
@@ -160,9 +178,30 @@ class IntegerTestCase < Minitest::Test
     assert_equal LLVM::Int8.from_i(91), LLVM::Int8.from_i(32) ^ LLVM::Int8.from_i(123)
   end
 
+  def test_icmp
+    assert_raises(LLVM::DeprecationError) do
+      LLVM::Int8.from_i(2).icmp(:eq, LLVM::Int8.from_i(1))
+    end
+  end
+
+  def test_shl
+    assert_equal "i8 4", (LLVM::Int8.from_i(2) << LLVM::Int8.from_i(1)).to_s
+  end
+
+  def test_lshr
+    assert_equal "i8 1", (LLVM::Int8.from_i(2) >> LLVM::Int8.from_i(1)).to_s
+    assert_equal "i8 127", (LLVM::Int8.from_i(-2) >> LLVM::Int8.from_i(1)).to_s
+  end
+
+  def test_ashr
+    assert_equal "i8 1", LLVM::Int8.from_i(2).ashr(LLVM::Int8.from_i(1)).to_s
+    assert_equal "i8 -1", LLVM::Int8.from_i(-2).ashr(LLVM::Int8.from_i(1)).to_s
+  end
+
   # TODO: this is not correct
   def test_const_all_ones
     assert_equal LLVM::Int8.from_i(-1), LLVM::Int8.all_ones
+    assert_equal LLVM::Int8.from_i(-1).to_s, LLVM::Int8.all_ones.to_s
   end
 
 end

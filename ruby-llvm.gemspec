@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'debug'
   s.add_development_dependency 'ffi_gen',  '~> 1.2'
   s.add_development_dependency 'minitest', '~> 5.16'
+  s.add_development_dependency 'minitest-fail-fast'
   s.add_development_dependency 'minitest-reporters', '~> 1.5'
   s.add_development_dependency 'rubocop', '~> 1.31'
   s.add_development_dependency 'rubocop-minitest'
