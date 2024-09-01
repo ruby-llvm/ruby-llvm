@@ -614,7 +614,9 @@ module LLVM
     case const.to_s
     when /Int(\d+)/
       width = Regexp.last_match(1).to_i
-      LLVM::Type.integer(width)
+      name = "Int#{width}"
+      value = LLVM::Type.integer(width).freeze
+      const_set(name, value)
     else
       super
     end
