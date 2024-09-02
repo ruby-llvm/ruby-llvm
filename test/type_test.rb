@@ -39,6 +39,32 @@ class TypeTestCase < Minitest::Test
     assert_equal "i64 ptrtoint (ptr getelementptr ({ i1, i64 }, ptr null, i64 0, i32 1) to i64)", LLVM::Int64.align.to_s
   end
 
+  def test_equality
+    assert_equal LLVM.i(64), LLVM.i(64)
+    assert_equal LLVM.float, LLVM.float
+    assert_equal LLVM.double, LLVM.double
+    assert_equal LLVM::Type.double, LLVM::Type.double
+    assert_equal LLVM::Type.float, LLVM::Type.float
+  end
+
+  # assert that case equality works correctly between types and value
+  # eg LLVM::Int8 === LLVM.i(8, 0)
+  def test_case_equality
+    cases = [
+      [LLVM::Int8, LLVM.i(8, 0)],
+      [LLVM::Int64, LLVM.i(64, 0)],
+      [LLVM.i(1), LLVM::TRUE],
+      [LLVM.i(1), LLVM::FALSE],
+      [LLVM.float, LLVM.float(0)],
+      [LLVM.double, LLVM.double(0)],
+    ]
+    cases.each do |a, b|
+      assert_kind_of LLVM::Type, a
+      assert_kind_of LLVM::Value, b
+      assert_operator a, :===, b, "#{a} === #{b}"
+    end
+  end
+
   def test_from_i
     assert_raises(ArgumentError) do
       LLVM::Type.integer(42).from_i(0, 42)
