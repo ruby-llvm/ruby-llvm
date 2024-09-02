@@ -104,6 +104,14 @@ module LLVM
       C.is_literal_struct(self)
     end
 
+    def ===(other)
+      if other.is_a?(LLVM::Value)
+        return self == other.type
+      end
+
+      super
+    end
+
     # Creates an array type of Type with the given size.
     # arrays can be size >= 0, https://llvm.org/docs/LangRef.html#array-type
     def self.array(ty, sz = 0)
