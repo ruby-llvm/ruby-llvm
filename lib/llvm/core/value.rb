@@ -51,8 +51,35 @@ module LLVM
       C.get_value_kind(self)
     end
 
+    def allocated_type?
+      case self
+      when Instruction
+        true
+      else
+        false
+      end
+    end
+
+    # allocated type of alloca
+    # also works on geps of allocas
     def allocated_type
-      Type.from_ptr(C.get_allocated_type(self), nil)
+      return if !allocated_type?
+
+      alloc_type = C.get_allocated_type(self)
+      return nil if alloc_type.nil?
+
+      Type.from_ptr(alloc_type, nil)
+    end
+
+    def gep_source_element_type?
+      is_a?(Instruction)
+    end
+
+    # element type of gep
+    def gep_source_element_type
+      return if !gep_source_element_type?
+
+      Type.from_ptr(C.get_gep_source_element_type(self))
     end
 
     # Returns the value's name.
@@ -1172,6 +1199,36 @@ module LLVM
 
     def inspect
       { self.class.name => { opcode: opcode, ptr: @ptr } }.to_s
+    end
+
+    def nsw!
+      C.set_nsw(self, true)
+      self
+    end
+
+    def clear_nsw!
+      C.set_nsw(self, false)
+      self
+    end
+
+    def nuw!
+      C.set_nuw(self, true)
+      self
+    end
+
+    def clear_nuw!
+      C.set_nuw(self, false)
+      self
+    end
+
+    def exact!
+      C.set_exact(self, true)
+      self
+    end
+
+    def clear_exact!
+      C.set_exact(self, false)
+      self
     end
   end
 

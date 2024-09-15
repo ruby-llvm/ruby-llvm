@@ -12,6 +12,9 @@
 - LLVM::Double will be instance of LLVM::RealType
 - remove macos-12 from CI
 - RuboCop cleanup
+- Fix various bugs with gep (#251)
+- Fix other bugs as revealed by testing
+- Improve Value#allocated_type
 
 ### Added
 - minitest-fail-fast dev dependency
@@ -19,6 +22,11 @@
 - LLVM .i .float .double .ptr .void
 - Many tests
 - Value#undef?
+- Add tests for builder methods
+- Value#gep_source_element_type
+- implement Builder#ptr_diff2
+- implement Builder#int_cast2
+- add methods for setting / clearing nuw, nsw, exact flags
 
 ## [18.1.8] - 2024-06-29
 ### Changed
