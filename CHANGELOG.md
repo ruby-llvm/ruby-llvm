@@ -1,4 +1,7 @@
 ## [Unreleased]
+
+## [18.2.0] - 2024-09-16
+
 ### Changed
 - Align on alias_method over alias
 - Fix atomic_rmw_bin_op symbols - potentially BREAKING
