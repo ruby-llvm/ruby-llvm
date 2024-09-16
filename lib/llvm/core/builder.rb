@@ -524,7 +524,15 @@ module LLVM
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] A pointer to the malloced array
     def array_malloc(ty, sz, name = "")
-      Instruction.from_ptr(C.build_array_malloc(self, LLVM::Type(ty), sz, name))
+      size = case sz
+      when LLVM::Value
+        sz
+      when Integer
+        LLVM.i(32, sz)
+      else
+        raise ArgumentError, "Unknown size parameter for array_malloc: #{sz}"
+      end
+      Instruction.from_ptr(C.build_array_malloc(self, LLVM::Type(ty), size, name))
     end
 
     # Stack allocation.
@@ -607,7 +615,7 @@ module LLVM
     # @LLVMinst gep2
     # @see http://llvm.org/docs/GetElementPtr.html
     # may return Instruction or GlobalVariable
-    def gep2(type, ptr, indices, name)
+    def gep2(type, ptr, indices, name = '')
       must_be_value!(ptr)
 
       type ||= must_infer_type!(ptr)
@@ -637,7 +645,7 @@ module LLVM
     def inbounds_gep2(type, ptr, indices, name = "")
       must_be_value!(ptr)
 
-      type = must_infer_type!(ptr)
+      type ||= must_infer_type!(ptr)
       must_be_type!(type)
 
       indices = Array(indices)
@@ -661,13 +669,13 @@ module LLVM
       struct_gep2(nil, ptr, idx, name)
     end
 
-    def struct_gep2(type, ptr, idx, name)
+    def struct_gep2(type, ptr, idx, name = "")
       must_be_value!(ptr)
 
       type ||= must_infer_type!(ptr)
       must_be_type!(type)
 
-      ins = C.build_struct_gep2(self, type, ptr, idx, name)
+      ins = C.build_struct_gep2(self, type, ptr, idx.to_i, name)
       Instruction.from_ptr(ins)
     end
 
@@ -857,6 +865,7 @@ module LLVM
     # @param [LLVM::Type, #ty] ty
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction]
+    # Cast pointer to other type
     def pointer_cast(val, ty, name = "")
       Instruction.from_ptr(C.build_pointer_cast(self, val, LLVM::Type(ty), name))
     end
@@ -867,6 +876,15 @@ module LLVM
     # @return [LLVM::Instruction]
     def int_cast(val, ty, name = "")
       Instruction.from_ptr(C.build_int_cast(self, val, LLVM::Type(ty), name))
+    end
+
+    # @param [LLVM::Value] val
+    # @param [LLVM::Type, #ty] ty
+    # @param [String] name The name of the result in LLVM IR
+    # @param [bool] signed whether to sign or zero extend
+    # @return [LLVM::Instruction]
+    def int_cast2(val, ty, signed, name = "")
+      Instruction.from_ptr(C.build_int_cast2(self, val, LLVM::Type(ty), signed, name))
     end
 
     # @param [LLVM::Value] val
@@ -1017,6 +1035,8 @@ module LLVM
     # @return [LLVM::Instruction] The extracted element
     # @LLVMinst extractelement
     def extract_element(vector, idx, name = "")
+      must_be_value!(vector)
+      must_be_value!(idx)
       error = element_error(vector, idx)
 
       raise ArgumentError, "Error building extract_element with #{error}" if error
@@ -1033,11 +1053,10 @@ module LLVM
     # @return [LLVM::Instruction] A vector the same type as 'vector'
     # @LLVMinst insertelement
     def insert_element(vector, elem, idx, name = "")
+      must_be_value!(vector)
+      must_be_value!(elem)
+      must_be_value!(idx)
       error = element_error(vector, idx)
-
-      error ||= if !elem.is_a?(LLVM::Value)
-        "elem: #{elem.inspect}"
-      end
 
       raise ArgumentError, "Error building insert_element with #{error}" if error
 
@@ -1064,6 +1083,7 @@ module LLVM
     # @return [LLVM::Instruction] The extracted value
     # @LLVMinst extractvalue
     def extract_value(aggregate, idx, name = "")
+      must_be_value!(aggregate)
       error = value_error(aggregate, idx)
 
       raise ArgumentError, "Error building extract_value with #{error}" if error
@@ -1080,11 +1100,9 @@ module LLVM
     # @return [LLVM::Instruction] An aggregate value of the same type as 'aggregate'
     # @LLVMinst insertvalue
     def insert_value(aggregate, elem, idx, name = "")
+      must_be_value!(aggregate)
+      must_be_value!(elem)
       error = value_error(aggregate, idx)
-
-      error ||= if !elem.is_a?(LLVM::Value)
-        "elem: #{elem.inspect}"
-      end
 
       raise ArgumentError, "Error building insert_value with #{error}" if error
 
@@ -1115,18 +1133,34 @@ module LLVM
     # @return [LLVM::Instruction] The integer difference between the two
     #   pointers
     def ptr_diff(lhs, rhs, name = "")
-      Instruction.from_ptr(C.build_ptr_diff(lhs, rhs, name))
+      ptr_diff2(nil, lhs, rhs, name)
+    end
+
+    def ptr_diff2(type, lhs, rhs, name = "")
+      must_be_value!(lhs)
+      must_be_value!(rhs)
+
+      type ||= begin
+        lhs_type = must_infer_type!(lhs)
+        rhs_type = must_infer_type!(lhs)
+        raise ArgumentError, "ptr_diff types must match: [#{lhs_type}] [#{rhs_type}]" if lhs_type != rhs_type
+
+        lhs_type
+      end
+      must_be_type!(type)
+
+      Instruction.from_ptr(C.build_ptr_diff2(self, type, lhs, rhs, name))
     end
 
     private
 
     def must_be_value!(value)
-      raise "must be a Value, got #{value.class.name}" unless Value === value
+      raise ArgumentError, "must be a Value, got #{value.class.name}" unless Value === value
     end
 
     def must_be_type!(type)
       type2 = LLVM.Type(type)
-      raise "must be a Type (LLVMTypeRef), got #{type2.class.name}" unless Type === type2
+      raise ArgumentError, "must be a Type (LLVMTypeRef), got #{type2.class.name}" unless Type === type2
     end
 
     def must_infer_type!(value)
@@ -1140,7 +1174,7 @@ module LLVM
       when Instruction
         must_infer_instruction_type!(ptr)
       else
-        raise "#{ptr.class.name} #{ptr}"
+        raise ArgumentError, "Cannot infer type from [#{ptr}] with type [#{ptr.type}]"
       end
     end
 
@@ -1149,7 +1183,7 @@ module LLVM
       when :get_element_ptr
         must_infer_gep!(ptr)
       when :alloca
-        Type.from_ptr(C.get_allocated_type(ptr))
+        ptr.allocated_type
       when :load
         ptr.type
       else
@@ -1173,17 +1207,26 @@ module LLVM
 
     def element_error(vector, idx)
       if !vector.is_a?(LLVM::Value)
+        # :nocov:
+        # already handled
         "non-value: #{vector.inspect}"
+        # :nocov:
       elsif vector.type.kind != :vector
         "non-vector: #{vector.type.kind}"
       elsif !idx.is_a?(LLVM::Value)
+        # :nocov:
+        # already handled
         "index: #{idx}"
+        # :nocov:
       end
     end
 
     def value_error(aggregate, idx)
       if !aggregate.is_a?(LLVM::Value)
+        # :nocov:
+        # already handled
         "non-value: #{aggregate.inspect}"
+        # :nocov:
         # TODO: fix this
       elsif !aggregate.type.aggregate?
         "non-aggregate: #{aggregate.type.kind}"
