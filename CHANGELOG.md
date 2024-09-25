@@ -1,4 +1,7 @@
 ## [Unreleased]
+
+## [19.1.0] - 2024-09-25
+
 ### Changed
 - Upgrade to LLVM 19
 - use LLVMStringInContext2
