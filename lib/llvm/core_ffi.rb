@@ -4,13 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-18.so.1", "libLLVM.so.18", "LLVM-18"]
-
-  def self.attach_function(name, *_)
-    begin; super; rescue FFI::NotFoundError => e
-      (class << self; self; end).class_eval { define_method(name) { |*_| raise e } }
-    end
-  end
+  ffi_lib ["LLVM-19", "libLLVM-19.so.1", "libLLVM.so.19", "libLLVM.so.19.1"]
 
   # (Not documented)
   #
@@ -745,57 +739,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:atomic_rmw_bin_op).</em>
-  #
-  # === Options:
-  # :xchg ::
-  #
-  # :add ::
-  #   < Set the new value and return the one old
-  # :sub ::
-  #   < Add a value and return the old one
-  # :and_ ::
-  #   < Subtract a value and return the old one
-  # :nand ::
-  #   < And a value and return the old one
-  # :or_ ::
-  #   < Not-And a value and return the old one
-  # :xor ::
-  #   < OR a value and return the old one
-  # :max ::
-  #   < Xor a value and return the old one
-  # :min ::
-  #   < Sets the value if it's greater than the
-  #                                original using a signed comparison and return
-  #                                the old one
-  # :u_max ::
-  #   < Sets the value if it's Smaller than the
-  #                                original using a signed comparison and return
-  #                                the old one
-  # :u_min ::
-  #   < Sets the value if it's greater than the
-  #                                original using an unsigned comparison and return
-  #                                the old one
-  #
-  # @method _enum_atomic_rmw_bin_op_
-  # @return [Symbol]
-  # @scope class
-  enum :atomic_rmw_bin_op, [
-    :xchg, 0,
-    :add, 1,
-    :sub, 2,
-    :and_, 3,
-    :nand, 4,
-    :or_, 5,
-    :xor, 6,
-    :max, 7,
-    :min, 8,
-    :u_max, 9,
-    :u_min, 10
-  ]
-
-  # (Not documented)
-  #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:diagnostic_severity).</em>
   #
   # === Options:
@@ -820,12 +763,6 @@ module LLVM::C
 
   # @}
   #
-  # @method initialize_core(r)
-  # @param [FFI::Pointer(PassRegistryRef)] r
-  # @return [nil]
-  # @scope class
-  attach_function :initialize_core, :LLVMInitializeCore, [:pointer], :void
-
   # Deallocate and destroy all ManagedStatic variables.
   #     @see llvm::llvm_shutdown
   #     @see ManagedStatic
@@ -2744,19 +2681,6 @@ module LLVM::C
   # @scope class
   attach_function :const_real_get_double, :LLVMConstRealGetDouble, [:pointer, :pointer], :double
 
-  # Create a ConstantDataSequential and initialize it with a string.
-  #
-  # @see llvm::ConstantDataArray::getString()
-  #
-  # @method const_string_in_context(c, str, length, dont_null_terminate)
-  # @param [FFI::Pointer(ContextRef)] c
-  # @param [String] str
-  # @param [Integer] length
-  # @param [Integer] dont_null_terminate
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_string_in_context, :LLVMConstStringInContext, [:pointer, :string, :uint, :int], :pointer
-
   # Create a ConstantDataSequential with string content in the global context.
   #
   # This is the same as LLVMConstStringInContext except it operates on the
@@ -2924,14 +2848,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method const_f_neg(constant_val)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_f_neg, :LLVMConstFNeg, [:pointer], :pointer
-
-  # (Not documented)
-  #
   # @method const_not(constant_val)
   # @param [FFI::Pointer(ValueRef)] constant_val
   # @return [FFI::Pointer(ValueRef)]
@@ -3030,55 +2946,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method const_i_cmp(predicate, lhs_constant, rhs_constant)
-  # @param [Symbol from _enum_int_predicate_] predicate
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_i_cmp, :LLVMConstICmp, [:int_predicate, :pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_f_cmp(predicate, lhs_constant, rhs_constant)
-  # @param [Symbol from _enum_real_predicate_] predicate
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_f_cmp, :LLVMConstFCmp, [:real_predicate, :pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_shl(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_shl, :LLVMConstShl, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_gep(constant_val, constant_indices, num_indices)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(*ValueRef)] constant_indices
-  # @param [Integer] num_indices
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_gep, :LLVMConstGEP, [:pointer, :pointer, :uint], :pointer
-
-  # (Not documented)
-  #
-  # @method const_in_bounds_gep(constant_val, constant_indices, num_indices)
-  # @param [FFI::Pointer(ValueRef)] constant_val
-  # @param [FFI::Pointer(*ValueRef)] constant_indices
-  # @param [Integer] num_indices
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_in_bounds_gep, :LLVMConstInBoundsGEP, [:pointer, :pointer, :uint], :pointer
-
-  # (Not documented)
-  #
   # @method const_trunc(constant_val, to_type)
   # @param [FFI::Pointer(ValueRef)] constant_val
   # @param [FFI::Pointer(TypeRef)] to_type
@@ -3139,16 +3006,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_pointer_cast, :LLVMConstPointerCast, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_select(constant_condition, constant_if_true, constant_if_false)
-  # @param [FFI::Pointer(ValueRef)] constant_condition
-  # @param [FFI::Pointer(ValueRef)] constant_if_true
-  # @param [FFI::Pointer(ValueRef)] constant_if_false
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_select, :LLVMConstSelect, [:pointer, :pointer, :pointer], :pointer
 
   # (Not documented)
   #
@@ -3486,15 +3343,6 @@ module LLVM::C
   #
   # @{
   #
-  # @method add_alias(m, ty, aliasee, name)
-  # @param [FFI::Pointer(ModuleRef)] m
-  # @param [FFI::Pointer(TypeRef)] ty
-  # @param [FFI::Pointer(ValueRef)] aliasee
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :add_alias, :LLVMAddAlias, [:pointer, :pointer, :pointer, :string], :pointer
-
   # Remove a function from its containing module and deletes it.
   #
   # @see llvm::Function::eraseFromParent()
@@ -5398,17 +5246,6 @@ module LLVM::C
 
   # (Not documented)
   #
-  # @method build_ptr_diff(builder_ref, lhs, rhs, name)
-  # @param [FFI::Pointer(BuilderRef)] builder_ref
-  # @param [FFI::Pointer(ValueRef)] lhs
-  # @param [FFI::Pointer(ValueRef)] rhs
-  # @param [String] name
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_ptr_diff, :LLVMBuildPtrDiff, [:pointer, :pointer, :pointer, :string], :pointer
-
-  # (Not documented)
-  #
   # @method build_fence(b, ordering, single_thread, name)
   # @param [FFI::Pointer(BuilderRef)] b
   # @param [Symbol from _enum_atomic_ordering_] ordering
@@ -5417,19 +5254,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :build_fence, :LLVMBuildFence, [:pointer, :atomic_ordering, :int, :string], :pointer
-
-  # (Not documented)
-  #
-  # @method build_atomic_rmw(b, op, ptr, val, ordering, single_thread)
-  # @param [FFI::Pointer(BuilderRef)] b
-  # @param [Symbol from _enum_atomic_rmw_bin_op_] op
-  # @param [FFI::Pointer(ValueRef)] ptr
-  # @param [FFI::Pointer(ValueRef)] val
-  # @param [Symbol from _enum_atomic_ordering_] ordering
-  # @param [Integer] single_thread
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :build_atomic_rmw, :LLVMBuildAtomicRMW, [:pointer, :atomic_rmw_bin_op, :pointer, :pointer, :atomic_ordering, :int], :pointer
 
   # Changes the type of M so it can be passed to FunctionPassManagers and the
   # JIT.  They take ModuleProviders for historical reasons.
@@ -5513,14 +5337,6 @@ module LLVM::C
   # @return [nil]
   # @scope class
   attach_function :dispose_memory_buffer, :LLVMDisposeMemoryBuffer, [:pointer], :void
-
-  # Return the global pass registry, for use with initialization functions.
-  #     @see llvm::PassRegistry::getPassRegistry
-  #
-  # @method get_global_pass_registry()
-  # @return [FFI::Pointer(PassRegistryRef)]
-  # @scope class
-  attach_function :get_global_pass_registry, :LLVMGetGlobalPassRegistry, [], :pointer
 
   # Constructs a new whole-module pass pipeline. This type of pipeline is
   #     suitable for link-time optimization and whole-module transformations.

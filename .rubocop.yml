@@ -110,3 +110,6 @@ Style/YodaCondition:
 
 Style/TrailingUnderscoreVariable:
   Enabled: false
+
+Minitest/EmptyLineBeforeAssertionMethods:
+  Enabled: false

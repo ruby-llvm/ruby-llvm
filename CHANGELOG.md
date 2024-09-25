@@ -1,4 +1,24 @@
 ## [Unreleased]
+### Changed
+- Upgrade to LLVM 19
+- use LLVMStringInContext2
+
+### Added 
+- Add several passes:
+  - expand_variadics!
+  - pgo_force_function_attrs!
+  - nsan!
+  - pre_isel_intrinsic_lowering!
+  - atomic_expand!
+  - jump_table_to_switch!
+  - lower_allow_check!
+  - lower_invoke!
+  - lower_guard_intrinsic!
+  - lower_widenable_condition!
+  - transform_warning!
+  - trigger_crash_function!
+  - trigger_verifier_error!
+  - loop_idiom_vectorize!
 
 ## [18.2.0] - 2024-09-16
 

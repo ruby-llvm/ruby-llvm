@@ -29,7 +29,7 @@ class TargetTestCase < Minitest::Test
     'LoongArch' => %w[loongarch64 loongarch32],
   }.freeze
 
-  SKIP_ASM_PRINTER = ['Xtensa'].freeze
+  SKIP_ASM_PRINTER = %w[NVPTX XCore].freeze
 
   LLVM::CONFIG::TARGETS_BUILT.each do |arch|
     define_method(:"test_init_#{arch}") do

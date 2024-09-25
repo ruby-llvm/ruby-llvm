@@ -149,10 +149,10 @@ class BuilderTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
         %2 = load i32, ptr %0, align 4
         %3 = trunc i32 %2 to i16
         %trunc = trunc i32 %2 to i16
-        %4 = trunc i32 %2 to i16
-        %trunc_nsw = trunc i32 %2 to i16
-        %5 = trunc i32 %2 to i16
-        %trunc_nuw = trunc i32 %2 to i16
+        %4 = trunc nsw i32 %2 to i16
+        %trunc_nsw = trunc nsw i32 %2 to i16
+        %5 = trunc nuw i32 %2 to i16
+        %trunc_nuw = trunc nuw i32 %2 to i16
         ret void
       }
     IR

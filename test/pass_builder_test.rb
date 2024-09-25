@@ -145,6 +145,25 @@ class PassBuilderTest < Minitest::Test
     assert_equal 'default<Ox>', @pass_builder.pass_string
   end
 
+  # internalize! used to take `all_but_main`
+  def test_internalize_pass_with_true
+    @pass_builder.internalize!(true)
+    assert_equal 'internalize<preserve-gv=main>', @pass_builder.pass_string
+    @pass_builder.run(@module, @tm)
+  end
+
+  def test_internalize_pass_with_false
+    @pass_builder.internalize!(false)
+    assert_equal 'internalize', @pass_builder.pass_string
+    @pass_builder.run(@module, @tm)
+  end
+
+  def test_internalize_pass_with_list
+    @pass_builder.internalize!(%w[a b c])
+    assert_equal 'internalize<preserve-gv=a;preserve-gv=b;preserve-gv=c>', @pass_builder.pass_string
+    @pass_builder.run(@module, @tm)
+  end
+
   PASSES = LLVM::PassBuilder.new.methods.grep(/\S!$/).freeze
   OLD_PASSES = LLVM::PassManager.new.methods.grep(/\S!$/).freeze
   EXCEPT_PASSES = [:dfsan!, :msan!].freeze

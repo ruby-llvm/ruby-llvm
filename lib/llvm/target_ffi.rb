@@ -4,14 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["libLLVM-18.so.1", "libLLVM.so.18", "LLVM-18"]
-
-  def self.attach_function(name, *_)
-    begin; super; rescue FFI::NotFoundError => e
-      (class << self; self; end).class_eval { define_method(name) { |*_| raise e } }
-    end
-  end
-
+  ffi_lib ["LLVM-19", "libLLVM-19.so.1", "libLLVM.so.19", "libLLVM.so.19.1"]
   # (Not documented)
   #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:byte_ordering).</em>
@@ -45,70 +38,70 @@ module LLVM::C
   # @method initialize_all_target_infos()
   # @return [nil]
   # @scope class
-  attach_function :initialize_all_target_infos, :LLVMInitializeAllTargetInfos, [], :void
+  # attach_function :initialize_all_target_infos, :LLVMInitializeAllTargetInfos, [], :void
 
   # (Not documented)
   #
   # @method initialize_all_targets()
   # @return [nil]
   # @scope class
-  attach_function :initialize_all_targets, :LLVMInitializeAllTargets, [], :void
+  # attach_function :initialize_all_targets, :LLVMInitializeAllTargets, [], :void
 
   # (Not documented)
   #
   # @method initialize_all_target_m_cs()
   # @return [nil]
   # @scope class
-  attach_function :initialize_all_target_m_cs, :LLVMInitializeAllTargetMCs, [], :void
+  # attach_function :initialize_all_target_m_cs, :LLVMInitializeAllTargetMCs, [], :void
 
   # (Not documented)
   #
   # @method initialize_all_asm_printers()
   # @return [nil]
   # @scope class
-  attach_function :initialize_all_asm_printers, :LLVMInitializeAllAsmPrinters, [], :void
+  # attach_function :initialize_all_asm_printers, :LLVMInitializeAllAsmPrinters, [], :void
 
   # (Not documented)
   #
   # @method initialize_all_asm_parsers()
   # @return [nil]
   # @scope class
-  attach_function :initialize_all_asm_parsers, :LLVMInitializeAllAsmParsers, [], :void
+  # attach_function :initialize_all_asm_parsers, :LLVMInitializeAllAsmParsers, [], :void
 
   # (Not documented)
   #
   # @method initialize_all_disassemblers()
   # @return [nil]
   # @scope class
-  attach_function :initialize_all_disassemblers, :LLVMInitializeAllDisassemblers, [], :void
+  # attach_function :initialize_all_disassemblers, :LLVMInitializeAllDisassemblers, [], :void
 
   # (Not documented)
   #
   # @method initialize_native_target()
   # @return [Integer]
   # @scope class
-  attach_function :initialize_native_target, :LLVMInitializeNativeTarget, [], :int
+  # attach_function :initialize_native_target, :LLVMInitializeNativeTarget, [], :int
 
   # (Not documented)
   #
   # @method initialize_native_asm_parser()
   # @return [Integer]
   # @scope class
-  attach_function :initialize_native_asm_parser, :LLVMInitializeNativeAsmParser, [], :int
+  # attach_function :initialize_native_asm_parser, :LLVMInitializeNativeAsmParser, [], :int
 
   # (Not documented)
   #
   # @method initialize_native_asm_printer()
   # @return [Integer]
   # @scope class
-  attach_function :initialize_native_asm_printer, :LLVMInitializeNativeAsmPrinter, [], :int
+  # attach_function :initialize_native_asm_printer, :LLVMInitializeNativeAsmPrinter, [], :int
 
   # (Not documented)
   #
   # @method initialize_native_disassembler()
   # @return [Integer]
   # @scope class
-  attach_function :initialize_native_disassembler, :LLVMInitializeNativeDisassembler, [], :int
+  # attach_function :initialize_native_disassembler, :LLVMInitializeNativeDisassembler, [], :int
 
   # (Not documented)
   #
@@ -309,26 +302,7 @@ module LLVM::C
     layout :dummy, :char
   end
 
-  # (Not documented)
-  module TargetWrappers
-    # @return [Integer]
-    def has_jit()
-      LLVM::C.target_has_jit(self)
-    end
-
-    # @return [Integer]
-    def has_target_machine()
-      LLVM::C.target_has_target_machine(self)
-    end
-
-    # @return [Integer]
-    def has_asm_backend()
-      LLVM::C.target_has_asm_backend(self)
-    end
-  end
-
   class Target < FFI::Struct
-    include TargetWrappers
     layout :dummy, :char
   end
 

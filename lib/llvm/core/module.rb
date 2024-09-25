@@ -105,27 +105,27 @@ module LLVM
 
       # Returns the GlobalVariable with the given name (symbol or string).
       def named(name)
-        GlobalValue.from_ptr(C.get_named_global(@module, name.to_s))
+        GlobalVariable.from_ptr(C.get_named_global(@module, name.to_s))
       end
 
       # Returns the first GlobalVariable in the collection.
       def first
-        GlobalValue.from_ptr(C.get_first_global(@module))
+        GlobalVariable.from_ptr(C.get_first_global(@module))
       end
 
       # Returns the last GlobalVariable in the collection.
       def last
-        GlobalValue.from_ptr(C.get_last_global(@module))
+        GlobalVariable.from_ptr(C.get_last_global(@module))
       end
 
       # Returns the next GlobalVariable in the collection after global.
       def next(global)
-        GlobalValue.from_ptr(C.get_next_global(global))
+        GlobalVariable.from_ptr(C.get_next_global(global))
       end
 
       # Returns the previous GlobalVariable in the collection before global.
       def previous(global)
-        GlobalValue.from_ptr(C.get_previous_global(global))
+        GlobalVariable.from_ptr(C.get_previous_global(global))
       end
 
       # Deletes the GlobalVariable from the collection.

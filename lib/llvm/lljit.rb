@@ -46,8 +46,7 @@ module LLVM
     module C
       extend FFI::Library
       ffi_lib_flags(:lazy, :global)
-      ffi_lib ["libLLVM-18.so.1", "libLLVM.so.18", "LLVM-18"]
-
+      ffi_lib ["LLVM-19", "libLLVM-19.so.1", "libLLVM.so.19", "libLLVM.so.19.1"]
       attach_function :create_lljit_builder, :LLVMOrcCreateLLJITBuilder, [], :pointer
       attach_function :dispose_lljit_builder, :LLVMOrcDisposeLLJITBuilder, [:pointer], :void
 
