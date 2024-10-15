@@ -2,6 +2,7 @@
 
 ### Changed
 - fix multiple integer issues above 64 bits
+- Upgrade to 19.1.2
 
 ## [19.1.0] - 2024-09-25
 
