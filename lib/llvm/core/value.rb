@@ -627,11 +627,22 @@ module LLVM
       type.from_f(to_i.to_f)
     end
 
-    def to_i(signed = true)
+    private def to_i_i64(signed)
       if signed
         C.const_int_get_sext_value(self)
       else
         C.const_int_get_zext_value(self)
+      end
+    end
+
+    # const_int_get_sext_value const_int_get_zext_value only return long long, 64-bits
+    # beyond 64-bits parse the string value into a ruby integer
+    # TODO: overflow behavior is not the same on these arms, signed is ignored above 64-bits
+    def to_i(signed = true)
+      if type.width <= 64
+        to_i_i64(signed)
+      else
+        to_s.split.last.to_i
       end
     end
   end

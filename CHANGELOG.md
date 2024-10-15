@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Changed
+- fix multiple integer issues above 64 bits
+
 ## [19.1.0] - 2024-09-25
 
 ### Changed
