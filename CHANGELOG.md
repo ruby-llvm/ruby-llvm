@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [19.1.2] - 2024-10-15
+
 ### Changed
 - fix multiple integer issues above 64 bits
 - Upgrade to 19.1.2
