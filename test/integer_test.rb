@@ -202,4 +202,57 @@ class IntegerTestCase < Minitest::Test
     assert_equal LLVM::Int8.from_i(-1), LLVM::Int8.all_ones
     assert_equal LLVM::Int8.from_i(-1).to_s, LLVM::Int8.all_ones.to_s
   end
+
+  def test_parse_poison
+    assert_equal "i8 poison", LLVM::Int8.parse("128").to_s
+  end
+
+  def test_to_i
+    max = (2**63) - 1
+    int = LLVM.i(64, max)
+    assert_equal max, int.to_i
+
+    int = LLVM.i(64, max + 1)
+    assert_predicate int, :poison?
+
+    int = LLVM.i(65, max)
+    assert_equal max, int.to_i
+
+    int = LLVM.i(65, max + 1)
+    assert_equal max + 1, int.to_i
+  end
+
+  def test_parse_larger_int
+    parsed = LLVM::Int256.parse("0x10000000000000000000000000000000000000000", 16)
+    assert_equal "i256 1461501637330902918203684832716283019655932542976", parsed.to_s
+    assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, parsed.to_i
+
+    parsed = LLVM::Int256.parse("10000000000000000000000000000000000000000", 16)
+    assert_equal "i256 1461501637330902918203684832716283019655932542976", parsed.to_s
+    assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, parsed.to_i
+  end
+
+  def test_new_larger_int
+    int = LLVM.i(256, 0x10000000000000000000000000000000000000000)
+    assert_equal "i256 1461501637330902918203684832716283019655932542976", int.to_s
+    assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, int.to_i
+
+    int = LLVM.i(256, 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976)
+    assert_equal "i256 1461501637330902918203684832716283019655932542976", int.to_s
+    assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, int.to_i
+  end
+
+  def test_new_larger_int_string
+    int = LLVM.i(256, "0x10000000000000000000000000000000000000000")
+    assert_equal "i256 1461501637330902918203684832716283019655932542976", int.to_s
+    assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, int.to_i
+
+    int = LLVM.i(256, "1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976")
+    assert_equal "i256 1461501637330902918203684832716283019655932542976", int.to_s
+    assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, int.to_i
+
+    int = LLVM.i(256, "10000000000000000000000000000000000000000")
+    assert_equal "i256 10000000000000000000000000000000000000000", int.to_s
+    assert_equal 10_000_000_000_000_000_000_000_000_000_000_000_000_000, int.to_i
+  end
 end

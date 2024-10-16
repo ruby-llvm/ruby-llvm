@@ -228,8 +228,8 @@ module LLVM
       C.get_int_type_width(self)
     end
 
-    def from_i(int, options = {})
-      signed = case options
+    private def get_sign_option(options)
+      case options
       when true, false
         options
       when Hash
@@ -237,11 +237,16 @@ module LLVM
       else
         raise ArgumentError
       end
-      # return poison if !fits_width?(int, width, signed)
+    end
 
-      ptr = C.const_int(self, int, signed ? 1 : 0)
-      val = from_ptr(ptr)
-      val.to_i(signed) == int ? val : poison
+    def from_i(int, options = {})
+      signed = get_sign_option(options)
+
+      return parse(int.to_s, 0) if width > 64 || int.is_a?(String)
+
+      val = from_ptr(C.const_int(self, int, signed ? 1 : 0))
+      unpoisoned = val.to_i(signed) == int
+      unpoisoned ? val : poison
     end
 
     # unused
@@ -259,9 +264,21 @@ module LLVM
       ConstantInt.from_ptr(ptr)
     end
 
+    # parse string using const_int_of_string_and_size
+    # normalize the string to base 10 (used in llvm ir), and handle prefixes like 0x
+    private def const_int_of_string_and_size(str, radix)
+      normalized_string = radix == 10 ? str : str.to_i(radix).to_s
+      val = from_ptr(C.const_int_of_string_and_size(self, normalized_string, normalized_string.size, 10))
+
+      unpoisoned = normalized_string == val.to_s.split.last
+      unpoisoned ? val : poison
+    end
+
+    # parse string using const_int_of_string_and_size
+    # alternative implementation parsing with ruby:
+    # from_i(str.to_i(radix))
     def parse(str, radix = 10)
-      # from_ptr(C.const_int_of_string(self, str, radix))
-      from_i(str.to_i(radix))
+      const_int_of_string_and_size(str, radix)
     end
 
     def type
