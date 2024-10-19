@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Added
+- Value#from_ptr_kind handles const_expr -> ConstantExpr
+
 ## [19.1.2] - 2024-10-15
 
 ### Changed
