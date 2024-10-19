@@ -12,7 +12,7 @@ module LLVM
       val
     end
 
-    def self.from_ptr_kind(ptr)
+    def self.from_ptr_kind(ptr) # rubocop:disable Metrics/CyclomaticComplexity
       return if ptr.null?
 
       kind = C.get_value_kind(ptr)
@@ -27,6 +27,8 @@ module LLVM
         Poison.from_ptr(ptr)
       when :global_variable
         GlobalVariable.from_ptr(ptr)
+      when :const_expr
+        ConstantExpr.from_ptr(ptr)
       else
         raise "from_ptr_kind cannot handle: #{kind}"
       end
