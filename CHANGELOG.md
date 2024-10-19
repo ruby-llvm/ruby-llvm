@@ -1,7 +1,15 @@
 ## [Unreleased]
 
+## [19.1.3] - 2024-11-02
+
 ### Added
 - Value#from_ptr_kind handles const_expr -> ConstantExpr
+- tests run on macos-15
+
+### Changed
+- Upgrade to 19.1.3
+- use nobits and anybits where appropriate
+- Fix bug in testing against macos
 
 ## [19.1.2] - 2024-10-15
 

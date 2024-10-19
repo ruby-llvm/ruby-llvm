@@ -149,15 +149,15 @@ module LLVM
     private
 
     def enum_value_mem_none?
-      (enum_value & 63).zero?
+      enum_value.nobits?(63)
     end
 
     def enum_value_mem_read?
-      (enum_value & 21) != 0
+      enum_value.anybits?(21)
     end
 
     def enum_value_mem_write?
-      (enum_value & 42) != 0
+      enum_value.anybits?(42)
     end
 
     def enum_kind_id
