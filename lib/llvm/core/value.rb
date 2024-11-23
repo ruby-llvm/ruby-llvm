@@ -29,6 +29,8 @@ module LLVM
         GlobalVariable.from_ptr(ptr)
       when :const_expr
         ConstantExpr.from_ptr(ptr)
+      when :const_null
+        ConstantNull.from_ptr(ptr)
       else
         raise "from_ptr_kind cannot handle: #{kind}"
       end
@@ -812,6 +814,9 @@ module LLVM
     end
   end
 
+  class ConstantNull < Constant
+  end
+
   class GlobalValue < Constant
     def declaration?
       C.is_declaration(self)
@@ -1183,6 +1188,8 @@ module LLVM
   end
 
   class Instruction < User
+    # Create Instruction from pointer to value
+    # many places where this is called, the instruction may be a constant, so create those instead
     def self.from_ptr(ptr)
       kind = C.get_value_kind(ptr)
       kind == :instruction ? super : LLVM::Value.from_ptr_kind(ptr)
