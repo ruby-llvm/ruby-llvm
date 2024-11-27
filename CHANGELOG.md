@@ -1,8 +1,14 @@
 ## [Unreleased]
 
-## [19.1.3] - 2024-11-02
+## [19.1.4] - 2024-11-26
+
 ### Added
 - added from_ptr_kind support for const_null
+
+### Changed
+- Upgrade to 19.1.4
+
+## [19.1.3] - 2024-11-02
 
 ### Added
 - Value#from_ptr_kind handles const_expr -> ConstantExpr
