@@ -63,13 +63,13 @@ class FunctionTest < Minitest::Test
   end
 
   def test_add_attribute_old_name
-    helper_test_attribute(:no_unwind_attribute, 39)
+    helper_test_attribute(:no_unwind_attribute, 42)
   end
 
   def test_add_attribute_new_name
-    helper_test_attribute(:nounwind, 39)
-    helper_test_attribute(:willreturn, 71)
-    helper_test_attribute(:mustprogress, 18)
+    helper_test_attribute(:mustprogress, 19)
+    helper_test_attribute(:nounwind, 42)
+    helper_test_attribute(:willreturn, 77)
   end
 
   def test_invalid_function

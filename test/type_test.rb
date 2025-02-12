@@ -97,7 +97,6 @@ class TypeTestCase < Minitest::Test
 
     [LLVM::Type.void, 'void'],
     [LLVM::Type.label, 'label'],
-    [LLVM::Type.x86_mmx, 'x86_mmx'],
     [LLVM::Type.x86_amx, 'x86_amx'],
     [LLVM.Void, 'void'],
 
@@ -154,6 +153,14 @@ class TypeTestCase < Minitest::Test
     it 'should have kind :void' do
       type = LLVM::Type.label
       assert_equal :label, type.kind
+    end
+  end
+
+  describe "x86_mmx type" do
+    it "should raise deprecation error" do
+      assert_raises(LLVM::DeprecationError) do
+        LLVM::Type.x86_mmx
+      end
     end
   end
 end

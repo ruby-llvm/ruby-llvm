@@ -4,7 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
-  ffi_lib ["LLVM-19", "libLLVM-19.so.1", "libLLVM.so.19", "libLLVM.so.19.1"]
+  ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
 
   # (Not documented)
   #
@@ -1691,14 +1691,6 @@ module LLVM::C
   # @scope class
   attach_function :label_type_in_context, :LLVMLabelTypeInContext, [:pointer], :pointer
 
-  # Create a X86 MMX type in a context.
-  #
-  # @method x86mmx_type_in_context(c)
-  # @param [FFI::Pointer(ContextRef)] c
-  # @return [FFI::Pointer(TypeRef)]
-  # @scope class
-  attach_function :x86mmx_type_in_context, :LLVMX86MMXTypeInContext, [:pointer], :pointer
-
   # These are similar to the above functions except they operate on the
   # global context.
   #
@@ -1713,13 +1705,6 @@ module LLVM::C
   # @return [FFI::Pointer(TypeRef)]
   # @scope class
   attach_function :label_type, :LLVMLabelType, [], :pointer
-
-  # (Not documented)
-  #
-  # @method x86mmx_type()
-  # @return [FFI::Pointer(TypeRef)]
-  # @scope class
-  attach_function :x86mmx_type, :LLVMX86MMXType, [], :pointer
 
   # Obtain the type of a value.
   #

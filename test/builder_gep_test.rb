@@ -187,10 +187,10 @@ class BuilderGepTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
     expected = <<~IR
       define void @test_builder(ptr %0) {
         %2 = alloca { i64, double }, align 8
-        %3 = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 0
-        %4 = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 1
-        %the_int = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 0
-        %the_float = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 1
+        %3 = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 0
+        %4 = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 1
+        %the_int = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 0
+        %the_float = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 1
         ret void
       }
     IR
@@ -223,10 +223,10 @@ class BuilderGepTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
     expected = <<~IR
       define void @test_builder(ptr %0) {
         %2 = alloca { i64, double }, align 8
-        %3 = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 0
-        %4 = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 1
-        %the_int = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 0
-        %the_float = getelementptr inbounds { i64, double }, ptr %2, i32 0, i32 1
+        %3 = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 0
+        %4 = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 1
+        %the_int = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 0
+        %the_float = getelementptr inbounds nuw { i64, double }, ptr %2, i32 0, i32 1
         ret void
       }
     IR
@@ -358,10 +358,10 @@ class BuilderGepTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
     assert(fun.verify)
     expected = <<~IR
       define void @test_builder(ptr %0) {
-        %2 = getelementptr inbounds { i64, double }, ptr %0, i32 0, i32 0
-        %3 = getelementptr inbounds { i64, double }, ptr %0, i32 0, i32 1
-        %the_int = getelementptr inbounds { i64, double }, ptr %0, i32 0, i32 0
-        %the_float = getelementptr inbounds { i64, double }, ptr %0, i32 0, i32 1
+        %2 = getelementptr inbounds nuw { i64, double }, ptr %0, i32 0, i32 0
+        %3 = getelementptr inbounds nuw { i64, double }, ptr %0, i32 0, i32 1
+        %the_int = getelementptr inbounds nuw { i64, double }, ptr %0, i32 0, i32 0
+        %the_float = getelementptr inbounds nuw { i64, double }, ptr %0, i32 0, i32 1
         ret void
       }
     IR

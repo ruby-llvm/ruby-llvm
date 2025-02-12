@@ -1,5 +1,19 @@
 ## [Unreleased]
 
+## [20.1.0] - 2025-03-16
+
+### Changed
+
+- Upgrade to 20.1.0
+- Deprecate x86_mmx type
+
+### Added
+
+- add pass: normalize!
+- add pass: rtsan!
+- add pass: tysan!
+- CI: test ruby 3.4
+
 ## [19.1.6] - 2024-12-21
 
 ### Changed

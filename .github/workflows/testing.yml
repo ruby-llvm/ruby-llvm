@@ -13,22 +13,22 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
-        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3']
+        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', '3.4']
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
       - name: Check for LLVM on Homebrew
         id: homebrew_check
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew info llvm@19 || echo "brew=true" >> "$GITHUB_OUTPUT"
+          brew info llvm@20 || echo "brew=true" >> "$GITHUB_OUTPUT"
       - name: Install LLVM on macos
         if: steps.step1.outputs.brew == 'true'
         run: |
           # brew update --auto-update
-          brew install llvm@18
-          echo "$(brew --prefix llvm@18)/bin" >> $GITHUB_PATH
+          brew install llvm@20
+          echo "$(brew --prefix llvm@20)/bin" >> $GITHUB_PATH
           sudo mkdir -p /opt/local/
-          sudo ln -s $(brew --prefix llvm@19)/lib /opt/local/lib
+          sudo ln -s $(brew --prefix llvm@20)/lib /opt/local/lib
           # ffi will only look for files in a small set of directories, so llvm needs to be there
           # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
           # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
@@ -38,11 +38,11 @@ jobs:
         if: steps.step1.outputs.brew == 'true'
         run: |
           echo $(brew --repository)
-          echo $(brew --prefix llvm@19)
-          echo $(brew info llvm@19)
+          echo $(brew --prefix llvm@20)
+          echo $(brew info llvm@20)
           echo "$PATH"
           echo $(llvm-config --ldflags)
-          ls -l $(brew --prefix llvm@19)/lib/libLLVM.dylib
+          ls -l $(brew --prefix llvm@20)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
       - name: Install LLVM on ubuntu
         id: ubuntu_setup
@@ -50,26 +50,26 @@ jobs:
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 19
-          # sudo apt-get install -y libpolly-19-dev
+          sudo ./llvm.sh 20
+          # sudo apt-get install -y libpolly-20-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - name: Fix symlink issues
         if: false
         run: |
-          # TODO: [LLVM 19] remove this patch when packaging is fixed
+          # TODO: [LLVM 20] remove this patch when packaging is fixed
           # see: https://github.com/llvm/llvm-project/issues/105987
           echo "broken"
-          file /usr/lib/llvm-19/lib/libLLVM* | grep broken
+          file /usr/lib/llvm-20/lib/libLLVM* | grep broken
           file /usr/lib/x86_64-linux-gnu/libLLVM* | grep broken
-          # readlink -q "/usr/lib/x86_64-linux-gnu/libLLVM-19.so.1" && \
+          # readlink -q "/usr/lib/x86_64-linux-gnu/libLLVM-20.so.1" && \
           echo "create symlink"
-          sudo ln -s /usr/lib/llvm-19/lib/libLLVM.so.1 /usr/lib/x86_64-linux-gnu/libLLVM-19.so.1
+          sudo ln -s /usr/lib/llvm-20/lib/libLLVM.so.1 /usr/lib/x86_64-linux-gnu/libLLVM-20.so.1
           echo "fixed"
-          file /usr/lib/llvm-19/lib/libLLVM* | grep -qv broken
+          file /usr/lib/llvm-20/lib/libLLVM* | grep -qv broken
           file /usr/lib/x86_64-linux-gnu/libLLVM* | grep -qv broken          
-          # echo '/usr/lib/llvm-19/lib/libLLVM.so.1' | sudo tee -a /etc/ld.so.conf.d/llvm.conf
-          # sudo ldconfig -l -v /usr/lib/llvm-19/lib/libLLVM.so.1
-          # sudo ldconfig -l -v /usr/lib/llvm-19/lib/libLLVM.so.19.1
+          # echo '/usr/lib/llvm-20/lib/libLLVM.so.1' | sudo tee -a /etc/ld.so.conf.d/llvm.conf
+          # sudo ldconfig -l -v /usr/lib/llvm-20/lib/libLLVM.so.1
+          # sudo ldconfig -l -v /usr/lib/llvm-20/lib/libLLVM.so.20.1
           # sudo ldconfig
           # ldconfig -p | grep -i llvm
       - name: 'Ubuntu debug'
@@ -82,12 +82,12 @@ jobs:
           # dpkg -l | grep -i llvm
           # which clang
           # clang --version
-          # which clang-19
-          # clang-19 --version
+          # which clang-20
+          # clang-20 --version
           # ls -alF /usr/lib/x86_64-linux-gnu/libLLVM*
           # find /usr/lib/x86_64-linux-gnu/ -xtype l -print
-          # ls -alF /usr/lib/llvm-19/lib/
-          # ls -alF /usr/lib/llvm-19/include/
+          # ls -alF /usr/lib/llvm-20/lib/
+          # ls -alF /usr/lib/llvm-20/include/
           # dpkg -l | egrep 'c\+\+|g\+\+|gcc|llvm|build-essential'
           # ls -alF /usr/include/c++/*/cstddef
           # ls -alF /usr/lib/llvm-*/include/
