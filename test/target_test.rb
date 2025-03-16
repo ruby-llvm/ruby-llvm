@@ -29,7 +29,7 @@ class TargetTestCase < Minitest::Test
     'LoongArch' => %w[loongarch64 loongarch32],
   }.freeze
 
-  SKIP_ASM_PRINTER = %w[NVPTX XCore].freeze
+  SKIP_ASM_PRINTER = %w[].freeze
 
   LLVM::CONFIG::TARGETS_BUILT.each do |arch|
     define_method(:"test_init_#{arch}") do
@@ -109,7 +109,7 @@ class TargetTestCase < Minitest::Test
       mach.emit(mod, tmp.path)
       data = tmp.read
       assert_match(/xorl\t%eax, %eax/, data)
-      assert_equal 218, data.length
+      assert_equal 212, data.length
     end
 
     # despite the above test, in LLVM <= 11 the objdump output was:
@@ -144,7 +144,7 @@ class TargetTestCase < Minitest::Test
       mach.emit(mod, tmp.path)
       data = tmp.read
       assert_match(/xorl\t%eax, %eax/, data)
-      assert_equal 218, data.length
+      assert_equal 212, data.length
     end
 
     Tempfile.open('emit') do |tmp|
@@ -159,7 +159,7 @@ class TargetTestCase < Minitest::Test
     layout_be = LLVM::TargetDataLayout.new('E')
     assert_equal :big_endian, layout_be.byte_order
 
-    desc = "e-p:32:32:32-S0-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:32:64-f16:16:16-f32:32:32-f64:64:64-f128:128:128-v64:64:64-v128:128:128-a0:0:64"
+    desc = "e-p:32:32:32"
     layout = LLVM::TargetDataLayout.new(desc)
 
     assert_equal desc, layout.to_s

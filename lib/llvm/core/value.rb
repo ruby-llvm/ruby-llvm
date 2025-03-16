@@ -711,7 +711,7 @@ module LLVM
     # Returns the result of dividing this ConstantReal by rhs.
     def /(rhs)
       type = LLVM::RealType.fits([self.type, rhs.type])
-      type.from_f(to_f / rhs.to_f) # rubocop:disable Style/FloatDivision
+      type.from_f(to_f / rhs.to_f)
     end
 
     # Remainder.

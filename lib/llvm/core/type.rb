@@ -185,7 +185,7 @@ module LLVM
     end
 
     def self.x86_mmx
-      from_ptr(C.x86mmx_type, :x86mmx)
+      raise DeprecationError
     end
 
     def self.x86_amx

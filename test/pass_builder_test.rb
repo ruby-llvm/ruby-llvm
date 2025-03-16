@@ -72,7 +72,8 @@ class PassBuilderTest < Minitest::Test
     opt = find_executable "opt-#{LLVM::LLVM_VERSION}"
     skip "No opt binary" if !opt
     LLVM::PassBuilder::OPT_PASSES.each do |level, passes|
-      assert_equal passes, `#{opt} -O#{level} -print-pipeline-passes -disable-output < /dev/null`.chomp
+      level_flag = "-O#{level}"
+      assert_equal passes, `#{opt} #{level_flag} -print-pipeline-passes -disable-output < /dev/null`.chomp, level_flag
     end
   end
 
