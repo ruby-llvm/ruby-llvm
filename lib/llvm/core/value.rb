@@ -238,6 +238,7 @@ module LLVM
       end
 
       # Iterates through each Instruction in the collection.
+      # : ({(Instruction) -> BasicObject}) -> self
       def each
         return to_enum :each unless block_given?
         inst = first

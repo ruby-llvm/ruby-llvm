@@ -1,0 +1,6 @@
+--dir
+.
+--ignore=tmp/
+--ignore=vendor/
+--ignore=samples/
+--enable-experimental-rbs-comments
