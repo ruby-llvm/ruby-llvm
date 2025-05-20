@@ -5,7 +5,7 @@ plugins:
   - rubocop-minitest
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.1
   NewCops: enable
   Exclude:
     - 'samples/**/*'
@@ -116,3 +116,6 @@ Minitest/EmptyLineBeforeAssertionMethods:
 
 Naming/PredicateMethod:
   Enabled: false
+
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true

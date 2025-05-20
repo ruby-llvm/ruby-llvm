@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: strict
 
 require 'llvm'
 require 'llvm/core_ffi'
@@ -12,8 +13,9 @@ module LLVM
   #
   # @yield  [FFI::MemoryPointer]
   # @return [String, nil]
-  def self.with_message_output
-    message = nil
+  #: { (FFI::MemoryPointer) -> Integer } -> String?
+  def self.with_message_output(&)
+    message = nil #: String?
 
     FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |str|
       result = yield str
@@ -36,8 +38,9 @@ module LLVM
   #
   # @yield  [FFI::MemoryPointer]
   # @return [nil]
-  def self.with_error_output(&block)
-    error = with_message_output(&block)
+  #: { (FFI::MemoryPointer) -> Integer } -> String?
+  def self.with_error_output(&blk)
+    error = with_message_output(&blk)
 
     raise error unless error.nil?
   end

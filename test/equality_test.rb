@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require "test_helper"
 require "llvm/core"
@@ -60,9 +61,9 @@ class EqualityTestCase < Minitest::Test
 
   def test_type
     type1 = LLVM::Float.type
-    type2 = LLVM::Type.from_ptr(type1.to_ptr, nil)
+    type2 = LLVM::Type.from_ptr(type1.to_ptr)
     type3 = LLVM::Double.type
-    type4 = MyType.from_ptr(type1.to_ptr, :mytype)
+    type4 = MyType.from_ptr(type1.to_ptr, kind: :mytype)
 
     assert_equalities :equal     => [type1, type2, type4],
                       :not_equal => [type1, type3],

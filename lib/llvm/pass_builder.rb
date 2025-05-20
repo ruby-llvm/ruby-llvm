@@ -1,8 +1,10 @@
 # frozen_string_literal: true
+# typed: true
 
 module LLVM
   class PassBuilder # rubocop:disable Metrics/ClassLength
     extend FFI::Library
+
     ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
     attr_reader :passes
     attr_accessor :inliner_threshold, :merge_functions
@@ -60,6 +62,7 @@ module LLVM
     end
 
     # @return self
+    #: (String) -> self
     def add_pass(pass)
       passes << pass
       self
@@ -752,6 +755,14 @@ module LLVM
     # https://clang.llvm.org/docs/TypeSanitizer.html
     def tysan!
       add_pass('tysan')
+    end
+
+    # This optimization is only applied to integer constants in instructions and
+    # simple (this means not nested) constant cast expressions
+    # https://llvm.org/doxygen/ConstantHoisting_8cpp_source.html
+    #: -> self
+    def consthoist!
+      add_pass('consthoist')
     end
 
     private
