@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 module LLVM
   class PassBuilder # rubocop:disable Metrics/ClassLength

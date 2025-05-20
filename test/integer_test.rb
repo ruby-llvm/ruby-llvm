@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require "test_helper"
 
@@ -223,11 +224,11 @@ class IntegerTestCase < Minitest::Test
   end
 
   def test_parse_larger_int
-    parsed = LLVM::Int256.parse("0x10000000000000000000000000000000000000000", 16)
+    parsed = LLVM.i(256).parse("0x10000000000000000000000000000000000000000", 16)
     assert_equal "i256 1461501637330902918203684832716283019655932542976", parsed.to_s
     assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, parsed.to_i
 
-    parsed = LLVM::Int256.parse("10000000000000000000000000000000000000000", 16)
+    parsed = LLVM.i(256).parse("10000000000000000000000000000000000000000", 16)
     assert_equal "i256 1461501637330902918203684832716283019655932542976", parsed.to_s
     assert_equal 1_461_501_637_330_902_918_203_684_832_716_283_019_655_932_542_976, parsed.to_i
   end

@@ -116,3 +116,6 @@ Minitest/EmptyLineBeforeAssertionMethods:
 
 Naming/PredicateMethod:
   Enabled: false
+
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true
