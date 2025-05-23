@@ -149,7 +149,7 @@ module LLVM
       end
 
       # Iterates through each GlobalVariable in the collection.
-      def each
+      def each(&_blk)
         g = first
         until g.nil?
           yield g
@@ -233,7 +233,7 @@ module LLVM
       end
 
       # Iterates through each Function in the collection.
-      def each
+      def each(&_blk)
         f = first
         until f.nil?
           yield f

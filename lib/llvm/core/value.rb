@@ -238,8 +238,7 @@ module LLVM
       end
 
       # Iterates through each Instruction in the collection.
-      # : ({(Instruction) -> BasicObject}) -> self
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
         inst = first
         final = last
@@ -298,7 +297,7 @@ module LLVM
       end
 
       # Iterates through each operand in the collection.
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
         0.upto(size - 1) { |i| yield self[i] }
         self
@@ -1054,7 +1053,7 @@ module LLVM
       end
 
       # Iterates through each BasicBlock in the collection.
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
 
         ptr = C.get_first_basic_block(@fun)
@@ -1117,7 +1116,7 @@ module LLVM
       include Enumerable
 
       # Iteraters through each parameter in the collection.
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
         0.upto(size - 1) { |i| yield self[i] }
         self
