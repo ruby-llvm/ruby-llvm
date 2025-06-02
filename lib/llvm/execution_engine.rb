@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require 'llvm'
 require 'llvm/core'
@@ -62,24 +63,24 @@ module LLVM
     # GenericValues).
     # Important: Call #dispose on the returned GenericValue to
     # free backend memory after use.
-    def run_function(fun, *args)
-      FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
-        new_values = []
-        args_ptr.write_array_of_pointer(fun.params.zip(args).map do |p, a|
-          if a.kind_of?(GenericValue)
-            a
-          else
-            value = LLVM.make_generic_value(p.type, a)
-            new_values << value
-            value
-          end
-        end)
-        result = LLVM::GenericValue.from_ptr(
-          C.run_function(self, fun, args.size, args_ptr))
-        new_values.each(&:dispose)
-        return result
-      end
-    end
+    # def run_function(fun, *args)
+    #   FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
+    #     new_values = []
+    #     args_ptr.write_array_of_pointer(fun.params.zip(args).map do |p, a|
+    #       if a.kind_of?(GenericValue)
+    #         a
+    #       else
+    #         value = LLVM.make_generic_value(p.type, a)
+    #         new_values << value
+    #         value
+    #       end
+    #     end)
+    #     result = LLVM::GenericValue.from_ptr(
+    #       C.run_function(self, fun, args.size, args_ptr))
+    #     new_values.each(&:dispose)
+    #     return result
+    #   end
+    # end
 
     # Obtain an FFI::Pointer to a global within the current module.
     def pointer_to_global(global)
@@ -211,13 +212,14 @@ module LLVM
       end
     end
 
+    #: (Function, *Value) -> Value
     def run_function(fun, *args)
       args2 = fun.params.map {|e| convert_type(e.type)}
       ptr = FFI::Pointer.new(function_address(fun.name))
       raise "Couldn't find function" if ptr.null?
 
       return_type = convert_type(fun.function_type.return_type)
-      f = FFI::Function.new(return_type, args2, ptr)
+      f = FFI::Function.new(return_type, args2, ptr) #: as untyped
       ret1 = f.call(*args)
       ret2 = LLVM.make_generic_value(fun.function_type.return_type, ret1)
       ret2

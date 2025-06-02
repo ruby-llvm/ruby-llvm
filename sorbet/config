@@ -4,3 +4,5 @@
 --ignore=vendor/
 --ignore=samples/
 --enable-experimental-rbs-comments
+--suppress-error-code=7003
+--suppress-error-code=7019

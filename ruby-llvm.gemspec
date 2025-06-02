@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop-minitest'
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'sorbet'
+  s.add_development_dependency 'sorbet-static'
   s.add_development_dependency 'tapioca'
   s.add_development_dependency 'yard', '~> 0.9'
   s.metadata['rubygems_mfa_required'] = 'true'
