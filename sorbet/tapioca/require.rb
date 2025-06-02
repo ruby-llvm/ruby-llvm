@@ -31,4 +31,3 @@ require "llvm/transforms/scalar"
 require "llvm/transforms/utils"
 require "llvm/transforms/vectorize"
 require "llvm/version"
-
