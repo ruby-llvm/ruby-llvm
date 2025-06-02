@@ -20,6 +20,7 @@ jobs:
         id: homebrew_check
         if: startsWith(matrix.os, 'macos')
         run: |
+          brew ls --versions llvm 
           brew info llvm@20 || echo "brew=true" >> "$GITHUB_OUTPUT"
       - name: Install LLVM on macos
         if: steps.step1.outputs.brew == 'true'
@@ -106,4 +107,7 @@ jobs:
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - run: bundle exec rake test:samples
         name: "Run samples"
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+      - name: "Typecheck"
+        run: bundle exec srb tc
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'

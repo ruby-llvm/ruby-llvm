@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 module LLVM
   class Value
@@ -46,6 +47,7 @@ module LLVM
     end
 
     # Returns the value's type.
+    #: -> Type
     def type
       Type.from_ptr(C.type_of(self), nil)
     end
@@ -55,6 +57,7 @@ module LLVM
       C.get_value_kind(self)
     end
 
+    #: -> bool
     def allocated_type?
       case self
       when Instruction
@@ -75,6 +78,7 @@ module LLVM
       Type.from_ptr(alloc_type, nil)
     end
 
+    #: -> bool
     def gep_source_element_type?
       is_a?(Instruction)
     end
@@ -108,21 +112,25 @@ module LLVM
     end
 
     # Returns whether the value is constant.
+    #: -> bool
     def constant?
       C.is_constant(self)
     end
 
     # Returns whether the value is null.
+    #: -> bool
     def null?
       C.is_null(self)
     end
 
     # Returns whether the value is undefined.
+    #: -> bool
     def undef?
       C.is_undef(self)
     end
     alias_method :undefined?, :undef?
 
+    #: -> bool
     def poison?
       C.is_poison(self)
     end
@@ -238,7 +246,7 @@ module LLVM
       end
 
       # Iterates through each Instruction in the collection.
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
         inst = first
         final = last
@@ -297,7 +305,7 @@ module LLVM
       end
 
       # Iterates through each operand in the collection.
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
         0.upto(size - 1) { |i| yield self[i] }
         self
@@ -428,6 +436,7 @@ module LLVM
     # end
 
     # Negation.
+    #: -> ConstantInt
     def -@
       self.class.from_ptr(C.const_neg(self))
     end
@@ -435,12 +444,14 @@ module LLVM
     alias_method :neg, :-@
 
     # "No signed wrap" negation.
+    #: -> ConstantInt
     def nsw_neg
       self.class.from_ptr(C.const_nsw_neg(self))
     end
 
     # "No unsigned wrap" negation.
     # @deprecated
+    #: -> ConstantInt
     def nuw_neg
       # :nocov:
       self.class.from_ptr(C.const_nuw_neg(self))
@@ -449,6 +460,7 @@ module LLVM
     deprecate :nuw_neg, "neg", 2025, 3
 
     # Addition.
+    #: (ConstantInt) -> ConstantInt
     def +(rhs)
       self.class.from_ptr(C.const_add(self, rhs))
     end
@@ -456,16 +468,19 @@ module LLVM
     alias_method :add, :+
 
     # "No signed wrap" addition.
+    #: (ConstantInt) -> ConstantInt
     def nsw_add(rhs)
       self.class.from_ptr(C.const_nsw_add(self, rhs))
     end
 
     # "No unsigned wrap" addition.
+    #: (ConstantInt) -> ConstantInt
     def nuw_add(rhs)
       self.class.from_ptr(C.const_nuw_add(self, rhs))
     end
 
     # Subtraction.
+    #: (ConstantInt) -> ConstantInt
     def -(rhs)
       self.class.from_ptr(C.const_sub(self, rhs))
     end
@@ -473,16 +488,19 @@ module LLVM
     alias_method :sub, :-
 
     # "No signed wrap" subtraction.
+    #: (ConstantInt) -> ConstantInt
     def nsw_sub(rhs)
       self.class.from_ptr(C.const_nsw_sub(self, rhs))
     end
 
     # "No unsigned wrap" subtraction.
+    #: (ConstantInt) -> ConstantInt
     def nuw_sub(rhs)
       self.class.from_ptr(C.const_nuw_sub(self, rhs))
     end
 
     # Multiplication.
+    #: (ConstantInt) -> ConstantInt
     def *(rhs)
       self.class.from_ptr(C.const_mul(self, rhs))
     end
@@ -490,41 +508,48 @@ module LLVM
     alias_method :mul, :*
 
     # "No signed wrap" multiplication.
+    #: (ConstantInt) -> ConstantInt
     def nsw_mul(rhs)
       self.class.from_ptr(C.const_nsw_mul(self, rhs))
     end
 
     # "No unsigned wrap" multiplication.
+    #: (ConstantInt) -> ConstantInt
     def nuw_mul(rhs)
       self.class.from_ptr(C.const_nuw_mul(self, rhs))
     end
 
     # Unsigned division.
+    #: (ConstantInt) -> ConstantInt
     def udiv(rhs)
       width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_ui / rhs.to_ui, false)
     end
 
     # Signed division.
+    #: (ConstantInt) -> ConstantInt
     def /(rhs)
       width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_si / rhs.to_si, true)
     end
 
     # Unsigned remainder.
+    #: (ConstantInt) -> ConstantInt
     def urem(rhs)
       width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_ui % rhs.to_ui, false)
     end
 
     # Signed remainder.
+    #: (ConstantInt) -> ConstantInt
     def rem(rhs)
       width = [type.width, rhs.type.width].max
       LLVM::Type.integer(width).from_i(to_si % rhs.to_si, true)
     end
 
     # Boolean negation.
-    def ~@
+    #: -> ConstantInt
+    def ~
       self.class.from_ptr(C.const_not(self))
     end
 
@@ -763,8 +788,9 @@ module LLVM
     end
 
     # get double from value
+    #: -> ::Float?
     def to_f
-      double = nil
+      double = nil #: ::Float?
       FFI::MemoryPointer.new(:bool, 1) do |loses_info|
         double = C.const_real_get_double(self, loses_info)
       end
@@ -818,6 +844,7 @@ module LLVM
   end
 
   class GlobalValue < Constant
+    #: -> bool
     def declaration?
       C.is_declaration(self)
     end
@@ -854,6 +881,7 @@ module LLVM
       C.set_alignment(self, bytes)
     end
 
+    #: -> bool
     def unnamed_addr?
       C.has_unnamed_addr(self) != 0
     end
@@ -893,20 +921,24 @@ module LLVM
     # Set personality function of function
     # @note Experimental and unsupported
     # @return self
+    #: (Value) -> void
     def personality_function=(personality_function)
       C.set_personality_fn(self, personality_function)
     end
 
     # Returns an Enumerable of the BasicBlocks in this function.
+    #: -> BasicBlockCollection
     def basic_blocks
       @basic_block_collection ||= BasicBlockCollection.new(self)
     end
 
+    #: -> Type
     def function_type
       Type.from_ptr(C.get_element_type(self), :function)
     end
 
     # In LLVM 15, not overriding this yields a pointer type instead of a function type
+    #: -> Type
     def type
       function_type
     end
@@ -929,30 +961,37 @@ module LLVM
       function_attributes.count
     end
 
+    # -> [Attribute]
     def attributes
       function_attributes.to_a
     end
 
+    #: -> bool
     def readnone?
       attributes.detect(&:readnone?)
     end
 
+    #: -> bool
     def readonly?
       attributes.detect(&:readonly?)
     end
 
+    #: -> bool
     def writeonly?
       attributes.detect(&:writeonly?)
     end
 
+    # -> AttributeCollection
     def function_attributes
       AttributeCollection.new(self, -1)
     end
 
+    # -> AttributeCollection
     def return_attributes
       AttributeCollection.new(self, 0)
     end
 
+    # -> AttributeCollection
     def param_attributes(index)
       AttributeCollection.new(self, index)
     end
@@ -990,8 +1029,9 @@ module LLVM
         C.get_attribute_count_at_index(@fun, @index)
       end
 
+      # -> Array[Attribute]
       def to_a
-        attr_refs = nil
+        attr_refs = [] #: Array[Attribute]
         n = count
         FFI::MemoryPointer.new(:pointer, n) do |p|
           C.get_attributes_at_index(@fun, @index, p)
@@ -1003,6 +1043,7 @@ module LLVM
 
       private
 
+      # (Symbol | String) -> String
       def attribute_name(attr_name)
         attr_name = attr_name.to_s
         if /_attribute$/.match?(attr_name)
@@ -1012,6 +1053,7 @@ module LLVM
         end
       end
 
+      # (Symbol | String) -> Integer
       def attribute_id(attr_name)
         upgrade = upgrade_attr(attr_name)
         return upgrade if upgrade
@@ -1048,12 +1090,13 @@ module LLVM
       end
 
       # Returns the number of BasicBlocks in the collection.
+      #: -> Integer
       def size
         C.count_basic_blocks(@fun)
       end
 
       # Iterates through each BasicBlock in the collection.
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
 
         ptr = C.get_first_basic_block(@fun)
@@ -1066,23 +1109,27 @@ module LLVM
       end
 
       # Adds a BasicBlock with the given name to the end of the collection.
+      #: (?String) -> BasicBlock
       def append(name = "")
         BasicBlock.create(@fun, name)
       end
 
       # Returns the entry BasicBlock in the collection. This is the block the
       # function starts on.
+      #: -> BasicBlock
       def entry
         BasicBlock.from_ptr(C.get_entry_basic_block(@fun))
       end
 
       # Returns the first BasicBlock in the collection.
+      #: -> BasicBlock?
       def first
         ptr = C.get_first_basic_block(@fun)
         BasicBlock.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the last BasicBlock in the collection.
+      #: -> BasicBlock?
       def last
         ptr = C.get_last_basic_block(@fun)
         BasicBlock.from_ptr(ptr) unless ptr.null?
@@ -1090,6 +1137,7 @@ module LLVM
     end
 
     # Returns an Enumerable of the parameters in the function.
+    #: -> ParameterCollection
     def params
       @parameter_collection ||= ParameterCollection.new(self)
     end
@@ -1101,6 +1149,7 @@ module LLVM
       end
 
       # Returns a Value representation of the parameter at the given index.
+      # (Integer) -> Value?
       def [](i)
         sz = size
         i = sz + i if i < 0
@@ -1109,6 +1158,7 @@ module LLVM
       end
 
       # Returns the number of paramters in the collection.
+      #: -> Integer
       def size
         C.count_params(@fun)
       end
@@ -1116,7 +1166,7 @@ module LLVM
       include Enumerable
 
       # Iteraters through each parameter in the collection.
-      def each
+      def each(&_blk)
         return to_enum :each unless block_given?
         0.upto(size - 1) { |i| yield self[i] }
         self
@@ -1131,6 +1181,7 @@ module LLVM
       C.get_gc(self)
     end
 
+    #: -> String
     def inspect
       {
         signature: to_s.lines[attribute_count == 0 ? 0 : 1],
@@ -1157,6 +1208,7 @@ module LLVM
       C.set_initializer(self, val)
     end
 
+    #: -> bool
     def thread_local?
       C.is_thread_local(self)
     end
@@ -1165,6 +1217,7 @@ module LLVM
       C.set_thread_local(self, local ? 1 : 0)
     end
 
+    #: -> bool
     def global_constant?
       C.is_global_constant(self)
     end
@@ -1178,6 +1231,7 @@ module LLVM
       C.set_global_constant(self, flag ? 1 : 0)
     end
 
+    #: -> bool
     def externally_initialized?
       C.is_externally_initialized(self)
     end
@@ -1190,57 +1244,68 @@ module LLVM
   class Instruction < User
     # Create Instruction from pointer to value
     # many places where this is called, the instruction may be a constant, so create those instead
+    #: (FFI::Pointer) -> [Value | Instruction]
     def self.from_ptr(ptr)
       kind = C.get_value_kind(ptr)
       kind == :instruction ? super : LLVM::Value.from_ptr_kind(ptr)
     end
 
     # Returns the parent of the instruction (a BasicBlock).
+    #: -> LLVM::BasicBlock?
     def parent
       ptr = C.get_instruction_parent(self)
       LLVM::BasicBlock.from_ptr(ptr) unless ptr.null?
     end
 
     # Returns the next instruction after this one.
+    #: -> LLVM::Instruction?
     def next
       ptr = C.get_next_instruction(self)
-      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+      LLVM::Instruction.from_ptr(ptr) unless ptr.null? #: as LLVM::Instruction?
     end
 
     # Returns the previous instruction before this one.
+    #: -> LLVM::Instruction?
     def previous
       ptr = C.get_previous_instruction(self)
-      LLVM::Instruction.from_ptr(ptr) unless ptr.null?
+      LLVM::Instruction.from_ptr(ptr) unless ptr.null? #: as LLVM::Instruction?
     end
 
+    #: -> Integer
     def opcode
       C.get_instruction_opcode(self)
     end
 
+    #: -> String
     def inspect
       { self.class.name => { opcode: opcode, ptr: @ptr } }.to_s
     end
 
+    #: -> self
     def nsw!
       C.set_nsw(self, true)
       self
     end
 
+    #: -> self
     def clear_nsw!
       C.set_nsw(self, false)
       self
     end
 
+    #: -> self
     def nuw!
       C.set_nuw(self, true)
       self
     end
 
+    #: -> self
     def clear_nuw!
       C.set_nuw(self, false)
       self
     end
 
+    #: -> self
     def exact!
       C.set_exact(self, true)
       self
@@ -1257,6 +1322,7 @@ module LLVM
 
   class CallInst < Instruction
     # Sets the call convention to conv.
+    #: (Symbol) -> void
     def call_conv=(conv)
       C.set_instruction_call_conv(self, conv)
     end
@@ -1296,6 +1362,7 @@ module LLVM
   class SwitchInst < Instruction
     # Adds a case to a switch instruction. First the value to match on, then
     # the basic block.
+    #: (Value, BasicBlock) -> void
     def add_case(val, block)
       C.add_case(self, val, block)
     end
@@ -1304,6 +1371,7 @@ module LLVM
   # @private
   class IndirectBr < Instruction
     # Adds a basic block reference as a destination for this indirect branch.
+    #: (BasicBlock) -> void
     def add_dest(dest)
       C.add_destination(self, dest)
     end

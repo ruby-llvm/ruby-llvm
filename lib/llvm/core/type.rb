@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 module LLVM
   class Type
@@ -210,20 +211,24 @@ module LLVM
       alias_method :i, :integer
     end
 
+    #: -> RealType
     def self.float
       RealType.from_ptr(C.float_type, kind: :float)
     end
 
+    #: -> RealType
     def self.double
       RealType.from_ptr(C.double_type, kind: :double)
     end
   end
 
   class IntType < Type
+    #: -> IntType
     def all_ones
       from_ptr(C.const_all_ones(self))
     end
 
+    #: -> Integer
     def width
       C.get_int_type_width(self)
     end
@@ -315,9 +320,10 @@ module LLVM
       self
     end
 
+    #: -> Array[Type]
     def argument_types
       size = C.count_param_types(self)
-      result = nil
+      result = [] #: Array[Type]
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |types_ptr|
         C.get_param_types(self, types_ptr)
         result = types_ptr.read_array_of_pointer(size)
@@ -337,9 +343,10 @@ module LLVM
     end
 
     # Returns the element types of the struct.
+    #: -> Array[Type]
     def element_types
       count = C.count_struct_element_types(self)
-      elt_types = nil
+      elt_types = [] #: Array[Type]
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * count) do |types_ptr|
         C.get_struct_element_types(self, types_ptr)
         elt_types = types_ptr.read_array_of_pointer(count).map { |type_ptr| Type.from_ptr(type_ptr, nil) }

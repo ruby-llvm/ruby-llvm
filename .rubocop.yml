@@ -113,3 +113,6 @@ Style/TrailingUnderscoreVariable:
 
 Minitest/EmptyLineBeforeAssertionMethods:
   Enabled: false
+
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true

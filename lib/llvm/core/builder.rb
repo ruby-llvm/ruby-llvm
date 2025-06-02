@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 module LLVM
   class Builder
@@ -178,11 +179,11 @@ module LLVM
       type, fun = call2_infer_function_and_type(type, fun)
 
       arg_count = args.size
-      invoke_ins = nil
+      invoke_ins = nil #: InvokeInst?
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * arg_count) do |args_ptr|
         args_ptr.write_array_of_pointer(args)
         ins = C.build_invoke2(self, type, fun, args_ptr, arg_count, normal, exception, name)
-        invoke_ins = InvokeInst.from_ptr(ins)
+        invoke_ins = InvokeInst.from_ptr(ins) #: as InvokeInst
       end
 
       if fun.is_a?(Function)
@@ -971,10 +972,12 @@ module LLVM
     # @param [Array<LLVM::Value>] args
     # @param [LLVM::Instruction]
     # @LLVMinst call
+    #: (untyped, *Value) -> CallInst
     def call(fun, *args)
       call2(nil, fun, *args)
     end
 
+    #: (Type?, untyped) -> [Type, Function]
     private def call2_infer_function_and_type(type, fun)
       fun2 = fun.is_a?(LLVM::Value) ? fun : insert_block.parent.global_parent.functions[fun.to_s]
 
@@ -990,6 +993,7 @@ module LLVM
       [type, fun2]
     end
 
+    #: (Type, untyped, *Value) -> CallInst
     def call2(type, fun, *args)
       type, fun = call2_infer_function_and_type(type, fun)
 
@@ -1003,7 +1007,7 @@ module LLVM
       args_ptr.write_array_of_pointer(args)
       ins = C.build_call2(self, type, fun, args_ptr, args.size, name)
 
-      call_inst = CallInst.from_ptr(ins)
+      call_inst = CallInst.from_ptr(ins) #: as CallInst
 
       if fun.is_a?(Function)
         call_inst.call_conv = fun.call_conv
