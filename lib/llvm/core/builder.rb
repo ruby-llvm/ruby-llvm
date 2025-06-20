@@ -1114,6 +1114,7 @@ module LLVM
     # @param [LLVM::Value] val The value to check
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] An i1
+    # rubocop:disable Naming/PredicatePrefix
     def is_null(val, name = "")
       Instruction.from_ptr(C.build_is_null(self, val, name))
     end
@@ -1122,7 +1123,7 @@ module LLVM
     # @param [LLVM::Value] val The value to check
     # @param [String] name The name of the result in LLVM IR
     # @return [LLVM::Instruction] An i1
-    def is_not_null(val, name = "")
+    def is_not_null(val, name = "") # rubocop:disable Naming/PredicatePrefix
       Instruction.from_ptr(C.build_is_not_null(self, val, name))
     end
 

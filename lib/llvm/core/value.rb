@@ -1103,7 +1103,7 @@ module LLVM
       # Returns a Value representation of the parameter at the given index.
       def [](i)
         sz = size
-        i = sz + i if i < 0
+        i = sz + i if i.negative?
         return unless 0 <= i && i < sz
         Value.from_ptr(C.get_param(@fun, i))
       end
@@ -1133,7 +1133,7 @@ module LLVM
 
     def inspect
       {
-        signature: to_s.lines[attribute_count == 0 ? 0 : 1],
+        signature: to_s.lines[attribute_count.zero? ? 0 : 1],
         type: type.to_s,
         attributes: attribute_count,
         valid: valid?,

@@ -113,3 +113,6 @@ Style/TrailingUnderscoreVariable:
 
 Minitest/EmptyLineBeforeAssertionMethods:
   Enabled: false
+
+Naming/PredicateMethod:
+  Enabled: false
