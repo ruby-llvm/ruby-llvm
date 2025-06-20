@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require "test_helper"
 require "tempfile"
@@ -21,7 +22,7 @@ class ModuleTestCase < Minitest::Test
   end
 
   def test_global_variable
-    yielded = false
+    yielded = false #: bool
 
     define_module('test_globals_add') do |mod|
       mod.globals.add(LLVM::Int32, 'i') do |var|
@@ -63,7 +64,7 @@ class ModuleTestCase < Minitest::Test
     mod = LLVM::Module.new('test_print')
     expected_pattern = /^; ModuleID = 'test_print'$/
 
-    Tempfile.open('test_dump.1') do |tmpfile|
+    Tempfile.create('test_dump.1') do |tmpfile|
       # debug stream (stderr)
       stderr_old = $stderr.dup
       $stderr.reopen(tmpfile.path, 'a')

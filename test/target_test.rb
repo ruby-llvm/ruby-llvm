@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require "test_helper"
 require 'tempfile'
@@ -105,7 +106,7 @@ class TargetTestCase < Minitest::Test
       end
     end
 
-    Tempfile.open('emit') do |tmp|
+    Tempfile.create('ruby-llvm-emit') do |tmp|
       mach.emit(mod, tmp.path)
       data = tmp.read
       assert_match(/xorl\t%eax, %eax/, data)
@@ -120,7 +121,7 @@ class TargetTestCase < Minitest::Test
     # 00000000 <main>:
     #    0:   31 c0                   xor    %eax,%eax
     #    2:   c3                      ret
-    Tempfile.open('emit') do |tmp|
+    Tempfile.create('ruby-llvm-emit') do |tmp|
       mach.emit(mod, tmp.path, :object)
       data = File.read(tmp.path, mode: 'rb')
       assert_match(/\x31\xc0\xc3/n, data)
@@ -140,14 +141,14 @@ class TargetTestCase < Minitest::Test
       end
     end
 
-    Tempfile.open('emit') do |tmp|
+    Tempfile.create('ruby-llvm-emit') do |tmp|
       mach.emit(mod, tmp.path)
       data = tmp.read
       assert_match(/xorl\t%eax, %eax/, data)
       assert_equal 212, data.length
     end
 
-    Tempfile.open('emit') do |tmp|
+    Tempfile.create('ruby-llvm-emit') do |tmp|
       mach.emit(mod, tmp.path, :object)
       data = File.read(tmp.path, mode: 'rb')
       assert_match(/\x31\xc0\xc3/n, data)
@@ -167,14 +168,16 @@ class TargetTestCase < Minitest::Test
     assert_equal 4, layout.pointer_size
     assert_equal 4, layout.pointer_size(0)
     assert_equal LLVM::Int32.type, layout.int_ptr_type
-    assert_equal LLVM::Int32.type, layout.int_ptr_type(0)
+    assert_equal LLVM::Int32.type, layout.int_ptr_type(address_space: 0)
 
-    assert_equal 19, layout.bit_size_of(LLVM::Int19.type)
-    assert_equal 3, layout.storage_size_of(LLVM::Int19.type)
-    assert_equal 4, layout.abi_size_of(LLVM::Int19.type)
-    assert_equal 4, layout.abi_alignment_of(LLVM::Int19.type)
-    assert_equal 4, layout.call_frame_alignment_of(LLVM::Int19.type)
-    assert_equal 4, layout.preferred_alignment_of(LLVM::Int19.type)
+    int19 = LLVM.i(19)
+
+    assert_equal 19, layout.bit_size_of(int19.type)
+    assert_equal 3, layout.storage_size_of(int19.type)
+    assert_equal 4, layout.abi_size_of(int19.type)
+    assert_equal 4, layout.abi_alignment_of(int19.type)
+    assert_equal 4, layout.call_frame_alignment_of(int19.type)
+    assert_equal 4, layout.preferred_alignment_of(int19.type)
 
     struct = LLVM.Struct(LLVM::Int8, LLVM::Int32)
 
