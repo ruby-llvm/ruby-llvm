@@ -219,8 +219,7 @@ module LLVM
       return_type = convert_type(fun.function_type.return_type)
       f = FFI::Function.new(return_type, args2, ptr)
       ret1 = f.call(*args)
-      ret2 = LLVM.make_generic_value(fun.function_type.return_type, ret1)
-      ret2
+      LLVM.make_generic_value(fun.function_type.return_type, ret1)
     end
 
     protected

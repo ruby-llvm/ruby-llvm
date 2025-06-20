@@ -34,7 +34,7 @@ module LLVM
       else
         C.write_bitcode_to_file(self, path_or_io.to_str)
       end
-      status == 0
+      status.zero?
     end
 
     def self.parse_ir(path_or_memory_buffer, context = Context.global)
