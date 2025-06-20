@@ -13,14 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
-        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', '3.4']
+        ruby: ['3.2', '3.3', '3.4']
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
-#      - name: Check for LLVM on Homebrew
-#        id: homebrew_check
-#        if: startsWith(matrix.os, 'macos')
-#        run: |
-#          brew info llvm@20 || echo "brew=true" >> "$GITHUB_OUTPUT"
       - name: Install LLVM on macos
         if: startsWith(matrix.os, 'macos')
         id: macos_setup
@@ -50,49 +45,12 @@ jobs:
         id: ubuntu_setup
         if: startsWith(matrix.os, 'ubuntu')
         run: |
+          echo "setup=false" >> "$GITHUB_OUTPUT"
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 20
           # sudo apt-get install -y libpolly-20-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
-      - name: Fix symlink issues
-        if: false
-        run: |
-          # TODO: [LLVM 20] remove this patch when packaging is fixed
-          # see: https://github.com/llvm/llvm-project/issues/105987
-          echo "broken"
-          file /usr/lib/llvm-20/lib/libLLVM* | grep broken
-          file /usr/lib/x86_64-linux-gnu/libLLVM* | grep broken
-          # readlink -q "/usr/lib/x86_64-linux-gnu/libLLVM-20.so.1" && \
-          echo "create symlink"
-          sudo ln -s /usr/lib/llvm-20/lib/libLLVM.so.1 /usr/lib/x86_64-linux-gnu/libLLVM-20.so.1
-          echo "fixed"
-          file /usr/lib/llvm-20/lib/libLLVM* | grep -qv broken
-          file /usr/lib/x86_64-linux-gnu/libLLVM* | grep -qv broken          
-          # echo '/usr/lib/llvm-20/lib/libLLVM.so.1' | sudo tee -a /etc/ld.so.conf.d/llvm.conf
-          # sudo ldconfig -l -v /usr/lib/llvm-20/lib/libLLVM.so.1
-          # sudo ldconfig -l -v /usr/lib/llvm-20/lib/libLLVM.so.20.1
-          # sudo ldconfig
-          # ldconfig -p | grep -i llvm
-      - name: 'Ubuntu debug'
-        if: steps.ubuntu_setup.outputs.setup == 'true'
-        run: |
-          echo "LLVM libs"
-          sudo ldconfig
-          ldconfig -p | grep -i llvm
-          # echo "LLVM packages"
-          # dpkg -l | grep -i llvm
-          # which clang
-          # clang --version
-          # which clang-20
-          # clang-20 --version
-          # ls -alF /usr/lib/x86_64-linux-gnu/libLLVM*
-          # find /usr/lib/x86_64-linux-gnu/ -xtype l -print
-          # ls -alF /usr/lib/llvm-20/lib/
-          # ls -alF /usr/lib/llvm-20/include/
-          # dpkg -l | egrep 'c\+\+|g\+\+|gcc|llvm|build-essential'
-          # ls -alF /usr/include/c++/*/cstddef
-          # ls -alF /usr/lib/llvm-*/include/
       - uses: actions/checkout@v4
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - uses: ruby/setup-ruby@v1
