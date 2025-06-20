@@ -16,14 +16,16 @@ jobs:
         ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', '3.4']
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
-      - name: Check for LLVM on Homebrew
-        id: homebrew_check
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          brew info llvm@20 || echo "brew=true" >> "$GITHUB_OUTPUT"
+#      - name: Check for LLVM on Homebrew
+#        id: homebrew_check
+#        if: startsWith(matrix.os, 'macos')
+#        run: |
+#          brew info llvm@20 || echo "brew=true" >> "$GITHUB_OUTPUT"
       - name: Install LLVM on macos
-        if: steps.step1.outputs.brew == 'true'
+        if: startsWith(matrix.os, 'macos')
+        id: macos_setup
         run: |
+          echo "setup=false" >> "$GITHUB_OUTPUT"
           # brew update --auto-update
           brew install llvm@20
           echo "$(brew --prefix llvm@20)/bin" >> $GITHUB_PATH
@@ -35,7 +37,7 @@ jobs:
           # this uses /opt/local/lib -> /usr/local/opt/llvm/lib
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - name: 'MacOS debug'
-        if: steps.step1.outputs.brew == 'true'
+        if: steps.macos_setup.setup == 'false'
         run: |
           echo $(brew --repository)
           echo $(brew --prefix llvm@20)
