@@ -219,7 +219,8 @@ module LLVM
       return_type = convert_type(fun.function_type.return_type)
       f = FFI::Function.new(return_type, args2, ptr)
       ret1 = f.call(*args)
-      LLVM.make_generic_value(fun.function_type.return_type, ret1)
+      ty = fun.function_type.return_type
+      ty.kind == :void ? nil : LLVM.make_generic_value(ty, ret1)
     end
 
     protected
