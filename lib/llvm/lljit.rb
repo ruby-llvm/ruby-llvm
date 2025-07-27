@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require 'llvm/core'
 
@@ -45,6 +46,7 @@ module LLVM
 
     module C
       extend FFI::Library
+
       ffi_lib_flags(:lazy, :global)
       ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
       attach_function :create_lljit_builder, :LLVMOrcCreateLLJITBuilder, [], :pointer

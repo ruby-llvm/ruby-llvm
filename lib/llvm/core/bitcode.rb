@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: strict
 
 require 'llvm/core/bitcode_ffi'
 
@@ -7,23 +8,27 @@ module LLVM
     # Parse a module from a memory buffer
     # @param [String, LLVM::MemoryBuffer] path_or_memory_buffer
     # @return [LLVM::Module]
+    #: (untyped) -> LLVM::Module
     def self.parse_bitcode(path_or_memory_buffer)
       memory_buffer = case path_or_memory_buffer
       when MemoryBuffer then path_or_memory_buffer
       else MemoryBuffer.from_file(path_or_memory_buffer)
       end
+      llvm_module = nil #: LLVM::Module?
       FFI::MemoryPointer.new(:pointer) do |mod_ref|
         FFI::MemoryPointer.new(:pointer) do |msg_ref|
           status = C.parse_bitcode(memory_buffer, mod_ref, msg_ref)
           raise msg_ref.get_pointer(0).get_string(0) if status != 0
-          return from_ptr(mod_ref.get_pointer(0))
+          llvm_module = from_ptr(mod_ref.get_pointer(0))
         end
       end
+      llvm_module #: as !nil
     end
 
     # Write bitcode to the given path, IO object or file descriptor
     # @param [String, IO, Integer] path_or_io Pathname, IO object or file descriptor
     # @return [true, false] Success
+    #: (untyped) -> bool
     def write_bitcode(path_or_io)
       status = if path_or_io.respond_to?(:path)
         C.write_bitcode_to_file(self, path_or_io.path)
@@ -37,20 +42,24 @@ module LLVM
       status.zero?
     end
 
+    #: (untyped, ?LLVM::Context) -> LLVM::Module
     def self.parse_ir(path_or_memory_buffer, context = Context.global)
       memory_buffer = case path_or_memory_buffer
       when MemoryBuffer then path_or_memory_buffer
       else MemoryBuffer.from_file(path_or_memory_buffer)
       end
+      llvm_module = nil #: LLVM::Module?
       FFI::MemoryPointer.new(:pointer) do |mod_ref|
         FFI::MemoryPointer.new(:pointer) do |msg_ref|
           status = C.parse_ir_in_context(context, memory_buffer, mod_ref, msg_ref)
           raise msg_ref.get_pointer(0).get_string(0) if status
-          return from_ptr(mod_ref.get_pointer(0))
+          llvm_module = from_ptr(mod_ref.get_pointer(0))
         end
       end
+      llvm_module #: as !nil
     end
 
+    #: (String) -> self
     def write_ir!(filename)
       FFI::MemoryPointer.new(:pointer) do |msg_ref|
         status = C.print_module_to_file(self, filename, msg_ref)
@@ -65,11 +74,13 @@ module LLVM
     private_class_method :new
 
     # @private
+    #: (FFI::Pointer) -> void
     def initialize(ptr)
-      @ptr = ptr
+      @ptr = ptr #: FFI::Pointer?
     end
 
     # @private
+    #: -> FFI::Pointer?
     def to_ptr
       @ptr
     end
@@ -77,28 +88,35 @@ module LLVM
     # Read the contents of a file into a memory buffer
     # @param [String] path
     # @return [LLVM::MemoryBuffer]
+    #: (String) -> LLVM::MemoryBuffer
     def self.from_file(path)
+      buffer = nil #: LLVM::MemoryBuffer?
       FFI::MemoryPointer.new(:pointer) do |buf_ref|
         FFI::MemoryPointer.new(:pointer) do |msg_ref|
           status = C.create_memory_buffer_with_contents_of_file(path.to_str, buf_ref, msg_ref)
           raise msg_ref.get_pointer(0).get_string(0) if status != 0
-          return new(buf_ref.get_pointer(0))
+          buffer = new(buf_ref.get_pointer(0))
         end
       end
+      buffer #: as !nil
     end
 
     # Read STDIN into a memory buffer
     # @return [LLVM::MemoryBuffer]
+    #: -> LLVM::MemoryBuffer
     def self.from_stdin
+      buffer = nil #: LLVM::MemoryBuffer?
       FFI::Buffer.new(:pointer) do |buf_ref|
         FFI::Buffer.new(:pointer) do |msg_ref|
           status = C.create_memory_buffer_with_stdin(buf_ref, msg_ref)
           raise msg_ref.get_pointer(0).get_string(0) if status != 0
-          return new(buf_ref.get_pointer(0))
+          buffer = new(buf_ref.get_pointer(0))
         end
       end
+      buffer #: as !nil
     end
 
+    #: -> void
     def dispose
       return if @ptr.nil?
       C.dispose_memory_buffer(@ptr)

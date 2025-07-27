@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+### Changed
+
+- BREAKING: minimum Ruby version is Ruby 3.1
+- Use Sorbet RBS comment signatures and annotations
+- BREAKING: optional positional argument used for `address_space` is replaced by keyword parameter
+  - eg replace `LLVM::Int32.pointer(42)` with `LLVM::Int32.pointer(address_space: 42)`
+- BREAKING: optional positional argument from `from_ptr` for `kind` is replaced by a keyword parameter
+  - eg replace `MyType.from_ptr(type1.to_ptr, :mytype)` with `MyType.from_ptr(type1.to_ptr, kind: :mytype)`
+
+### Added
+
+- Add consthoist pass
 
 ## [20.1.7] - 2025-06-20
 

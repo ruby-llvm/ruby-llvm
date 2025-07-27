@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require 'llvm'
 require 'llvm/core'
@@ -75,7 +76,7 @@ module LLVM
           end
         end)
         result = LLVM::GenericValue.from_ptr(
-          C.run_function(self, fun, args.size, args_ptr))
+          C.send(:run_function, self, fun, args.size, args_ptr)) #: as untyped
         new_values.each(&:dispose)
         return result
       end
@@ -211,13 +212,14 @@ module LLVM
       end
     end
 
+    #: (Function, *untyped) -> Value
     def run_function(fun, *args)
       args2 = fun.params.map {|e| convert_type(e.type)}
       ptr = FFI::Pointer.new(function_address(fun.name))
       raise "Couldn't find function" if ptr.null?
 
       return_type = convert_type(fun.function_type.return_type)
-      f = FFI::Function.new(return_type, args2, ptr)
+      f = FFI::Function.new(return_type, args2, ptr) #: as untyped
       ret1 = f.call(*args)
       LLVM.make_generic_value(fun.function_type.return_type, ret1)
     end
@@ -269,10 +271,12 @@ module LLVM
     end
 
     # Creates a Generic Value from a Float.
+    #: (::Float) -> LLVM::Value
     def self.from_f(f)
       from_ptr(C.create_generic_value_of_float(LLVM::Float, f))
     end
 
+    #: (::Float) -> LLVM::Value
     def self.from_d(val)
       from_ptr(C.create_generic_value_of_float(LLVM::Double, val))
     end

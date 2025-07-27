@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 module LLVM
   class Module
@@ -24,10 +25,12 @@ module LLVM
       @ptr = nil
     end
 
+    #: -> LLVM::Module
     def clone_module
       Module.from_ptr(C.clone_module(self))
     end
 
+    #: -> String
     def inspect
       {
         triple: triple,
@@ -41,6 +44,7 @@ module LLVM
     # Get module triple.
     #
     # @return [String]
+    #: -> String
     def triple
       C.get_target(self)
     end
@@ -48,6 +52,7 @@ module LLVM
     # Set module triple.
     #
     # @param [String] triple
+    #: (String) -> void
     def triple=(triple)
       C.set_target(self, triple.to_s)
     end
@@ -55,6 +60,7 @@ module LLVM
     # Get module data layout.
     #
     # @return [String]
+    #: -> String
     def data_layout
       C.get_data_layout(self)
     end
@@ -62,11 +68,13 @@ module LLVM
     # Set module data layout.
     #
     # @param [String, TargetDataLayout] data_layout
+    #: (String) -> void
     def data_layout=(data_layout)
       C.set_data_layout(self, data_layout.to_s)
     end
 
     # Returns a TypeCollection of all the Types in the module.
+    #: -> TypeCollection
     def types
       @types ||= TypeCollection.new(self)
     end
@@ -77,14 +85,16 @@ module LLVM
       end
 
       # Returns the Type with the given name (symbol or string).
+      #: (untyped) -> Type
       def named(name)
-        Type.from_ptr(C.get_type_by_name(@module, name.to_s), nil)
+        Type.from_ptr(C.get_type_by_name(@module, name.to_s))
       end
 
       alias_method :[], :named
     end
 
     # Returns an Enumerable of all the GlobalVariables in the module.
+    #: -> GlobalCollection
     def globals
       @globals ||= GlobalCollection.new(self)
     end
@@ -104,31 +114,37 @@ module LLVM
       end
 
       # Returns the GlobalVariable with the given name (symbol or string).
+      #: (untyped) -> GlobalVariable
       def named(name)
         GlobalVariable.from_ptr(C.get_named_global(@module, name.to_s))
       end
 
       # Returns the first GlobalVariable in the collection.
+      #: -> GlobalVariable
       def first
         GlobalVariable.from_ptr(C.get_first_global(@module))
       end
 
       # Returns the last GlobalVariable in the collection.
+      #: -> GlobalVariable
       def last
         GlobalVariable.from_ptr(C.get_last_global(@module))
       end
 
       # Returns the next GlobalVariable in the collection after global.
+      #: (GlobalVariable) -> GlobalVariable
       def next(global)
         GlobalVariable.from_ptr(C.get_next_global(global))
       end
 
       # Returns the previous GlobalVariable in the collection before global.
+      #: (GlobalVariable) -> GlobalVariable
       def previous(global)
         GlobalVariable.from_ptr(C.get_previous_global(global))
       end
 
       # Deletes the GlobalVariable from the collection.
+      #: (GlobalVariable) -> void
       def delete(global)
         C.delete_global(global)
       end
@@ -149,7 +165,7 @@ module LLVM
       end
 
       # Iterates through each GlobalVariable in the collection.
-      def each
+      def each(&)
         g = first
         until g.nil?
           yield g
@@ -159,6 +175,7 @@ module LLVM
     end
 
     # Returns a FunctionCollection of all the Functions in the module.
+    #: -> FunctionCollection
     def functions
       @functions ||= FunctionCollection.new(self)
     end
@@ -175,7 +192,9 @@ module LLVM
         if args.first.kind_of? FunctionType
           type = args.first
         else
-          type = Type.function(*args)
+          type = Type.function(
+            *args #: as untyped
+          )
         end
         function = Function.from_ptr(C.add_function(@module, name.to_s, type))
 
@@ -233,7 +252,7 @@ module LLVM
       end
 
       # Iterates through each Function in the collection.
-      def each
+      def each(&)
         f = first
         until f.nil?
           yield f

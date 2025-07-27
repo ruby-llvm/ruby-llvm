@@ -4,6 +4,7 @@ require 'ffi'
 
 module LLVM::C
   extend FFI::Library
+
   ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
   # This enum is provided for backwards-compatibility only. It has no effect.
   #

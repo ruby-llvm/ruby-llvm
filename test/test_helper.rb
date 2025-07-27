@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
@@ -111,7 +112,10 @@ end
 def run_function_on_module(host_module, function_name, *argument_values)
   LLVM::MCJITCompiler
     .new(host_module)
-    .run_function(host_module.functions[function_name], *argument_values)
+    .run_function(
+      host_module.functions[function_name],
+      *argument_values #: as untyped
+    )
 end
 
 def run_function(argument_types, argument_values, return_type, &block)
@@ -119,5 +123,9 @@ def run_function(argument_types, argument_values, return_type, &block)
     define_function(host_module, "test_function", argument_types, return_type, &block)
   end
 
-  run_function_on_module(test_module, "test_function", *argument_values)
+  run_function_on_module(
+    test_module,
+    "test_function",
+    *argument_values #: as untyped
+  )
 end

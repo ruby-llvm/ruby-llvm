@@ -4,7 +4,7 @@ require File.expand_path('lib/llvm/version', File.dirname(__FILE__))
 
 Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
-  s.required_ruby_version = '>= 2.7'
+  s.required_ruby_version = '>= 3.1'
 
   s.name         = 'ruby-llvm'
   s.version      = LLVM::RUBY_LLVM_VERSION
@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
   s.add_dependency             'rake',     '>= 12', '< 14'
 
   s.add_development_dependency 'debug'
-  s.add_development_dependency 'ffi_gen',  '~> 1.2'
   s.add_development_dependency 'minitest', '~> 5.16'
   s.add_development_dependency 'minitest-fail-fast'
   s.add_development_dependency 'minitest-reporters', '~> 1.5'
@@ -34,6 +33,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop-minitest'
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'sorbet-static'
+  s.add_development_dependency 'tapioca', '~> 0.16.11'
   s.add_development_dependency 'yard', '~> 0.9'
   s.metadata['rubygems_mfa_required'] = 'true'
 end

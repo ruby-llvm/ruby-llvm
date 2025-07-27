@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: true
 
 require 'llvm'
 require 'llvm/core'
@@ -7,7 +8,9 @@ require 'llvm/target_ffi'
 module LLVM
   # A shorthand for {LLVM::Target.init_native}
   def self.init_jit(*args)
-    LLVM::Target.init_native(*args)
+    LLVM::Target.init_native(
+      *args #: as untyped
+    )
   end
 
   # @deprecated Use LLVM.init_jit or LLVM::Target.init('X86').
@@ -25,11 +28,15 @@ module LLVM
 
     module TargetModule
       extend FFI::Library
+
       ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
+      #: (*untyped) -> void
       def self.safe_attach_function(*args)
-        attach_function(*args)
+        attach_function(
+          *args #: as untyped
+        )
       rescue FFI::NotFoundError => e
-        warn(e)
+        warn(e.message)
       end
     end
 
@@ -275,8 +282,9 @@ module LLVM
     # Returns the integer type that is the same size as a pointer on a target.
     #
     # @param [Integer] addr_space address space number
-    def int_ptr_type(addr_space = 0)
-      Type.from_ptr(C.int_ptr_type_for_as(self, addr_space), :integer)
+    # (?address_space: Integer) -> Type
+    def int_ptr_type(address_space: 0)
+      Type.from_ptr(C.int_ptr_type_for_as(self, address_space), kind: :integer)
     end
 
     # Computes the size of a type in bits for a target.

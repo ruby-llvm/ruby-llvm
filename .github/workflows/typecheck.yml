@@ -1,0 +1,17 @@
+name: Sorbet Typecheck
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - name: Sorbet
+        run: |
+          bundle exec srb --version
+          bundle exec srb t --ignore test/target_test.rb
