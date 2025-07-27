@@ -63,7 +63,9 @@ module LLVM
     # GenericValues).
     # Important: Call #dispose on the returned GenericValue to
     # free backend memory after use.
+    #: (LLVM::Function, *untyped) -> GenericValue?
     def run_function(fun, *args)
+      result = nil #: GenericValue?
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
         new_values = []
         args_ptr.write_array_of_pointer(fun.params.zip(args).map do |p, a|
@@ -75,11 +77,14 @@ module LLVM
             value
           end
         end)
-        result = LLVM::GenericValue.from_ptr(
-          C.send(:run_function, self, fun, args.size, args_ptr)) #: as untyped
+        result = begin
+          LLVM::GenericValue.from_ptr(C.send(:run_function, self, fun, args.size, args_ptr))
+        rescue ArgumentError
+          nil
+        end
         new_values.each(&:dispose)
-        return result
       end
+      result
     end
 
     # Obtain an FFI::Pointer to a global within the current module.
@@ -212,7 +217,7 @@ module LLVM
       end
     end
 
-    #: (Function, *untyped) -> Value
+    #: (Function, *untyped) -> GenericValue?
     def run_function(fun, *args)
       args2 = fun.params.map {|e| convert_type(e.type)}
       ptr = FFI::Pointer.new(function_address(fun.name))
@@ -221,7 +226,11 @@ module LLVM
       return_type = convert_type(fun.function_type.return_type)
       f = FFI::Function.new(return_type, args2, ptr) #: as untyped
       ret1 = f.call(*args)
-      LLVM.make_generic_value(fun.function_type.return_type, ret1)
+      begin
+        LLVM.make_generic_value(fun.function_type.return_type, ret1)
+      rescue ArgumentError
+        nil
+      end
     end
 
     protected
@@ -249,13 +258,15 @@ module LLVM
     end
 
     # Casts an FFI::Pointer pointing to a GenericValue to an instance.
+    #: (FFI::Pointer?) -> GenericValue?
     def self.from_ptr(ptr)
-      return if ptr.null?
+      return if ptr.nil? || ptr.null?
       val = allocate
       val.instance_variable_set(:@ptr, ptr)
       val
     end
 
+    #: -> void
     def dispose
       return if @ptr.nil?
       C.dispose_generic_value(@ptr)
@@ -264,24 +275,26 @@ module LLVM
 
     # Creates a Generic Value from an integer. Type is the size of integer to
     # create (ex. Int32, Int8, etc.)
+    #: (Numeric, ?Hash[untyped, untyped]) -> GenericValue
     def self.from_i(i, options = {})
       type   = options.fetch(:type, LLVM::Int)
       signed = options.fetch(:signed, true)
-      from_ptr(C.create_generic_value_of_int(type, i, signed ? 1 : 0))
+      from_ptr(C.create_generic_value_of_int(type, i.to_i, signed ? 1 : 0)) #: as !nil
     end
 
     # Creates a Generic Value from a Float.
-    #: (::Float) -> LLVM::Value
+    #: (Numeric) -> GenericValue
     def self.from_f(f)
-      from_ptr(C.create_generic_value_of_float(LLVM::Float, f))
+      from_ptr(C.create_generic_value_of_float(LLVM::Float, f.to_f)) #: as !nil
     end
 
-    #: (::Float) -> LLVM::Value
+    #: (Numeric) -> GenericValue
     def self.from_d(val)
-      from_ptr(C.create_generic_value_of_float(LLVM::Double, val))
+      from_ptr(C.create_generic_value_of_float(LLVM::Double, val.to_f)) #: as !nil
     end
 
     # Creates a GenericValue from a Ruby boolean.
+    #: (bool) -> GenericValue
     def self.from_b(b)
       from_i(b ? 1 : 0, type: LLVM::Int1, signed: false)
     end
@@ -292,6 +305,7 @@ module LLVM
     end
 
     # Converts a GenericValue to a Ruby Integer.
+    #: (?bool) -> Integer
     def to_i(signed = true)
       v = C.generic_value_to_int(self, signed ? 1 : 0)
       v -= 2**64 if signed and v >= 2**63
@@ -299,11 +313,19 @@ module LLVM
     end
 
     # Converts a GenericValue to a Ruby Float.
+    #: (?LLVM::Type) -> ::Float
     def to_f(type = LLVM::Float.type)
       C.generic_value_to_float(type, self)
     end
 
+    # Converts a GenericValue to a Ruby Float.
+    #: -> ::Float
+    def to_d
+      C.generic_value_to_float(LLVM.double, self)
+    end
+
     # Converts a GenericValue to a Ruby boolean.
+    #: -> bool
     def to_b
       to_i(false) != 0
     end
@@ -314,6 +336,7 @@ module LLVM
   end
 
   # @private
+  #: (LLVM::Type, untyped) -> GenericValue
   def make_generic_value(ty, val)
     case ty.kind
     when :double  then GenericValue.from_d(val)
@@ -321,7 +344,7 @@ module LLVM
     when :pointer then GenericValue.from_value_ptr(val)
     when :integer then GenericValue.from_i(val, :type => ty)
     else
-      raise "Unsupported type #{ty.kind}."
+      raise ArgumentError, "Unsupported type #{ty.kind}."
     end
   end
   module_function :make_generic_value
