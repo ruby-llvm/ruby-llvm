@@ -57,7 +57,7 @@ class AttributeTestCase < Minitest::Test
       refute_predicate(fun, :writeonly?)
     end
     with_function [], LLVM.Void do |fun|
-      fun.add_attribute(attr_memory(64))
+      fun.add_attribute(attr_memory(256))
       assert_equal(expected, fun.to_s)
       assert_predicate(fun, :readnone?)
       refute_predicate(fun, :readonly?)
@@ -66,7 +66,7 @@ class AttributeTestCase < Minitest::Test
   end
 
   def test_function_memory_read
-    expected = "; Function Attrs: memory(read)\ndeclare void @fun() #0\n"
+    expected = "; Function Attrs: memory(argmem: read, inaccessiblemem: read, errnomem: read)\ndeclare void @fun() #0\n"
     with_function [], LLVM.Void do |fun|
       fun.add_attribute(attr_memory(21))
       assert_equal(expected, fun.to_s)
@@ -77,7 +77,7 @@ class AttributeTestCase < Minitest::Test
   end
 
   def test_function_memory_write
-    expected = "; Function Attrs: memory(write)\ndeclare void @fun() #0\n"
+    expected = "; Function Attrs: memory(argmem: write, inaccessiblemem: write, errnomem: write)\ndeclare void @fun() #0\n"
     with_function [], LLVM.Void do |fun|
       fun.add_attribute(attr_memory(42))
       assert_equal(expected, fun.to_s)
@@ -88,10 +88,20 @@ class AttributeTestCase < Minitest::Test
   end
 
   def test_function_memory_readwrite
-    expected = "; Function Attrs: memory(readwrite)\ndeclare void @fun() #0\n"
+    expected = "; Function Attrs: memory(argmem: readwrite, inaccessiblemem: readwrite, errnomem: readwrite)\ndeclare void @fun() #0\n"
     with_function [], LLVM.Void do |fun|
       fun.add_attribute(attr_memory(63))
       assert_equal(expected, fun.to_s)
+    end
+  end
+
+  def test_function_argument_captures_none
+    expected = 'declare void @fun(ptr captures(none))'
+    with_function [LLVM.ptr], LLVM.Void do |fun|
+      p1 = fun.params[0]
+      puts p1
+      p1.add_attribute(:no_capture_attribute)
+      assert_equal(expected, fun.to_s.chomp)
     end
   end
 
