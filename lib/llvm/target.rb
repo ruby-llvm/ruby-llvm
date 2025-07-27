@@ -29,7 +29,7 @@ module LLVM
     module TargetModule
       extend FFI::Library
 
-      ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
+      ffi_lib ["LLVM-21", "libLLVM-21.so.1", "libLLVM.so.21", "libLLVM.so.21.1"]
       #: (*untyped) -> void
       def self.safe_attach_function(*args)
         attach_function(
@@ -120,6 +120,7 @@ module LLVM
     include PointerIdentity
 
     # @private
+    #: (FFI::Pointer) -> Target
     def self.from_ptr(ptr)
       target = allocate
       target.instance_variable_set :@ptr, ptr

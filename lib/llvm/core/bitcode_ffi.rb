@@ -5,7 +5,7 @@ require 'ffi'
 module LLVM::C
   extend FFI::Library
 
-  ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
+  ffi_lib ["LLVM-21", "libLLVM-21.so.1", "libLLVM.so.21", "libLLVM.so.21.1"]
   # (Not documented)
   #
   # @method parse_bitcode(mem_buf, out_module, out_message)
