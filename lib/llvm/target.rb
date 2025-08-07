@@ -120,6 +120,7 @@ module LLVM
     include PointerIdentity
 
     # @private
+    #: (FFI::Pointer) -> Target
     def self.from_ptr(ptr)
       target = allocate
       target.instance_variable_set :@ptr, ptr
