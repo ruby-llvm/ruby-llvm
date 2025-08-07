@@ -509,7 +509,10 @@ module LLVM
     # Multiplication.
     #: (ConstantInt) -> ConstantInt
     def *(rhs)
-      self.class.from_ptr(C.const_mul(self, rhs))
+      width = [type.width, rhs.type.width].max
+      product = to_i * rhs.to_i
+      modulo = product % (2**width)
+      LLVM::Type.integer(width).from_i(modulo, false)
     end
 
     alias_method :mul, :*
@@ -517,13 +520,13 @@ module LLVM
     # "No signed wrap" multiplication.
     #: (ConstantInt) -> ConstantInt
     def nsw_mul(rhs)
-      self.class.from_ptr(C.const_nsw_mul(self, rhs))
+      mul(rhs)
     end
 
     # "No unsigned wrap" multiplication.
     #: (ConstantInt) -> ConstantInt
     def nuw_mul(rhs)
-      self.class.from_ptr(C.const_nuw_mul(self, rhs))
+      mul(rhs)
     end
 
     # Unsigned division.

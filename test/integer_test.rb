@@ -105,14 +105,35 @@ class IntegerTestCase < Minitest::Test
 
   def test_const_mul
     assert_equal "i64 2", (LLVM::Int64.from_i(2) * LLVM::Int64.from_i(1)).to_s
+    assert_equal "i8 -128", (LLVM::Int8.from_i(64) * LLVM::Int8.from_i(2)).to_s
+    assert_equal "i8 0", (LLVM::Int8.from_i(64) * LLVM::Int8.from_i(4)).to_s
+    assert_equal "i64 128", (LLVM::Int64.from_i(64) * LLVM::Int8.from_i(2)).to_s
   end
 
   def test_const_nuw_mul
     assert_equal "i64 2", LLVM::Int64.from_i(2).nuw_mul(LLVM::Int64.from_i(1)).to_s
+
+    # why aren't these poison?
+    # https://llvm.org/docs/LangRef.html#mul-instruction
+    assert_equal "i8 -128", LLVM::Int8.from_i(64).nuw_mul(LLVM::Int8.from_i(2)).to_s
+    assert_equal "i8 0", LLVM::Int8.from_i(64).nuw_mul(LLVM::Int8.from_i(4)).to_s
+    assert_equal "i8 -2", LLVM::Int8.from_i(127).nuw_mul(LLVM::Int8.from_i(2)).to_s
+    assert_equal "i8 2", LLVM::Int8.from_i(-127).nuw_mul(LLVM::Int8.from_i(2)).to_s
+
+    assert_equal "i64 128", LLVM::Int64.from_i(64).nuw_mul(LLVM::Int8.from_i(2)).to_s
   end
 
   def test_const_nsw_mul
     assert_equal "i64 2", LLVM::Int64.from_i(2).nsw_mul(LLVM::Int64.from_i(1)).to_s
+
+    # why aren't these poison?
+    # https://llvm.org/docs/LangRef.html#mul-instruction
+    assert_equal "i8 -128", LLVM::Int8.from_i(64).nsw_mul(LLVM::Int8.from_i(2)).to_s
+    assert_equal "i8 0", LLVM::Int8.from_i(64).nsw_mul(LLVM::Int8.from_i(4)).to_s
+    assert_equal "i8 -2", LLVM::Int8.from_i(127).nsw_mul(LLVM::Int8.from_i(2)).to_s
+    assert_equal "i8 2", LLVM::Int8.from_i(-127).nsw_mul(LLVM::Int8.from_i(2)).to_s
+
+    assert_equal "i64 128", LLVM::Int64.from_i(64).nsw_mul(LLVM::Int8.from_i(2)).to_s
   end
 
   def test_const_sdiv
