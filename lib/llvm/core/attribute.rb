@@ -20,13 +20,20 @@ module LLVM
       #   argmem, inaccessiblemem, memory
       # and the valid values are:
       #   read, write, readwrite
+      #: (?Hash[Symbol, bool]) -> Attribute
       def memory(opts = {})
         opts = opts.transform_keys(&:to_sym)
         val = bit_value(opts[:argmem]) | (bit_value(opts[:inaccessiblemem]) << 2) | (bit_value(opts[:memory]) << 4)
         enum(:memory, val)
       end
 
+      #: -> Attribute
+      def captures_none
+        enum(:captures)
+      end
+
       # create enum attribute with optional value and context
+      #: (untyped, ?Integer, ?Context) -> Attribute
       def enum(kind, value = 0, context = Context.global)
         attr_id = attribute_id(kind)
         ptr = C.create_enum_attribute(context, attr_id, value)
@@ -34,6 +41,7 @@ module LLVM
       end
 
       # create string attribute with key and value
+      #: (untyped, untyped, ?Context) -> Attribute
       def string(key, value, context = Context.global)
         key = key.to_s
         value = value.to_s

@@ -1031,6 +1031,8 @@ module LLVM
           else
             attr_kind_id
           end
+        when Integer
+          C.create_enum_attribute(ctx, attr, 0)
         else
           raise "Adding unknown attribute type: #{attr.inspect}"
         end
@@ -1084,6 +1086,7 @@ module LLVM
 
       # Upgrade attributes from before LLVM 16
       # readnone, readonly, writeonly
+      #: (Symbol | String) -> LLVM::Attribute?
       def upgrade_attr(attr)
         case attr.to_sym
         when :readnone
@@ -1094,6 +1097,8 @@ module LLVM
           LLVM::Attribute.memory(memory: :write)
         when :inaccessiblememonly
           LLVM::Attribute.memory(inaccessiblemem: :readwrite)
+        when :no_capture_attribute
+          LLVM::Attribute.captures_none
         end
       end
     end

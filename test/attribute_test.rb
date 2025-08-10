@@ -95,6 +95,16 @@ class AttributeTestCase < Minitest::Test
     end
   end
 
+  def test_function_argument_captures_none
+    expected = 'declare void @fun(ptr captures(none))'
+    with_function [LLVM.ptr], LLVM.Void do |fun|
+      p1 = fun.params[0]
+      puts p1
+      p1.add_attribute(:no_capture_attribute)
+      assert_equal(expected, fun.to_s.chomp)
+    end
+  end
+
   def test_last_enum
     assert_equal 100, LLVM::Attribute.last_enum
   end
