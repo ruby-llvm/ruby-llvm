@@ -286,7 +286,7 @@ module LLVM
       unpoisoned ? val : poison
     end
 
-    #: (LLVM::Value) -> ConstantInt
+    #: (FFI::Pointer) -> ConstantInt
     def from_ptr(ptr)
       ConstantInt.from_ptr(ptr)
     end
