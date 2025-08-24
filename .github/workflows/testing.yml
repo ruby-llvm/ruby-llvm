@@ -41,6 +41,7 @@ jobs:
           echo $(llvm-config --ldflags)
           ls -l $(brew --prefix llvm@20)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
+          exit 1
       - name: Install LLVM on ubuntu
         id: ubuntu_setup
         if: startsWith(matrix.os, 'ubuntu')
@@ -59,21 +60,15 @@ jobs:
           echo "setup=false" >> "$GITHUB_OUTPUT"
           ridk exec sh -c "pacman --sync --refresh --needed --noconfirm llvm"
       - uses: actions/checkout@v4
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - uses: ruby/setup-ruby@v1
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - run: cd ext/ruby-llvm-support && bundle exec rake
         name: "Build support library"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - run: bundle exec rake
         name: "Run tests"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - run: bundle exec rake test:samples
         name: "Run samples"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - name: "Typecheck"
         run: bundle exec srb tc
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
