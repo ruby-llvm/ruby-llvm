@@ -64,6 +64,8 @@ jobs:
         run: |
           ridk exec sh -c "pacman -Syu"
           ridk exec sh -c "ls -alF /usr/bin/llvm*"
+          ruby -e "puts RUBY_PLATFORM"
+          ruby -e "puts RbConfig::CONFIG['target_os']"
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
