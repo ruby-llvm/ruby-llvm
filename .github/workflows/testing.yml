@@ -59,6 +59,10 @@ jobs:
         run: |
           echo "setup=false" >> "$GITHUB_OUTPUT"
           ridk exec sh -c "pacman --sync --refresh --needed --noconfirm llvm"
+          ridk exec sh -c "pacman -Syu"
+          ridk exec sh -c "ls -alF /usr/bin/llvm*"
+          ridk exec sh -c "ls -alF /usr/bin/g++*"
+          ridk exec sh -c "ls -alF /usr/bin/clang*"
       - name: 'Windows debug'
         if: steps.windows_setup.setup == 'false'
         run: |
