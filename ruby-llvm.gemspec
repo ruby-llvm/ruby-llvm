@@ -2,6 +2,9 @@
 
 require File.expand_path('lib/llvm/version', File.dirname(__FILE__))
 
+puts RbConfig::CONFIG['target_os']
+puts RUBY_PLATFORM
+
 Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 3.1'
@@ -37,7 +40,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'yard', '~> 0.9'
   s.metadata['rubygems_mfa_required'] = 'true'
 
-  if RbConfig::CONFIG['target_os'] !~ /mswin|mingw/
+  if !/mswin|mingw/.match?(RbConfig::CONFIG['target_os'])
     s.add_development_dependency 'sorbet-static', '~> 0.5.12358'
   end
 end
