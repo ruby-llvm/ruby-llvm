@@ -12,8 +12,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
-        ruby: ['3.1', '3.2', '3.3', '3.4']
+        # os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15, windows-latest]
+        os: [windows-11]
+        # ruby: ['3.1', '3.2', '3.3', '3.4']
+        ruby: ['3.4']
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
       - name: Install LLVM on macos
@@ -41,6 +43,7 @@ jobs:
           echo $(llvm-config --ldflags)
           ls -l $(brew --prefix llvm@20)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
+          exit 1
       - name: Install LLVM on ubuntu
         id: ubuntu_setup
         if: startsWith(matrix.os, 'ubuntu')
@@ -51,22 +54,34 @@ jobs:
           sudo ./llvm.sh 20
           # sudo apt-get install -y libpolly-20-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
+      - name: Install LLVM on Windows
+        id: windows_setup
+        if: startsWith(matrix.os, 'windows')
+        shell: cmd
+        run: |
+          echo "setup=false" >> "$GITHUB_OUTPUT"
+          ridk exec sh -c "pacman --sync --refresh --needed --noconfirm llvm"
+          ridk exec sh -c "pacman -Syu"
+          ridk exec sh -c "ls -alF /usr/bin/llvm*"
+          ridk exec sh -c "ls -alF /usr/bin/g++*"
+          ridk exec sh -c "ls -alF /usr/bin/clang*"
+      - name: 'Windows debug'
+        if: steps.windows_setup.setup == 'false'
+        run: |
+          ridk exec sh -c "pacman -Syu"
+          ridk exec sh -c "ls -alF /usr/bin/llvm*"
+          ruby -e "puts RUBY_PLATFORM"
+          ruby -e "puts RbConfig::CONFIG['target_os']"
       - uses: actions/checkout@v4
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - uses: ruby/setup-ruby@v1
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - run: cd ext/ruby-llvm-support && bundle exec rake
         name: "Build support library"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - run: bundle exec rake
         name: "Run tests"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - run: bundle exec rake test:samples
         name: "Run samples"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - name: "Typecheck"
         run: bundle exec srb tc
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
