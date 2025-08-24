@@ -26,7 +26,7 @@ end
 
 def find_llvm_config
   check_for('llvm-config',
-            %W[llvm-config-#{LLVM_VERSION} llvm-config],
+            %W[llvm-config-#{LLVM_VERSION} llvm-config llvm-config.exe],
             'LLVM_CONFIG') do |llvm_config|
     begin
       actual_version = `#{llvm_config} --version`.strip
