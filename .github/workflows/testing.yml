@@ -115,6 +115,7 @@ jobs:
         run: cd ext/ruby-llvm-support && bundle exec rake
         env:
           CPLUS_INCLUDE_PATH: c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\
+          CXXFLAGS: -Lc:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
       - name: "Run tests"
         run: ridk exec sh -c "bundle exec rake"
         env:
