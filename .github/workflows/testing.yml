@@ -65,7 +65,7 @@ jobs:
         shell: cmd
         run: |
           echo "setup=false" >> "$GITHUB_OUTPUT"
-          ridk exec sh -c "pacman --sync --refresh --needed --noconfirm 'llvm>=21'"
+          ridk exec sh -c "pacman --sync --refresh --needed --noconfirm 'llvm>=21' gcc clang"
           ridk enable
           echo "setup=false" >> "$GITHUB_OUTPUT"
 #          ridk exec sh -c "pacman -Syu"
