@@ -12,8 +12,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
-        ruby: ['3.1', '3.2', '3.3', '3.4']
+        # os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15, windows-latest]
+        os: [windows-2025]
+        # ruby: ['3.1', '3.2', '3.3', '3.4']
+        ruby: ['3.4']
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
       - name: Install LLVM on macos
@@ -41,6 +43,7 @@ jobs:
           echo $(llvm-config --ldflags)
           ls -l $(brew --prefix llvm@21)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
+          exit 1
       - name: Install LLVM on ubuntu
         id: ubuntu_setup
         if: startsWith(matrix.os, 'ubuntu')
@@ -52,21 +55,75 @@ jobs:
           # sudo apt-get install -y libpolly-21-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
       - uses: ruby/setup-ruby@v1
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - run: cd ext/ruby-llvm-support && bundle exec rake
-        name: "Build support library"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
-      - run: bundle exec rake
-        name: "Run tests"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
-      - run: bundle exec rake test:samples
-        name: "Run samples"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+      - name: Install LLVM on Windows
+        id: windows_setup
+        if: startsWith(matrix.os, 'windows')
+        shell: cmd
+        run: |
+          echo "setup=false" >> "$GITHUB_OUTPUT"
+          ridk exec sh -c "pacman --sync --refresh --needed --noconfirm 'llvm>=21'"
+          ridk enable
+          echo "setup=true" >> "$GITHUB_OUTPUT"
+#          ridk exec sh -c "pacman -Syu"
+#          ridk exec sh -c "ls -alF /usr/bin/llvm*"
+#          ridk exec sh -c "ls -alF /usr/bin/g++*"
+#          ridk exec sh -c "ls -alF /usr/bin/clang*"
+#          ridk exec sh -c "which clang++"
+#          ridk exec sh -c "which g++"
+#          ridk exec sh -c "clang++ --version"
+#          ridk exec sh -c "g++ --version"
+#  ridk exec sh -c "pacman --sync --refresh --needed --noconfirm llvm clang"
+#          ridk exec sh -c "ls -alF /usr/bin/llvm*"
+#          dir c:
+#          ridk exec sh -c "ls -alF /usr/bin/llvm*"
+#          ridk exec sh -c "ls -alF /usr/bin/g++*"
+#          ridk exec sh -c "ls -alF /usr/bin/clang*"
+#           ridk exec sh -c "ls -alF /usr/lib/llvm*"
+#           ridk exec sh -c "ls -alF /usr/lib/"
+#          ridk exec sh -c "ls -alF /"
+#          ridk exec sh -c "ls -alF /c/hostedtoolcache/windows/"
+#           ridk exec sh -c "ls -alF /usr/include/"
+#      dir "c:\Program Files\LLVM\lib\clang\20\include"
+#      dir c:\msys64\usr\include\
+#               dir c:\
+#          dir c:\mingw32
+#          dir c:\mingw64
+#          dir c:\mingw32\include
+#          dir c:\mingw64\include
+#          dir c:\hostedtoolcache\windows
+#          dir c:\hostedtoolcache\windows\Ruby
+#          dir c:\hostedtoolcache\windows\Ruby\3.4.5
+#          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64
+#          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\include
+#          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64
+#          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr
+      # dir LLVM-21.dll /s
+      - name: 'Windows debug'
+        if: steps.windows_setup.setup == 'false'
+        run: |
+          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\llvm\Support
+          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
+          ruby -e "puts RUBY_PLATFORM"
+          ruby -e "puts RbConfig::CONFIG['target_os']"
+          ridk exec sh -c "ls -alF /usr/include/llvm/Support/TargetSelect.h"
+          ridk exec sh -c "pacman -Q"
+      - name: "Build support library"
+        run: |
+          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
+          cd ext/ruby-llvm-support && bundle exec rake
+        env:
+          CPLUS_INCLUDE_PATH: c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\
+          ccccCXXFLAGS: -Lc:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
+          LIBRARY_PATH: c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
+      - name: "Run tests"
+        run: ridk exec sh -c "bundle exec rake"
+        env:
+          RUBY_DLL_PATH: C:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
+      - name: "Run samples"
+        run: bundle exec rake test:samples
       - name: "Typecheck"
         run: bundle exec srb tc
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'

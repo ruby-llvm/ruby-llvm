@@ -29,12 +29,15 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest', '~> 5.16'
   s.add_development_dependency 'minitest-fail-fast'
   s.add_development_dependency 'minitest-reporters', '~> 1.5'
-  s.add_development_dependency 'rubocop', '~> 1.31'
+  s.add_development_dependency 'rubocop', '~> 1.80'
   s.add_development_dependency 'rubocop-minitest'
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'sorbet-static'
-  s.add_development_dependency 'tapioca', '~> 0.16.11'
   s.add_development_dependency 'yard', '~> 0.9'
   s.metadata['rubygems_mfa_required'] = 'true'
+
+  if !/mswin|mingw/.match?(RbConfig::CONFIG['target_os'])
+    s.add_development_dependency 'sorbet-static'
+    s.add_development_dependency 'tapioca', '~> 0.16.11'
+  end
 end
