@@ -106,14 +106,13 @@ jobs:
 #        if: steps.windows_setup.setup == 'false'
         run: |
           dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\llvm\Support
+          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
           ruby -e "puts RUBY_PLATFORM"
           ruby -e "puts RbConfig::CONFIG['target_os']"
           ridk exec sh -c "ls -alF /usr/include/llvm/Support/TargetSelect.h"
           ridk exec sh -c "pacman -Q"
       - name: "Build support library"
-        run: |
-          ridk enable
-          cd ext/ruby-llvm-support && bundle exec rake
+        run: cd ext/ruby-llvm-support && bundle exec rake
         env:
           CPLUS_INCLUDE_PATH: c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\
       - name: "Run tests"
