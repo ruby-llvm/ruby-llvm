@@ -112,7 +112,9 @@ jobs:
           ridk exec sh -c "ls -alF /usr/include/llvm/Support/TargetSelect.h"
           ridk exec sh -c "pacman -Q"
       - name: "Build support library"
-        run: cd ext/ruby-llvm-support && bundle exec rake
+        run: |
+          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
+          cd ext/ruby-llvm-support && bundle exec rake
         env:
           CPLUS_INCLUDE_PATH: c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\
           CXXFLAGS: -Lc:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
