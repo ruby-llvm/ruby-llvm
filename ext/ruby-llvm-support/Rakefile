@@ -78,6 +78,7 @@ task default: [SUPPORT_LIB, CONFIG_MOD]
 file SUPPORT_LIB => %w[support.cpp] do |task|
   llvm_flags = invoke_llvm_config('--libs --cxxflags --ldflags')
   sh "#{CXX} -v -O3 -shared #{task.prerequisites.join(' ')} #{llvm_flags} -o #{SUPPORT_LIB}"
+  sh "ls -l #{SUPPORT_LIB}"
 end
 
 LLVM_CONFIG_OPTS = [
