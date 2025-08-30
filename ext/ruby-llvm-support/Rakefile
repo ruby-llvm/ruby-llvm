@@ -67,7 +67,7 @@ private def _llvm_lib_name
   versioned_lib_found ? versioned_lib_name : lib_name
 end
 
-SUPPORT_LIB = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
+SUPPORT_LIB = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}").gsub('dll', 'so')
 CONFIG_MOD  = File.expand_path('../../lib/llvm/config.rb', File.dirname(__FILE__))
 
 CLEAN.include(SUPPORT_LIB, CONFIG_MOD)
