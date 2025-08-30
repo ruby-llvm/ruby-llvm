@@ -116,9 +116,9 @@ jobs:
         env:
           CPLUS_INCLUDE_PATH: c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\
       - name: "Run tests"
-        run: bundle exec rake
+        run: ridk exec sh -c "bundle exec rake"
         env:
-          RUBY_DLL_PATH: c:\
+          RUBY_DLL_PATH: C:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib
       - name: "Run samples"
         run: bundle exec rake test:samples
       - name: "Typecheck"
