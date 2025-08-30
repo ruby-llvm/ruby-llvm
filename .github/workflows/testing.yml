@@ -65,9 +65,9 @@ jobs:
         shell: cmd
         run: |
           echo "setup=false" >> "$GITHUB_OUTPUT"
-          ridk exec sh -c "pacman --sync --refresh --needed --noconfirm 'llvm>=21' gcc clang"
+          ridk exec sh -c "pacman --sync --refresh --needed --noconfirm 'llvm>=21'"
           ridk enable
-          echo "setup=false" >> "$GITHUB_OUTPUT"
+          echo "setup=true" >> "$GITHUB_OUTPUT"
 #          ridk exec sh -c "pacman -Syu"
 #          ridk exec sh -c "ls -alF /usr/bin/llvm*"
 #          ridk exec sh -c "ls -alF /usr/bin/g++*"
@@ -103,7 +103,7 @@ jobs:
 #          dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr
       # dir LLVM-21.dll /s
       - name: 'Windows debug'
-#        if: steps.windows_setup.setup == 'false'
+        if: steps.windows_setup.setup == 'false'
         run: |
           dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\include\llvm\Support
           dir c:\hostedtoolcache\windows\Ruby\3.4.5\x64\msys64\usr\lib

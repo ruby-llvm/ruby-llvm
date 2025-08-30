@@ -42,7 +42,7 @@ def find_llvm_config
 end
 
 def find_cxx
-  check_for('C++ compiler', %W[clang++-#{LLVM_VERSION} clang++ g++], 'CXX') do |cxx|
+  check_for('C++ compiler', %W[g++ clang++-#{LLVM_VERSION} clang++ ], 'CXX') do |cxx|
     system(cxx, '--version', out: File::NULL, err: File::NULL)
     $?.success?
   end
