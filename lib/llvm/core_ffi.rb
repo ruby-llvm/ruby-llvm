@@ -5,7 +5,7 @@ require 'ffi'
 module LLVM::C
   extend FFI::Library
 
-  ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
+  ffi_lib ["LLVM-21", "libLLVM-21.so.1", "libLLVM.so.21", "libLLVM.so.21.1"]
 
   # (Not documented)
   #
@@ -2893,33 +2893,6 @@ module LLVM::C
   # @return [FFI::Pointer(ValueRef)]
   # @scope class
   attach_function :const_nuw_sub, :LLVMConstNUWSub, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_mul, :LLVMConstMul, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_nsw_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_nsw_mul, :LLVMConstNSWMul, [:pointer, :pointer], :pointer
-
-  # (Not documented)
-  #
-  # @method const_nuw_mul(lhs_constant, rhs_constant)
-  # @param [FFI::Pointer(ValueRef)] lhs_constant
-  # @param [FFI::Pointer(ValueRef)] rhs_constant
-  # @return [FFI::Pointer(ValueRef)]
-  # @scope class
-  attach_function :const_nuw_mul, :LLVMConstNUWMul, [:pointer, :pointer], :pointer
 
   # (Not documented)
   #

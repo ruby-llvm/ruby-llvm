@@ -5,7 +5,7 @@ require 'ffi'
 module LLVM::C
   extend FFI::Library
 
-  ffi_lib ["LLVM-20", "libLLVM-20.so.1", "libLLVM.so.20", "libLLVM.so.20.1"]
+  ffi_lib ["LLVM-21", "libLLVM-21.so.1", "libLLVM.so.21", "libLLVM.so.21.1"]
   # @defgroup LLVMCExecutionEngine Execution Engine
   # @ingroup LLVMC
   #

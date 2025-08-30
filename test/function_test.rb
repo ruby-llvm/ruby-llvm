@@ -68,7 +68,7 @@ class FunctionTest < Minitest::Test
   end
 
   def test_add_attribute_new_name
-    helper_test_attribute(:mustprogress, 19)
+    helper_test_attribute(:mustprogress, 20)
     helper_test_attribute(:nounwind, 42)
     helper_test_attribute(:willreturn, 77)
   end
