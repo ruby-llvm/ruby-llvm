@@ -80,6 +80,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+          bundler: latest
+          rubygems: latest
       - run: cd ext/ruby-llvm-support && bundle exec rake
         name: "Build support library"
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'

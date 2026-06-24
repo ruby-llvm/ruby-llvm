@@ -11,6 +11,8 @@ jobs:
         with:
           ruby-version: '3.4'
           bundler-cache: true
+          bundler: latest
+          rubygems: latest
       - run: bundle install
       - name: Rubocop
         run: bundle exec rubocop
