@@ -10,7 +10,5 @@ gemspec
 gem "sorbet-static", group: :development unless Gem.win_platform?
 
 group :devtools, optional: true do
-  # LD_LIBRARY_PATH=/usr/lib/llvm-14/lib
-  # gem "ghazel-ffi_gen", "1.3.9.2"
-  gem "ffi_gen"
+  gem "ffi_gen", source: "https://gem.coop/@uvlad7"
 end
