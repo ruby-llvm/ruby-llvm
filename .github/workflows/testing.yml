@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15, windows-2022, windows-2025]
         ruby: ['3.1', '3.2', '3.3', '3.4']
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
@@ -21,26 +21,33 @@ jobs:
         id: macos_setup
         run: |
           echo "setup=false" >> "$GITHUB_OUTPUT"
+          brew update
           # brew update --auto-update
-          brew install llvm@21
-          echo "$(brew --prefix llvm@21)/bin" >> $GITHUB_PATH
-          sudo mkdir -p /opt/local/
-          sudo ln -s $(brew --prefix llvm@21)/lib /opt/local/lib
-          # ffi will only look for files in a small set of directories, so llvm needs to be there
+          # "llvm@22" is a homebrew-core forward-alias (Aliases/llvm@22) onto
+          # the plain "llvm" formula, kept in sync with whichever major is
+          # currently rolling (22.x); once "llvm" itself bumps to 23, a real
+          # frozen llvm@22.rb formula takes over so this keeps meaning 22.x.
+          brew install llvm@22
+          # llvm is keg-only because it's :provided_by_macos (not the
+          # hard-blocked :versioned_formula reason), so --force is allowed.
+          # This symlinks llvm-config/clang/clang++ and libLLVM.dylib into the
+          # main Homebrew prefix's bin/lib dirs, which are already on PATH —
+          # and lib is one of the small set of directories ffi's dlopen
+          # search checks:
           # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
           # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
-          # this uses /opt/local/lib -> /usr/local/opt/llvm/lib
+          brew link --force llvm@22
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - name: 'MacOS debug'
         if: steps.macos_setup.setup == 'false'
         run: |
           echo $(brew --repository)
-          echo $(brew --prefix llvm@21)
-          echo $(brew info llvm@21)
+          echo $(brew --prefix llvm@22)
+          echo $(brew info llvm@22)
           echo "$PATH"
           echo $(llvm-config --ldflags)
-          ls -l $(brew --prefix llvm@21)/lib/libLLVM.dylib
-          ls -l /opt/local/lib/libLLVM.dylib
+          ls -l $(brew --prefix llvm@22)/lib/libLLVM.dylib
+          ls -l $(brew --prefix)/lib/libLLVM.dylib
       - name: Install LLVM on ubuntu
         id: ubuntu_setup
         if: startsWith(matrix.os, 'ubuntu')
@@ -48,25 +55,42 @@ jobs:
           echo "setup=false" >> "$GITHUB_OUTPUT"
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 21
-          # sudo apt-get install -y libpolly-21-dev
+          sudo ./llvm.sh 22
+          # sudo apt-get install -y libpolly-22-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
+      - name: Install LLVM on windows
+        id: windows_setup
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          echo "setup=false" >> $env:GITHUB_OUTPUT
+          $env:MSYSTEM = "UCRT64"
+          # -Sy (sync only), not -Syu: a full -u here risks pacman replacing
+          # msys2-runtime's own DLL out from under this running shell mid-step,
+          # with no second pass to recover. Safe to skip -u because nothing
+          # has installed a gcc/toolchain into this runner's C:\msys64 ucrt64
+          # environment yet, so there's no already-installed gcc-libs to
+          # conflict with llvm's dependency on it.
+          C:\msys64\usr\bin\bash.exe -lc 'pacman -Sy --needed --noconfirm $MINGW_PACKAGE_PREFIX-llvm'
+          Add-Content -Path $env:GITHUB_PATH -Value "C:\msys64\ucrt64\bin"
+          echo "setup=true" >> $env:GITHUB_OUTPUT
       - uses: actions/checkout@v4
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
       - uses: ruby/setup-ruby@v1
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - run: cd ext/ruby-llvm-support && bundle exec rake
         name: "Build support library"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
       - run: bundle exec rake
         name: "Run tests"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
       - run: bundle exec rake test:samples
         name: "Run samples"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
       - name: "Typecheck"
         run: bundle exec srb tc
+        # sorbet-static has no Windows build (see Gemfile), so windows_setup is
+        # deliberately omitted here, unlike the steps above
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'

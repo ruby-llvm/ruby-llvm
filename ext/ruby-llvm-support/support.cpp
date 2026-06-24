@@ -5,7 +5,19 @@
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/IR/Attributes.h>
 
+#define STRINGIFY_HELPER(x) #x
+#define STRINGIFY(x) STRINGIFY_HELPER(x)
+
 extern "C" {
+
+  const char * LLVMNativeArch() {
+#ifdef LLVM_NATIVE_ARCH
+    return STRINGIFY(LLVM_NATIVE_ARCH);
+#else
+    return nullptr;
+#endif
+  }
+
   void LLVMInitializeAllTargetInfos() {
     llvm::InitializeAllTargetInfos();
   }

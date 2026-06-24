@@ -694,11 +694,11 @@ module LLVM
     end
   end
 
-  ::LLVM::Int1 = const_get(:Int1) #: LLVM::IntType
-  ::LLVM::Int8 = const_get(:Int8) #: LLVM::IntType
-  ::LLVM::Int16 = const_get(:Int16) #: LLVM::IntType
-  ::LLVM::Int32 = const_get(:Int32) #: LLVM::IntType
-  ::LLVM::Int64 = const_get(:Int64) #: LLVM::IntType
+  ::LLVM::Int1 = LLVM::Type.integer(1) #: LLVM::IntType
+  ::LLVM::Int8 = LLVM::Type.integer(8) #: LLVM::IntType
+  ::LLVM::Int16 = LLVM::Type.integer(16) #: LLVM::IntType
+  ::LLVM::Int32 = LLVM::Type.integer(32) #: LLVM::IntType
+  ::LLVM::Int64 = LLVM::Type.integer(64) #: LLVM::IntType
 
   # Native integer type
   bits = FFI.type_size(:int) * 8
