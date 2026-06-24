@@ -28,7 +28,7 @@ module LLVM
     end
 
     # Returns a symbol representation of the types kind (ex. :pointer, :vector, :array.)
-    attr_reader :kind #: Symbol?
+    attr_reader :kind #: as Symbol?
 
     # Returns the size of the type.
     #: -> ConstantInt
@@ -417,7 +417,7 @@ module LLVM
   end
 
   # Shortcut to Type.pointer.
-  #: (?Type?) -> Type`
+  #: (?Type?) -> Type
   def Pointer(ty = nil)
     LLVM::Type.pointer(ty)
   end

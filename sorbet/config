@@ -4,6 +4,7 @@
 --ignore=vendor/
 --ignore=samples/
 --enable-experimental-rbs-comments
+--parser=prism
 --suppress-error-code=7003
 --suppress-error-code=7019
 --suppress-error-code=7006
