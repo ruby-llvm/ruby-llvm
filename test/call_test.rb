@@ -33,7 +33,7 @@ class CallTestCase < Minitest::Test
         builder.position_at_end(entry)
         builder.ret(LLVM::Int(1))
       end
-      function_2 = define_function(host_module, "test_function_2", [], LLVM::Int) do |builder, function, *arguments|
+      define_function(host_module, "test_function_2", [], LLVM::Int) do |builder, function, *arguments|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         builder.ret(builder.call(function_1))
@@ -90,7 +90,7 @@ class CallTestCase < Minitest::Test
   end
 
   def test_call_with_nonfunction
-    test_module = define_module("test_module") do |host_module|
+    define_module("test_module") do |host_module|
       define_function(host_module, "test_function", [], LLVM.Void) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
@@ -160,7 +160,7 @@ class CallTestCase < Minitest::Test
       end
 
       # invalid because no personality function is set
-      caller_fun = define_invalid_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+      define_invalid_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
         entry = function.basic_blocks.append('entry')
         normal = function.basic_blocks.append('normal')
         exception = function.basic_blocks.append('exception')

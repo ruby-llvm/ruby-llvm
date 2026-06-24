@@ -227,6 +227,10 @@ module LLVM
   module C
     # ffi_gen autodetects :string, which is too weak to be usable
     # with LLVMDisposeMessage
+    if singleton_class.method_defined?(:copy_string_rep_of_target_data, false)
+      singleton_class.send(:remove_method, :copy_string_rep_of_target_data)
+    end
+    remove_method(:copy_string_rep_of_target_data) if method_defined?(:copy_string_rep_of_target_data, false)
     attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [OpaqueTargetData], :pointer
   end
 

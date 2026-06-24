@@ -3,6 +3,8 @@
 module LLVM
   # @private
   module C
+    singleton_class.send(:remove_method, :dispose_message) if singleton_class.method_defined?(:dispose_message, false)
+    remove_method(:dispose_message) if method_defined?(:dispose_message, false)
     attach_function :dispose_message, :LLVMDisposeMessage, [:pointer], :void
 
     # typedef unsigned LLVMAttributeIndex;
