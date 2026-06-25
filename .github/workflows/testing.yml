@@ -56,7 +56,7 @@ jobs:
           echo "DYLD_LIBRARY_PATH=$(brew --prefix llvm@22)/lib" >> "$GITHUB_ENV"
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - name: 'MacOS debug'
-        if: steps.macos_setup.outputs.setup == 'false'
+        if: startsWith(matrix.os, 'macos') && (steps.macos_setup.outputs.setup == 'false' || runner.debug == '1')
         run: |
           echo $(brew --repository)
           echo $(brew --prefix llvm@22)
@@ -97,7 +97,7 @@ jobs:
           Add-Content -Path $env:GITHUB_ENV -Value "OPT=opt"
           echo "setup=true" >> $env:GITHUB_OUTPUT
       - name: 'Windows debug'
-        if: steps.windows_setup.outputs.setup == 'false'
+        if: startsWith(matrix.os, 'windows') && (steps.windows_setup.outputs.setup == 'false' || runner.debug == '1')
         run: |
           ridk exec sh -c 'echo MSYSTEM=$MSYSTEM; pacman -Q $MINGW_PACKAGE_PREFIX-llvm; llvm-config --bindir --libdir --ldflags; ls -l $(llvm-config --bindir)/libLLVM*; ls -l $(llvm-config --libdir)/libLLVM-22.*'
           echo "$env:PATH"
