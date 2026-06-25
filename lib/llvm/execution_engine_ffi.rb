@@ -350,13 +350,13 @@ module LLVM::C
   #
   # @method _callback_memory_manager_allocate_code_section_callback_(opaque, size, alignment, section_id, section_name)
   # @param [FFI::Pointer(*Void)] opaque
-  # @param [Integer] size
+  # @param [FFI::Pointer] size uintptr_t (pointer-width integer)
   # @param [Integer] alignment
   # @param [Integer] section_id
   # @param [String] section_name
   # @return [FFI::Pointer] allocated memory block
   # @scope class
-  callback :memory_manager_allocate_code_section_callback, [:pointer, :uintptr_t, :uint, :uint, :string], :pointer
+  callback :memory_manager_allocate_code_section_callback, [:pointer, :pointer, :uint, :uint, :string], :pointer
 
   # (Not documented)
   #
@@ -364,14 +364,14 @@ module LLVM::C
   #
   # @method _callback_memory_manager_allocate_data_section_callback_(opaque, size, alignment, section_id, section_name, is_read_only)
   # @param [FFI::Pointer(*Void)] opaque
-  # @param [Integer] size
+  # @param [FFI::Pointer] size uintptr_t (pointer-width integer)
   # @param [Integer] alignment
   # @param [Integer] section_id
   # @param [String] section_name
   # @param [Integer] is_read_only
   # @return [FFI::Pointer] allocated memory block
   # @scope class
-  callback :memory_manager_allocate_data_section_callback, [:pointer, :uintptr_t, :uint, :uint, :string, :int], :pointer
+  callback :memory_manager_allocate_data_section_callback, [:pointer, :pointer, :uint, :uint, :string, :int], :pointer
 
   # (Not documented)
   #
