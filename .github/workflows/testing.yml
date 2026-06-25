@@ -72,6 +72,15 @@ jobs:
           # conflict with llvm's dependency on it.
           C:\msys64\usr\bin\bash.exe -lc 'pacman -Sy --needed --noconfirm $MINGW_PACKAGE_PREFIX-llvm'
           Add-Content -Path $env:GITHUB_PATH -Value "C:\msys64\ucrt64\bin"
+          # The runner has its own clang++.exe on PATH (MSVC-targeted, bundled
+          # with Visual Studio's Clang component) that find_cxx's plain
+          # "clang++" check would otherwise pick over MinGW g++ -- it passes
+          # the --version check but rejects -fPIC since MSVC/PE-COFF targets
+          # don't use it. We didn't install MSYS2's own clang package, so
+          # force g++ explicitly instead of relying on fallback ordering.
+          Add-Content -Path $env:GITHUB_ENV -Value "CXX=g++"
+          # MSYS2 installs the rolling 'opt.exe', not the versioned 'opt-22.exe'
+          Add-Content -Path $env:GITHUB_ENV -Value "OPT=opt"
           echo "setup=true" >> $env:GITHUB_OUTPUT
       - uses: actions/checkout@v4
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'

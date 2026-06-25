@@ -5,7 +5,8 @@ module LLVM
   class PassBuilder # rubocop:disable Metrics/ClassLength
     extend FFI::Library
 
-    ffi_lib ["LLVM-#{LLVM_VERSION}", "libLLVM-#{LLVM_VERSION}.so.1",
+    ffi_lib ["LLVM-#{LLVM_VERSION}", "libLLVM-#{LLVM_VERSION}",
+             "libLLVM-#{LLVM_VERSION}.so.1",
              "libLLVM.so.#{LLVM_VERSION}", "libLLVM.so.#{LLVM_VERSION}.1",]
     attr_reader :passes
     attr_accessor :inliner_threshold, :merge_functions

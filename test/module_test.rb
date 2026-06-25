@@ -65,16 +65,17 @@ class ModuleTestCase < Minitest::Test
     expected_pattern = /^; ModuleID = 'test_print'$/
 
     Tempfile.create('test_dump.1') do |tmpfile|
+      tmpfile.close # Windows locks open files; close before reopen
       # debug stream (stderr)
       stderr_old = $stderr.dup
       $stderr.reopen(tmpfile.path, 'a')
       begin
         mod.dump
         $stderr.flush
-        assert_match expected_pattern, File.read(tmpfile.path)
       ensure
-        $stderr.reopen(stderr_old)
+        $stderr.reopen(stderr_old) # restore before File.read so Windows releases the lock
       end
+      assert_match expected_pattern, File.read(tmpfile.path)
     end
   end
 

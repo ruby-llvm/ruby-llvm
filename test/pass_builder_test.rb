@@ -70,11 +70,11 @@ class PassBuilderTest < Minitest::Test
   end
 
   def test_opt_levels
-    opt = find_executable "opt-#{LLVM::LLVM_VERSION}"
-    skip "No opt binary" if !opt
+    opt = find_executable(ENV.fetch('OPT', "opt-#{LLVM::LLVM_VERSION}"))
+    skip "No opt binary" unless opt
     LLVM::PassBuilder::OPT_PASSES.each do |level, passes|
       level_flag = "-O#{level}"
-      assert_equal passes, `#{opt} #{level_flag} -print-pipeline-passes -disable-output < /dev/null`.chomp, level_flag
+      assert_equal passes, `"#{opt}" #{level_flag} -print-pipeline-passes -disable-output < #{IO::NULL}`.chomp, level_flag
     end
   end
 

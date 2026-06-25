@@ -6,6 +6,7 @@
 *.o
 *.rbc
 *.so
+*.dll
 *~
 .rvmrc
 .yardoc
