@@ -63,8 +63,8 @@ jobs:
           echo $(brew info llvm@22)
           echo "$PATH"
           echo $(llvm-config --ldflags)
-          ls -l $(brew --prefix llvm@22)/lib/libLLVM.dylib
-          ls -l $(brew --prefix)/lib/libLLVM.dylib
+          ls -l $(brew --prefix llvm@22)/lib/libLLVM*.dylib || echo "Not found"
+          ls -l $(brew --prefix)/lib/libLLVM*.dylib || echo "Not found"
       - name: Install LLVM on ubuntu
         id: ubuntu_setup
         if: startsWith(matrix.os, 'ubuntu')
