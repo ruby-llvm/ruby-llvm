@@ -12,10 +12,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15, windows-2022, windows-2025]
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-14, macos-15, macos-15-intel, windows-2022, windows-2025]
         ruby: ['3.1', '3.2', '3.3', '3.4']
+        include:
+          - os: windows-11-arm
+            ruby: '3.4'
+        exclude:
+          # Ruby 3.1's MSYS2 archive comes with gcc already installed, pinned to gcc-libs=14.2.0-3:
+          #   error: failed to prepare transaction (could not satisfy dependencies)
+          # :: installing mingw-w64-ucrt-x86_64-gcc-libs (16.1.0-5) breaks
+          #     dependency 'mingw-w64-ucrt-x86_64-gcc-libs=14.2.0-3' required by mingw-w64-ucrt-x86_64-gcc
+          - os: windows-2022
+            ruby: '3.1'
+          - os: windows-2025
+            ruby: '3.1'
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+          bundler: latest
+          rubygems: latest
       - name: Install LLVM on macos
         if: startsWith(matrix.os, 'macos')
         id: macos_setup
@@ -28,18 +47,16 @@ jobs:
           # currently rolling (22.x); once "llvm" itself bumps to 23, a real
           # frozen llvm@22.rb formula takes over so this keeps meaning 22.x.
           brew install llvm@22
-          # llvm is keg-only because it's :provided_by_macos (not the
-          # hard-blocked :versioned_formula reason), so --force is allowed.
-          # This symlinks llvm-config/clang/clang++ and libLLVM.dylib into the
-          # main Homebrew prefix's bin/lib dirs, which are already on PATH —
-          # and lib is one of the small set of directories ffi's dlopen
-          # search checks:
+          # On Intel, llvm is keg-only for :provided_by_macos, a reason Homebrew
+          # now hard-refuses to `brew link --force` (ARM links fine) — so link
+          # it ourselves instead, the same way on both architectures.
+          echo "$(brew --prefix llvm@22)/bin" >> "$GITHUB_PATH"
+          # ffi's dlopen checks DYLD_LIBRARY_PATH before its hardcoded dirs:
           # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
-          # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
-          brew link --force llvm@22
+          echo "DYLD_LIBRARY_PATH=$(brew --prefix llvm@22)/lib" >> "$GITHUB_ENV"
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - name: 'MacOS debug'
-        if: steps.macos_setup.setup == 'false'
+        if: steps.macos_setup.outputs.setup == 'false'
         run: |
           echo $(brew --repository)
           echo $(brew --prefix llvm@22)
@@ -63,34 +80,31 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: |
           echo "setup=false" >> $env:GITHUB_OUTPUT
-          $env:MSYSTEM = "UCRT64"
-          # -Sy (sync only), not -Syu: a full -u here risks pacman replacing
-          # msys2-runtime's own DLL out from under this running shell mid-step,
-          # with no second pass to recover. Safe to skip -u because nothing
-          # has installed a gcc/toolchain into this runner's C:\msys64 ucrt64
-          # environment yet, so there's no already-installed gcc-libs to
-          # conflict with llvm's dependency on it.
-          C:\msys64\usr\bin\bash.exe -lc 'pacman -Sy --needed --noconfirm $MINGW_PACKAGE_PREFIX-llvm'
-          Add-Content -Path $env:GITHUB_PATH -Value "C:\msys64\ucrt64\bin"
-          # The runner has its own clang++.exe on PATH (MSVC-targeted, bundled
-          # with Visual Studio's Clang component) that find_cxx's plain
-          # "clang++" check would otherwise pick over MinGW g++ -- it passes
-          # the --version check but rejects -fPIC since MSVC/PE-COFF targets
-          # don't use it. We didn't install MSYS2's own clang package, so
-          # force g++ explicitly instead of relying on fallback ordering.
-          Add-Content -Path $env:GITHUB_ENV -Value "CXX=g++"
+          # ridk exec resolves the correct MSYS2 root + MSYSTEM (UCRT64 on
+          # x86-64, CLANGARM64 on windows-11-arm) for whichever Ruby
+          # ruby/setup-ruby just installed, and runs pacman against that SAME
+          # tree — no separate MSYS2 install, so no second tree to get out of
+          # sync with the one the build actually links against.
+          ridk exec sh -c 'pacman -Sy --noconfirm --noprogressbar --needed --disable-download-timeout $MINGW_PACKAGE_PREFIX-llvm'
+          # On x86-64 the runner ships an MSVC clang++.exe that find_cxx would
+          # pick over MinGW g++ (passes --version but rejects -fPIC). Force g++
+          # since no MSVC g++ exists to shadow it. On ARM64 leave CXX unset and
+          # let find_cxx resolve the CLANGARM64 toolchain naturally.
+          if ($env:PROCESSOR_ARCHITECTURE -ne 'ARM64') {
+            Add-Content -Path $env:GITHUB_ENV -Value "CXX=g++"
+          }
           # MSYS2 installs the rolling 'opt.exe', not the versioned 'opt-22.exe'
           Add-Content -Path $env:GITHUB_ENV -Value "OPT=opt"
           echo "setup=true" >> $env:GITHUB_OUTPUT
-      - uses: actions/checkout@v4
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
-      - uses: ruby/setup-ruby@v1
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-          bundler: latest
-          rubygems: latest
+      - name: 'Windows debug'
+        if: steps.windows_setup.outputs.setup == 'false'
+        run: |
+          ridk exec sh -c 'echo MSYSTEM=$MSYSTEM; pacman -Q $MINGW_PACKAGE_PREFIX-llvm; llvm-config --bindir --libdir --ldflags; ls -l $(llvm-config --bindir)/libLLVM*; ls -l $(llvm-config --libdir)/libLLVM-22.*'
+          echo "$env:PATH"
+          Get-Command llvm-config -ErrorAction SilentlyContinue
+      # - name: Debug session
+      #   if: contains(matrix.os, 'intel')
+      #   uses: mxschmitt/action-tmate@v3
       - run: cd ext/ruby-llvm-support && bundle exec rake
         name: "Build support library"
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
