@@ -21,6 +21,12 @@ class TargetTestCase < Minitest::Test
     LLVM::Target.init_all(true)
   end
 
+  def test_native_arch
+    arch = LLVM::Target.native_arch
+    skip "LLVM built without a native target" if arch.nil?
+    assert_includes LLVM::CONFIG::TARGETS_BUILT, arch
+  end
+
   TARGET_CHECKS = {
     'X86' => %w[x86-64 x86],
     'AMDGPU' => %w[amdgcn r600],
