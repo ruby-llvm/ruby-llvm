@@ -85,7 +85,7 @@ jobs:
           # ruby/setup-ruby just installed, and runs pacman against that SAME
           # tree — no separate MSYS2 install, so no second tree to get out of
           # sync with the one the build actually links against.
-          ridk exec sh -c 'pacman -Sy --noconfirm --noprogressbar --needed --disable-download-timeout $MINGW_PACKAGE_PREFIX-llvm'
+          ridk exec sh -c 'pacman -Sy --noconfirm --noprogressbar --needed --disable-download-timeout "$MINGW_PACKAGE_PREFIX-llvm>=22.1.0" "$MINGW_PACKAGE_PREFIX-llvm<22.2"'
           # On x86-64 the runner ships an MSVC clang++.exe that find_cxx would
           # pick over MinGW g++ (passes --version but rejects -fPIC). Force g++
           # since no MSVC g++ exists to shadow it. On ARM64 leave CXX unset and

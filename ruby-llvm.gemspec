@@ -34,6 +34,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'yard', '~> 0.9'
+  maj, min = LLVM::LLVM_REQUIRED_VERSION.split('.')
+  s.requirements << "LLVM v#{maj}.#{min} (llvm-config or llvm-config-#{LLVM::LLVM_VERSION} on PATH, or set LLVM_CONFIG)"
+  s.requirements << "C++ compiler: clang++-#{LLVM::LLVM_VERSION}, clang++, or g++ (or set CXX)"
+
   s.metadata['rubygems_mfa_required'] = 'true'
-  s.metadata['msys2_mingw_dependencies'] = 'llvm'
+  s.metadata['msys2_mingw_dependencies'] = "llvm>=#{LLVM::LLVM_REQUIRED_VERSION} llvm<#{maj}.#{min.to_i + 1}"
 end
