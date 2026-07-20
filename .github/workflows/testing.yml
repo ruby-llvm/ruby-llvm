@@ -84,9 +84,13 @@ jobs:
           echo "setup=false" >> $env:GITHUB_OUTPUT
           if ('${{ matrix.ruby }}' -eq 'ruby-mswin') {
             # MSVC LLVM from the official llvm.org release (same build as local debug-win setup).
-            # winget installs to C:\Program Files\LLVM.
-            winget install LLVM.LLVM --version 22.1.0 --accept-source-agreements --accept-package-agreements --silent
-            echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+            # Use the clang+llvm-* archive (not LLVM-*.exe): the installer is toolchain-only;
+            # the archive adds LLVM headers and libs needed to build software that uses LLVM.
+            $archive = "$env:TEMP\llvm-22.1.8-msvc.tar.xz"
+            Invoke-WebRequest "https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.8/clang+llvm-22.1.8-x86_64-pc-windows-msvc.tar.xz" -OutFile $archive -UseBasicParsing
+            New-Item -ItemType Directory -Force -Path C:\llvm-msvc | Out-Null
+            tar -xf $archive -C C:\llvm-msvc --strip-components=1
+            echo "C:\llvm-msvc\bin" >> $env:GITHUB_PATH
           } else {
             # ridk exec resolves the correct MSYS2 root + MSYSTEM (UCRT64 on
             # x86-64, CLANGARM64 on windows-11-arm) for whichever Ruby
