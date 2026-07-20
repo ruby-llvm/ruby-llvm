@@ -17,6 +17,8 @@ jobs:
         include:
           - os: windows-11-arm
             ruby: '3.4'
+          - os: windows-2025
+            ruby: ruby-mswin
         exclude:
           # Ruby 3.1's MSYS2 archive comes with gcc already installed, pinned to gcc-libs=14.2.0-3:
           #   error: failed to prepare transaction (could not satisfy dependencies)
@@ -26,7 +28,7 @@ jobs:
             ruby: '3.1'
           - os: windows-2025
             ruby: '3.1'
-    continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
+    continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' || matrix.ruby == 'ruby-mswin' }}
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -80,29 +82,36 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: |
           echo "setup=false" >> $env:GITHUB_OUTPUT
-          # ridk exec resolves the correct MSYS2 root + MSYSTEM (UCRT64 on
-          # x86-64, CLANGARM64 on windows-11-arm) for whichever Ruby
-          # ruby/setup-ruby just installed, and runs pacman against that SAME
-          # tree — no separate MSYS2 install, so no second tree to get out of
-          # sync with the one the build actually links against.
-          # Use a PS double-quoted string so PowerShell wraps the -c argument in
-          # cmd.exe double quotes (no embedded " → no \"-escaping), which protects
-          # > and < from cmd.exe redirect interpretation. Backtick-escape $ so
-          # PowerShell doesn't expand the bash variable. Use sh single-quote
-          # concatenation (e.g. llvm'>=22.1.0') to protect > and < from bash.
-          ridk exec sh -c "pacman -Sy --noconfirm --noprogressbar --needed --disable-download-timeout `$MINGW_PACKAGE_PREFIX-llvm'>=22.1.0' `$MINGW_PACKAGE_PREFIX-llvm'<22.2'"
-          # On x86-64 the runner ships an MSVC clang++.exe that find_cxx would
-          # pick over MinGW g++ (passes --version but rejects -fPIC). Force g++
-          # since no MSVC g++ exists to shadow it. On ARM64 leave CXX unset and
-          # let find_cxx resolve the CLANGARM64 toolchain naturally.
-          if ($env:PROCESSOR_ARCHITECTURE -ne 'ARM64') {
-            Add-Content -Path $env:GITHUB_ENV -Value "CXX=g++"
+          if ('${{ matrix.ruby }}' -eq 'ruby-mswin') {
+            # MSVC LLVM from the official llvm.org release (same build as local debug-win setup).
+            # winget installs to C:\Program Files\LLVM.
+            winget install LLVM.LLVM --version 22.1.0 --accept-source-agreements --accept-package-agreements --silent
+            echo "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+          } else {
+            # ridk exec resolves the correct MSYS2 root + MSYSTEM (UCRT64 on
+            # x86-64, CLANGARM64 on windows-11-arm) for whichever Ruby
+            # ruby/setup-ruby just installed, and runs pacman against that SAME
+            # tree — no separate MSYS2 install, so no second tree to get out of
+            # sync with the one the build actually links against.
+            # Use a PS double-quoted string so PowerShell wraps the -c argument in
+            # cmd.exe double quotes (no embedded " → no \"-escaping), which protects
+            # > and < from cmd.exe redirect interpretation. Backtick-escape $ so
+            # PowerShell doesn't expand the bash variable. Use sh single-quote
+            # concatenation (e.g. llvm'>=22.1.0') to protect > and < from bash.
+            ridk exec sh -c "pacman -Sy --noconfirm --noprogressbar --needed --disable-download-timeout `$MINGW_PACKAGE_PREFIX-llvm'>=22.1.0' `$MINGW_PACKAGE_PREFIX-llvm'<22.2'"
+            # On x86-64 the runner ships an MSVC clang++.exe that find_cxx would
+            # pick over MinGW g++ (passes --version but rejects -fPIC). Force g++
+            # since no MSVC g++ exists to shadow it. On ARM64 leave CXX unset and
+            # let find_cxx resolve the CLANGARM64 toolchain naturally.
+            if ($env:PROCESSOR_ARCHITECTURE -ne 'ARM64') {
+              Add-Content -Path $env:GITHUB_ENV -Value "CXX=g++"
+            }
           }
-          # MSYS2 installs the rolling 'opt.exe', not the versioned 'opt-22.exe'
+          # MSYS2/winget both install the rolling 'opt.exe', not the versioned 'opt-22.exe'
           Add-Content -Path $env:GITHUB_ENV -Value "OPT=opt"
           echo "setup=true" >> $env:GITHUB_OUTPUT
       - name: 'Windows debug'
-        if: startsWith(matrix.os, 'windows') && (steps.windows_setup.outputs.setup == 'false' || runner.debug == '1')
+        if: startsWith(matrix.os, 'windows') && matrix.ruby != 'ruby-mswin' && (steps.windows_setup.outputs.setup == 'false' || runner.debug == '1')
         run: |
           ridk exec sh -c 'echo MSYSTEM=$MSYSTEM; pacman -Q $MINGW_PACKAGE_PREFIX-llvm; llvm-config --bindir --libdir --ldflags; ls -l $(llvm-config --bindir)/libLLVM*; ls -l $(llvm-config --libdir)/libLLVM-22.*'
           echo "$env:PATH"

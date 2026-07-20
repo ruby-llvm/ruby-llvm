@@ -7,7 +7,7 @@ module LLVM::C
 
   ffi_lib ["LLVM-#{LLVM::LLVM_VERSION}", "libLLVM-#{LLVM::LLVM_VERSION}",
            "libLLVM-#{LLVM::LLVM_VERSION}.so.1",
-           "libLLVM.so.#{LLVM::LLVM_VERSION}", "libLLVM.so.#{LLVM::LLVM_VERSION}.1"]
+           "libLLVM.so.#{LLVM::LLVM_VERSION}", "libLLVM.so.#{LLVM::LLVM_VERSION}.1", "LLVM-C"]
   # (Not documented)
   #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:byte_ordering).</em>

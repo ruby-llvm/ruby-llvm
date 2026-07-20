@@ -7,7 +7,7 @@ module LLVM::C
 
   ffi_lib ["LLVM-#{LLVM::LLVM_VERSION}", "libLLVM-#{LLVM::LLVM_VERSION}",
            "libLLVM-#{LLVM::LLVM_VERSION}.so.1",
-           "libLLVM.so.#{LLVM::LLVM_VERSION}", "libLLVM.so.#{LLVM::LLVM_VERSION}.1"]
+           "libLLVM.so.#{LLVM::LLVM_VERSION}", "libLLVM.so.#{LLVM::LLVM_VERSION}.1", "LLVM-C"]
   # This enum is provided for backwards-compatibility only. It has no effect.
   #
   # <em>This entry is only for documentation and no real method. The FFI::Enum can be accessed via #enum_type(:linker_mode).</em>

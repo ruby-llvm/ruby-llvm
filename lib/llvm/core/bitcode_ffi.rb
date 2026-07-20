@@ -7,7 +7,7 @@ module LLVM::C
 
   ffi_lib ["LLVM-#{LLVM::LLVM_VERSION}", "libLLVM-#{LLVM::LLVM_VERSION}",
            "libLLVM-#{LLVM::LLVM_VERSION}.so.1",
-           "libLLVM.so.#{LLVM::LLVM_VERSION}", "libLLVM.so.#{LLVM::LLVM_VERSION}.1"]
+           "libLLVM.so.#{LLVM::LLVM_VERSION}", "libLLVM.so.#{LLVM::LLVM_VERSION}.1", "LLVM-C"]
   # (Not documented)
   #
   # @method parse_bitcode(mem_buf, out_module, out_message)
