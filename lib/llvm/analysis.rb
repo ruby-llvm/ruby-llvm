@@ -20,9 +20,9 @@ module LLVM
     # @return [nil]
     #: -> String?
     def verify!
-      # :nocov:
+      # simplecov:disable
       do_verification(:abort_process)
-      # :nocov:
+      # simplecov:enable
     end
 
     #: -> bool
@@ -52,9 +52,9 @@ module LLVM
     # @return [true, false]
     #: -> bool
     def verify!
-      # :nocov:
+      # simplecov:disable
       do_verification(:abort_process)
-      # :nocov:
+      # simplecov:enable
     end
 
     #: -> bool

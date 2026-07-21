@@ -89,9 +89,9 @@ module LLVM
     # Print the type's representation to stdout.
     #: -> void
     def dump
-      # :nocov:
+      # simplecov:disable
       C.dump_type(self)
-      # :nocov:
+      # simplecov:enable
     end
 
     # Build string of LLVM type representation.

@@ -1325,27 +1325,27 @@ module LLVM
     #: (untyped, Value) -> String?
     def element_error(vector, idx)
       if !vector.is_a?(LLVM::Value)
-        # :nocov:
+        # simplecov:disable
         # already handled
         "non-value: #{vector.inspect}"
-        # :nocov:
+        # simplecov:enable
       elsif vector.type.kind != :vector
         "non-vector: #{vector.type.kind}"
       elsif !idx.is_a?(LLVM::Value)
-        # :nocov:
+        # simplecov:disable
         # already handled
         "index: #{idx}"
-        # :nocov:
+        # simplecov:enable
       end
     end
 
     #: (untyped, Integer) -> String?
     def value_error(aggregate, idx)
       if !aggregate.is_a?(LLVM::Value)
-        # :nocov:
+        # simplecov:disable
         # already handled
         "non-value: #{aggregate.inspect}"
-        # :nocov:
+        # simplecov:enable
         # TODO: fix this
       elsif !aggregate.type.aggregate?
         "non-aggregate: #{aggregate.type.kind}"

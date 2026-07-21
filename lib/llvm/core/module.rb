@@ -267,13 +267,13 @@ module LLVM
     end
 
     # Print the module's IR to the standard error.
-    if RUBY_PLATFORM =~ /mswin/
+    if RUBY_PLATFORM.include?('mswin')
       def dump
         # errs() is a static whose teardown crashes on mswin; use a stack-allocated
         # raw_fd_ostream instead so the stream destructs before process teardown.
-        unless Support::C.dump_module_to_stderr(self).zero?
-          $stderr.puts "LLVM::Module#dump: write to stderr failed"
-        end
+        return if Support::C.dump_module_to_stderr(self).zero?
+
+        warn "LLVM::Module#dump: write to stderr failed"
       end
     else
       def dump

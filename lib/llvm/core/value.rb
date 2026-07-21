@@ -104,9 +104,9 @@ module LLVM
 
     # Print the value's IR to stdout.
     def dump
-      # :nocov:
+      # simplecov:disable
       C.dump_value(self)
-      # :nocov:
+      # simplecov:enable
     end
 
     def to_s
@@ -460,9 +460,9 @@ module LLVM
     # @deprecated
     #: -> ConstantInt
     def nuw_neg
-      # :nocov:
+      # simplecov:disable
       self.class.from_ptr(C.const_nuw_neg(self))
-      # :nocov:
+      # simplecov:enable
     end
     deprecate :nuw_neg, "neg", 2025, 3
 

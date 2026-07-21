@@ -12,14 +12,18 @@ end
 begin
   require 'simplecov'
 
+  unless SimpleCov::Configuration.method_defined?(:skip)
+    mod = SimpleCov::Configuration #: as untyped
+    mod.send(:alias_method, :skip, :add_filter)
+  end
   SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/lib/llvm/transforms/scalar.rb"
-    add_filter "/lib/llvm/transforms/ipo.rb"
-    add_filter "/lib/llvm/transforms/vectorize.rb"
-    add_filter "/lib/llvm/transforms/utils.rb"
-    add_filter "/lib/llvm/transforms/builder.rb"
-    add_filter "/lib/llvm/core/pass_manager.rb"
+    skip "/test/"
+    skip "/lib/llvm/transforms/scalar.rb"
+    skip "/lib/llvm/transforms/ipo.rb"
+    skip "/lib/llvm/transforms/vectorize.rb"
+    skip "/lib/llvm/transforms/utils.rb"
+    skip "/lib/llvm/transforms/builder.rb"
+    skip "/lib/llvm/core/pass_manager.rb"
   end
 rescue LoadError
   warn "Proceeding without SimpleCov. gem install simplecov on supported platforms."
