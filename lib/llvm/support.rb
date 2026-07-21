@@ -32,13 +32,7 @@ module LLVM
       attach_function :get_enum_attribute_name_for_kind, :LLVMGetEnumAttributeNameForKind, [:uint], :string
       attach_function :get_attribute_as_string, :LLVMGetAttributeAsString, [:pointer], :string
 
-      attach_function :flush_and_clear_errs, :LLVMFlushAndClearErrs, [], :int
-    end
-
-    at_exit do
-      if C.flush_and_clear_errs != 0
-        warn "ruby-llvm: LLVM errs() had IO error (non-fatal, cleared)"
-      end
+      attach_function :dump_module_to_stderr, :LLVMDumpModuleToStderr, [:pointer], :int
     end
   end
 

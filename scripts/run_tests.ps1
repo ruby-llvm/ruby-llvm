@@ -1,4 +1,4 @@
-# powershell -ExecutionPolicy Bypass -File .\scripts\run_tests.ps1
+# powershell -ExecutionPolicy Bypass -File .\scripts\run_tests.ps1 -Runs 20
 param([int]$Runs = 10)
 
 $loader = "C:/ruby-mswin/lib/ruby/gems/4.1.0+4/gems/rake-13.4.2/lib/rake/rake_test_loader.rb"
