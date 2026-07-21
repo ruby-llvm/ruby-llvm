@@ -16,6 +16,13 @@ class PassBuilderTest < Minitest::Test
     @tm = @target.create_machine('x86_64-pc-linux-gnu')
   end
 
+  def teardown
+    # On Windows (mswin), LLVMRunPasses registers @tm with LLVM's analysis
+    # infrastructure; leaving it undisposed causes an access violation at DLL teardown.
+    @tm&.dispose
+    @module&.dispose
+  end
+
   def test_target
     assert @target
   end
@@ -166,8 +173,8 @@ class PassBuilderTest < Minitest::Test
     @pass_builder.run(@module, @tm)
   end
 
-  PASSES = LLVM::PassBuilder.new.methods.grep(/\S!$/).freeze
-  OLD_PASSES = LLVM::PassManager.new.methods.grep(/\S!$/).freeze
+  PASSES = LLVM::PassBuilder.instance_methods.grep(/\S!$/).freeze
+  OLD_PASSES = LLVM::PassManager.instance_methods.grep(/\S!$/).freeze
   EXCEPT_PASSES = [:dfsan!, :msan!].freeze
 
   def test_missing_passes
@@ -183,6 +190,11 @@ class PassBuilderTest < Minitest::Test
       LLVM::Target.init_all
       @target = LLVM::Target.by_name('x86-64')
       assert @tm = @target.create_machine('x86_64-pc-linux-gnu')
+    end
+
+    after do
+      @tm&.dispose
+      @module&.dispose
     end
 
     it 'should have target' do

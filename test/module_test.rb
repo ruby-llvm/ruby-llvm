@@ -64,19 +64,28 @@ class ModuleTestCase < Minitest::Test
     mod = LLVM::Module.new('test_print')
     expected_pattern = /^; ModuleID = 'test_print'$/
 
-    Tempfile.create('test_dump.1') do |tmpfile|
-      tmpfile.close # Windows locks open files; close before reopen
-      # debug stream (stderr)
-      stderr_old = $stderr.dup
-      $stderr.reopen(tmpfile.path, 'a')
-      begin
-        mod.dump
-        $stderr.flush
-      ensure
-        $stderr.reopen(stderr_old) # restore before File.read so Windows releases the lock
-      end
-      assert_match expected_pattern, File.read(tmpfile.path)
+    if RUBY_PLATFORM =~ /mswin/
+      mod.dump
+      # Ruby's dup2 and LLVM's _write(2,...) operate on different C runtime FD
+      # tables (UCRT vs MSVCRT), so pipe redirection cannot capture LLVM's output.
+      skip 'Cannot capture LLVM errs() output on mswin due to C runtime FD table isolation'
     end
+
+    # debug stream (stderr)
+    rd, wr = IO.pipe
+    stderr_old = $stderr.dup
+    $stderr.reopen(wr)
+    wr.close
+    begin
+      mod.dump
+      $stderr.flush
+    ensure
+      $stderr.reopen(stderr_old)
+      stderr_old.close
+    end
+    assert_match expected_pattern, rd.read
+  ensure
+    rd&.close
   end
 
   def test_module_properties

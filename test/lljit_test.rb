@@ -10,7 +10,10 @@ class LLJitTest < Minitest::Test
   end
 
   def test_create_lljit
-    assert LLVM::LLJit.new
+    lljit = LLVM::LLJit.new
+    assert lljit
+  ensure
+    lljit&.dispose
   end
 
   def test_lljit_strings_exist
@@ -18,6 +21,8 @@ class LLJitTest < Minitest::Test
     refute_empty(lljit.triple_string)
     refute_empty(lljit.data_layout)
     assert(lljit.global_prefix)
+  ensure
+    lljit&.dispose
   end
 
   def test_lljit_strings
@@ -26,5 +31,7 @@ class LLJitTest < Minitest::Test
     assert_equal("x86_64-pc-linux-gnu", lljit.triple_string)
     assert_equal("e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128", lljit.data_layout)
     assert_equal("", lljit.global_prefix)
+  ensure
+    lljit&.dispose
   end
 end

@@ -25,7 +25,9 @@ Gem::Specification.new do |s|
   s.add_dependency             'ffi',      '~> 1.13'
   s.add_dependency             'rake',     '>= 12', '< 14'
 
+  s.add_development_dependency 'benchmark'
   s.add_development_dependency 'debug'
+  s.add_development_dependency 'fiddle'
   s.add_development_dependency 'minitest', '~> 5.16'
   s.add_development_dependency 'minitest-fail-fast'
   s.add_development_dependency 'minitest-reporters', '~> 1.5'
