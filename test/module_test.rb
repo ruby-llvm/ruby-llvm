@@ -65,10 +65,10 @@ class ModuleTestCase < Minitest::Test
     expected_pattern = /^; ModuleID = 'test_print'$/
 
     if RUBY_PLATFORM =~ /mswin/
+      # Output goes to the extension DLL's CRT fd table, not Ruby's, so pipe
+      # redirection cannot capture it. Just verify the call doesn't crash.
       mod.dump
-      # Ruby's dup2 and LLVM's _write(2,...) operate on different C runtime FD
-      # tables (UCRT vs MSVCRT), so pipe redirection cannot capture LLVM's output.
-      skip 'Cannot capture errs() output on mswin: C runtime FD table isolation'
+      skip 'Cannot capture dump output on mswin: CRT fd table isolation'
     end
 
     # debug stream (stderr)

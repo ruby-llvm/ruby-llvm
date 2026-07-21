@@ -5,13 +5,9 @@
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/IR/Attributes.h>
-#ifdef _WIN32
-#include <io.h>
-#include <fcntl.h>
-#include <cstdlib>
+#include <llvm/IR/Module.h>
 #ifndef STDERR_FILENO
 #define STDERR_FILENO 2
-#endif
 #endif
 
 #define STRINGIFY_HELPER(x) #x
@@ -33,20 +29,15 @@ extern "C" {
 #endif
   }
 
-  // Flush errs() and clear its error flag before Ruby closes fd 2.
-  // errs() is a C++ function-local static; its destructor calls
-  // report_fatal_error (exit 1) if flush fails because fd 2 is already closed.
-  // On Windows, also redirect fd 2 to NUL so the destructor's flush() succeeds.
-  LLVM_SUPPORT_API void LLVMFlushAndClearErrs() {
-    llvm::errs().flush();
-    static_cast<llvm::raw_fd_ostream &>(llvm::errs()).clear_error();
-#ifdef _WIN32
-    int nul = _open("NUL", _O_WRONLY);
-    if (nul >= 0) {
-      _dup2(nul, STDERR_FILENO);
-      _close(nul);
-    }
-#endif
+  // Like LLVMDumpModule but avoids the errs() function-local static.
+  // On Windows, errs() teardown crashes after Ruby closes fd 2.
+  // clear_error() suppresses report_fatal_error in the destructor if the write
+  // failed (e.g. stderr redirected to a closed pipe) — a debug dump failing is
+  // non-fatal.
+  LLVM_SUPPORT_API void LLVMDumpModuleToStderr(LLVMModuleRef M) {
+    llvm::raw_fd_ostream OS(STDERR_FILENO, /*shouldClose=*/false, /*unbuffered=*/true);
+    llvm::unwrap(M)->print(OS, nullptr, /*ShouldPreserveUseListOrder=*/false, /*IsForDebug=*/true);
+    OS.clear_error();
   }
 
   LLVM_SUPPORT_API void LLVMInitializeAllTargetInfos() {

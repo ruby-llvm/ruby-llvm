@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # typed: true
-at_exit { LLVM::Support::C.flush_and_clear_errs }
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
 begin
