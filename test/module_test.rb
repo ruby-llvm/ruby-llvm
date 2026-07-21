@@ -68,7 +68,7 @@ class ModuleTestCase < Minitest::Test
       mod.dump
       # Ruby's dup2 and LLVM's _write(2,...) operate on different C runtime FD
       # tables (UCRT vs MSVCRT), so pipe redirection cannot capture LLVM's output.
-      skip 'Cannot capture LLVM errs() output on mswin due to C runtime FD table isolation'
+      skip 'Cannot capture errs() output on mswin: C runtime FD table isolation'
     end
 
     # debug stream (stderr)
