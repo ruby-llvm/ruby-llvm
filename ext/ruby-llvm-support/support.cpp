@@ -5,10 +5,7 @@
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/IR/Attributes.h>
-#include <llvm/IR/Module.h>
-#ifndef STDERR_FILENO
-#define STDERR_FILENO 2
-#endif
+#include <cstdlib>
 
 #define STRINGIFY_HELPER(x) #x
 #define STRINGIFY(x) STRINGIFY_HELPER(x)
@@ -29,15 +26,28 @@ extern "C" {
 #endif
   }
 
-  // Like LLVMDumpModule but avoids the errs() function-local static.
-  // On Windows, errs() teardown crashes after Ruby closes fd 2.
-  // clear_error() suppresses report_fatal_error in the destructor if the write
-  // failed (e.g. stderr redirected to a closed pipe) — a debug dump failing is
-  // non-fatal.
-  LLVM_SUPPORT_API void LLVMDumpModuleToStderr(LLVMModuleRef M) {
-    llvm::raw_fd_ostream OS(STDERR_FILENO, /*shouldClose=*/false, /*unbuffered=*/true);
-    llvm::unwrap(M)->print(OS, nullptr, /*ShouldPreserveUseListOrder=*/false, /*IsForDebug=*/true);
+  // Clears errs() error flag just before its C++ destructor fires.
+  // Registered via std::atexit after errs() is first used, so it runs before
+  // errs() destructs (LIFO). Uses a stored pointer — no re-initialization risk.
+  static llvm::raw_fd_ostream *g_errs = nullptr;
+  static void clear_errs_at_exit() {
+    if (g_errs) g_errs->clear_error();
+  }
+
+  // Called from Ruby's at_exit. Flushes and clears errs() now, and registers
+  // a C atexit to clear it again after Ruby VM teardown (GC finalizers may
+  // write to errs() between the Ruby hook and the C++ destructor).
+  // Returns 1 if errs() had an error at call time, 0 otherwise.
+  LLVM_SUPPORT_API int LLVMFlushAndClearErrs() {
+    llvm::errs().flush();
+    auto &OS = static_cast<llvm::raw_fd_ostream &>(llvm::errs());
+    int had_error = OS.has_error() ? 1 : 0;
     OS.clear_error();
+    if (!g_errs) {
+      g_errs = &OS;
+      std::atexit(clear_errs_at_exit);
+    }
+    return had_error;
   }
 
   LLVM_SUPPORT_API void LLVMInitializeAllTargetInfos() {
@@ -80,4 +90,3 @@ extern "C" {
     return strdup(S.c_str());
   }
 }
-
