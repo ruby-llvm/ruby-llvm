@@ -4,6 +4,7 @@
 
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/AutoConvert.h>
 #include <llvm/IR/Attributes.h>
 #include <llvm/IR/Module.h>
 #ifndef STDERR_FILENO
@@ -32,6 +33,9 @@ extern "C" {
   // Like LLVMDumpModule but avoids the errs() function-local static.
   // On Windows, errs() teardown crashes after Ruby closes fd 2.
   LLVM_SUPPORT_API int LLVMDumpModuleToStderr(LLVMModuleRef M) {
+    // Mirror errs(): enable auto-conversion on stderr once (no-op on non-z/OS).
+    static std::error_code _ec = llvm::enableAutoConversion(STDERR_FILENO);
+    (void)_ec;
     llvm::raw_fd_ostream OS(STDERR_FILENO, /*shouldClose=*/false, /*unbuffered=*/true);
     llvm::unwrap(M)->print(OS, nullptr, /*ShouldPreserveUseListOrder=*/false, /*IsForDebug=*/true);
     bool failed = OS.has_error();
