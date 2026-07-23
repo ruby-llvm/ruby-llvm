@@ -42,9 +42,9 @@ class ValueTestCase < Minitest::Test
     assert_equal :undef, LLVM::Int32.undef.kind
     assert_equal :struct, LLVM::Struct(LLVM::Int, LLVM::Float).kind
 
-    assert_equal :const_aggregregate_zero, LLVM::ConstantArray.const(LLVM::Int, []).kind
-    assert_equal :const_aggregregate_zero, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.null]).kind
-    assert_equal :const_aggregregate_zero, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.from_i(0)]).kind
+    assert_equal :const_aggregate_zero, LLVM::ConstantArray.const(LLVM::Int, []).kind
+    assert_equal :const_aggregate_zero, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.null]).kind
+    assert_equal :const_aggregate_zero, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.from_i(0)]).kind
     assert_equal :const_data_array, LLVM::ConstantArray.const(LLVM::Int, [LLVM::Int.from_i(1)]).kind
 
     assert_equal :const_data_vector, LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(1)]).kind

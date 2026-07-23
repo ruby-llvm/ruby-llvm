@@ -54,6 +54,72 @@ class ModuleTestCase < Minitest::Test
     assert yielded, 'LLVM::Module::GlobalCollection#add takes block'
   end
 
+  def test_global_variable_initializer_kind
+    define_module('test_initializer_kind') do |mod|
+      mod.globals.add(LLVM::Int32, 'off') do |var|
+        var.initializer = LLVM::Int32.from_i(42)
+        var.global_constant = true
+      end
+      init = mod.globals['off'].initializer
+      assert_kind_of LLVM::ConstantInt, init
+      assert_equal 42, init.to_i(false)
+    end
+  end
+
+  def test_from_ptr_kind_const_data_array
+    define_module('test_fpk_cda') do |mod|
+      arr = LLVM::ConstantArray.string('hi')
+      mod.globals.add(arr, 'str') do |var|
+        var.initializer = arr
+        var.global_constant = true
+      end
+      init = mod.globals['str'].initializer
+      assert_equal :const_data_array, init.kind
+      assert_kind_of LLVM::ConstantArray, init
+    end
+  end
+
+  def test_from_ptr_kind_const_array
+    define_module('test_fpk_ca') do |mod|
+      struct_type = LLVM::Struct(LLVM::Int32)
+      elem = LLVM::ConstantStruct.const([LLVM::Int32.from_i(1)])
+      arr = LLVM::ConstantArray.const(struct_type, [elem])
+      mod.globals.add(arr, 'sarr') do |var|
+        var.initializer = arr
+        var.global_constant = true
+      end
+      init = mod.globals['sarr'].initializer
+      assert_equal :const_array, init.kind
+      assert_kind_of LLVM::ConstantArray, init
+    end
+  end
+
+  def test_from_ptr_kind_const_data_vector
+    define_module('test_fpk_cdv') do |mod|
+      vec = LLVM::ConstantVector.const([LLVM::Int32.from_i(1), LLVM::Int32.from_i(2)])
+      mod.globals.add(vec, 'vec') do |var|
+        var.initializer = vec
+        var.global_constant = true
+      end
+      init = mod.globals['vec'].initializer
+      assert_equal :const_data_vector, init.kind
+      assert_kind_of LLVM::ConstantVector, init
+    end
+  end
+
+  def test_from_ptr_kind_const_aggregate_zero
+    define_module('test_fpk_caz') do |mod|
+      zero = LLVM::ConstantStruct.const([LLVM::Int32.from_i(0)])
+      mod.globals.add(zero, 'zs') do |var|
+        var.initializer = zero
+        var.global_constant = true
+      end
+      init = mod.globals['zs'].initializer
+      assert_equal :const_aggregate_zero, init.kind
+      assert_kind_of LLVM::ConstantStruct, init
+    end
+  end
+
   def test_to_s
     mod = LLVM::Module.new('test_print')
     assert_equal "; ModuleID = 'test_print'\nsource_filename = \"test_print\"\n",

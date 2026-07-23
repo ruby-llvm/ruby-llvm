@@ -32,8 +32,12 @@ module LLVM
         ConstantExpr.from_ptr(ptr)
       when :const_null
         ConstantNull.from_ptr(ptr)
-      when :const_struct, :const_aggregregate_zero
+      when :const_struct, :const_aggregate_zero
         ConstantStruct.from_ptr(ptr)
+      when :const_data_array, :const_array
+        ConstantArray.from_ptr(ptr)
+      when :const_vector, :const_data_vector
+        ConstantVector.from_ptr(ptr)
       else
         raise "from_ptr_kind cannot handle: #{kind}"
       end
@@ -1221,7 +1225,7 @@ module LLVM
 
   class GlobalVariable < GlobalValue
     def initializer
-      Value.from_ptr(C.get_initializer(self))
+      Value.from_ptr_kind(C.get_initializer(self))
     end
 
     def initializer=(val)

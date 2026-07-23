@@ -179,7 +179,7 @@ module LLVM
       :const_struct, 12,
       :const_vector, 13,
       :undef, 14,
-      :const_aggregregate_zero, 15,
+      :const_aggregate_zero, 15,
       :const_data_array, 16,
       :const_data_vector, 17,
       :const_int, 18,

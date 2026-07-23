@@ -21,6 +21,28 @@ class TargetTestCase < Minitest::Test
     LLVM::Target.init_all(true)
   end
 
+  def test_init_all_asm_parsers
+    LLVM::Target.init_all_asm_parsers
+  end
+
+  def test_init_all_disassemblers
+    LLVM::Target.init_all_disassemblers
+  end
+
+  def test_init_all_mcas
+    LLVM::Target.init_all_mcas
+  end
+
+  def test_init_native_asm_parser
+    LLVM::Target.init_native
+    LLVM::Target.init_native_asm_parser
+  end
+
+  def test_init_native_disassembler
+    LLVM::Target.init_native
+    LLVM::Target.init_native_disassembler
+  end
+
   def test_native_arch
     arch = LLVM::Target.native_arch
     skip "LLVM built without a native target" if arch.nil?
