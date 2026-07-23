@@ -104,11 +104,13 @@ will get you the mandel module as a llvm ir file.
 
 You can run this in 2 ways. First with the llvm interpreter, lli
 
-  lli mandel.ll
-  
-will actually run the module as is. Remember, not output other that what you "put". And for the final act
+  lli-22 mandel.ll
 
-  llc -O3 mandel.ll -filetype=obj -o mandel.o
+will actually run the module as is. Remember, not output other that what you "put". Use the lli
+version that matches the LLVM version ruby-llvm links against (e.g. lli-22 for LLVM 22); the
+system default lli may be a different version and will reject the IR. And for the final act
+
+  llc-22 -O3 mandel.ll -filetype=obj -o mandel.o
   gcc mandel.o -o mandel
   ./mandel
 
