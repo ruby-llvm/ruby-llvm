@@ -33,6 +33,7 @@ extern "C" {
   // Like LLVMDumpModule but avoids the errs() function-local static.
   // On Windows, errs() teardown crashes after Ruby closes fd 2.
   LLVM_SUPPORT_API int LLVMDumpModuleToStderr(LLVMModuleRef M) {
+    // TODO: Fix for earlier versions https://github.com/llvm/llvm-project/blob/llvmorg-20.1.8/llvm/lib/Support/raw_ostream.cpp
     // Mirror errs(): enable auto-conversion on stderr once (no-op on non-z/OS).
     static std::error_code _ec = llvm::enableAutoConversion(STDERR_FILENO);
     (void)_ec;

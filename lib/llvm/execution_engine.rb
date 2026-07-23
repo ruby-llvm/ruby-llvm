@@ -27,7 +27,7 @@ module LLVM
         if status.zero?
           @ptr = ptr.read_pointer
         else
-          C.dispose_message(error)
+          C.dispose_message(errorp)
           error.autorelease = false
           raise "Error creating JIT compiler: #{message}"
         end

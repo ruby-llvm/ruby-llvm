@@ -79,7 +79,9 @@ class MCJITTestCase < Minitest::Test
     when 'linux'
       /gnu/
     when 'windows'
-      /windows/
+      /windows-gnu|windows-msvc/
+    when 'cygwin'
+      /windows-cygnus/
     else
       raise "New platform: #{FFI::Platform::OS}"
     end
