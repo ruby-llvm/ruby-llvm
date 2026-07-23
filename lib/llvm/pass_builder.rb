@@ -423,7 +423,7 @@ module LLVM
       add_pass('partial-inliner')
     end
 
-    # This pass looks for equivalent functions that are mergable and folds them.
+    # This pass looks for equivalent functions that are mergeable and folds them.
     # https://llvm.org/docs/MergeFunctions.html
     # https://llvm.org/doxygen/MergeFunctions_8cpp_source.html
     # https://llvm.org/doxygen/MergeFunctions_8h_source.html

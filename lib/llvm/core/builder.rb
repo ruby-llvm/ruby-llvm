@@ -481,7 +481,7 @@ module LLVM
       Instruction.from_ptr(C.build_l_shr(self, lhs, rhs, name))
     end
 
-    # Arithmatic shift right.
+    # Arithmetic shift right.
     # @param [LLVM::Value] lhs Integer or vector of integers
     # @param [LLVM::Value] rhs Integer or vector of integers
     # @param [String] name Name of the result in LLVM IR

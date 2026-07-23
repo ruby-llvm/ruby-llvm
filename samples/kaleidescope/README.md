@@ -45,7 +45,7 @@ And off course ast nodes are responsible for creating the code they represent. T
 a central piece in the llvm machinery. Values are constant expressions representing instructions or numbers. In llvm they 
 are arranged in groups called BasicBlocks. Blocks may be seen as a flow graph of the program.
 
-The LLVM hierachy
+The LLVM hierarchy
 -----------------
 
 To understand what the code() functions do better it is helpful to understand more about llvm. Ie read read read. But a quick 
@@ -65,7 +65,7 @@ There are three ways to "build" a sequence of instructions/values. The simplest 
 Another way is using a builder (class Builder) to create instructions. There are any number of them in there 
 (ie i don't know them all), basic ones mul (multiply), add , icmp (integer compare), fcmp, ret (return). 
 This approach is fostered by the block api ruby-llvm has. 
-So you can wite module.functions.add do || and get the function and a builder. 
+So you can write module.functions.add do || and get the function and a builder. 
 
 Similarly function.basic_blocks.append(name).build do|| will also give you a builder to build away.
 The last approach is to use the values themselves. Similar functions to builders add/cmp exist on the values and you can
