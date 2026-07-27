@@ -113,7 +113,7 @@ jobs:
               Add-Content -Path $env:GITHUB_ENV -Value "CXX=g++"
             }
           }
-          # MSYS2/winget both install the rolling 'opt.exe', not the versioned 'opt-22.exe'
+          # MSYS2/llvm-project release both install the rolling 'opt.exe', not the versioned 'opt-22.exe'
           Add-Content -Path $env:GITHUB_ENV -Value "OPT=opt"
           echo "setup=true" >> $env:GITHUB_OUTPUT
       - name: 'Windows debug'

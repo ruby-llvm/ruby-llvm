@@ -83,6 +83,8 @@ SUPPORT_LIB = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
 CONFIG_MOD  = File.expand_path('../../lib/llvm/config.rb', File.dirname(__FILE__))
 
 CLEAN.include(SUPPORT_LIB, CONFIG_MOD)
+# MSVC leaves an import .lib and exports .exp beside the .dll
+CLEAN.include("RubyLLVMSupport-#{LLVM_VERSION}.lib", "RubyLLVMSupport-#{LLVM_VERSION}.exp")
 
 desc 'Build the shared library and config module'
 task default: [SUPPORT_LIB, CONFIG_MOD]
@@ -95,6 +97,13 @@ file SUPPORT_LIB => %w[support.cpp] do |task|
     # the JIT queries. LLVMCore.lib and its deps provide the two C++ methods not in the C API
     # (Attribute::getAsString, Attribute::getNameFromAttrKind); their TargetRegistry instance
     # inside RubyLLVMSupport-22.dll is unused and harmless.
+
+    # TODO: support dynamic-CRT LLVM builds. clang-cl here defaults to /MT (static CRT), which
+    # matches official llvm.org x64 and vovkos libcmt builds (RuntimeLibrary=MT_StaticRelease,
+    # /DEFAULTLIB:libcmt). An LLVM built with the dynamic CRT (RuntimeLibrary=MD_DynamicRelease,
+    # /DEFAULTLIB:MSVCRT) fails to link with LNK2038. To support both, detect the libs' CRT
+    # (e.g. `llvm-readobj --coff-directives #{lib_dir}/LLVMSupport.lib` -> grep RuntimeLibrary,
+    # or dumpbin /directives) and add /MD when it reports MD_DynamicRelease.
     sh "#{CXX} /O2 /LD #{task.prerequisites.join(' ')} " \
        "#{invoke_llvm_config('--cxxflags')} " \
        "#{lib_dir}/LLVM-C.lib #{lib_dir}/LLVMCore.lib #{lib_dir}/LLVMBinaryFormat.lib " \
