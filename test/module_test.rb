@@ -60,7 +60,7 @@ class ModuleTestCase < Minitest::Test
         var.initializer = LLVM::Int32.from_i(42)
         var.global_constant = true
       end
-      init = mod.globals['off'].initializer
+      init = mod.globals['off'].initializer_kind
       assert_kind_of LLVM::ConstantInt, init
       assert_equal 42, init.to_i(false)
     end
@@ -73,7 +73,7 @@ class ModuleTestCase < Minitest::Test
         var.initializer = arr
         var.global_constant = true
       end
-      init = mod.globals['str'].initializer
+      init = mod.globals['str'].initializer_kind
       assert_equal :const_data_array, init.kind
       assert_kind_of LLVM::ConstantArray, init
     end
@@ -88,7 +88,7 @@ class ModuleTestCase < Minitest::Test
         var.initializer = arr
         var.global_constant = true
       end
-      init = mod.globals['sarr'].initializer
+      init = mod.globals['sarr'].initializer_kind
       assert_equal :const_array, init.kind
       assert_kind_of LLVM::ConstantArray, init
     end
@@ -101,7 +101,7 @@ class ModuleTestCase < Minitest::Test
         var.initializer = vec
         var.global_constant = true
       end
-      init = mod.globals['vec'].initializer
+      init = mod.globals['vec'].initializer_kind
       assert_equal :const_data_vector, init.kind
       assert_kind_of LLVM::ConstantVector, init
     end
@@ -114,7 +114,7 @@ class ModuleTestCase < Minitest::Test
         var.initializer = zero
         var.global_constant = true
       end
-      init = mod.globals['zs'].initializer
+      init = mod.globals['zs'].initializer_kind
       assert_equal :const_aggregate_zero, init.kind
       assert_kind_of LLVM::ConstantStruct, init
     end

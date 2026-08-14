@@ -698,11 +698,11 @@ module LLVM
     end
   end
 
-  ::LLVM::Int1 = LLVM::Type.integer(1) #: LLVM::IntType
-  ::LLVM::Int8 = LLVM::Type.integer(8) #: LLVM::IntType
-  ::LLVM::Int16 = LLVM::Type.integer(16) #: LLVM::IntType
-  ::LLVM::Int32 = LLVM::Type.integer(32) #: LLVM::IntType
-  ::LLVM::Int64 = LLVM::Type.integer(64) #: LLVM::IntType
+  ::LLVM::Int1 = LLVM::Type.integer(1).freeze #: LLVM::IntType
+  ::LLVM::Int8 = LLVM::Type.integer(8).freeze #: LLVM::IntType
+  ::LLVM::Int16 = LLVM::Type.integer(16).freeze #: LLVM::IntType
+  ::LLVM::Int32 = LLVM::Type.integer(32).freeze #: LLVM::IntType
+  ::LLVM::Int64 = LLVM::Type.integer(64).freeze #: LLVM::IntType
 
   # Native integer type
   bits = FFI.type_size(:int) * 8
@@ -1225,6 +1225,12 @@ module LLVM
 
   class GlobalVariable < GlobalValue
     def initializer
+      Value.from_ptr(C.get_initializer(self))
+    end
+
+    # Like #initializer, but dispatches on the value kind, so the initializer
+    # comes back as its concrete constant class (ConstantInt, ConstantArray, ...).
+    def initializer_kind
       Value.from_ptr_kind(C.get_initializer(self))
     end
 
