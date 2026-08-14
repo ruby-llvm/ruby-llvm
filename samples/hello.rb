@@ -44,6 +44,14 @@ puts "------------------------------"
 
 LLVM.init_jit
 
+# 32-bit x86 JIT fixups: realign the stack (LLVM assumes 16-byte, Ruby calls in 4-byte) and
+# register puts as _puts (i386 underscore mangling). No-op on 64-bit / Unix.
+if FFI::Platform::ADDRESS_SIZE == 32 && (FFI::Platform::IS_WINDOWS || FFI::Platform::OS == 'cygwin')
+  mod.functions.each { |f| f.add_attribute(LLVM::Attribute.string('stackrealign', '')) }
+  puts_ptr = FFI::DynamicLibrary.open(FFI::Library::LIBC, FFI::DynamicLibrary::RTLD_LAZY).find_function('puts')
+  LLVM::C.add_symbol('_puts', puts_ptr) if puts_ptr
+end
+
 engine = LLVM::JITCompiler.new(mod)
 engine.run_function(main)
 engine.dispose
