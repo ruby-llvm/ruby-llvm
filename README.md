@@ -14,7 +14,7 @@ computationally intensive algorithms on the fly.
 Current version
 ---------------
 
-This library currently binds to LLVM-18 (specifically llvm-c 18.
+This library currently binds to LLVM 22.1.x (specifically llvm-c 22).
 
 About version numbers
 ---------------------
@@ -32,7 +32,7 @@ Debian/Ubuntu
 Homebrew
 --------
 
-LLVM can be installed with Homebrew by executing `brew install llvm --shared`
+LLVM can be installed with Homebrew by executing `brew install llvm@22`
 
 Source and other binaries
 -------------------------

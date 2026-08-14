@@ -57,7 +57,7 @@ class AttributeTestCase < Minitest::Test
       refute_predicate(fun, :writeonly?)
     end
     with_function [], LLVM.Void do |fun|
-      fun.add_attribute(attr_memory(256))
+      fun.add_attribute(attr_memory(4096))
       assert_equal(expected, fun.to_s)
       assert_predicate(fun, :readnone?)
       refute_predicate(fun, :readonly?)
@@ -106,7 +106,7 @@ class AttributeTestCase < Minitest::Test
   end
 
   def test_last_enum
-    assert_equal 100, LLVM::Attribute.last_enum
+    assert_equal 102, LLVM::Attribute.last_enum
   end
 
   def test_create_string
