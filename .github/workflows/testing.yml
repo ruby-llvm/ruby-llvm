@@ -12,13 +12,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04, macos-14, macos-15, macos-15-intel, macos-26, macos-26-intel]
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04, macos-14, macos-15, macos-15-intel, macos-26, macos-26-intel, windows-2022, windows-2025]
         ruby: ['3.1', '3.2', '3.3', '3.4', '4.0']
+        include:
+          - os: windows-11-arm
+            ruby: '3.4'
+          - os: windows-2025
+            ruby: ruby-mswin
         exclude:
           - os: ubuntu-26.04
             ruby: '3.1'
+          # Ruby 3.1's MSYS2 archive comes with gcc already installed, pinned to gcc-libs=14.2.0-3:
+          #   error: failed to prepare transaction (could not satisfy dependencies)
+          # :: installing mingw-w64-ucrt-x86_64-gcc-libs (16.1.0-5) breaks
+          #     dependency 'mingw-w64-ucrt-x86_64-gcc-libs=14.2.0-3' required by mingw-w64-ucrt-x86_64-gcc
+          - os: windows-2022
+            ruby: '3.1'
+          - os: windows-2025
+            ruby: '3.1'
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
+      # checkout/setup-ruby run before the LLVM installs, not after as on master:
+      # the windows path calls `ridk exec` to install LLVM into the MSYS2 tree of
+      # whichever Ruby setup-ruby just installed, so Ruby has to exist first.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
       - name: Install LLVM on macos
         if: startsWith(matrix.os, 'macos')
         id: macos_setup
@@ -54,22 +75,69 @@ jobs:
           sudo ./llvm.sh 22
           # sudo apt-get install -y libpolly-22-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
-      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
+      - name: Install LLVM on windows
+        id: windows_setup
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          # pwsh only aborts on a failing cmdlet by default, and only checks the
+          # exit code of the last command in the script, so make native command
+          # failures terminating and check them explicitly as well.
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+          echo "setup=false" >> $env:GITHUB_OUTPUT
+          if ('${{ matrix.ruby }}' -eq 'ruby-mswin') {
+            # MSVC LLVM from the official llvm.org release (same build as local debug-win setup).
+            # Use the clang+llvm-* archive (not LLVM-*.exe): the installer is toolchain-only;
+            # the archive adds LLVM headers and libs needed to build software that uses LLVM.
+            $archive = "$env:TEMP\llvm-22.1.8-msvc.tar.xz"
+            Invoke-WebRequest "https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.8/clang+llvm-22.1.8-x86_64-pc-windows-msvc.tar.xz" -OutFile $archive -UseBasicParsing
+            New-Item -ItemType Directory -Force -Path C:\llvm-msvc | Out-Null
+            # Git's MSYS2 /usr/bin/tar shadows Windows' bsdtar and treats "C:" as a hostname;
+            # call System32\tar.exe directly to get Windows-path-aware bsdtar.
+            & "$env:SystemRoot\System32\tar.exe" -xf $archive -C C:\llvm-msvc --strip-components=1
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            echo "C:\llvm-msvc\bin" >> $env:GITHUB_PATH
+          } else {
+            # ridk exec resolves the correct MSYS2 root + MSYSTEM (UCRT64 on
+            # x86-64, CLANGARM64 on windows-11-arm) for whichever Ruby
+            # ruby/setup-ruby just installed, and runs pacman against that SAME
+            # tree — no separate MSYS2 install, so no second tree to get out of
+            # sync with the one the build actually links against.
+            # Use a PS double-quoted string so PowerShell wraps the -c argument in
+            # cmd.exe double quotes (no embedded " → no \"-escaping), which protects
+            # > and < from cmd.exe redirect interpretation. Backtick-escape $ so
+            # PowerShell doesn't expand the bash variable. Use sh single-quote
+            # concatenation (e.g. llvm'>=22.1.0') to protect > and < from bash.
+            ridk exec sh -c "pacman -Sy --noconfirm --noprogressbar --needed --disable-download-timeout `$MINGW_PACKAGE_PREFIX-llvm'>=22.1.0' `$MINGW_PACKAGE_PREFIX-llvm'<22.2'"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            # On x86-64 the runner ships an MSVC clang++.exe that find_cxx would
+            # pick over MinGW g++ (passes --version but rejects -fPIC). Force g++
+            # since no MSVC g++ exists to shadow it. On ARM64 leave CXX unset and
+            # let find_cxx resolve the CLANGARM64 toolchain naturally.
+            if ($env:PROCESSOR_ARCHITECTURE -ne 'ARM64') {
+              Add-Content -Path $env:GITHUB_ENV -Value "CXX=g++"
+            }
+          }
+          # MSYS2/llvm-project release both install the rolling 'opt.exe', not the versioned 'opt-22.exe'
+          Add-Content -Path $env:GITHUB_ENV -Value "OPT=opt"
+          echo "setup=true" >> $env:GITHUB_OUTPUT
+      - name: 'Windows debug'
+        if: startsWith(matrix.os, 'windows') && matrix.ruby != 'ruby-mswin' && (steps.windows_setup.outputs.setup == 'false' || runner.debug == '1')
+        run: |
+          ridk exec sh -c 'echo MSYSTEM=$MSYSTEM; pacman -Q $MINGW_PACKAGE_PREFIX-llvm; llvm-config --bindir --libdir --ldflags; ls -l $(llvm-config --bindir)/libLLVM*; ls -l $(llvm-config --libdir)/libLLVM-22.*'
+          echo "$env:PATH"
+          Get-Command llvm-config -ErrorAction SilentlyContinue
       - run: cd ext/ruby-llvm-support && bundle exec rake
         name: "Build support library"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
       - run: bundle exec rake
         name: "Run tests"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
       - run: bundle exec rake test:samples
         name: "Run samples"
-        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true' || steps.windows_setup.outputs.setup == 'true'
       - name: "Typecheck"
         run: bundle exec srb tc
+        # sorbet-static has no Windows build (see Gemfile), so windows_setup is
+        # deliberately omitted here, unlike the steps above
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
