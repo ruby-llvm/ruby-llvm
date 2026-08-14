@@ -21,6 +21,9 @@ static char* owned_message(const std::string &s) {
   return LLVMCreateMessage(s.c_str());
 }
 
+#define STRINGIFY_HELPER(x) #x
+#define STRINGIFY(x) STRINGIFY_HELPER(x)
+
 #ifdef _WIN32
 #define LLVM_SUPPORT_API __declspec(dllexport)
 #else
@@ -28,6 +31,15 @@ static char* owned_message(const std::string &s) {
 #endif
 
 extern "C" {
+
+  LLVM_SUPPORT_API const char * LLVMNativeArch() {
+#ifdef LLVM_NATIVE_ARCH
+    return STRINGIFY(LLVM_NATIVE_ARCH);
+#else
+    return nullptr;
+#endif
+  }
+
   LLVM_SUPPORT_API void LLVMInitializeAllTargetInfos() {
     llvm::InitializeAllTargetInfos();
   }
@@ -44,12 +56,32 @@ extern "C" {
     llvm::InitializeAllAsmPrinters();
   }
 
+  LLVM_SUPPORT_API void LLVMInitializeAllAsmParsers() {
+    llvm::InitializeAllAsmParsers();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeAllDisassemblers() {
+    llvm::InitializeAllDisassemblers();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeAllTargetMCAs() {
+    llvm::InitializeAllTargetMCAs();
+  }
+
   LLVM_SUPPORT_API void LLVMInitializeNativeTarget() {
     llvm::InitializeNativeTarget();
   }
 
   LLVM_SUPPORT_API void LLVMInitializeNativeAsmPrinter() {
     llvm::InitializeNativeTargetAsmPrinter();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeNativeAsmParser() {
+    llvm::InitializeNativeTargetAsmParser();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeNativeDisassembler() {
+    llvm::InitializeNativeTargetDisassembler();
   }
 
   // static StringRef getNameFromAttrKind(Attribute::AttrKind AttrKind)

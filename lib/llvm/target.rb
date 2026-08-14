@@ -95,6 +95,34 @@ module LLVM
       Support::C.initialize_native_asm_printer if asm_printer
     end
 
+    def self.init_all_asm_parsers
+      Support::C.initialize_all_asm_parsers
+    end
+
+    def self.init_all_disassemblers
+      Support::C.initialize_all_disassemblers
+    end
+
+    def self.init_all_mcas
+      Support::C.initialize_all_target_mcas
+    end
+
+    def self.init_native_asm_parser
+      Support::C.initialize_native_asm_parser
+    end
+
+    def self.init_native_disassembler
+      Support::C.initialize_native_disassembler
+    end
+
+    # Returns the name of the LLVM target backend native to this build, e.g.
+    # "X86" or "AArch64", suitable for passing to {Target.init}.
+    #
+    # @return [String, nil] nil if this LLVM was built without a native target.
+    def self.native_arch
+      Support::C.native_arch
+    end
+
     # Enumerate all initialized targets.
     #
     # @yield [Target]
