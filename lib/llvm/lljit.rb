@@ -22,6 +22,13 @@ module LLVM
       end
     end
 
+    def dispose
+      return if @ptr.nil?
+      err = C.dispose_lljit(@ptr)
+      raise C.get_error_message(err) unless err.null?
+      @ptr = nil
+    end
+
     def triple_string
       C.get_triple_string(ptr)
     end
