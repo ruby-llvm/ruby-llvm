@@ -236,7 +236,12 @@ module LLVM
 
   # @private
   module C
-    # ffi_gen autodetects :string, which leaks the caller-owned buffer
+    # ffi_gen autodetects :string, which leaks the caller-owned buffer.
+    # Drop any earlier definition first: re-attaching over one warns.
+    if singleton_class.method_defined?(:copy_string_rep_of_target_data, false)
+      singleton_class.send(:remove_method, :copy_string_rep_of_target_data)
+    end
+    remove_method(:copy_string_rep_of_target_data) if method_defined?(:copy_string_rep_of_target_data, false)
     attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [OpaqueTargetData], LLVM::OwnedString
   end
 
