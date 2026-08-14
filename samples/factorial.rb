@@ -73,7 +73,7 @@ if( ARGV.length == 0 )
   puts "Single run with 42 = "  + engine.run_function(mod.functions["fac"], 42).to_i.to_s
   exit
 end
-puts "Times show factorial execution times in milliseconds. Both for llvm and ruby iterative and recusive algorithms"
+puts "Times show factorial execution times in milliseconds. Both for llvm and ruby iterative and recursive algorithms"
 puts ["Num" , "llvm rec","recursive" ,"iterative","arrar iter."].collect{|u|u.ljust(11)}.join
 res = [ 1, 5 , 20 , 50 , 100 , 200 , 500 , 1000 , 2000 , 5000  ].each do |i|
   res = [ ]

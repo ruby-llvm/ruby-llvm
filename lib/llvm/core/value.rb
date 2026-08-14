@@ -44,7 +44,7 @@ module LLVM
       end
     end
 
-    # Returns the Value type. This is abstract and is overidden by its subclasses.
+    # Returns the Value type. This is abstract and is overridden by its subclasses.
     def self.type
       raise NotImplementedError, "#{name}.type() is abstract."
     end
@@ -480,9 +480,9 @@ module LLVM
     # @deprecated
     #: -> ConstantInt
     def nuw_neg
-      # :nocov:
+      # simplecov:disable
       self.class.from_ptr(C.const_nuw_neg(self))
-      # :nocov:
+      # simplecov:enable
     end
     deprecate :nuw_neg, "neg", 2025, 3
 
@@ -626,7 +626,7 @@ module LLVM
     alias_method :shr, :lshr
     alias_method :>>, :lshr
 
-    # Arithmatic shift right.
+    # Arithmetic shift right.
     def ashr(bits)
       width = [type.width, bits.type.width].max
       LLVM::Type.integer(width).from_i(to_i >> bits.to_i)
@@ -1199,7 +1199,7 @@ module LLVM
         Value.from_ptr(C.get_param(@fun, i))
       end
 
-      # Returns the number of paramters in the collection.
+      # Returns the number of parameters in the collection.
       #: -> Integer
       def size
         C.count_params(@fun)
@@ -1207,7 +1207,7 @@ module LLVM
 
       include Enumerable
 
-      # Iteraters through each parameter in the collection.
+      # Iterates through each parameter in the collection.
       def each(&)
         return to_enum :each unless block_given?
         0.upto(size - 1) { |i| yield self[i] }
@@ -1369,7 +1369,7 @@ module LLVM
       C.set_instruction_call_conv(self, conv)
     end
 
-    # Returns the call insatnce's call convention.
+    # Returns the call instance's call convention.
     def call_conv
       C.get_instruction_call_conv(self)
     end
