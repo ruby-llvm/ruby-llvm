@@ -47,6 +47,7 @@ task :generate_ffi do
   }
 
   mappings.each do |ruby_file, headers|
+    # I used clang 14 locally; doesn't work well with 17, yields different result with 22
     FFIGen.generate(
       module_name: 'LLVM::C',
       ffi_lib: [

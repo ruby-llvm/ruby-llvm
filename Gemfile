@@ -18,3 +18,12 @@ if RUBY_PLATFORM.match?(/darwin|(?:x86_64|aarch64)-linux/)
     gem "tapioca", "~> 0.16.11"
   end
 end
+
+# Guard the :devtools group by platform like :typecheck, so its gem.coop source
+# (unreachable from the Windows/Cygwin CI/VM) is absent from the dependency graph
+# there rather than failing resolution.
+unless RUBY_PLATFORM.match?(/mswin|mingw|cygwin/)
+  group :devtools, optional: true do
+    gem "ffi_gen", source: "https://gem.coop/@uvlad7"
+  end
+end
