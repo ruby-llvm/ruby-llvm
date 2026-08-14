@@ -12,6 +12,7 @@ class Parser
   def initialize stream = $stdin
     puts "ready> " if stream == $stdin
     @lexer = Lexer.new stream
+    @anon_counter = 0
   end
   def start
     dummy = Token.new( :some , :such , :garble , self)
@@ -309,7 +310,8 @@ class Parser
     #puts "parseTopLevelExpr #{token}"
     if expr = parseExpression(token)
       # Make an anonymous proto.
-      proto = PrototypeAST.new("", [] , expr.from , expr.to)
+      @anon_counter += 1
+      proto = PrototypeAST.new("__anon_expr_#{@anon_counter}", [] , expr.from , expr.to)
       return FunctionAST.new(proto, expr)
     end
     return nil

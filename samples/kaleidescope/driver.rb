@@ -16,6 +16,9 @@ class Driver
     @parser = Parser.new (fname ? File.open( fname ) : $stdin )
     @module = LLVM::Module.new("Kaleidescope")
     @builder = LLVM::Builder.new
+    # MCJIT compiles the whole module on the first function_address lookup.
+    # We parse everything into @module first, then run all expressions so that
+    # a single compilation pass covers all definitions and expressions.
     @engine = LLVM::JITCompiler.new(@module)
     # We define a putchard (as per tutorial chapter 6), as we cant link it in by writing c
     # to do that we do need to define the putchar (stdlibc take a int as external first)
@@ -28,6 +31,7 @@ class Driver
         builder.ret arg
       end
     end
+    @pending_exprs = []
   end
 
   # top ::= definition | external | expression | ''
@@ -59,11 +63,12 @@ class Driver
           token.next
         end
       else
-        # Evaluate a top-level expression into an anonymous function.
+        # Collect top-level expressions into an anonymous function.
+        # All expressions are run after parsing is complete so the whole module
+        # is compiled in one shot before any function_address lookup.
         if functionAST = @parser.parseTopLevelExpr(token)
           if function = functionAST.code(@module ,@builder)
-            res = @engine.run_function function
-            puts "Evaluated #{functionAST.body} to #{res.to_f(LLVM::Double.type)}"
+            @pending_exprs << [function, functionAST.body]
           end
           token = functionAST.to
         else # Skip token for error recovery.
@@ -71,7 +76,16 @@ class Driver
         end
       end
     end
+
   end
+
+  def runExprs
+    @pending_exprs.each do |function, body|
+      res = @engine.run_function function
+      puts "Evaluated #{body} to #{res.to_f(LLVM::Double.type)}"
+    end
+  end
+
   def dump
     # create a main entry for the first expression
     zero = @module.functions.last
@@ -83,7 +97,7 @@ class Driver
         builder.ret LLVM::Int(0)
       end
     end
-    
+
     @module.dump
   end
 end
@@ -94,6 +108,7 @@ end
 
 driver = Driver.new ARGV[0]
 driver.mainLoop
+driver.runExprs
 driver.dump
 
 #===----------------------------------------------------------------------===#
