@@ -11,6 +11,7 @@
 .yardoc
 coverage/*
 doc/*
+tmp/
 .bundle
 Gemfile.lock
 lib/llvm/config.rb

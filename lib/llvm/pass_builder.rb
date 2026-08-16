@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 # typed: true
 
+require 'llvm/core_ffi'
+
 module LLVM
   class PassBuilder # rubocop:disable Metrics/ClassLength
-    extend FFI::Library
-
-    ffi_lib ["LLVM-21", "libLLVM-21.so.1", "libLLVM.so.21", "libLLVM.so.21.1"]
     attr_reader :passes
     attr_accessor :inliner_threshold, :merge_functions
 
