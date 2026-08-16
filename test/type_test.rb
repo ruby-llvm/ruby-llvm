@@ -14,6 +14,16 @@ class TypeTestCase < Minitest::Test
     assert_equal :void, pointee.kind
   end
 
+  def test_null_pointer_rejected
+    assert_raises(ArgumentError) do
+      LLVM::Type.new(FFI::Pointer::NULL, nil)
+    end
+
+    assert_raises(ArgumentError) do
+      LLVM::Type.from_ptr(FFI::Pointer::NULL)
+    end
+  end
+
   def test_element_type_unsupported
     assert_raises(ArgumentError) do
       LLVM.Void.element_type

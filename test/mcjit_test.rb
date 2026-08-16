@@ -47,7 +47,8 @@ class MCJITTestCase < Minitest::Test
     engine = LLVM::MCJITCompiler.new(main_mod, :opt_level => 0)
     engine.modules << create_square_function_module
 
-    result = engine.run_function(main_mod.functions['call_square'])
+    function = main_mod.functions['call_square'] #: as !nil
+    result = engine.run_function(function)
     assert_equal 25, result.to_i
   end
 

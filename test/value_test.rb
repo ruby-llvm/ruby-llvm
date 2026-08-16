@@ -12,6 +12,16 @@ class ValueTestCase < Minitest::Test
     refute_predicate LLVM::Int32.from_i(1), :null?
   end
 
+  def test_null_pointer_rejected
+    assert_raises(ArgumentError) do
+      LLVM::Value.new(FFI::Pointer::NULL)
+    end
+
+    assert_raises(ArgumentError) do
+      LLVM::Value.from_ptr(FFI::Pointer::NULL)
+    end
+  end
+
   def test_undef
     assert_predicate LLVM::Int32.undef, :undef?
     refute_predicate LLVM::Int32.from_i(1), :undef?

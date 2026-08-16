@@ -6,6 +6,7 @@ module LLVM
     include PointerIdentity
 
     # @private
+    #: (FFI::Pointer) -> LLVM::Module?
     def self.from_ptr(ptr)
       return if ptr.null?
       mod = allocate
@@ -25,7 +26,7 @@ module LLVM
       @ptr = nil
     end
 
-    #: -> LLVM::Module
+    #: -> LLVM::Module?
     def clone_module
       Module.from_ptr(C.clone_module(self))
     end
@@ -85,7 +86,7 @@ module LLVM
       end
 
       # Returns the Type with the given name (symbol or string).
-      #: (untyped) -> Type
+      #: (String | Symbol) -> Type
       def named(name)
         Type.from_ptr(C.get_type_by_name(@module, name.to_s))
       end
@@ -107,40 +108,46 @@ module LLVM
       end
 
       # Adds a GlobalVariable with the given type and name to the collection (symbol or string).
-      def add(ty, name)
+      #: (untyped, String | Symbol) ?{ (GlobalVariable) -> void } -> GlobalVariable
+      def add(ty, name, &)
         GlobalVariable.from_ptr(C.add_global(@module, LLVM::Type(ty), name.to_s)).tap do |gvar|
           yield gvar if block_given?
         end
       end
 
       # Returns the GlobalVariable with the given name (symbol or string).
-      #: (untyped) -> GlobalVariable
+      #: (String | Symbol) -> GlobalVariable?
       def named(name)
-        GlobalVariable.from_ptr(C.get_named_global(@module, name.to_s))
+        ptr = C.get_named_global(@module, name.to_s)
+        GlobalVariable.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the first GlobalVariable in the collection.
-      #: -> GlobalVariable
+      #: -> GlobalVariable?
       def first
-        GlobalVariable.from_ptr(C.get_first_global(@module))
+        ptr = C.get_first_global(@module)
+        GlobalVariable.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the last GlobalVariable in the collection.
-      #: -> GlobalVariable
+      #: -> GlobalVariable?
       def last
-        GlobalVariable.from_ptr(C.get_last_global(@module))
+        ptr = C.get_last_global(@module)
+        GlobalVariable.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the next GlobalVariable in the collection after global.
-      #: (GlobalVariable) -> GlobalVariable
+      #: (GlobalVariable) -> GlobalVariable?
       def next(global)
-        GlobalVariable.from_ptr(C.get_next_global(global))
+        ptr = C.get_next_global(global)
+        GlobalVariable.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the previous GlobalVariable in the collection before global.
-      #: (GlobalVariable) -> GlobalVariable
+      #: (GlobalVariable) -> GlobalVariable?
       def previous(global)
-        GlobalVariable.from_ptr(C.get_previous_global(global))
+        ptr = C.get_previous_global(global)
+        GlobalVariable.from_ptr(ptr) unless ptr.null?
       end
 
       # Deletes the GlobalVariable from the collection.
@@ -150,12 +157,13 @@ module LLVM
       end
 
       # Returns the GlobalVariable with a name equal to key (symbol or string) or at key (integer).
+      #: (String | Symbol | Integer) -> GlobalVariable?
       def [](key)
         case key
         when String, Symbol then named(key)
         when Integer then
           i = 0
-          g = first
+          g = first #: GlobalVariable?
           until i >= key || g.nil?
             g = self.next(g)
             i += 1
@@ -165,8 +173,10 @@ module LLVM
       end
 
       # Iterates through each GlobalVariable in the collection.
+      # @override
+      #: { (GlobalVariable) -> void } -> void
       def each(&)
-        g = first
+        g = first #: GlobalVariable?
         until g.nil?
           yield g
           g = self.next(g)
@@ -207,28 +217,38 @@ module LLVM
       end
 
       # Returns the Function with the given name (symbol or string).
+      #: (String | Symbol) -> Function?
       def named(name)
-        Function.from_ptr(C.get_named_function(@module, name.to_s))
+        ptr = C.get_named_function(@module, name.to_s)
+        Function.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the first Function in the collection.
+      #: -> Function?
       def first
-        Function.from_ptr(C.get_first_function(@module))
+        ptr = C.get_first_function(@module)
+        Function.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the last Function in the collection.
+      #: -> Function?
       def last
-        Function.from_ptr(C.get_last_function(@module))
+        ptr = C.get_last_function(@module)
+        Function.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the next Function in the collection after function.
+      #: (Function) -> Function?
       def next(function)
-        Function.from_ptr(C.get_next_function(function))
+        ptr = C.get_next_function(function)
+        Function.from_ptr(ptr) unless ptr.null?
       end
 
       # Returns the previous Function in the collection before function.
+      #: (Function) -> Function?
       def previous(function)
-        Function.from_ptr(C.get_previous_function(function))
+        ptr = C.get_previous_function(function)
+        Function.from_ptr(ptr) unless ptr.null?
       end
 
       # Deletes the Function from the collection.
@@ -237,12 +257,13 @@ module LLVM
       end
 
       # Returns the Function with a name equal to key (symbol or string) or at key (integer).
+      #: (String | Symbol | Integer) -> Function?
       def [](key)
         case key
         when String, Symbol then named(key)
         when Integer
           i = 0
-          f = first
+          f = first #: Function?
           until i >= key || f.nil?
             f = self.next(f)
             i += 1
@@ -252,8 +273,10 @@ module LLVM
       end
 
       # Iterates through each Function in the collection.
+      # @override
+      #: { (Function) -> void } -> void
       def each(&)
-        f = first
+        f = first #: Function?
         until f.nil?
           yield f
           f = self.next(f)
