@@ -236,9 +236,8 @@ module LLVM
 
   # @private
   module C
-    # ffi_gen autodetects :string, which is too weak to be usable
-    # with LLVMDisposeMessage
-    attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [OpaqueTargetData], :pointer
+    # ffi_gen autodetects :string, which leaks the caller-owned buffer
+    attach_function :copy_string_rep_of_target_data, :LLVMCopyStringRepOfTargetData, [OpaqueTargetData], LLVM::OwnedString
   end
 
   class TargetDataLayout
@@ -274,11 +273,7 @@ module LLVM
     #
     # @return [String]
     def to_s
-      string_ptr = C.copy_string_rep_of_target_data(self)
-      string = string_ptr.read_string
-      C.dispose_message(string_ptr)
-
-      string
+      C.copy_string_rep_of_target_data(self)
     end
 
     # Returns the byte order of a target, either :big_endian or :little_endian.

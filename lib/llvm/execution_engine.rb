@@ -19,18 +19,13 @@ module LLVM
     # @return [ExecutionEngine] JIT execution engine
     def initialize(mod, options)
       FFI::MemoryPointer.new(FFI.type_size(:pointer)) do |ptr|
-        error   = FFI::MemoryPointer.new(FFI.type_size(:pointer))
-        status  = create_execution_engine_for_module(ptr, mod, error, options)
-        errorp  = error.read_pointer
-        message = errorp.read_string unless errorp.null?
-
-        if status.zero?
-          @ptr = ptr.read_pointer
-        else
-          C.dispose_message(error)
-          error.autorelease = false
-          raise "Error creating JIT compiler: #{message}"
+        message = LLVM.with_message_output do |err|
+          create_execution_engine_for_module(ptr, mod, err, options)
         end
+
+        raise "Error creating JIT compiler: #{message}" if message
+
+        @ptr = ptr.read_pointer
       end
     end
 
@@ -123,22 +118,15 @@ module LLVM
       # @param [LLVM::Module] mod
       # @return [LLVM::Module] deleted module
       def delete(mod)
-        error   = FFI::MemoryPointer.new(:pointer)
         out_mod = FFI::MemoryPointer.new(:pointer)
 
-        status = C.remove_module(@engine, mod, out_mod, error)
-
-        if status.zero?
-          LLVM::Module.from_ptr(out_mod.read_pointer)
-        else
-          errorp  = error.read_pointer
-          message = errorp.read_string unless errorp.null?
-
-          C.dispose_message(error)
-          error.autorelease = false
-
-          raise "Error removing module: #{message}"
+        message = LLVM.with_message_output do |err|
+          C.remove_module(@engine, mod, out_mod, err)
         end
+
+        raise "Error removing module: #{message}" if message
+
+        LLVM::Module.from_ptr(out_mod.read_pointer)
       end
 
       alias_method :<<, :add

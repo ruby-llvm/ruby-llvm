@@ -5,6 +5,11 @@ module LLVM
   module C
     attach_function :dispose_message, :LLVMDisposeMessage, [:pointer], :void
 
+    # Both disposers must take :pointer, not :string. With :string, FFI marshals
+    # the Ruby String into a temporary buffer and LLVM frees that instead of its
+    # own allocation, aborting with "munmap_chunk(): invalid pointer".
+    attach_function :dispose_error_message, :LLVMDisposeErrorMessage, [:pointer], :void
+
     # typedef unsigned LLVMAttributeIndex;
     typedef(:uint, :llvmattributeindex)
 
