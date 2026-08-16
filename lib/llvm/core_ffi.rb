@@ -2,6 +2,7 @@
 
 require 'ffi'
 require 'llvm/version'
+require 'llvm/owned_string'
 
 module LLVM::C
   extend FFI::Library
@@ -781,7 +782,7 @@ module LLVM::C
   # @param [String] message
   # @return [String]
   # @scope class
-  attach_function :create_message, :LLVMCreateMessage, [:string], :string
+  attach_function :create_message, :LLVMCreateMessage, [:string], LLVM::OwnedString
 
   # (Not documented)
   #
@@ -789,7 +790,7 @@ module LLVM::C
   # @param [String] message
   # @return [nil]
   # @scope class
-  attach_function :dispose_message, :LLVMDisposeMessage, [:string], :void
+  attach_function :dispose_message, :LLVMDisposeMessage, [:pointer], :void
 
   # @defgroup LLVMCCoreContext Contexts
   #
@@ -880,7 +881,7 @@ module LLVM::C
   # @param [FFI::Pointer(DiagnosticInfoRef)] di
   # @return [String]
   # @scope class
-  attach_function :get_diag_info_description, :LLVMGetDiagInfoDescription, [:pointer], :string
+  attach_function :get_diag_info_description, :LLVMGetDiagInfoDescription, [:pointer], LLVM::OwnedString
 
   # Return an enum LLVMDiagnosticSeverity.
   #
@@ -1030,7 +1031,7 @@ module LLVM::C
   # @param [FFI::Pointer(ModuleRef)] m
   # @return [String]
   # @scope class
-  attach_function :print_module_to_string, :LLVMPrintModuleToString, [:pointer], :string
+  attach_function :print_module_to_string, :LLVMPrintModuleToString, [:pointer], LLVM::OwnedString
 
   # Set inline assembly for a module.
   #
@@ -1222,7 +1223,7 @@ module LLVM::C
   # @param [FFI::Pointer(TypeRef)] val
   # @return [String]
   # @scope class
-  attach_function :print_type_to_string, :LLVMPrintTypeToString, [:pointer], :string
+  attach_function :print_type_to_string, :LLVMPrintTypeToString, [:pointer], LLVM::OwnedString
 
   # Obtain an integer type from a context with specified bit width.
   #
@@ -1759,7 +1760,7 @@ module LLVM::C
   # @param [FFI::Pointer(ValueRef)] val
   # @return [String]
   # @scope class
-  attach_function :print_value_to_string, :LLVMPrintValueToString, [:pointer], :string
+  attach_function :print_value_to_string, :LLVMPrintValueToString, [:pointer], LLVM::OwnedString
 
   # Replace all uses of a value with another one.
   #

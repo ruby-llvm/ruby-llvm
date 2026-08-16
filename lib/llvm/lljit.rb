@@ -98,9 +98,7 @@ module LLVM
                       [:pointer, :pointer, :pointer], :pointer
 
       # TODO: extract and combine with PassBuilder
-      attach_function(:get_error_message, :LLVMGetErrorMessage, [:pointer], :string)
-
-      attach_function(:dispose_error_message, :LLVMDisposeErrorMessage, [:string], :void)
+      attach_function(:get_error_message, :LLVMGetErrorMessage, [:pointer], LLVM::OwnedErrorString)
     end
   end
 end

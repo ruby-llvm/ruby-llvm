@@ -516,7 +516,7 @@ module LLVM::C
   # @param [OpaqueTargetMachine] t
   # @return [String]
   # @scope class
-  attach_function :get_target_machine_triple, :LLVMGetTargetMachineTriple, [OpaqueTargetMachine], :string
+  attach_function :get_target_machine_triple, :LLVMGetTargetMachineTriple, [OpaqueTargetMachine], LLVM::OwnedString
 
   # Returns the cpu used creating this target machine. See
   #   llvm::TargetMachine::getCPU. The result needs to be disposed with
@@ -526,7 +526,7 @@ module LLVM::C
   # @param [OpaqueTargetMachine] t
   # @return [String]
   # @scope class
-  attach_function :get_target_machine_cpu, :LLVMGetTargetMachineCPU, [OpaqueTargetMachine], :string
+  attach_function :get_target_machine_cpu, :LLVMGetTargetMachineCPU, [OpaqueTargetMachine], LLVM::OwnedString
 
   # Returns the feature string used creating this target machine. See
   #   llvm::TargetMachine::getFeatureString. The result needs to be disposed with
@@ -536,7 +536,7 @@ module LLVM::C
   # @param [OpaqueTargetMachine] t
   # @return [String]
   # @scope class
-  attach_function :get_target_machine_feature_string, :LLVMGetTargetMachineFeatureString, [OpaqueTargetMachine], :string
+  attach_function :get_target_machine_feature_string, :LLVMGetTargetMachineFeatureString, [OpaqueTargetMachine], LLVM::OwnedString
 
   # Create a DataLayout based on the targetMachine.
   #
@@ -587,7 +587,7 @@ module LLVM::C
   # @method get_default_target_triple()
   # @return [String]
   # @scope class
-  attach_function :get_default_target_triple, :LLVMGetDefaultTargetTriple, [], :string
+  attach_function :get_default_target_triple, :LLVMGetDefaultTargetTriple, [], LLVM::OwnedString
 
   # Adds the target-specific analysis passes to the pass manager.
   #

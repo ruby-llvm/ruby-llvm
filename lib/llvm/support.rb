@@ -29,7 +29,7 @@ module LLVM
           :LLVMInitializeNativeAsmPrinter, [], :void
 
       attach_function :get_enum_attribute_name_for_kind, :LLVMGetEnumAttributeNameForKind, [:uint], :string
-      attach_function :get_attribute_as_string, :LLVMGetAttributeAsString, [:pointer], :string
+      attach_function :get_attribute_as_string, :LLVMGetAttributeAsString, [:pointer], LLVM::OwnedString
     end
   end
 

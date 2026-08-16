@@ -631,11 +631,7 @@ module LLVM
 
       error = with_options { |options| C.run_passes(mod, pass_string, target, options) }
       if !error.null?
-        error_msg = C.get_error_message(error)
-        # TODO: clone then dispose of error_msg, currently produces "munmap_chunk(): invalid pointer"
-        # save_message = error_msg.clone
-        # C.dispose_error_message(error_msg)
-        raise ArgumentError, error_msg
+        raise ArgumentError, C.get_error_message(error)
       end
       self
     end
@@ -822,9 +818,7 @@ module LLVM
 
     attach_function :dispose_pass_builder_options, :LLVMDisposePassBuilderOptions, [:pointer], :void
 
-    attach_function(:get_error_message, :LLVMGetErrorMessage, [:pointer], :string)
-
-    attach_function(:dispose_error_message, :LLVMDisposeErrorMessage, [:string], :void)
+    attach_function(:get_error_message, :LLVMGetErrorMessage, [:pointer], LLVM::OwnedErrorString)
 
     attach_function(:set_inliner_threshold, :LLVMPassBuilderOptionsSetInlinerThreshold, [:pointer, :int], :void)
 
