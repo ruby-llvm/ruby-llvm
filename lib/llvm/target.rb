@@ -29,7 +29,8 @@ module LLVM
     module TargetModule
       extend FFI::Library
 
-      ffi_lib ["LLVM-21", "libLLVM-21.so.1", "libLLVM.so.21", "libLLVM.so.21.1"]
+      ffi_lib LLVM::LIB_NAMES
+
       #: (*untyped) -> void
       def self.safe_attach_function(*args)
         attach_function(

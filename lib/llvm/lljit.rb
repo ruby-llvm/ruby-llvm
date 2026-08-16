@@ -48,7 +48,7 @@ module LLVM
       extend FFI::Library
 
       ffi_lib_flags(:lazy, :global)
-      ffi_lib ["LLVM-21", "libLLVM-21.so.1", "libLLVM.so.21", "libLLVM.so.21.1"]
+      ffi_lib LLVM::LIB_NAMES
       attach_function :create_lljit_builder, :LLVMOrcCreateLLJITBuilder, [], :pointer
       attach_function :dispose_lljit_builder, :LLVMOrcDisposeLLJITBuilder, [:pointer], :void
 
