@@ -30,6 +30,9 @@ module LLVM
 
       attach_function :get_enum_attribute_name_for_kind, :LLVMGetEnumAttributeNameForKind, [:uint], :string
       attach_function :get_attribute_as_string, :LLVMGetAttributeAsString, [:pointer], LLVM::OwnedString
+      attach_function :print_module_to_string_debug, :LLVMPrintModuleToStringDebug, [:pointer], LLVM::OwnedString
+      attach_function :print_value_to_string_debug, :LLVMPrintValueToStringDebug, [:pointer], LLVM::OwnedString
+      attach_function :print_type_to_string_debug, :LLVMPrintTypeToStringDebug, [:pointer], LLVM::OwnedString
     end
   end
 

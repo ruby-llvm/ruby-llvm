@@ -3,7 +3,23 @@
  */
 
 #include <llvm/Support/TargetSelect.h>
+#include <llvm/Support/raw_ostream.h>
 #include <llvm/IR/Attributes.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Value.h>
+#include <llvm/IR/Type.h>
+#include <llvm-c/Core.h>
+#include <string>
+
+// Allocates a caller-owned copy of s, to be released with LLVMDisposeMessage.
+//
+// Uses LLVMCreateMessage rather than strdup so the allocation happens inside
+// LLVM's own module, pairing with the free() that LLVMDisposeMessage performs
+// there. Every string this file hands back is declared `char *` (not `const
+// char *`) and goes through here, so ownership is stated in one place.
+static char* owned_message(const std::string &s) {
+  return LLVMCreateMessage(s.c_str());
+}
 
 extern "C" {
   void LLVMInitializeAllTargetInfos() {
@@ -40,10 +56,65 @@ extern "C" {
 
   // std::string Attribute::getAsString(bool InAttrGrp = false) const
   // https://llvm.org/doxygen/classllvm_1_1Attribute.html
-  // string must be disposed with LLVMDisposeMessage
-  const char* LLVMGetAttributeAsString(LLVMAttributeRef A) {
-    auto S = llvm::unwrap(A).getAsString();
-    return strdup(S.c_str());
+  char* LLVMGetAttributeAsString(LLVMAttributeRef A) {
+    return owned_message(llvm::unwrap(A).getAsString());
+  }
+
+  // void Type::print(raw_ostream &O, bool IsForDebug = false,
+  //                  bool NoDetails = false) const
+  // https://llvm.org/doxygen/classllvm_1_1Type.html
+  //
+  // As LLVMPrintTypeToString, but with IsForDebug=true, matching what
+  // LLVMDumpType writes to stderr. As of LLVM 21 this renders identically to
+  // IsForDebug=false for every type kind; it exists so the API matches Module
+  // and Value, and so a future divergence is picked up rather than missed.
+  // String must be disposed with LLVMDisposeMessage.
+  char* LLVMPrintTypeToStringDebug(LLVMTypeRef Ty) {
+    std::string buf;
+    llvm::raw_string_ostream os(buf);
+    if (llvm::unwrap(Ty))
+      llvm::unwrap(Ty)->print(os, /*IsForDebug=*/true);
+    else
+      os << "Printing <null> Type";
+    os.flush();
+    return owned_message(buf);
+  }
+
+  // void Value::print(raw_ostream &O, bool IsForDebug = false) const
+  // https://llvm.org/doxygen/classllvm_1_1Value.html
+  //
+  // As LLVMPrintValueToString, but with IsForDebug=true, matching what
+  // LLVMDumpValue writes to stderr. Only affects function declarations, whose
+  // parameters LLVMPrintValueToString omits.
+  // String must be disposed with LLVMDisposeMessage.
+  char* LLVMPrintValueToStringDebug(LLVMValueRef V) {
+    std::string buf;
+    llvm::raw_string_ostream os(buf);
+    if (llvm::unwrap(V))
+      llvm::unwrap(V)->print(os, /*IsForDebug=*/true);
+    else
+      os << "Printing <null> Value";
+    os.flush();
+    return owned_message(buf);
+  }
+
+  // void Module::print(raw_ostream &OS, AssemblyAnnotationWriter *AAW,
+  //                    bool ShouldPreserveUseListOrder = false,
+  //                    bool IsForDebug = false) const
+  // https://llvm.org/doxygen/classllvm_1_1Module.html
+  //
+  // As LLVMPrintModuleToString, but with IsForDebug=true, matching what
+  // LLVMDumpModule writes to stderr. Only affects declarations, whose
+  // parameters LLVMPrintModuleToString omits.
+  // String must be disposed with LLVMDisposeMessage.
+  char* LLVMPrintModuleToStringDebug(LLVMModuleRef M) {
+    std::string buf;
+    llvm::raw_string_ostream os(buf);
+    llvm::unwrap(M)->print(os, nullptr,
+                           /*ShouldPreserveUseListOrder=*/false,
+                           /*IsForDebug=*/true);
+    os.flush();
+    return owned_message(buf);
   }
 }
 

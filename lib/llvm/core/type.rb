@@ -92,18 +92,29 @@ module LLVM
       Type.pointer(self, address_space: address_space)
     end
 
-    # Print the type's representation to stdout.
+    # Print the type's representation to the standard error.
+    #
+    # Renders as LLVMDumpType does, but written through Ruby's $stderr rather
+    # than LLVM's errs(), so reassigning $stderr captures it, and always ends
+    # with a newline where LLVMDumpType emits none.
     #: -> void
     def dump
-      # :nocov:
-      C.dump_type(self)
-      # :nocov:
+      # not warn: warn is silenced by -W0, and an explicit dump must always print
+      $stderr.puts(debug_s) # rubocop:disable Style/StderrPuts
     end
 
     # Build string of LLVM type representation.
     #: -> String
     def to_s
       C.print_type_to_string(self)
+    end
+
+    # Returns the type as #dump renders it (LLVM's IsForDebug). As of LLVM 21
+    # this is identical to #to_s for every type kind, unlike Module and Value
+    # where it changes how declarations render.
+    #: -> String
+    def debug_s
+      Support::C.print_type_to_string_debug(self)
     end
 
     #: -> bool

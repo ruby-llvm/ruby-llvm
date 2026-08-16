@@ -24,6 +24,37 @@ class TypeTestCase < Minitest::Test
     end
   end
 
+  # LLVM's IsForDebug currently renders every type kind identically, unlike
+  # Module and Value where it changes declarations. Pinned so that a change in
+  # LLVM shows up here rather than silently.
+  def test_debug_s
+    types = [
+      LLVM::Int32.type, LLVM::Float.type, LLVM.Void, LLVM.Pointer,
+      LLVM::Type.array(LLVM::Int8, 4), LLVM::Type.vector(LLVM::Int8, 4),
+      LLVM::Type.struct([LLVM::Int32], false, 'S'), LLVM::Type.struct([LLVM::Int8], true),
+      LLVM::Type.opaque_struct('O'), LLVM::Type.function([LLVM::Int32], LLVM.Void),
+    ]
+
+    types.each do |type|
+      assert_equal type.to_s, type.debug_s, "#{type} differs under debug"
+    end
+
+    assert_equal 'i32', LLVM::Int32.type.debug_s
+  end
+
+  def test_dump_writes_to_ruby_stderr
+    buffer = StringIO.new
+    stderr_old = $stderr
+    begin
+      $stderr = buffer
+      LLVM::Int32.type.dump
+    ensure
+      $stderr = stderr_old
+    end
+
+    assert_equal "i32\n", buffer.string
+  end
+
   def test_element_type_unsupported
     assert_raises(ArgumentError) do
       LLVM.Void.element_type
