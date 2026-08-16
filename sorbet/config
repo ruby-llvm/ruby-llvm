@@ -1,9 +1,10 @@
+--parser=prism
+--enable-experimental-rbs-comments
 --dir
 .
 --ignore=tmp/
 --ignore=vendor/
 --ignore=samples/
---enable-experimental-rbs-comments
 --suppress-error-code=7003
 --suppress-error-code=7019
 --suppress-error-code=7006

@@ -6,29 +6,35 @@ module LLVM
     include PointerIdentity
 
     # @private
-    #: (untyped, ?kind: Symbol?) -> Type
+    #: (FFI::Pointer, ?kind: Symbol?) -> Type
     def self.from_ptr(ptr, kind: nil)
       raise ArgumentError if ptr.null?
       kind ||= C.get_type_kind(ptr)
-      ty = case kind
+      case kind
       when :integer
-        IntType.allocate
+        IntType.new(ptr, kind)
       when :float, :double
-        RealType.allocate
+        RealType.new(ptr, kind)
       when :function
-        FunctionType.allocate
+        FunctionType.new(ptr, kind)
       when :struct
-        StructType.allocate
+        StructType.new(ptr, kind)
       else
-        allocate
+        new(ptr, kind)
       end
-      ty.instance_variable_set(:@ptr, ptr)
-      ty.instance_variable_set(:@kind, kind)
-      ty
+    end
+
+    # @private
+    #: (FFI::Pointer, Symbol?) -> void
+    def initialize(ptr, kind)
+      raise ArgumentError if ptr.null?
+      @ptr = ptr
+      @kind = kind
     end
 
     # Returns a symbol representation of the types kind (ex. :pointer, :vector, :array.)
-    attr_reader :kind #: Symbol?
+    #: Symbol?
+    attr_reader :kind
 
     # Returns the size of the type.
     #: -> ConstantInt
@@ -191,12 +197,12 @@ module LLVM
       end
     end
 
-    #: (untyped) -> Type
+    #: (String | Symbol) -> Type
     def self.opaque_struct(name)
       from_ptr(C.struct_create_named(Context.global, name.to_s), kind: :struct)
     end
 
-    #: (untyped) -> Type?
+    #: (String | Symbol) -> Type?
     def self.named(name)
       from_ptr(C.get_type_by_name2(Context.global, name.to_s))
     end
@@ -354,7 +360,7 @@ module LLVM
     #: -> Array[Type?]
     def argument_types
       size = C.count_param_types(self)
-      result = [] #: Array[Type]
+      result = [] #: Array[FFI::Pointer]
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * size) do |types_ptr|
         C.get_param_types(self, types_ptr)
         result = types_ptr.read_array_of_pointer(size)
@@ -417,7 +423,7 @@ module LLVM
   end
 
   # Shortcut to Type.pointer.
-  #: (?Type?) -> Type`
+  #: (?Type?) -> Type
   def Pointer(ty = nil)
     LLVM::Type.pointer(ty)
   end

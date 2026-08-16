@@ -11,6 +11,24 @@ class TargetTestCase < Minitest::Test
     LLVM::Target.init('X86', true)
   end
 
+  def test_null_pointer_rejected
+    assert_raises(ArgumentError) do
+      LLVM::Target.new(FFI::Pointer::NULL)
+    end
+
+    assert_raises(ArgumentError) do
+      LLVM::Target.from_ptr(FFI::Pointer::NULL)
+    end
+
+    assert_raises(ArgumentError) do
+      LLVM::TargetMachine.new(FFI::Pointer::NULL)
+    end
+
+    assert_raises(ArgumentError) do
+      LLVM::TargetMachine.from_ptr(FFI::Pointer::NULL)
+    end
+  end
+
   def test_init_native
     LLVM::Target.init_native
     LLVM::Target.init_native(true)
