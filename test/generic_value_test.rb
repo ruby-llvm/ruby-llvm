@@ -8,6 +8,16 @@ class GenericValueTestCase < Minitest::Test
     LLVM.init_jit
   end
 
+  def test_null_pointer_rejected
+    assert_raises(ArgumentError) do
+      LLVM::GenericValue.new(FFI::Pointer::NULL)
+    end
+
+    assert_raises(ArgumentError) do
+      LLVM::GenericValue.from_ptr(FFI::Pointer::NULL)
+    end
+  end
+
   def test_from_i
     assert_equal 2, LLVM::GenericValue.from_i(2).to_i
     assert_equal 2, LLVM::GenericValue.from_i(2.2).to_i

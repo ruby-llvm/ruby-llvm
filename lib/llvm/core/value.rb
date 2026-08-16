@@ -6,11 +6,16 @@ module LLVM
     include PointerIdentity
 
     # @private
+    #: (FFI::Pointer) -> instance
     def self.from_ptr(ptr)
-      return if ptr.null?
-      val = allocate
-      val.instance_variable_set(:@ptr, ptr)
-      val
+      new(ptr)
+    end
+
+    # @private
+    #: (FFI::Pointer) -> void
+    def initialize(ptr)
+      raise ArgumentError if ptr.null?
+      @ptr = ptr
     end
 
     def self.from_ptr_kind(ptr) # rubocop:disable Metrics/CyclomaticComplexity

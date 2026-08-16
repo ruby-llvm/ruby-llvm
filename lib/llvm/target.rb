@@ -122,9 +122,14 @@ module LLVM
     # @private
     #: (FFI::Pointer) -> Target
     def self.from_ptr(ptr)
-      target = allocate
-      target.instance_variable_set :@ptr, ptr
-      target
+      new(ptr)
+    end
+
+    # @private
+    #: (FFI::Pointer) -> void
+    def initialize(ptr)
+      raise ArgumentError if ptr.null?
+      @ptr = ptr
     end
 
     # Returns the name of the target.
@@ -176,10 +181,16 @@ module LLVM
     include PointerIdentity
 
     # @private
+    #: (FFI::Pointer) -> TargetMachine
     def self.from_ptr(ptr)
-      target = allocate
-      target.instance_variable_set :@ptr, ptr
-      target
+      new(ptr)
+    end
+
+    # @private
+    #: (FFI::Pointer) -> void
+    def initialize(ptr)
+      raise ArgumentError if ptr.null?
+      @ptr = ptr #: FFI::Pointer?
     end
 
     # Destroys this instance of TargetMachine.
@@ -238,6 +249,7 @@ module LLVM
     end
 
     # @private
+    #: (FFI::Pointer) -> TargetDataLayout
     def self.from_ptr(ptr)
       target = allocate
       target.instance_variable_set :@ptr, ptr

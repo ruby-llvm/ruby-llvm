@@ -34,7 +34,7 @@ module LLVM
       end
 
       # create enum attribute with optional value and context
-      #: (untyped, ?Integer, ?Context) -> Attribute?
+      #: (String | Symbol, ?Integer, ?Context) -> Attribute?
       def enum(kind, value = 0, context = Context.global)
         attr_id = attribute_id(kind)
         ptr = C.create_enum_attribute(context, attr_id, value)
@@ -42,7 +42,7 @@ module LLVM
       end
 
       # create string attribute with key and value
-      #: (untyped, untyped, ?Context) -> Attribute?
+      #: (String | Symbol, untyped, ?Context) -> Attribute?
       def string(key, value, context = Context.global)
         key = key.to_s
         value = value.to_s
