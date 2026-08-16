@@ -21,6 +21,26 @@ class ModuleTestCase < Minitest::Test
     assert_equal 1, simple_function().to_i
   end
 
+  # #debug_s renders like #dump (IsForDebug=true), which differs from #to_s
+  # only for declarations: their parameters are printed, not just their types.
+  def test_debug_s
+    mod = LLVM::Module.new('m')
+    mod.functions.add('decl', [LLVM::Int32, LLVM::Int32], LLVM::Int32)
+
+    assert_includes mod.to_s, 'declare i32 @decl(i32, i32)'
+    assert_includes mod.debug_s, 'declare i32 @decl(i32 %0, i32 %1)'
+  end
+
+  # a definition renders identically either way
+  def test_debug_s_matches_to_s_for_definitions
+    mod = LLVM::Module.new('m')
+    mod.functions.add('defn', [LLVM::Int32], LLVM::Int32) do |fun, _p0|
+      fun.basic_blocks.append('entry')
+    end
+
+    assert_equal mod.to_s, mod.debug_s
+  end
+
   def test_global_variable
     yielded = false #: bool
 
@@ -76,6 +96,23 @@ class ModuleTestCase < Minitest::Test
         $stderr.reopen(stderr_old)
       end
     end
+  end
+
+  # #dump goes through Ruby's $stderr, so reassigning the global captures it.
+  # LLVMDumpModule writes to LLVM's errs() on fd 2 and would not be captured.
+  def test_dump_writes_to_ruby_stderr
+    mod = LLVM::Module.new('test_dump_capture')
+    buffer = StringIO.new
+
+    stderr_old = $stderr
+    begin
+      $stderr = buffer
+      mod.dump
+    ensure
+      $stderr = stderr_old
+    end
+
+    assert_match(/^; ModuleID = 'test_dump_capture'$/, buffer.string)
   end
 
   def test_module_properties

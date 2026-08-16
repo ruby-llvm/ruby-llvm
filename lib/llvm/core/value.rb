@@ -107,15 +107,30 @@ module LLVM
       C.set_value_name(self, str)
     end
 
-    # Print the value's IR to stdout.
+    # Print the value's IR to the standard error.
+    #
+    # Renders as LLVMDumpValue does, but written through Ruby's $stderr rather
+    # than LLVM's errs(), so reassigning $stderr captures it. Always ends with a
+    # newline; LLVMDumpValue emits none for values whose IR lacks one, such as
+    # constants.
+    #: -> void
     def dump
-      # :nocov:
-      C.dump_value(self)
-      # :nocov:
+      # not warn: warn is silenced by -W0, and an explicit dump must always print
+      $stderr.puts(debug_s) # rubocop:disable Style/StderrPuts
     end
 
+    # Returns the value's IR as a string.
+    #: -> String
     def to_s
       C.print_value_to_string(self)
+    end
+
+    # Returns the value's IR as #dump renders it (LLVM's IsForDebug), which
+    # differs from #to_s only for function declarations, whose parameters #to_s
+    # omits.
+    #: -> String
+    def debug_s
+      Support::C.print_value_to_string_debug(self)
     end
 
     # Returns whether the value is constant.

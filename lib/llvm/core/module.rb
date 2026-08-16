@@ -285,13 +285,27 @@ module LLVM
     end
 
     # Returns the LLVM IR of the module as a string.
+    #: -> String
     def to_s
       C.print_module_to_string(self)
     end
 
+    # Returns the LLVM IR of the module as #dump renders it (LLVM's IsForDebug),
+    # which differs from #to_s only for declarations, whose parameters #to_s
+    # omits.
+    #: -> String
+    def debug_s
+      Support::C.print_module_to_string_debug(self)
+    end
+
     # Print the module's IR to the standard error.
+    #
+    # Equivalent to LLVMDumpModule, but written through Ruby's $stderr rather
+    # than LLVM's errs(), so reassigning $stderr captures it.
+    #: -> void
     def dump
-      C.dump_module(self)
+      # not warn: warn is silenced by -W0, and an explicit dump must always print
+      $stderr.puts(debug_s) # rubocop:disable Style/StderrPuts
     end
   end
 end

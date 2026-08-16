@@ -22,6 +22,28 @@ class ValueTestCase < Minitest::Test
     end
   end
 
+  # As with Module, IsForDebug only changes how declarations render.
+  def test_debug_s
+    mod = LLVM::Module.new('m')
+    decl = mod.functions.add('decl', [LLVM::Int32, LLVM::Int32], LLVM::Int32)
+
+    assert_equal 'declare i32 @decl(i32, i32)', decl.to_s.chomp
+    assert_equal 'declare i32 @decl(i32 %0, i32 %1)', decl.debug_s.chomp
+  end
+
+  def test_dump_writes_to_ruby_stderr
+    buffer = StringIO.new
+    stderr_old = $stderr
+    begin
+      $stderr = buffer
+      LLVM::Int32.from_i(7).dump
+    ensure
+      $stderr = stderr_old
+    end
+
+    assert_equal "i32 7\n", buffer.string
+  end
+
   def test_undef
     assert_predicate LLVM::Int32.undef, :undef?
     refute_predicate LLVM::Int32.from_i(1), :undef?
