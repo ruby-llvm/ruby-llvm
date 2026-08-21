@@ -25,10 +25,10 @@ jobs:
         run: |
           echo "setup=false" >> "$GITHUB_OUTPUT"
           # brew update --auto-update
-          brew install llvm@21
-          echo "$(brew --prefix llvm@21)/bin" >> $GITHUB_PATH
+          brew install llvm@22
+          echo "$(brew --prefix llvm@22)/bin" >> $GITHUB_PATH
           sudo mkdir -p /opt/local/
-          sudo ln -s $(brew --prefix llvm@21)/lib /opt/local/lib
+          sudo ln -s $(brew --prefix llvm@22)/lib /opt/local/lib
           # ffi will only look for files in a small set of directories, so llvm needs to be there
           # https://github.com/ffi/ffi/blob/master/lib/ffi/dynamic_library.rb#L33
           # /usr/lib /usr/local/lib /opt/local/lib /opt/homebrew/lib
@@ -38,11 +38,11 @@ jobs:
         if: steps.macos_setup.setup == 'false'
         run: |
           echo $(brew --repository)
-          echo $(brew --prefix llvm@21)
-          echo $(brew info llvm@21)
+          echo $(brew --prefix llvm@22)
+          echo $(brew info llvm@22)
           echo "$PATH"
           echo $(llvm-config --ldflags)
-          ls -l $(brew --prefix llvm@21)/lib/libLLVM.dylib
+          ls -l $(brew --prefix llvm@22)/lib/libLLVM.dylib
           ls -l /opt/local/lib/libLLVM.dylib
       - name: Install LLVM on ubuntu
         id: ubuntu_setup
@@ -51,8 +51,8 @@ jobs:
           echo "setup=false" >> "$GITHUB_OUTPUT"
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 21
-          # sudo apt-get install -y libpolly-21-dev
+          sudo ./llvm.sh 22
+          # sudo apt-get install -y libpolly-22-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
