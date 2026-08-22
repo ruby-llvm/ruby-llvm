@@ -11,6 +11,8 @@ jobs:
         with:
           ruby-version: '4.0'
           bundler-cache: true
+          bundler: latest
+          rubygems: latest
       - name: Sorbet
         run: |
           bundle exec srb --version

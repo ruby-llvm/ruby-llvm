@@ -6,6 +6,9 @@
 *.o
 *.rbc
 *.so
+*.dll
+*.lib
+*.exp
 *~
 .rvmrc
 .yardoc
@@ -15,3 +18,5 @@ tmp/
 .bundle
 Gemfile.lock
 lib/llvm/config.rb
+# from find_executable("opt") in tests
+/mkmf.log

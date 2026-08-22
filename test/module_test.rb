@@ -74,27 +74,99 @@ class ModuleTestCase < Minitest::Test
     assert yielded, 'LLVM::Module::GlobalCollection#add takes block'
   end
 
+  def test_global_variable_initializer_kind
+    define_module('test_initializer_kind') do |mod|
+      mod.globals.add(LLVM::Int32, 'off') do |var|
+        var.initializer = LLVM::Int32.from_i(42)
+        var.global_constant = true
+      end
+      init = mod.globals['off'].initializer_kind
+      assert_kind_of LLVM::ConstantInt, init
+      assert_equal 42, init.to_i(false)
+    end
+  end
+
+  def test_from_ptr_kind_const_data_array
+    define_module('test_fpk_cda') do |mod|
+      arr = LLVM::ConstantArray.string('hi')
+      mod.globals.add(arr, 'str') do |var|
+        var.initializer = arr
+        var.global_constant = true
+      end
+      init = mod.globals['str'].initializer_kind
+      assert_equal :const_data_array, init.kind
+      assert_kind_of LLVM::ConstantArray, init
+    end
+  end
+
+  def test_from_ptr_kind_const_array
+    define_module('test_fpk_ca') do |mod|
+      struct_type = LLVM::Struct(LLVM::Int32)
+      elem = LLVM::ConstantStruct.const([LLVM::Int32.from_i(1)])
+      arr = LLVM::ConstantArray.const(struct_type, [elem])
+      mod.globals.add(arr, 'sarr') do |var|
+        var.initializer = arr
+        var.global_constant = true
+      end
+      init = mod.globals['sarr'].initializer_kind
+      assert_equal :const_array, init.kind
+      assert_kind_of LLVM::ConstantArray, init
+    end
+  end
+
+  def test_from_ptr_kind_const_data_vector
+    define_module('test_fpk_cdv') do |mod|
+      vec = LLVM::ConstantVector.const([LLVM::Int32.from_i(1), LLVM::Int32.from_i(2)])
+      mod.globals.add(vec, 'vec') do |var|
+        var.initializer = vec
+        var.global_constant = true
+      end
+      init = mod.globals['vec'].initializer_kind
+      assert_equal :const_data_vector, init.kind
+      assert_kind_of LLVM::ConstantVector, init
+    end
+  end
+
+  def test_from_ptr_kind_const_aggregate_zero
+    define_module('test_fpk_caz') do |mod|
+      zero = LLVM::ConstantStruct.const([LLVM::Int32.from_i(0)])
+      mod.globals.add(zero, 'zs') do |var|
+        var.initializer = zero
+        var.global_constant = true
+      end
+      init = mod.globals['zs'].initializer_kind
+      assert_equal :const_aggregate_zero, init.kind
+      assert_kind_of LLVM::ConstantStruct, init
+    end
+  end
+
   def test_to_s
     mod = LLVM::Module.new('test_print')
     assert_equal "; ModuleID = 'test_print'\nsource_filename = \"test_print\"\n",
       mod.to_s
   end
 
+  # Captures through a pipe rather than a temp file: on Windows the Tempfile is
+  # still open while $stderr is redirected at its path, and reopening a path that
+  # is already open fails with EACCES.
   def test_dump
     mod = LLVM::Module.new('test_print')
-    expected_pattern = /^; ModuleID = 'test_print'$/
 
-    Tempfile.create('test_dump.1') do |tmpfile|
-      # debug stream (stderr)
+    rd, wr = IO.pipe
+    begin
       stderr_old = $stderr.dup
-      $stderr.reopen(tmpfile.path, 'a')
+      $stderr.reopen(wr)
+      wr.close
       begin
         mod.dump
         $stderr.flush
-        assert_match expected_pattern, File.read(tmpfile.path)
       ensure
         $stderr.reopen(stderr_old)
+        stderr_old.close
       end
+      assert_match(/^; ModuleID = 'test_print'$/, rd.read)
+    ensure
+      rd.close
     end
   end
 

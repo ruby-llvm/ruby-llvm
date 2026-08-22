@@ -42,18 +42,30 @@ def find_llvm_config
 end
 
 def find_cxx
-  check_for('C++ compiler', %W[clang++-#{LLVM_VERSION} clang++ g++], 'CXX') do |cxx|
+  candidates = if LLVM_MSVC
+    # clang-cl is clang's MSVC-compatible driver; it accepts MSVC-style flags
+    # (/EHs-c-, /GR-, -std:c++17) that llvm-config --cxxflags emits on Windows.
+    ['clang-cl']
+  else
+    %W[clang++-#{LLVM_VERSION} clang++ g++]
+  end
+  check_for('C++ compiler', candidates, 'CXX') do |cxx|
     system(cxx, '--version', out: File::NULL, err: File::NULL)
     $?.success?
   end
 end
 
 LLVM_CONFIG = find_llvm_config
-CXX         = find_cxx
 
 def invoke_llvm_config(options)
   `#{LLVM_CONFIG} #{options}`.tr("\n", ' ').strip
 end
+
+# True when using an MSVC-built LLVM (llvm-config --cxxflags emits MSVC-style flags like
+# /EHs-c-, /GR-, -std:c++17) rather than a MinGW/GCC-built LLVM. Detected via host target
+# triple so mswin Ruby + MSYS2 LLVM (windows-gnu) still uses clang++ like Linux/macOS.
+LLVM_MSVC = invoke_llvm_config('--host-target').include?('windows-msvc')
+CXX       = find_cxx
 
 # llvm_lib_name
 # Are there any builds where invoke_llvm_config('--libs') will not be sufficient and manual search would still be
@@ -71,13 +83,37 @@ SUPPORT_LIB = FFI.map_library_name("RubyLLVMSupport-#{LLVM_VERSION}")
 CONFIG_MOD  = File.expand_path('../../lib/llvm/config.rb', File.dirname(__FILE__))
 
 CLEAN.include(SUPPORT_LIB, CONFIG_MOD)
+# MSVC leaves an import .lib and exports .exp beside the .dll
+CLEAN.include("RubyLLVMSupport-#{LLVM_VERSION}.lib", "RubyLLVMSupport-#{LLVM_VERSION}.exp")
 
 desc 'Build the shared library and config module'
 task default: [SUPPORT_LIB, CONFIG_MOD]
 
 file SUPPORT_LIB => %w[support.cpp] do |task|
-  sh "#{CXX} -O3 -shared #{task.prerequisites.join(' ')} " \
-     "#{invoke_llvm_config('--libs --cxxflags --ldflags')} -fPIC -o #{SUPPORT_LIB}"
+  if LLVM_MSVC
+    lib_dir = invoke_llvm_config('--libdir')
+    # LLVM-C.lib listed first: LLVMInitializeX86Target etc. (real C API exports) are satisfied
+    # by LLVM-C.dll, so target registrations land in LLVM-C.dll's registry — the same one
+    # the JIT queries. LLVMCore.lib and its deps provide the two C++ methods not in the C API
+    # (Attribute::getAsString, Attribute::getNameFromAttrKind); their TargetRegistry instance
+    # inside RubyLLVMSupport-22.dll is unused and harmless.
+
+    # TODO: support dynamic-CRT LLVM builds. clang-cl here defaults to /MT (static CRT), which
+    # matches official llvm.org x64 and vovkos libcmt builds (RuntimeLibrary=MT_StaticRelease,
+    # /DEFAULTLIB:libcmt). An LLVM built with the dynamic CRT (RuntimeLibrary=MD_DynamicRelease,
+    # /DEFAULTLIB:MSVCRT) fails to link with LNK2038. To support both, detect the libs' CRT
+    # (e.g. `llvm-readobj --coff-directives #{lib_dir}/LLVMSupport.lib` -> grep RuntimeLibrary,
+    # or dumpbin /directives) and add /MD when it reports MD_DynamicRelease.
+    sh "#{CXX} /O2 /LD #{task.prerequisites.join(' ')} " \
+       "#{invoke_llvm_config('--cxxflags')} " \
+       "#{lib_dir}/LLVM-C.lib #{lib_dir}/LLVMCore.lib #{lib_dir}/LLVMBinaryFormat.lib " \
+       "#{lib_dir}/LLVMTargetParser.lib #{lib_dir}/LLVMRemarks.lib " \
+       "#{lib_dir}/LLVMBitstreamReader.lib #{lib_dir}/LLVMSupport.lib " \
+       "#{lib_dir}/LLVMDemangle.lib ntdll.lib /Fe:#{SUPPORT_LIB}"
+  else
+    sh "#{CXX} -O3 -shared #{task.prerequisites.join(' ')} " \
+       "#{invoke_llvm_config('--libs --cxxflags --ldflags')} -fPIC -o #{SUPPORT_LIB}"
+  end
 end
 
 LLVM_CONFIG_OPTS = [

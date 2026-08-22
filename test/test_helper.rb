@@ -12,14 +12,18 @@ end
 begin
   require 'simplecov'
 
+  unless SimpleCov::Configuration.method_defined?(:skip)
+    mod = SimpleCov::Configuration #: as untyped
+    mod.send(:alias_method, :skip, :add_filter)
+  end
   SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/lib/llvm/transforms/scalar.rb"
-    add_filter "/lib/llvm/transforms/ipo.rb"
-    add_filter "/lib/llvm/transforms/vectorize.rb"
-    add_filter "/lib/llvm/transforms/utils.rb"
-    add_filter "/lib/llvm/transforms/builder.rb"
-    add_filter "/lib/llvm/core/pass_manager.rb"
+    skip "/test/"
+    skip "/lib/llvm/transforms/scalar.rb"
+    skip "/lib/llvm/transforms/ipo.rb"
+    skip "/lib/llvm/transforms/vectorize.rb"
+    skip "/lib/llvm/transforms/utils.rb"
+    skip "/lib/llvm/transforms/builder.rb"
+    skip "/lib/llvm/core/pass_manager.rb"
   end
 rescue LoadError
   warn "Proceeding without SimpleCov. gem install simplecov on supported platforms."
@@ -109,7 +113,22 @@ def define_invalid_function(host_module, function_name, argument_types, return_t
   function
 end
 
+# i386 mangles C symbols with a leading underscore, so register libc symbols as _name for the
+# JIT to resolve. No-op elsewhere (64-bit / Unix auto-resolve). 32-bit Cygwin untested.
+def register_libc_symbol_for_jit(name)
+  return unless FFI::Platform::ADDRESS_SIZE == 32 && (FFI::Platform::IS_WINDOWS || FFI::Platform::OS == 'cygwin')
+
+  ptr = FFI::DynamicLibrary.open(FFI::Library::LIBC, FFI::DynamicLibrary::RTLD_LAZY).find_function(name)
+  LLVM::C.add_symbol("_#{name}", ptr) if ptr
+end
+
 def run_function_on_module(host_module, function_name, *argument_values)
+  # i386 codegen assumes a 16-byte-aligned stack, but Ruby calls in 4-byte aligned, so JIT'd
+  # functions that call out crash; make each realign its own stack. Real callers own this.
+  if FFI::Platform::ADDRESS_SIZE == 32 && (FFI::Platform::IS_WINDOWS || FFI::Platform::OS == 'cygwin')
+    stackrealign = LLVM::Attribute.string("stackrealign", "")
+    host_module.functions.each { |fn| fn.add_attribute(stackrealign) }
+  end
   LLVM::MCJITCompiler
     .new(host_module)
     .run_function(
