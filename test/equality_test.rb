@@ -10,7 +10,7 @@ class EqualityTestCase < Minitest::Test
   end
 
   class MyModule < LLVM::Module; end
-  class MyInt < LLVM::IntType; end
+  class MyInt < LLVM::ConstantInt; end
   class MyType < LLVM::Type; end
   class MyFunction < LLVM::Function; end
 
