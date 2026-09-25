@@ -2,7 +2,6 @@
 # typed: true
 
 require 'llvm'
-require 'llvm/core'
 
 module LLVM
   class PassManager

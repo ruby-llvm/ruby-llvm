@@ -1,6 +1,6 @@
 
 # tokens are a linked list. one way only, as the call stack provides the other direction
-# this provides for "infinate" lookahead (but lazily)
+# this provides for "infinite" lookahead (but lazily)
 # kind is a symbol denoting the kind (identifier/number... see lexer)
 class Token
   attr_reader  :line_number , :value , :kind

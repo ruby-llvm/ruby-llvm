@@ -44,7 +44,7 @@ class PrototypeAST < ExprAST
     # body, don't allow redefinition or reextern.
     if (was = the_module.functions.named(@name))
       # If F already has a body, reject this.
-      return error("redefinition of function") unless was.empty
+      return error("redefinition of function") unless was.basic_blocks.size.zero?
 
       # If F took a different number of args, reject.
       return error("redefinition of function with different # args") if (was.params.size != @args.length) 

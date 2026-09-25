@@ -46,5 +46,10 @@ end
 mod.verify
 mod.dump
 
+# 32-bit x86 JIT: realign the stack (LLVM assumes 16-byte, Ruby calls in 4-byte). No-op elsewhere.
+if FFI::Platform::ADDRESS_SIZE == 32 && (FFI::Platform::IS_WINDOWS || FFI::Platform::OS == 'cygwin')
+  mod.functions.each { |f| f.add_attribute(LLVM::Attribute.string('stackrealign', '')) }
+end
+
 jit = LLVM::JITCompiler.new(mod)
 puts jit.run_function(mod.functions["test"]).to_i

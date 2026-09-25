@@ -21,34 +21,72 @@ static char* owned_message(const std::string &s) {
   return LLVMCreateMessage(s.c_str());
 }
 
+#define STRINGIFY_HELPER(x) #x
+#define STRINGIFY(x) STRINGIFY_HELPER(x)
+
+#ifdef _WIN32
+#define LLVM_SUPPORT_API __declspec(dllexport)
+#else
+#define LLVM_SUPPORT_API
+#endif
+
 extern "C" {
-  void LLVMInitializeAllTargetInfos() {
+
+  LLVM_SUPPORT_API const char * LLVMNativeArch() {
+#ifdef LLVM_NATIVE_ARCH
+    return STRINGIFY(LLVM_NATIVE_ARCH);
+#else
+    return nullptr;
+#endif
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeAllTargetInfos() {
     llvm::InitializeAllTargetInfos();
   }
 
-  void LLVMInitializeAllTargets() {
+  LLVM_SUPPORT_API void LLVMInitializeAllTargets() {
     llvm::InitializeAllTargets();
   }
 
-  void LLVMInitializeAllTargetMCs() {
+  LLVM_SUPPORT_API void LLVMInitializeAllTargetMCs() {
     llvm::InitializeAllTargetMCs();
   }
 
-  void LLVMInitializeAllAsmPrinters() {
+  LLVM_SUPPORT_API void LLVMInitializeAllAsmPrinters() {
     llvm::InitializeAllAsmPrinters();
   }
 
-  void LLVMInitializeNativeTarget() {
+  LLVM_SUPPORT_API void LLVMInitializeAllAsmParsers() {
+    llvm::InitializeAllAsmParsers();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeAllDisassemblers() {
+    llvm::InitializeAllDisassemblers();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeAllTargetMCAs() {
+    llvm::InitializeAllTargetMCAs();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeNativeTarget() {
     llvm::InitializeNativeTarget();
   }
 
-  void LLVMInitializeNativeAsmPrinter() {
+  LLVM_SUPPORT_API void LLVMInitializeNativeAsmPrinter() {
     llvm::InitializeNativeTargetAsmPrinter();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeNativeAsmParser() {
+    llvm::InitializeNativeTargetAsmParser();
+  }
+
+  LLVM_SUPPORT_API void LLVMInitializeNativeDisassembler() {
+    llvm::InitializeNativeTargetDisassembler();
   }
 
   // static StringRef getNameFromAttrKind(Attribute::AttrKind AttrKind)
   // https://llvm.org/doxygen/classllvm_1_1Attribute.html
-  const char* LLVMGetEnumAttributeNameForKind(const unsigned KindID) {
+  LLVM_SUPPORT_API const char* LLVMGetEnumAttributeNameForKind(const unsigned KindID) {
     const auto AttrKind = (llvm::Attribute::AttrKind) KindID;
     const auto S = llvm::Attribute::getNameFromAttrKind(AttrKind);
     return S.data();
@@ -56,7 +94,7 @@ extern "C" {
 
   // std::string Attribute::getAsString(bool InAttrGrp = false) const
   // https://llvm.org/doxygen/classllvm_1_1Attribute.html
-  char* LLVMGetAttributeAsString(LLVMAttributeRef A) {
+  LLVM_SUPPORT_API char* LLVMGetAttributeAsString(LLVMAttributeRef A) {
     return owned_message(llvm::unwrap(A).getAsString());
   }
 
@@ -69,7 +107,7 @@ extern "C" {
   // IsForDebug=false for every type kind; it exists so the API matches Module
   // and Value, and so a future divergence is picked up rather than missed.
   // String must be disposed with LLVMDisposeMessage.
-  char* LLVMPrintTypeToStringDebug(LLVMTypeRef Ty) {
+  LLVM_SUPPORT_API char* LLVMPrintTypeToStringDebug(LLVMTypeRef Ty) {
     std::string buf;
     llvm::raw_string_ostream os(buf);
     if (llvm::unwrap(Ty))
@@ -87,7 +125,7 @@ extern "C" {
   // LLVMDumpValue writes to stderr. Only affects function declarations, whose
   // parameters LLVMPrintValueToString omits.
   // String must be disposed with LLVMDisposeMessage.
-  char* LLVMPrintValueToStringDebug(LLVMValueRef V) {
+  LLVM_SUPPORT_API char* LLVMPrintValueToStringDebug(LLVMValueRef V) {
     std::string buf;
     llvm::raw_string_ostream os(buf);
     if (llvm::unwrap(V))
@@ -107,7 +145,7 @@ extern "C" {
   // LLVMDumpModule writes to stderr. Only affects declarations, whose
   // parameters LLVMPrintModuleToString omits.
   // String must be disposed with LLVMDisposeMessage.
-  char* LLVMPrintModuleToStringDebug(LLVMModuleRef M) {
+  LLVM_SUPPORT_API char* LLVMPrintModuleToStringDebug(LLVMModuleRef M) {
     std::string buf;
     llvm::raw_string_ostream os(buf);
     llvm::unwrap(M)->print(os, nullptr,

@@ -37,14 +37,18 @@ module LLVM
         ConstantExpr.from_ptr(ptr)
       when :const_null
         ConstantNull.from_ptr(ptr)
-      when :const_struct, :const_aggregregate_zero
+      when :const_struct, :const_aggregate_zero
         ConstantStruct.from_ptr(ptr)
+      when :const_data_array, :const_array
+        ConstantArray.from_ptr(ptr)
+      when :const_vector, :const_data_vector
+        ConstantVector.from_ptr(ptr)
       else
         raise "from_ptr_kind cannot handle: #{kind}"
       end
     end
 
-    # Returns the Value type. This is abstract and is overidden by its subclasses.
+    # Returns the Value type. This is abstract and is overridden by its subclasses.
     def self.type
       raise NotImplementedError, "#{name}.type() is abstract."
     end
@@ -480,9 +484,9 @@ module LLVM
     # @deprecated
     #: -> ConstantInt
     def nuw_neg
-      # :nocov:
+      # simplecov:disable
       self.class.from_ptr(C.const_nuw_neg(self))
-      # :nocov:
+      # simplecov:enable
     end
     deprecate :nuw_neg, "neg", 2025, 3
 
@@ -626,7 +630,7 @@ module LLVM
     alias_method :shr, :lshr
     alias_method :>>, :lshr
 
-    # Arithmatic shift right.
+    # Arithmetic shift right.
     def ashr(bits)
       width = [type.width, bits.type.width].max
       LLVM::Type.integer(width).from_i(to_i >> bits.to_i)
@@ -714,11 +718,11 @@ module LLVM
     end
   end
 
-  ::LLVM::Int1 = const_get(:Int1) #: LLVM::IntType
-  ::LLVM::Int8 = const_get(:Int8) #: LLVM::IntType
-  ::LLVM::Int16 = const_get(:Int16) #: LLVM::IntType
-  ::LLVM::Int32 = const_get(:Int32) #: LLVM::IntType
-  ::LLVM::Int64 = const_get(:Int64) #: LLVM::IntType
+  ::LLVM::Int1 = LLVM::Type.integer(1).freeze #: LLVM::IntType
+  ::LLVM::Int8 = LLVM::Type.integer(8).freeze #: LLVM::IntType
+  ::LLVM::Int16 = LLVM::Type.integer(16).freeze #: LLVM::IntType
+  ::LLVM::Int32 = LLVM::Type.integer(32).freeze #: LLVM::IntType
+  ::LLVM::Int64 = LLVM::Type.integer(64).freeze #: LLVM::IntType
 
   # Native integer type
   bits = FFI.type_size(:int) * 8
@@ -1199,7 +1203,7 @@ module LLVM
         Value.from_ptr(C.get_param(@fun, i))
       end
 
-      # Returns the number of paramters in the collection.
+      # Returns the number of parameters in the collection.
       #: -> Integer
       def size
         C.count_params(@fun)
@@ -1207,7 +1211,7 @@ module LLVM
 
       include Enumerable
 
-      # Iteraters through each parameter in the collection.
+      # Iterates through each parameter in the collection.
       def each(&)
         return to_enum :each unless block_given?
         0.upto(size - 1) { |i| yield self[i] }
@@ -1242,6 +1246,12 @@ module LLVM
   class GlobalVariable < GlobalValue
     def initializer
       Value.from_ptr(C.get_initializer(self))
+    end
+
+    # Like #initializer, but dispatches on the value kind, so the initializer
+    # comes back as its concrete constant class (ConstantInt, ConstantArray, ...).
+    def initializer_kind
+      Value.from_ptr_kind(C.get_initializer(self))
     end
 
     def initializer=(val)
@@ -1369,7 +1379,7 @@ module LLVM
       C.set_instruction_call_conv(self, conv)
     end
 
-    # Returns the call insatnce's call convention.
+    # Returns the call instance's call convention.
     def call_conv
       C.get_instruction_call_conv(self)
     end

@@ -20,7 +20,7 @@ module LLVM
       new(C.get_global_context())
     end
 
-    # Diposes the Context.
+    # Disposes the Context.
     #: -> void
     def dispose
       return if @ptr.nil?

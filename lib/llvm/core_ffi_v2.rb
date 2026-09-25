@@ -3,6 +3,8 @@
 module LLVM
   # @private
   module C
+    singleton_class.send(:remove_method, :dispose_message) if singleton_class.method_defined?(:dispose_message, false)
+    remove_method(:dispose_message) if method_defined?(:dispose_message, false)
     attach_function :dispose_message, :LLVMDisposeMessage, [:pointer], :void
 
     # Both disposers must take :pointer, not :string. With :string, FFI marshals
@@ -182,7 +184,7 @@ module LLVM
       :const_struct, 12,
       :const_vector, 13,
       :undef, 14,
-      :const_aggregregate_zero, 15,
+      :const_aggregate_zero, 15,
       :const_data_array, 16,
       :const_data_vector, 17,
       :const_int, 18,

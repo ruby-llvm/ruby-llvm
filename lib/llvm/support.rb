@@ -22,11 +22,22 @@ module LLVM
           :LLVMInitializeAllTargetMCs, [], :void
       attach_function :initialize_all_asm_printers,
           :LLVMInitializeAllAsmPrinters, [], :void
+      attach_function :initialize_all_asm_parsers,
+          :LLVMInitializeAllAsmParsers, [], :void
+      attach_function :initialize_all_disassemblers,
+          :LLVMInitializeAllDisassemblers, [], :void
+      attach_function :initialize_all_target_mcas,
+          :LLVMInitializeAllTargetMCAs, [], :void
 
       attach_function :initialize_native_target,
           :LLVMInitializeNativeTarget, [], :void
       attach_function :initialize_native_asm_printer,
           :LLVMInitializeNativeAsmPrinter, [], :void
+      attach_function :initialize_native_asm_parser,
+          :LLVMInitializeNativeAsmParser, [], :void
+      attach_function :initialize_native_disassembler,
+          :LLVMInitializeNativeDisassembler, [], :void
+      attach_function :native_arch, :LLVMNativeArch, [], :string
 
       attach_function :get_enum_attribute_name_for_kind, :LLVMGetEnumAttributeNameForKind, [:uint], :string
       attach_function :get_attribute_as_string, :LLVMGetAttributeAsString, [:pointer], LLVM::OwnedString

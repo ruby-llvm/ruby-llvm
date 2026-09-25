@@ -5264,7 +5264,7 @@ module LLVM::C
   # @param [Integer] requires_null_terminator
   # @return [FFI::Pointer(MemoryBufferRef)]
   # @scope class
-  attach_function :create_memory_buffer_with_memory_range, :LLVMCreateMemoryBufferWithMemoryRange, [:string, :ulong, :string, :int], :pointer
+  attach_function :create_memory_buffer_with_memory_range, :LLVMCreateMemoryBufferWithMemoryRange, [:string, :size_t, :string, :int], :pointer
 
   # (Not documented)
   #
@@ -5274,7 +5274,7 @@ module LLVM::C
   # @param [String] buffer_name
   # @return [FFI::Pointer(MemoryBufferRef)]
   # @scope class
-  attach_function :create_memory_buffer_with_memory_range_copy, :LLVMCreateMemoryBufferWithMemoryRangeCopy, [:string, :ulong, :string], :pointer
+  attach_function :create_memory_buffer_with_memory_range_copy, :LLVMCreateMemoryBufferWithMemoryRangeCopy, [:string, :size_t, :string], :pointer
 
   # (Not documented)
   #
@@ -5290,7 +5290,7 @@ module LLVM::C
   # @param [FFI::Pointer(MemoryBufferRef)] mem_buf
   # @return [Integer]
   # @scope class
-  attach_function :get_buffer_size, :LLVMGetBufferSize, [:pointer], :ulong
+  attach_function :get_buffer_size, :LLVMGetBufferSize, [:pointer], :size_t
 
   # (Not documented)
   #

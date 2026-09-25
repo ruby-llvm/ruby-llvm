@@ -3,7 +3,6 @@
 
 # Interprocedural optimization (IPO)
 require 'llvm'
-require 'llvm/core'
 
 module LLVM
   class PassManager

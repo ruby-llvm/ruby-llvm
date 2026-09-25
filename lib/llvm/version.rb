@@ -15,14 +15,21 @@ module LLVM
   #                     Linux. The only entry that can match on macOS, since
   #                     the others are literal .so names. Moved to the front in
   #                     ec556af (LLVM 19), alongside homebrew CI support.
+  #   libLLVM-22        MinGW's libLLVM-22.dll and Cygwin's cygLLVM-22.dll;
+  #                     FFI.map_library_name maps the bare name to the DLL
+  #                     form. Never matches on Linux/macOS.
   #   libLLVM.so.22     openSUSE layout. Added in 9246958 (LLVM 10) --
   #                     "Support libLLVM.so.<version> as used in openSUSE".
   #   libLLVM.so.22.1   Debian/Ubuntu layout since LLVM 19, and the real file on
   #                     current systems; added in ec556af to work around the
   #                     LLVM 19 packaging change.
+  #   LLVM-C            the MSVC build ships the C API as LLVM-C.dll, with no
+  #                     version in the name.
   LIB_NAMES = [
     "LLVM-#{LLVM_VERSION}",
+    "libLLVM-#{LLVM_VERSION}",
     "libLLVM.so.#{LLVM_VERSION}",
     "libLLVM.so.#{LLVM_REQUIRED_VERSION}",
+    "LLVM-C",
   ].freeze #: Array[String]
 end

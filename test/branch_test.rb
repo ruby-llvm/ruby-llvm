@@ -48,7 +48,7 @@ class BranchTestCase < Minitest::Test
       branch_1 = function.basic_blocks.append
       branch_2 = function.basic_blocks.append
       builder.position_at_end(entry)
-      switch = builder.switch(LLVM::Int(1), branch_1, LLVM::Int(1) => branch_2)
+      builder.switch(LLVM::Int(1), branch_1, LLVM::Int(1) => branch_2)
       builder.position_at_end(branch_1)
       builder.ret(LLVM::Int(1))
       builder.position_at_end(branch_2)
