@@ -34,6 +34,33 @@ Homebrew
 
 LLVM can be installed with Homebrew by executing `brew install llvm@22`
 
+Windows (MSYS2/MinGW)
+---------------------
+
+Install via MSYS2 with the correct MinGW prefix for your Ruby variant:
+
+```
+ridk exec sh -c 'pacman -Sy --needed "$MINGW_PACKAGE_PREFIX-llvm>=22.1.0" "$MINGW_PACKAGE_PREFIX-llvm<22.2"'
+```
+
+The `msys2_mingw_dependencies` gem metadata arranges this automatically when the gem is installed with RubyInstaller2.
+
+Build environment variables
+---------------------------
+
+These can be set before `gem install` (or before running the test suite) to override the defaults:
+
+* `LLVM_CONFIG` — path to `llvm-config`; probed as `llvm-config-22`, then `llvm-config` if unset
+* `CXX` — C++ compiler for building the support library; probed as `clang++-22`, `clang++`, `g++` if unset
+* `OPT` — path to the LLVM `opt` optimizer used only by the test suite; defaults to `opt-22`
+
+**Windows pitfalls:** Windows runners ship an MSVC-based `clang++.exe` that passes
+`--version` but rejects MinGW flags such as `-fPIC`, causing the build to fail silently
+with the wrong compiler. Set `CXX=g++` to bypass it (on x86-64; leave unset on ARM64
+where the CLANGARM64 `clang++-22` from MSYS2 resolves correctly). Similarly, MSYS2
+installs the unversioned `opt.exe` instead of `opt-22.exe`, so set `OPT=opt` when
+running tests on Windows.
+
 Source and other binaries
 -------------------------
 

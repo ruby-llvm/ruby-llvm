@@ -80,21 +80,27 @@ class ModuleTestCase < Minitest::Test
       mod.to_s
   end
 
+  # Captures through a pipe rather than a temp file: on Windows the Tempfile is
+  # still open while $stderr is redirected at its path, and reopening a path that
+  # is already open fails with EACCES.
   def test_dump
     mod = LLVM::Module.new('test_print')
-    expected_pattern = /^; ModuleID = 'test_print'$/
 
-    Tempfile.create('test_dump.1') do |tmpfile|
-      # debug stream (stderr)
+    rd, wr = IO.pipe
+    begin
       stderr_old = $stderr.dup
-      $stderr.reopen(tmpfile.path, 'a')
+      $stderr.reopen(wr)
+      wr.close
       begin
         mod.dump
         $stderr.flush
-        assert_match expected_pattern, File.read(tmpfile.path)
       ensure
         $stderr.reopen(stderr_old)
+        stderr_old.close
       end
+      assert_match(/^; ModuleID = 'test_print'$/, rd.read)
+    ensure
+      rd.close
     end
   end
 

@@ -61,6 +61,7 @@ class CallTestCase < Minitest::Test
   end
 
   def test_external
+    register_libc_symbol_for_jit('abs')
     test_module = define_module("test_module") do |host_module|
       external = host_module.functions.add("abs", [LLVM::Int], LLVM::Int)
       define_function(host_module, "test_function", [LLVM::Int], LLVM::Int) do |builder, function, *arguments|
@@ -73,6 +74,7 @@ class CallTestCase < Minitest::Test
   end
 
   def test_external_string
+    register_libc_symbol_for_jit('getenv')
     test_module = define_module("test_module") do |host_module|
       global = host_module.globals.add(LLVM::Array(LLVM::Int8, 5), "path")
       global.linkage = :internal

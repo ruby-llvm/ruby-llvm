@@ -109,7 +109,42 @@ def define_invalid_function(host_module, function_name, argument_types, return_t
   function
 end
 
+def cygwin?
+  FFI::Platform::OS == 'cygwin'
+end
+
+# i386 mangles C symbols with a leading underscore. 32-bit Cygwin untested.
+def underscore_mangled_symbols?
+  FFI::Platform::ADDRESS_SIZE == 32 && (FFI::Platform::IS_WINDOWS || cygwin?)
+end
+
+# Register libc symbols under the names the JIT will look for. No-op on Unix and 64-bit
+# Windows, which auto-resolve; there the whole method returns early.
+#
+# Cygwin needs the plain name registered at any bitness: the process exports two getenvs --
+# cygwin1.dll's, returning POSIX paths, which is what Ruby's ENV agrees with, and the Windows
+# CRT's (msvcrt/ucrtbase), returning native paths -- and MCJIT's process-wide search binds
+# whichever it finds first, so test_external_string saw the native form on some runs and the
+# POSIX form on others. LLVMAddSymbol lands in LLVM's explicit-symbol table, which
+# SearchForAddressOfSymbol consults ahead of the process, pinning it to FFI::Library::LIBC
+# (cygwin1.dll) and making resolution deterministic.
+def register_libc_symbol_for_jit(name)
+  return unless underscore_mangled_symbols? || cygwin?
+
+  ptr = FFI::DynamicLibrary.open(FFI::Library::LIBC, FFI::DynamicLibrary::RTLD_LAZY).find_function(name)
+  return unless ptr
+
+  LLVM::C.add_symbol("_#{name}", ptr) if underscore_mangled_symbols?
+  LLVM::C.add_symbol(name, ptr) if cygwin?
+end
+
 def run_function_on_module(host_module, function_name, *argument_values)
+  # i386 codegen assumes a 16-byte-aligned stack, but Ruby calls in 4-byte aligned, so JIT'd
+  # functions that call out crash; make each realign its own stack. Real callers own this.
+  if underscore_mangled_symbols?
+    stackrealign = LLVM::Attribute.string("stackrealign", "")
+    host_module.functions.each { |fn| fn.add_attribute(stackrealign) }
+  end
   LLVM::MCJITCompiler
     .new(host_module)
     .run_function(

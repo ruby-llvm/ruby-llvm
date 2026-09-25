@@ -164,7 +164,7 @@ module LLVM::C
   # @param [Integer] size_of_options
   # @return [nil]
   # @scope class
-  attach_function :initialize_mcjit_compiler_options, :LLVMInitializeMCJITCompilerOptions, [MCJITCompilerOptions, :ulong], :void
+  attach_function :initialize_mcjit_compiler_options, :LLVMInitializeMCJITCompilerOptions, [MCJITCompilerOptions, :size_t], :void
 
   # Create an MCJIT execution engine for a module, with the given options. It is
   # the responsibility of the caller to ensure that all fields in Options up to
@@ -190,7 +190,7 @@ module LLVM::C
   # @param [FFI::Pointer(**CharS)] out_error
   # @return [Integer]
   # @scope class
-  attach_function :create_mcjit_compiler_for_module, :LLVMCreateMCJITCompilerForModule, [:pointer, :pointer, MCJITCompilerOptions, :ulong, :pointer], :int
+  attach_function :create_mcjit_compiler_for_module, :LLVMCreateMCJITCompilerForModule, [:pointer, :pointer, MCJITCompilerOptions, :size_t, :pointer], :int
 
   # (Not documented)
   #
@@ -329,7 +329,7 @@ module LLVM::C
   # @param [String] name
   # @return [Integer]
   # @scope class
-  attach_function :get_global_value_address, :LLVMGetGlobalValueAddress, [OpaqueExecutionEngine, :string], :ulong
+  attach_function :get_global_value_address, :LLVMGetGlobalValueAddress, [OpaqueExecutionEngine, :string], :uint64
 
   # (Not documented)
   #
@@ -338,50 +338,47 @@ module LLVM::C
   # @param [String] name
   # @return [Integer]
   # @scope class
-  attach_function :get_function_address, :LLVMGetFunctionAddress, [OpaqueExecutionEngine, :string], :ulong
+  attach_function :get_function_address, :LLVMGetFunctionAddress, [OpaqueExecutionEngine, :string], :uint64
 
   # ===-- Operations on memory managers -------------------------------------===
   #
-  # <em>This entry is only for documentation and no real method.</em>
+  # <em>This entry is only for documentation and no real method. The FFI::Callback can be accessed via #find_type(:memory_manager_allocate_code_section_callback).</em>
   #
-  # @method _callback_memory_manager_allocate_code_section_callback_(uint8_t, opaque, size, alignment, section_id, section_name)
-  # @param [Integer] uint8_t
+  # @method _callback_memory_manager_allocate_code_section_callback_(opaque, size, alignment, section_id, section_name)
   # @param [FFI::Pointer(*Void)] opaque
-  # @param [Integer] size
+  # @param [FFI::Pointer] size uintptr_t (pointer-width integer)
   # @param [Integer] alignment
   # @param [Integer] section_id
   # @param [String] section_name
-  # @return [Integer]
+  # @return [FFI::Pointer] allocated memory block
   # @scope class
-  callback :memory_manager_allocate_code_section_callback, [:uchar, :pointer, :ulong, :uint, :uint, :string], :uchar
+  callback :memory_manager_allocate_code_section_callback, [:pointer, :pointer, :uint, :uint, :string], :pointer
 
   # (Not documented)
   #
-  # <em>This entry is only for documentation and no real method.</em>
+  # <em>This entry is only for documentation and no real method. The FFI::Callback can be accessed via #find_type(:memory_manager_allocate_data_section_callback).</em>
   #
-  # @method _callback_memory_manager_allocate_data_section_callback_(uint8_t, opaque, size, alignment, section_id, section_name, is_read_only)
-  # @param [Integer] uint8_t
+  # @method _callback_memory_manager_allocate_data_section_callback_(opaque, size, alignment, section_id, section_name, is_read_only)
   # @param [FFI::Pointer(*Void)] opaque
-  # @param [Integer] size
+  # @param [FFI::Pointer] size uintptr_t (pointer-width integer)
   # @param [Integer] alignment
   # @param [Integer] section_id
   # @param [String] section_name
   # @param [Integer] is_read_only
-  # @return [Integer]
+  # @return [FFI::Pointer] allocated memory block
   # @scope class
-  callback :memory_manager_allocate_data_section_callback, [:uchar, :pointer, :ulong, :uint, :uint, :string, :int], :uchar
+  callback :memory_manager_allocate_data_section_callback, [:pointer, :pointer, :uint, :uint, :string, :int], :pointer
 
   # (Not documented)
   #
-  # <em>This entry is only for documentation and no real method.</em>
+  # <em>This entry is only for documentation and no real method. The FFI::Callback can be accessed via #find_type(:memory_manager_finalize_memory_callback).</em>
   #
-  # @method _callback_memory_manager_finalize_memory_callback_(bool, opaque, err_msg)
-  # @param [Integer] bool
+  # @method _callback_memory_manager_finalize_memory_callback_(opaque, err_msg)
   # @param [FFI::Pointer(*Void)] opaque
   # @param [FFI::Pointer(**CharS)] err_msg
   # @return [Integer]
   # @scope class
-  callback :memory_manager_finalize_memory_callback, [:int, :pointer, :pointer], :int
+  callback :memory_manager_finalize_memory_callback, [:pointer, :pointer], :int
 
   # Create a simple custom MCJIT memory manager. This memory manager can
   # intercept allocations in a module-oblivious way. This will return NULL
