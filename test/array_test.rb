@@ -58,7 +58,7 @@ class ArrayTestCase < Minitest::Test
       assert_equal :array, array.type.kind
 
       builder.ret(builder.add(builder.extract_value(array, 0),
-                              builder.extract_value(array, 1)))
+        builder.extract_value(array, 1)))
     end
   end
 
@@ -94,7 +94,7 @@ class ArrayTestCase < Minitest::Test
       assert_equal :array, array.type.kind
 
       builder.ret(builder.add(builder.extract_value(array, 0),
-                              builder.extract_value(array, 1)))
+        builder.extract_value(array, 1)))
     end
   end
 

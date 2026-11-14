@@ -13,7 +13,8 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
     fn = @module.functions.add("test_instruction", [LLVM::Double], LLVM::Double) do |fn, arg|
       fn.basic_blocks.append.build do |builder|
         builder.ret(
-          builder.fadd(arg, LLVM.Double(3.0)))
+          builder.fadd(arg, LLVM.Double(3.0))
+        )
       end
     end
 

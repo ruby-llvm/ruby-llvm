@@ -137,7 +137,7 @@ class StructTestCase < Minitest::Test
 
   def test_constant_named_struct
     struct_ty = LLVM::Struct(LLVM::Int, "struct300")
-    struct = LLVM::ConstantStruct.named_const(struct_ty, [ LLVM::Int(1) ])
+    struct = LLVM::ConstantStruct.named_const(struct_ty, [LLVM::Int(1)])
     assert_instance_of LLVM::ConstantStruct, struct
     assert_equal 1, struct.operands.size
     assert_equal struct_ty, struct.type
@@ -170,7 +170,7 @@ class StructTestCase < Minitest::Test
       struct = builder.insert_value(struct, arguments.first, 0)
       struct = builder.insert_value(struct, arguments.last, 1)
       builder.ret(builder.add(builder.extract_value(struct, 0),
-                              builder.extract_value(struct, 1)))
+        builder.extract_value(struct, 1)))
     end
   end
 

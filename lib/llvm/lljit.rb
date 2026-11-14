@@ -73,29 +73,29 @@ module LLVM
       # LLVMOrcResourceTrackerRef
       # LLVMOrcJITDylibCreateResourceTracker(LLVMOrcJITDylibRef JD);
       attach_function :dylib_create_resource_tracker, :LLVMOrcJITDylibCreateResourceTracker,
-                      [:pointer], :pointer
+        [:pointer], :pointer
 
       # LLVMOrcThreadSafeContextRef LLVMOrcCreateNewThreadSafeContext(void);
       attach_function :create_new_thread_safe_context, :LLVMOrcCreateNewThreadSafeContext,
-                      [], :pointer
+        [], :pointer
 
       # LLVMOrcThreadSafeModuleRef
       # LLVMOrcCreateNewThreadSafeModule(LLVMModuleRef M,
       #                                                LLVMOrcThreadSafeContextRef TSCtx);
       attach_function :create_new_thread_safe_module, :LLVMOrcCreateNewThreadSafeContext,
-                      [:pointer, :pointer], :pointer
+        [:pointer, :pointer], :pointer
 
       # LLVMErrorRef LLVMOrcLLJITAddLLVMIRModule(LLVMOrcLLJITRef J,
       #                                                          LLVMOrcJITDylibRef JD,
       #   LLVMOrcThreadSafeModuleRef TSM);
       attach_function :add_llvm_ir_module, :LLVMOrcLLJITAddLLVMIRModule,
-                      [:pointer, :pointer, :pointer], :pointer
+        [:pointer, :pointer, :pointer], :pointer
 
       # LLVMErrorRef LLVMOrcLLJITAddLLVMIRModuleWithRT(LLVMOrcLLJITRef J,
       #                                                                LLVMOrcResourceTrackerRef JD,
       #   LLVMOrcThreadSafeModuleRef TSM);
       attach_function :add_llvm_ir_module_with_rt, :LLVMOrcLLJITAddLLVMIRModuleWithRT,
-                      [:pointer, :pointer, :pointer], :pointer
+        [:pointer, :pointer, :pointer], :pointer
 
       # TODO: extract and combine with PassBuilder
       attach_function(:get_error_message, :LLVMGetErrorMessage, [:pointer], LLVM::OwnedErrorString)

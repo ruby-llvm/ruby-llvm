@@ -72,7 +72,7 @@ class VectorTestCase < Minitest::Test
       assert_equal :vector, array.type.kind
 
       builder.ret(builder.add(builder.extract_element(array, LLVM::Int32.from_i(0)),
-                              builder.extract_element(array, LLVM::Int32.from_i(1))))
+        builder.extract_element(array, LLVM::Int32.from_i(1))))
     end
   end
 
@@ -104,7 +104,7 @@ class VectorTestCase < Minitest::Test
       assert_equal :vector, vector.type.kind
 
       builder.ret(builder.add(builder.extract_element(vector, LLVM::Int32.from_i(0)),
-                              builder.extract_element(vector, LLVM::Int32.from_i(1))))
+        builder.extract_element(vector, LLVM::Int32.from_i(1))))
     end
   end
 
@@ -120,7 +120,7 @@ class VectorTestCase < Minitest::Test
       vector2 = builder.insert_element(vector2, arguments[3], LLVM::Int32.from_i(1))
       vector3 = builder.shuffle_vector(vector1, vector2, LLVM::ConstantVector.const([LLVM::Int(0), LLVM::Int(3)]))
       builder.ret(builder.add(builder.extract_element(vector3, LLVM::Int32.from_i(0)),
-                              builder.extract_element(vector3, LLVM::Int32.from_i(1))))
+        builder.extract_element(vector3, LLVM::Int32.from_i(1))))
     end
   end
 

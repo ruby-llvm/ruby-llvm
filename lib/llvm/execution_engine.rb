@@ -208,7 +208,7 @@ module LLVM
 
     #: (Function, *untyped) -> GenericValue?
     def run_function(fun, *args)
-      args2 = fun.params.map {|e| convert_type(e.type)}
+      args2 = fun.params.map { |e| convert_type(e.type) }
       ptr = FFI::Pointer.new(function_address(fun.name))
       raise "Couldn't find function" if ptr.null?
 

@@ -51,10 +51,10 @@ module LLVM::C
   #   (OpaqueMCJITMemoryManager)
   class MCJITCompilerOptions < FFI::Struct
     layout :opt_level, :uint,
-           :code_model, :char,
-           :no_frame_pointer_elim, :int,
-           :enable_fast_i_sel, :int,
-           :mcjmm, OpaqueMCJITMemoryManager
+      :code_model, :char,
+      :no_frame_pointer_elim, :int,
+      :enable_fast_i_sel, :int,
+      :mcjmm, OpaqueMCJITMemoryManager
   end
 
   # ===-- Operations on generic values --------------------------------------===

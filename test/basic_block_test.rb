@@ -18,16 +18,16 @@ class BasicBlockTestCase < Minitest::Test
 
       assert_equal 1, coll.size
       assert_equal coll.first, coll.last,
-                   'Only one block exists in the function'
+        'Only one block exists in the function'
       assert_equal coll.first, coll.entry,
-                   'The entry block for the function is always the first block'
+        'The entry block for the function is always the first block'
 
       block2 = coll.append
       assert_equal 2, coll.size
       assert_equal block1, coll.first
       assert_equal block2, coll.last
 
-      [ coll.each.to_a, coll.to_a ].each do |blocks|
+      [coll.each.to_a, coll.to_a].each do |blocks|
         assert_equal 2, blocks.size
         assert_equal block1, blocks[0]
         assert_equal block2, blocks[1]
@@ -57,9 +57,9 @@ class BasicBlockTestCase < Minitest::Test
       end
 
       assert_equal block1.first_instruction,
-                   block1.last_instruction
+        block1.last_instruction
       assert_equal block2.first_instruction,
-                   block2.last_instruction
+        block2.last_instruction
     end
   end
 
@@ -67,7 +67,7 @@ class BasicBlockTestCase < Minitest::Test
     @module.functions.add("test_basic_block_enumerable", [LLVM::Double], LLVM::Double) do |fn, arg|
       block1 = fn.basic_blocks.append
 
-      [ block1.instructions.to_a, block1.instructions.each.to_a ].each do |insts|
+      [block1.instructions.to_a, block1.instructions.each.to_a].each do |insts|
         assert_equal 0, insts.size, 'Empty basic block'
       end
 
@@ -75,7 +75,7 @@ class BasicBlockTestCase < Minitest::Test
         builder.ret(builder.fadd(arg, LLVM.Double(1.0)))
       end
 
-      [ block1.instructions.to_a, block1.instructions.each.to_a ].each do |insts|
+      [block1.instructions.to_a, block1.instructions.each.to_a].each do |insts|
         assert_equal 2, insts.size
         assert_equal block1.first_instruction, insts[0]  # deprecated
         assert_equal block1.last_instruction,  insts[1]  # deprecated

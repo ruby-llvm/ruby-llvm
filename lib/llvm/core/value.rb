@@ -375,7 +375,8 @@ module LLVM
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
         indices_ptr.write_array_of_pointer(indices)
         return ConstantExpr.from_ptr(
-          C.const_gep(self, indices_ptr, indices.size))
+          C.const_gep(self, indices_ptr, indices.size)
+        )
       end
     end
 

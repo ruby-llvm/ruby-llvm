@@ -40,19 +40,19 @@ class ComparisonsTestCase < Minitest::Test
 
   def integer_comparison_assertion(operation, operand1, operand2, signed, expected_result)
     result = run_comparison_operation(:icmp,
-                                      operation,
-                                      LLVM::Int.from_i(operand1, signed),
-                                      LLVM::Int.from_i(operand2, signed),
-                                      LLVM::Int1).to_i(false)
+      operation,
+      LLVM::Int.from_i(operand1, signed),
+      LLVM::Int.from_i(operand2, signed),
+      LLVM::Int1).to_i(false)
     assert_equal expected_result, result
   end
 
   def float_comparison_assertion(operation, operand1, operand2, expected_result)
     result = run_comparison_operation(:fcmp,
-                                      operation,
-                                      LLVM::Float(operand1),
-                                      LLVM::Float(operand2),
-                                      LLVM::Int1).to_i(false)
+      operation,
+      LLVM::Float(operand1),
+      LLVM::Float(operand2),
+      LLVM::Int1).to_i(false)
     assert_equal expected_result, result
   end
 

@@ -17,11 +17,11 @@ class EqualityTestCase < Minitest::Test
   def assert_equalities(options)
     map = {
       :equal     => method(:assert_equal),
-      :not_equal => lambda {|n, m, name| refute_equal n, m, name },
+      :not_equal => lambda { |n, m, name| refute_equal n, m, name },
       :same      => method(:assert_same),
-      :not_same  => lambda {|n, m, name| refute_same n, m, name },
-      :eql       => lambda {|n, m, name| assert_equal n, m, name },
-      :not_eql   => lambda {|n, m, name| refute_equal n, m, name },
+      :not_same  => lambda { |n, m, name| refute_same n, m, name },
+      :eql       => lambda { |n, m, name| assert_equal n, m, name },
+      :not_eql   => lambda { |n, m, name| refute_equal n, m, name },
     }
 
     map.each do |name, callable|
@@ -37,12 +37,12 @@ class EqualityTestCase < Minitest::Test
     int3 = LLVM::Int32.from_i(2)
     int4 = MyInt.from_ptr(int1.to_ptr)
 
-    assert_equalities :equal     => [int1, int2, int4],
-                      :not_equal => [int1, int3],
-                      :same      => [int1, int1],
-                      :not_same  => [int1, int2, int3, int4],
-                      :eql       => [int1, int2],
-                      :not_eql   => [int1, int3]
+    assert_equalities :equal => [int1, int2, int4],
+      :not_equal => [int1, int3],
+      :same      => [int1, int1],
+      :not_same  => [int1, int2, int3, int4],
+      :eql       => [int1, int2],
+      :not_eql   => [int1, int3]
   end
 
   def test_module
@@ -51,12 +51,12 @@ class EqualityTestCase < Minitest::Test
     mod3 = LLVM::Module.new('dummy')
     mod4 = MyModule.from_ptr(mod1.to_ptr)
 
-    assert_equalities :equal     => [mod1, mod2, mod4],
-                      :not_equal => [mod1, mod3],
-                      :same      => [mod1, mod1],
-                      :not_same  => [mod1, mod2, mod3, mod4],
-                      :eql       => [mod1, mod2],
-                      :not_eql   => [mod1, mod3]
+    assert_equalities :equal => [mod1, mod2, mod4],
+      :not_equal => [mod1, mod3],
+      :same      => [mod1, mod1],
+      :not_same  => [mod1, mod2, mod3, mod4],
+      :eql       => [mod1, mod2],
+      :not_eql   => [mod1, mod3]
   end
 
   def test_type
@@ -65,12 +65,12 @@ class EqualityTestCase < Minitest::Test
     type3 = LLVM::Double.type
     type4 = MyType.from_ptr(type1.to_ptr, kind: :mytype)
 
-    assert_equalities :equal     => [type1, type2, type4],
-                      :not_equal => [type1, type3],
-                      :same      => [type1, type1],
-                      :not_same  => [type1, type2, type3, type4],
-                      :eql       => [type1, type2],
-                      :not_eql   => [type1, type3]
+    assert_equalities :equal => [type1, type2, type4],
+      :not_equal => [type1, type3],
+      :same      => [type1, type1],
+      :not_same  => [type1, type2, type3, type4],
+      :eql       => [type1, type2],
+      :not_eql   => [type1, type3]
   end
 
   def test_function
@@ -81,11 +81,11 @@ class EqualityTestCase < Minitest::Test
     fn3 = mod.functions.add('test2', [], LLVM.Void)
     fn4 = MyFunction.from_ptr(fn1.to_ptr)
 
-    assert_equalities :equal     => [fn1, fn2, fn4],
-                      :not_equal => [fn1, fn3],
-                      :same      => [fn1, fn1],
-                      :not_same  => [fn1, fn2, fn3, fn4],
-                      :eql       => [fn1, fn2],
-                      :not_eql   => [fn1, fn3]
+    assert_equalities :equal => [fn1, fn2, fn4],
+      :not_equal => [fn1, fn3],
+      :same      => [fn1, fn1],
+      :not_same  => [fn1, fn2, fn3, fn4],
+      :eql       => [fn1, fn2],
+      :not_eql   => [fn1, fn3]
   end
 end

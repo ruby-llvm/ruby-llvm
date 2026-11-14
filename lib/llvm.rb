@@ -22,7 +22,7 @@ module LLVM
     #: (untyped) -> bool
     def ==(other)
       other.respond_to?(:to_ptr) &&
-          ptr == other.to_ptr
+        ptr == other.to_ptr
     end
 
     # Computes hash.

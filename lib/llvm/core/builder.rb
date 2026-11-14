@@ -125,7 +125,8 @@ module LLVM
     #: (BasicBlock, Integer) -> Value
     def ibr(addr, num_dests)
       IndirectBr.from_ptr(
-        C.build_indirect_br(self, addr, num_dests))
+        C.build_indirect_br(self, addr, num_dests)
+      )
     end
 
     # Conditional branching (i.e. if)
