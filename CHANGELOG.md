@@ -1,5 +1,30 @@
 ## [Unreleased]
 
+## [22.1.0] - 2026-11-14
+
+### Changed
+
+- Upgrade to LLVM 22.1
+- BREAKING: `from_ptr` raises `ArgumentError` for a null pointer instead of returning `nil`
+  - applies to `Value` and all its subclasses, `GenericValue`, `Target`, and `TargetMachine`
+  - `Type.from_ptr` already raised `ArgumentError` for a null pointer
+- `dump` on `Module`, `Value`, and `Type` writes through Ruby's `$stderr` instead of LLVM's `errs()`, so reassigning `$stderr` captures the output
+- Shared library names are defined once in `LLVM::LIB_NAMES`
+  - `libLLVM-22.so.1` is no longer tried; the candidates are `LLVM-22`, `libLLVM.so.22`, and `libLLVM.so.22.1`
+- Sorbet: parse RBS comments with Prism
+- CI: test Ruby 4.0, ubuntu-26.04, macos-15-intel, macos-26, and macos-26-intel; remove macos-13
+
+### Added
+
+- `Module#debug_s`, `Value#debug_s`, and `Type#debug_s` return the text that `dump` prints (LLVM's `IsForDebug` form)
+
+### Fixed
+
+- Memory leaks of strings that LLVM gives to the caller to free:
+  - `to_s` on `Module`, `Value`, `Type`, and `Attribute`
+  - `TargetMachine#triple`, `#cpu`, and `#features`
+  - error messages from `PassBuilder#run`, `LLJIT`, and `ExecutionEngine` (creation and module removal)
+
 ## [21.1.0] - 2025-08-29
 
 ### Changed
