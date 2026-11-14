@@ -18,7 +18,7 @@ class ModuleTestCase < Minitest::Test
   end
 
   def test_simple_module
-    assert_equal 1, simple_function().to_i
+    assert_equal 1, simple_function.to_i
   end
 
   # #debug_s renders like #dump (IsForDebug=true), which differs from #to_s

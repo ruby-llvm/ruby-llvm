@@ -64,7 +64,7 @@ module LLVM
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * args.size) do |args_ptr|
         new_values = []
         args_ptr.write_array_of_pointer(fun.params.zip(args).map do |p, a|
-          if a.kind_of?(GenericValue)
+          if a.is_a?(GenericValue)
             a
           else
             value = LLVM.make_generic_value(p.type, a)
@@ -301,7 +301,7 @@ module LLVM
     #: (?bool) -> Integer
     def to_i(signed = true)
       v = C.generic_value_to_int(self, signed ? 1 : 0)
-      v -= 2**64 if signed and v >= 2**63
+      v -= 2**64 if signed && (v >= 2**63)
       v
     end
 

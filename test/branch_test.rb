@@ -9,9 +9,9 @@ class BranchTestCase < Minitest::Test
   end
 
   def test_branching
-    assert_equal 0, direct_jump_function().to_i
-    assert_equal 0, conditional_jump_function().to_i
-    assert_equal 0, switched_jump_function().to_i
+    assert_equal 0, direct_jump_function.to_i
+    assert_equal 0, conditional_jump_function.to_i
+    assert_equal 0, switched_jump_function.to_i
   end
 
   def direct_jump_function

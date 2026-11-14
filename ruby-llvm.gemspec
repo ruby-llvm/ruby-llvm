@@ -16,13 +16,13 @@ Gem::Specification.new do |s|
 
   s.require_path = 'lib'
   s.files        = Dir['lib/**/*.rb']
-  s.files       += %w(ext/ruby-llvm-support/Rakefile ext/ruby-llvm-support/support.cpp)
+  s.files       += %w[ext/ruby-llvm-support/Rakefile ext/ruby-llvm-support/support.cpp]
   # generated at install time by ext/ruby-llvm-support/Rakefile
-  s.files       -= %w(lib/llvm/config.rb)
+  s.files       -= %w[lib/llvm/config.rb]
 
-  s.extensions   = %w(ext/ruby-llvm-support/Rakefile)
+  s.extensions   = %w[ext/ruby-llvm-support/Rakefile]
 
-  s.extra_rdoc_files = %w(README.md LICENSE)
+  s.extra_rdoc_files = %w[README.md LICENSE]
 
   s.add_dependency             'ffi',      '~> 1.13'
   s.add_dependency             'rake',     '>= 12', '< 14'

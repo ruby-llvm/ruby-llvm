@@ -34,7 +34,7 @@ module LLVM
         C.write_bitcode_to_file(self, path_or_io.path)
       elsif path_or_io.respond_to?(:fileno)
         C.write_bitcode_to_fd(self, path_or_io.fileno, 0, 1)
-      elsif path_or_io.kind_of?(Integer)
+      elsif path_or_io.is_a?(Integer)
         C.write_bitcode_to_fd(self, path_or_io, 0, 1)
       else
         C.write_bitcode_to_file(self, path_or_io.to_str)

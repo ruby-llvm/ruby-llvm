@@ -391,7 +391,7 @@ module LLVM
       if size_or_values.is_a?(Integer)
         raise ArgumentError, 'block not given' unless block
         size = size_or_values
-        values = (0...size).map { |i| yield i }
+        values = (0...size).map(&block)
       else
         values = size_or_values
         size = values.size
@@ -1266,7 +1266,7 @@ module LLVM
     end
 
     def global_constant=(flag)
-      if flag.kind_of?(Integer)
+      if flag.is_a?(Integer)
         warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
         flag = !flag.zero?
       end

@@ -58,9 +58,9 @@ module LLVM
       C.extend(target_module)
 
       begin
-        %W(initialize_target_info_#{target}
+        %W[initialize_target_info_#{target}
            initialize_target_#{target}
-           initialize_target_#{target}_mc).each do |init|
+           initialize_target_#{target}_mc].each do |init|
           C.send init
         end
       rescue FFI::NotFoundError

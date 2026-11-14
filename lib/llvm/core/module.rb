@@ -161,7 +161,7 @@ module LLVM
       def [](key)
         case key
         when String, Symbol then named(key)
-        when Integer then
+        when Integer
           i = 0
           g = first #: GlobalVariable?
           until i >= key || g.nil?
@@ -199,10 +199,10 @@ module LLVM
 
       # Adds a Function with the given name (symbol or string) and args (Types).
       def add(name, *args)
-        if args.first.kind_of? FunctionType
-          type = args.first
+        type = if args.first.is_a? FunctionType
+          args.first
         else
-          type = Type.function(
+          Type.function(
             *args #: as untyped
           )
         end

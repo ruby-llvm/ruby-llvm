@@ -39,8 +39,8 @@ module LLVM
   # @yield  [FFI::MemoryPointer]
   # @return [nil]
   #: { (FFI::MemoryPointer) -> Integer } -> String?
-  def self.with_error_output(&blk)
-    error = with_message_output(&blk)
+  def self.with_error_output(&)
+    error = with_message_output(&)
 
     raise error unless error.nil?
   end

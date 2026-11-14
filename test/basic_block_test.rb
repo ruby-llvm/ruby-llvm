@@ -52,9 +52,7 @@ class BasicBlockTestCase < Minitest::Test
         builder.br(block2)
       end
 
-      block2.build do |builder|
-        builder.ret_void
-      end
+      block2.build(&:ret_void)
 
       assert_equal block1.first_instruction,
         block1.last_instruction

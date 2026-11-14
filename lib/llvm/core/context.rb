@@ -17,7 +17,7 @@ module LLVM
     # Obtains a reference to the global Context.
     #: -> Context
     def self.global
-      new(C.get_global_context())
+      new(C.get_global_context)
     end
 
     # Diposes the Context.

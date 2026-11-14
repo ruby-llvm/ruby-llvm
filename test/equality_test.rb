@@ -17,11 +17,11 @@ class EqualityTestCase < Minitest::Test
   def assert_equalities(options)
     map = {
       :equal     => method(:assert_equal),
-      :not_equal => lambda { |n, m, name| refute_equal n, m, name },
+      :not_equal => ->(n, m, name) { refute_equal n, m, name },
       :same      => method(:assert_same),
-      :not_same  => lambda { |n, m, name| refute_same n, m, name },
-      :eql       => lambda { |n, m, name| assert_equal n, m, name },
-      :not_eql   => lambda { |n, m, name| refute_equal n, m, name },
+      :not_same  => ->(n, m, name) { refute_same n, m, name },
+      :eql       => ->(n, m, name) { assert_equal n, m, name },
+      :not_eql   => ->(n, m, name) { refute_equal n, m, name },
     }
 
     map.each do |name, callable|
