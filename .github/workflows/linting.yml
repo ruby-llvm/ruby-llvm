@@ -11,6 +11,5 @@ jobs:
         with:
           ruby-version: '4.0'
           bundler-cache: true
-      - run: bundle install
       - name: Rubocop
         run: bundle exec rubocop
