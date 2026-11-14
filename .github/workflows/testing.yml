@@ -66,9 +66,16 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           echo "setup=false" >> "$GITHUB_OUTPUT"
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 22
+          # Add the apt.llvm.org repository as llvm.sh does, but skip llvm.sh's
+          # fixed package list (clang, lldb, lld, clangd), which has no option
+          # to install less.
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
+          codename=$(lsb_release -cs)
+          # add-apt-repository runs apt-get update itself
+          sudo add-apt-repository -y "deb https://apt.llvm.org/${codename}/ llvm-toolchain-${codename}-22 main"
+          # headers, llvm-config-22 and libLLVM; the support library builds with
+          # the runner's own C++ compiler, as it would on a user's machine
+          sudo apt-get install -y --no-install-recommends llvm-22-dev
           # sudo apt-get install -y libpolly-22-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
