@@ -8,11 +8,16 @@
 - BREAKING: `from_ptr` raises `ArgumentError` for a null pointer instead of returning `nil`
   - applies to `Value` and all its subclasses, `GenericValue`, `Target`, and `TargetMachine`
   - `Type.from_ptr` already raised `ArgumentError` for a null pointer
+  - downstream, these now raise `ArgumentError` where they returned `nil`:
+    - `Builder#insert_block` when the builder is not positioned
+    - `GlobalVariable#initializer` when no initializer is set
+    - `ConstantArray#[]` and `ConstantVector#[]` with an out-of-range index
 - `dump` on `Module`, `Value`, and `Type` writes through Ruby's `$stderr` instead of LLVM's `errs()`, so reassigning `$stderr` captures the output
 - Shared library names are defined once in `LLVM::LIB_NAMES`
   - `libLLVM-22.so.1` is no longer tried; the candidates are `LLVM-22`, `libLLVM.so.22`, and `libLLVM.so.22.1`
 - Sorbet: parse RBS comments with Prism
-- CI: test Ruby 4.0, ubuntu-26.04, macos-15-intel, macos-26, and macos-26-intel; remove macos-13
+- CI: test Ruby 4.0, ubuntu-26.04, macos-15-intel, macos-26, and macos-26-intel
+- CI remove macos-13, macos-14
 
 ### Added
 
@@ -24,6 +29,7 @@
   - `to_s` on `Module`, `Value`, `Type`, and `Attribute`
   - `TargetMachine#triple`, `#cpu`, and `#features`
   - error messages from `PassBuilder#run`, `LLJIT`, and `ExecutionEngine` (creation and module removal)
+- The gem no longer ships a pre-generated `lib/llvm/config.rb`; it is generated at install from the system's `llvm-config`
 
 ## [21.1.0] - 2025-08-29
 
