@@ -17,6 +17,8 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.files        = Dir['lib/**/*.rb']
   s.files       += %w(ext/ruby-llvm-support/Rakefile ext/ruby-llvm-support/support.cpp)
+  # generated at install time by ext/ruby-llvm-support/Rakefile
+  s.files       -= %w(lib/llvm/config.rb)
 
   s.extensions   = %w(ext/ruby-llvm-support/Rakefile)
 
