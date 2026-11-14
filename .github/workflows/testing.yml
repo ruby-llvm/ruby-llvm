@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ master ]
 
+# a new run on the same branch or PR cancels the one still in progress
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -19,6 +24,18 @@ jobs:
             ruby: '3.1'
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
     steps:
+      - name: Homebrew cache key
+        if: startsWith(matrix.os, 'macos')
+        id: brew_cache
+        run: |
+          echo "dir=$(brew --cache)" >> "$GITHUB_OUTPUT"
+          echo "llvm=$(brew info --json=v2 llvm@22 | jq -r '.formulae[0] | "\(.versions.stable)_\(.revision)"')" >> "$GITHUB_OUTPUT"
+      - name: Cache Homebrew downloads
+        if: startsWith(matrix.os, 'macos')
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.brew_cache.outputs.dir }}/downloads
+          key: brew-downloads-${{ matrix.os }}-llvm@22-${{ steps.brew_cache.outputs.llvm }}
       - name: Install LLVM on macos
         if: startsWith(matrix.os, 'macos')
         id: macos_setup
