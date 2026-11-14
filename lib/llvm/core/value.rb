@@ -1143,7 +1143,7 @@ module LLVM
         return to_enum :each unless block_given?
 
         ptr = C.get_first_basic_block(@fun)
-        0.upto(size - 1) do |i|
+        size.times do
           yield BasicBlock.from_ptr(ptr)
           ptr = C.get_next_basic_block(ptr)
         end

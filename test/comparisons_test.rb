@@ -58,7 +58,7 @@ class ComparisonsTestCase < Minitest::Test
 
   def run_comparison_operation(comparison_operation, comparison_operator,
                                operand1, operand2, return_type)
-    run_function([], [], return_type) do |builder, function, *arguments|
+    run_function([], [], return_type) do |builder, function|
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret(builder.send(comparison_operation, comparison_operator, operand1, operand2))

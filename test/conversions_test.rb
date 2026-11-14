@@ -86,7 +86,7 @@ class ConversionsTestCase < Minitest::Test
   end
 
   def run_conversion_operation(operation, operand, return_type)
-    run_function([], [], return_type) do |builder, function, *arguments|
+    run_function([], [], return_type) do |builder, function|
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret(builder.send(operation, operand, return_type))

@@ -7,14 +7,16 @@ require 'llvm/linker_ffi'
 
 module LLVM
   class Module
-    # Link the current module into +other+.
+    # Link the current module into +other+. LLVM destroys the current module,
+    # so afterward it is cleared as if disposed, and must not be used.
     #
-    # @return [nil, String] human-readable error if linking has failed
-    #: (LLVM::Module) -> String?
+    # @return [Boolean] true if linking succeeded; the inverse of
+    #   LLVMLinkModules2, which returns true if an error occurred
+    #: (LLVM::Module) -> bool
     def link_into(other)
-      LLVM.with_message_output do |msg|
-        C.link_modules2(other, self)
-      end
+      succeeded = C.link_modules2(other, self).zero?
+      @ptr = nil #: FFI::Pointer?
+      succeeded
     end
   end
 end

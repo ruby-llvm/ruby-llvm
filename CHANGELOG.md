@@ -12,6 +12,8 @@
     - `Builder#insert_block` when the builder is not positioned
     - `GlobalVariable#initializer` when no initializer is set
     - `ConstantArray#[]` and `ConstantVector#[]` with an out-of-range index
+- BREAKING: `Module#link_into` returns `true` on success and `false` if linking failed
+  - it was documented to return `nil` on success and an error string on failure, but always returned `nil`
 - `dump` on `Module`, `Value`, and `Type` writes through Ruby's `$stderr` instead of LLVM's `errs()`, so reassigning `$stderr` captures the output
 - Shared library names are defined once in `LLVM::LIB_NAMES`
   - `libLLVM-22.so.1` is no longer tried; the candidates are `LLVM-22`, `libLLVM.so.22`, and `libLLVM.so.22.1`
@@ -30,6 +32,7 @@
   - `TargetMachine#triple`, `#cpu`, and `#features`
   - error messages from `PassBuilder#run`, `LLJIT`, and `ExecutionEngine` (creation and module removal)
 - The gem no longer ships a pre-generated `lib/llvm/config.rb`; it is generated at install from the system's `llvm-config`
+- `Module#link_into` clears the source module, which LLVM destroys; calling `dispose` on it afterward was a double free
 
 ## [21.1.0] - 2025-08-29
 

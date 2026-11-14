@@ -50,7 +50,7 @@ class BasicOperationsTestCase < Minitest::Test
   end
 
   def run_binary_operation(operation, operand1, operand2, return_type)
-    run_function([], [], return_type) do |builder, function, *arguments|
+    run_function([], [], return_type) do |builder, function|
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret(builder.send(operation, operand1, operand2))
