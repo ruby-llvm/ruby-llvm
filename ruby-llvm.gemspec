@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.authors      = ['Jesse Johnson', 'Jeremy Voorhis']
   s.email        = ['jesse@hightechsorcery.com', 'jvoorhis@gmail.com']
   s.homepage     = 'http://github.com/ruby-llvm/ruby-llvm'
+  s.license      = 'BSD-3-Clause'
 
   s.require_path = 'lib'
   s.files        = Dir['lib/**/*.rb']
