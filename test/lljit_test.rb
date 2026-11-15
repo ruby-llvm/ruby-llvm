@@ -20,11 +20,13 @@ class LLJitTest < Minitest::Test
     assert(lljit.global_prefix)
   end
 
-  def test_lljit_strings
-    skip "This test is platform dependent"
+  def test_lljit_matches_ffi
     lljit = LLVM::LLJit.new
-    assert_equal("x86_64-pc-linux-gnu", lljit.triple_string)
-    assert_equal("e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128", lljit.data_layout)
-    assert_equal("", lljit.global_prefix)
+    layout = LLVM::TargetDataLayout.new(lljit.data_layout)
+
+    assert_equal(FFI.type_size(:pointer), layout.pointer_size)
+    little = FFI::Platform::BYTE_ORDER == FFI::Platform::LITTLE_ENDIAN
+    assert_equal(little ? :little_endian : :big_endian, layout.byte_order)
+    assert_equal(FFI::Platform.mac? ? "_" : "", lljit.global_prefix)
   end
 end
