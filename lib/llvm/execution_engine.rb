@@ -210,6 +210,9 @@ module LLVM
     def run_function(fun, *args)
       args2 = fun.params.map { |e| convert_type(e.type) }
       ptr = FFI::Pointer.new(function_address(fun.name))
+      # MCJIT only resolves functions defined in its modules; find external
+      # declarations (e.g. libm's sin) in the loaded libraries instead.
+      ptr = C.search_for_address_of_symbol(fun.name) if ptr.null?
       raise "Couldn't find function" if ptr.null?
 
       return_type = convert_type(fun.function_type.return_type)

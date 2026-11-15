@@ -95,8 +95,6 @@ class DoubleTestCase < Minitest::Test
     result = engine.run_function(function, arg)
     assert_equal arg + 1, result&.to_f(LLVM::Double)
 
-    skip 'MCJIT cannot find external function sin'
-
     sin_function = mod.functions["sin"] #: as !nil
     assert actual = engine.run_function(sin_function, 1.0)&.to_f(LLVM::Double)
     assert_in_delta(Math.sin(1.0), actual, 1e-10)
