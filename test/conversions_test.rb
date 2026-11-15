@@ -22,7 +22,7 @@ class ConversionsTestCase < Minitest::Test
     integer_conversion_assertion(:sext, LLVM::Int1.from_i(-1), LLVM::Int32, LLVM_SIGNED, -1)
     integer_conversion_assertion(:sext, LLVM::Int1.from_i(-1), LLVM::Int32, LLVM_UNSIGNED, 4_294_967_295)
     integer_conversion_assertion(:sext, LLVM::Int8.from_i(-1), LLVM::Int16, LLVM_SIGNED, -1)
-    integer_conversion_assertion(:sext, LLVM::Int8.from_i(-1), LLVM::Int16, LLVM_UNSIGNED, 65535)
+    integer_conversion_assertion(:sext, LLVM::Int8.from_i(-1), LLVM::Int16, LLVM_UNSIGNED, 65_535)
   end
 
   def test_fptrunc_to
@@ -86,7 +86,7 @@ class ConversionsTestCase < Minitest::Test
   end
 
   def run_conversion_operation(operation, operand, return_type)
-    run_function([], [], return_type) do |builder, function, *arguments|
+    run_function([], [], return_type) do |builder, function|
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret(builder.send(operation, operand, return_type))

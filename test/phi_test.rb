@@ -29,8 +29,8 @@ class PhiTest < Minitest::Test
       builder.br(exit)
       builder.position_at_end(exit)
       builder.ret(builder.phi(LLVM::Int,
-                              block1 => result1,
-                              block2 => result2))
+        block1 => result1,
+        block2 => result2))
     end
   end
 end

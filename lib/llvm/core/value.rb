@@ -375,7 +375,8 @@ module LLVM
       FFI::MemoryPointer.new(FFI.type_size(:pointer) * indices.size) do |indices_ptr|
         indices_ptr.write_array_of_pointer(indices)
         return ConstantExpr.from_ptr(
-          C.const_gep(self, indices_ptr, indices.size))
+          C.const_gep(self, indices_ptr, indices.size)
+        )
       end
     end
 
@@ -390,7 +391,7 @@ module LLVM
       if size_or_values.is_a?(Integer)
         raise ArgumentError, 'block not given' unless block
         size = size_or_values
-        values = (0...size).map { |i| yield i }
+        values = (0...size).map(&block)
       else
         values = size_or_values
         size = values.size
@@ -1142,7 +1143,7 @@ module LLVM
         return to_enum :each unless block_given?
 
         ptr = C.get_first_basic_block(@fun)
-        0.upto(size - 1) do |i|
+        size.times do
           yield BasicBlock.from_ptr(ptr)
           ptr = C.get_next_basic_block(ptr)
         end
@@ -1265,7 +1266,7 @@ module LLVM
     end
 
     def global_constant=(flag)
-      if flag.kind_of?(Integer)
+      if flag.is_a?(Integer)
         warn 'Warning: Passing Integer value to LLVM::GlobalValue#global_constant=(Boolean) is deprecated.'
         flag = !flag.zero?
       end

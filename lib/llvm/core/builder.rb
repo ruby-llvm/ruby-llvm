@@ -125,7 +125,8 @@ module LLVM
     #: (BasicBlock, Integer) -> Value
     def ibr(addr, num_dests)
       IndirectBr.from_ptr(
-        C.build_indirect_br(self, addr, num_dests))
+        C.build_indirect_br(self, addr, num_dests)
+      )
     end
 
     # Conditional branching (i.e. if)
@@ -650,7 +651,7 @@ module LLVM
     # @LLVMinst store
     #: (Value, Value) -> Value
     def store(val, ptr)
-      raise "val must be a Value, got #{val.class.name}" unless Value === val
+      raise "val must be a Value, got #{val.class.name}" unless val.is_a?(Value)
       Instruction.from_ptr(C.build_store(self, val, ptr))
     end
 
@@ -1093,7 +1094,7 @@ module LLVM
     def call2(type, fun, *args)
       type, fun = call2_infer_function_and_type(type, fun)
 
-      name = if args.last.kind_of? String
+      name = if args.last.is_a? String
         args.pop
       else
         ""
@@ -1267,13 +1268,13 @@ module LLVM
 
     #: (untyped) -> void
     def must_be_value!(value)
-      raise ArgumentError, "must be a Value, got #{value.class.name}" unless Value === value
+      raise ArgumentError, "must be a Value, got #{value.class.name}" unless value.is_a?(Value)
     end
 
     #: (untyped) -> void
     def must_be_type!(type)
       type2 = LLVM.Type(type)
-      raise ArgumentError, "must be a Type (LLVMTypeRef), got #{type2.class.name}" unless Type === type2
+      raise ArgumentError, "must be a Type (LLVMTypeRef), got #{type2.class.name}" unless type2.is_a?(Type)
     end
 
     #: (untyped) -> void

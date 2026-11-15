@@ -37,20 +37,20 @@ class BasicOperationsTestCase < Minitest::Test
 
   def integer_binary_operation_assertion(operation, operand1, operand2, expected_result)
     result = run_binary_operation(operation,
-                                  LLVM::Int(operand1), LLVM::Int(operand2),
-                                  LLVM::Int).to_i
+      LLVM::Int(operand1), LLVM::Int(operand2),
+      LLVM::Int).to_i
     assert_equal expected_result, result
   end
 
   def float_binary_operation_assertion(operation, operand1, operand2, expected_result)
     result = run_binary_operation(operation,
-                                  LLVM::Float(operand1), LLVM::Float(operand2),
-                                  LLVM::Float).to_f
+      LLVM::Float(operand1), LLVM::Float(operand2),
+      LLVM::Float).to_f
     assert_in_delta expected_result, result, 0.001
   end
 
   def run_binary_operation(operation, operand1, operand2, return_type)
-    run_function([], [], return_type) do |builder, function, *arguments|
+    run_function([], [], return_type) do |builder, function|
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret(builder.send(operation, operand1, operand2))

@@ -16,6 +16,33 @@ AllCops:
     - test/pass_manager_builder_test.rb
     - lib/llvm/transforms/**
 
+# New cops: enable pending cops added up to these versions. Newer cops stay
+# pending and RuboCop warns about them. Plugin departments use the plugin's
+# version. Style is pinned in its section under "Exceptions".
+Gemspec:
+  NewCops: '1.92'
+
+Layout:
+  NewCops: '1.92'
+
+Lint:
+  NewCops: '1.92'
+
+Metrics:
+  NewCops: '1.92'
+
+Naming:
+  NewCops: '1.92'
+
+Security:
+  NewCops: '1.92'
+
+Performance:
+  NewCops: '1.26' # rubocop-performance
+
+Minitest:
+  NewCops: '0.40' # rubocop-minitest
+
 # Style
 Style/ClassAndModuleChildren:
   Enabled: false
@@ -51,8 +78,12 @@ Layout/CaseIndentation:
   Enabled: true
   EnforcedStyle: end
 
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
 # Exceptions
 Style:
+  NewCops: '1.92'
   Exclude:
     - 'lib/**/*ffi.rb'
 

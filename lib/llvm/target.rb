@@ -58,9 +58,9 @@ module LLVM
       C.extend(target_module)
 
       begin
-        %W(initialize_target_info_#{target}
+        %W[initialize_target_info_#{target}
            initialize_target_#{target}
-           initialize_target_#{target}_mc).each do |init|
+           initialize_target_#{target}_mc].each do |init|
           C.send init
         end
       rescue FFI::NotFoundError
@@ -174,7 +174,7 @@ module LLVM
     def create_machine(triple, cpu = "", features = "",
                        opt_level = :default, reloc = :default, code_model = :default)
       TargetMachine.from_ptr(C.create_target_machine(self,
-            triple, cpu, features, opt_level, reloc, code_model))
+        triple, cpu, features, opt_level, reloc, code_model))
     end
   end
 

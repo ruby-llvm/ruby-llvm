@@ -16,16 +16,12 @@ class IPOTestCase < Minitest::Test
 
     fn1 = mod.functions.add("fn1", [], LLVM.Void) do |fn|
       fn.linkage = :internal
-      fn.basic_blocks.append.build do |builder|
-        builder.ret_void
-      end
+      fn.basic_blocks.append.build(&:ret_void)
     end
 
     fn2 = mod.functions.add("fn2", [], LLVM.Void) do |fn|
       fn.linkage = :internal
-      fn.basic_blocks.append.build do |builder|
-        builder.ret_void
-      end
+      fn.basic_blocks.append.build(&:ret_void)
     end
 
     main = mod.functions.add("main", [], LLVM.Void) do |fn|

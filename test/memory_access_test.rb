@@ -38,7 +38,7 @@ class MemoryAccessTestCase < Minitest::Test
       builder.store(arguments.first, builder.gep(pointer, [LLVM::Int(0)]))
       builder.store(arguments.last, builder.gep(pointer, [LLVM::Int(1)]))
       builder.ret(builder.add(builder.load(builder.gep(pointer, [LLVM::Int(0)])),
-                              builder.load(builder.gep(pointer, [LLVM::Int(1)]))))
+        builder.load(builder.gep(pointer, [LLVM::Int(1)]))))
     end
   end
 end

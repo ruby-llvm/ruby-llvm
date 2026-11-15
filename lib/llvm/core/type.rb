@@ -456,8 +456,6 @@ module LLVM
   def Struct(*elt_types)
     name = if elt_types.last.is_a? String
       elt_types.pop
-    else
-      nil
     end
     LLVM::Type.struct(
       elt_types, #: as [LLVM::Type]

@@ -16,7 +16,7 @@ YARD::Rake::YardocTask.new do |t|
 end
 
 Rake::TestTask.new do |t|
-  t.libs       = %w(test)
+  t.libs       = %w[test]
   t.test_files = FileList["test/**/*_test.rb"]
 end
 
@@ -33,17 +33,17 @@ task :generate_ffi do
 
   mappings = {
     # Core
-    'core_ffi.rb'                 => %w(Support.h Core.h),
-    'core/bitcode_ffi.rb'         => %w(BitReader.h BitWriter.h),
+    'core_ffi.rb'                 => %w[Support.h Core.h],
+    'core/bitcode_ffi.rb'         => %w[BitReader.h BitWriter.h],
 
     # Transformations
-    'analysis_ffi.rb'             => %w(Analysis.h),
-    'transforms/pass_builder_ffi.rb' => %w(Transforms/PassBuilder.h),
+    'analysis_ffi.rb'             => %w[Analysis.h],
+    'transforms/pass_builder_ffi.rb' => %w[Transforms/PassBuilder.h],
 
     # Code generation
-    'target_ffi.rb'               => %w(Target.h TargetMachine.h),
-    'linker_ffi.rb'               => %w(Linker.h),
-    'execution_engine_ffi.rb'     => %w(ExecutionEngine.h),
+    'target_ffi.rb'               => %w[Target.h TargetMachine.h],
+    'linker_ffi.rb'               => %w[Linker.h],
+    'execution_engine_ffi.rb'     => %w[ExecutionEngine.h],
   }
 
   mappings.each do |ruby_file, headers|
@@ -56,7 +56,7 @@ task :generate_ffi do
       ],
       headers:     headers.map { |header| "llvm-c/#{header}" },
       cflags:      LLVM::CONFIG::CFLAGS.split(/\s/),
-      prefixes:    %w(LLVM),
+      prefixes:    %w[LLVM],
       output:      "lib/llvm/#{ruby_file}"
     )
   end

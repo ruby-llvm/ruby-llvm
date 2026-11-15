@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ master ]
 
+# a new run on the same branch or PR cancels the one still in progress
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -18,7 +23,22 @@ jobs:
           - os: ubuntu-26.04
             ruby: '3.1'
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
+    env:
+      # the tests do not need these Gemfile groups; see the Gemfile
+      BUNDLE_WITHOUT: lint:debug
     steps:
+      - name: Homebrew cache key
+        if: startsWith(matrix.os, 'macos')
+        id: brew_cache
+        run: |
+          echo "dir=$(brew --cache)" >> "$GITHUB_OUTPUT"
+          echo "llvm=$(brew info --json=v2 llvm@22 | jq -r '.formulae[0] | "\(.versions.stable)_\(.revision)"')" >> "$GITHUB_OUTPUT"
+      - name: Cache Homebrew downloads
+        if: startsWith(matrix.os, 'macos')
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.brew_cache.outputs.dir }}/downloads
+          key: brew-downloads-${{ matrix.os }}-llvm@22-${{ steps.brew_cache.outputs.llvm }}
       - name: Install LLVM on macos
         if: startsWith(matrix.os, 'macos')
         id: macos_setup
@@ -49,9 +69,16 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           echo "setup=false" >> "$GITHUB_OUTPUT"
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 22
+          # Add the apt.llvm.org repository as llvm.sh does, but skip llvm.sh's
+          # fixed package list (clang, lldb, lld, clangd), which has no option
+          # to install less.
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
+          codename=$(lsb_release -cs)
+          # add-apt-repository runs apt-get update itself
+          sudo add-apt-repository -y "deb https://apt.llvm.org/${codename}/ llvm-toolchain-${codename}-22 main"
+          # headers, llvm-config-22 and libLLVM; the support library builds with
+          # the runner's own C++ compiler, as it would on a user's machine
+          sudo apt-get install -y --no-install-recommends llvm-22-dev
           # sudo apt-get install -y libpolly-22-dev
           echo "setup=true" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -70,6 +97,31 @@ jobs:
       - run: bundle exec rake test:samples
         name: "Run samples"
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+      # Runs sorbet-static's binary directly. The srb wrapper is in the sorbet
+      # gem.
       - name: "Typecheck"
-        run: bundle exec srb tc
+        run: '"$(bundle info --path sorbet-static)/libexec/sorbet"'
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+      # Build the gem and install it as a user would: outside Bundler, building
+      # the support library and lib/llvm/config.rb at install time. GEM_PATH is
+      # only the new GEM_HOME, so ffi and rake must come from rubygems.org
+      # through the gem's own dependencies. The check runs outside the checkout,
+      # so only the installed gem can be loaded.
+      - name: "Build and install gem"
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        env:
+          GEM_HOME: ${{ runner.temp }}/gem-install
+          GEM_PATH: ${{ runner.temp }}/gem-install
+        run: |
+          gem build ruby-llvm.gemspec --output "$RUNNER_TEMP/ruby-llvm.gem"
+          gem install --no-document "$RUNNER_TEMP/ruby-llvm.gem"
+          cd "$RUNNER_TEMP"
+          ruby -e '
+            require "llvm/core"
+            require "llvm/config"
+            spec = Gem.loaded_specs.fetch("ruby-llvm")
+            abort "loaded #{spec.full_gem_path}, not the installed gem" unless spec.full_gem_path.start_with?(ENV.fetch("GEM_HOME"))
+            type = LLVM::Int32.type.debug_s
+            abort "support library: Type#debug_s returned #{type.inspect}" unless type == "i32"
+            puts "installed ruby-llvm #{spec.version} for LLVM #{LLVM::CONFIG::VERSION}"
+          '

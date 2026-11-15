@@ -1,0 +1,26 @@
+name: Cache Cleanup
+
+# Delete a pull request's Actions caches when it closes. Only that pull
+# request can restore them, so once it is closed they only take up space
+# in the repository's cache limit and push out caches that are still used.
+#
+# pull_request_target rather than pull_request, so the token can also delete
+# caches for pull requests from forks. This workflow never checks out or runs
+# code from the pull request; it only uses the pull request number.
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  actions: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-slim
+    steps:
+      - name: Delete caches for the closed pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_REF: refs/pull/${{ github.event.pull_request.number }}/merge
+        run: gh cache delete --all --ref "$PR_REF" --succeed-on-no-caches

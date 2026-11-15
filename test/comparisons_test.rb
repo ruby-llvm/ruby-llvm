@@ -40,25 +40,25 @@ class ComparisonsTestCase < Minitest::Test
 
   def integer_comparison_assertion(operation, operand1, operand2, signed, expected_result)
     result = run_comparison_operation(:icmp,
-                                      operation,
-                                      LLVM::Int.from_i(operand1, signed),
-                                      LLVM::Int.from_i(operand2, signed),
-                                      LLVM::Int1).to_i(false)
+      operation,
+      LLVM::Int.from_i(operand1, signed),
+      LLVM::Int.from_i(operand2, signed),
+      LLVM::Int1).to_i(false)
     assert_equal expected_result, result
   end
 
   def float_comparison_assertion(operation, operand1, operand2, expected_result)
     result = run_comparison_operation(:fcmp,
-                                      operation,
-                                      LLVM::Float(operand1),
-                                      LLVM::Float(operand2),
-                                      LLVM::Int1).to_i(false)
+      operation,
+      LLVM::Float(operand1),
+      LLVM::Float(operand2),
+      LLVM::Int1).to_i(false)
     assert_equal expected_result, result
   end
 
   def run_comparison_operation(comparison_operation, comparison_operator,
                                operand1, operand2, return_type)
-    run_function([], [], return_type) do |builder, function, *arguments|
+    run_function([], [], return_type) do |builder, function|
       entry = function.basic_blocks.append
       builder.position_at_end(entry)
       builder.ret(builder.send(comparison_operation, comparison_operator, operand1, operand2))

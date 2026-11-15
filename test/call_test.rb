@@ -10,7 +10,7 @@ class CallTestCase < Minitest::Test
 
   def test_simple_call
     test_module = define_module("test_module") do |host_module|
-      define_function(host_module, "test_function", [], LLVM::Int) do |builder, function, *arguments|
+      define_function(host_module, "test_function", [], LLVM::Int) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         builder.ret(LLVM::Int(1))
@@ -28,12 +28,12 @@ class CallTestCase < Minitest::Test
 
   def test_nested_call
     test_module = define_module("test_module") do |host_module|
-      function_1 = define_function(host_module, "test_function_1", [], LLVM::Int) do |builder, function, *arguments|
+      function_1 = define_function(host_module, "test_function_1", [], LLVM::Int) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         builder.ret(LLVM::Int(1))
       end
-      function_2 = define_function(host_module, "test_function_2", [], LLVM::Int) do |builder, function, *arguments|
+      define_function(host_module, "test_function_2", [], LLVM::Int) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         builder.ret(builder.call(function_1))
@@ -79,7 +79,7 @@ class CallTestCase < Minitest::Test
       global.initializer = LLVM::ConstantArray.string("PATH")
       refute_predicate global, :thread_local?
       external = host_module.functions.add("getenv", [LLVM::Pointer(LLVM::Int8)], LLVM::Pointer(LLVM::Int8))
-      define_function(host_module, "test_function", [], LLVM::Pointer(LLVM::Int8)) do |builder, function, *arguments|
+      define_function(host_module, "test_function", [], LLVM::Pointer(LLVM::Int8)) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         parameter = builder.gep(global, [LLVM::Int(0), LLVM::Int(0)])
@@ -90,7 +90,7 @@ class CallTestCase < Minitest::Test
   end
 
   def test_call_with_nonfunction
-    test_module = define_module("test_module") do |host_module|
+    define_module("test_module") do |host_module|
       define_function(host_module, "test_function", [], LLVM.Void) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
@@ -117,7 +117,7 @@ class CallTestCase < Minitest::Test
         builder.ret(arguments[0])
       end
 
-      define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+      define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         builder.ret(builder.call(callee_fun, LLVM::Int64.from_i(42)))
@@ -138,7 +138,7 @@ class CallTestCase < Minitest::Test
         builder.ret(arguments[0])
       end
 
-      define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+      define_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function|
         entry = function.basic_blocks.append
         builder.position_at_end(entry)
         builder.ret(builder.call('callee_fun', LLVM::Int64.from_i(42)))
@@ -152,7 +152,7 @@ class CallTestCase < Minitest::Test
 
   def test_invoke_missing_personality_function
     test_module = define_invalid_module("test_module") do |host_module|
-      callee_fun = define_function(host_module, "callee_fun", [], LLVM::Int64) do |builder, function, *arguments|
+      callee_fun = define_function(host_module, "callee_fun", [], LLVM::Int64) do |builder, function|
         function.call_conv = :fast
         entry = function.basic_blocks.append('entry')
         builder.position_at_end(entry)
@@ -160,7 +160,7 @@ class CallTestCase < Minitest::Test
       end
 
       # invalid because no personality function is set
-      caller_fun = define_invalid_function(host_module, "caller_fun", [], LLVM::Int64) do |builder, function, *arguments|
+      define_invalid_function(host_module, "caller_fun", [], LLVM::Int64) do |_builder, function|
         entry = function.basic_blocks.append('entry')
         normal = function.basic_blocks.append('normal')
         exception = function.basic_blocks.append('exception')

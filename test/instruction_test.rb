@@ -13,7 +13,8 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
     fn = @module.functions.add("test_instruction", [LLVM::Double], LLVM::Double) do |fn, arg|
       fn.basic_blocks.append.build do |builder|
         builder.ret(
-          builder.fadd(arg, LLVM.Double(3.0)))
+          builder.fadd(arg, LLVM.Double(3.0))
+        )
       end
     end
 
@@ -184,7 +185,7 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
   end
 
   def test_types_alloca_load_store
-    fn = @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
       fn.basic_blocks.append.build do |builder|
         alloca = builder.alloca(LLVM::Int, "test")
         assert_equal :pointer, alloca.type.kind
@@ -198,7 +199,7 @@ class InstructionTestCase < Minitest::Test # rubocop:disable Metrics/ClassLength
   # some builder instructions do not return instruction values
   # int math with constants returns constants, or poison
   def test_builder_returns_non_instruction_ints
-    fn = @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
+    @module.functions.add("test_instruction", [], LLVM.Void) do |fn|
       fn.basic_blocks.append.build do |builder|
         ops = [:add, :sub, :mul]
         prefixes = ['', :nsw_, :nuw_]

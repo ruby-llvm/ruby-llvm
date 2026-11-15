@@ -15,18 +15,18 @@ module LLVM
       ffi_lib [lib_path]
 
       attach_function :initialize_all_target_infos,
-          :LLVMInitializeAllTargetInfos, [], :void
+        :LLVMInitializeAllTargetInfos, [], :void
       attach_function :initialize_all_targets,
-          :LLVMInitializeAllTargets, [], :void
+        :LLVMInitializeAllTargets, [], :void
       attach_function :initialize_all_target_mcs,
-          :LLVMInitializeAllTargetMCs, [], :void
+        :LLVMInitializeAllTargetMCs, [], :void
       attach_function :initialize_all_asm_printers,
-          :LLVMInitializeAllAsmPrinters, [], :void
+        :LLVMInitializeAllAsmPrinters, [], :void
 
       attach_function :initialize_native_target,
-          :LLVMInitializeNativeTarget, [], :void
+        :LLVMInitializeNativeTarget, [], :void
       attach_function :initialize_native_asm_printer,
-          :LLVMInitializeNativeAsmPrinter, [], :void
+        :LLVMInitializeNativeAsmPrinter, [], :void
 
       attach_function :get_enum_attribute_name_for_kind, :LLVMGetEnumAttributeNameForKind, [:uint], :string
       attach_function :get_attribute_as_string, :LLVMGetAttributeAsString, [:pointer], LLVM::OwnedString
