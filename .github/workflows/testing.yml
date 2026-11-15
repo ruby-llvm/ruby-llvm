@@ -23,6 +23,9 @@ jobs:
           - os: ubuntu-26.04
             ruby: '3.1'
     continue-on-error: ${{ endsWith(matrix.ruby, 'head') || matrix.ruby == 'debug' }}
+    env:
+      # the tests do not need these Gemfile groups; see the Gemfile
+      BUNDLE_WITHOUT: lint:debug
     steps:
       - name: Homebrew cache key
         if: startsWith(matrix.os, 'macos')
@@ -94,6 +97,8 @@ jobs:
       - run: bundle exec rake test:samples
         name: "Run samples"
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+      # Runs sorbet-static's binary directly. The srb wrapper is in the sorbet
+      # gem.
       - name: "Typecheck"
-        run: bundle exec srb tc
+        run: '"$(bundle info --path sorbet-static)/libexec/sorbet"'
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
