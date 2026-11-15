@@ -12,8 +12,9 @@
     - `Builder#insert_block` when the builder is not positioned
     - `GlobalVariable#initializer` when no initializer is set
     - `ConstantArray#[]` and `ConstantVector#[]` with an out-of-range index
-- BREAKING: `Module#link_into` returns `true` on success and `false` if linking failed
+- BREAKING: `Module#link_into` returns `true` on success
   - it was documented to return `nil` on success and an error string on failure, but always returned `nil`
+  - a failed link ends the process, because LLVM's default diagnostic handler prints the error and exits; `false` is returned only if a diagnostic handler is installed on the context ([#346](https://github.com/ruby-llvm/ruby-llvm/issues/346))
 - `dump` on `Module`, `Value`, and `Type` writes through Ruby's `$stderr` instead of LLVM's `errs()`, so reassigning `$stderr` captures the output
 - Shared library names are defined once in `LLVM::LIB_NAMES`
   - `libLLVM-22.so.1` is no longer tried; the candidates are `LLVM-22`, `libLLVM.so.22`, and `libLLVM.so.22.1`
