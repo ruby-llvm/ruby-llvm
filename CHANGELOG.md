@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Fixed
+
+- `MCJITCompiler#run_function` can call a function that the module only declares, such as libm's `sin`; it raised "Couldn't find function" ([#48](https://github.com/ruby-llvm/ruby-llvm/issues/48))
+  - MCJIT only resolves functions defined in its modules, so `run_function` now looks other names up in the loaded libraries with `LLVMSearchForAddressOfSymbol`
+
 ## [22.1.0] - 2026-11-14
 
 ### Changed
