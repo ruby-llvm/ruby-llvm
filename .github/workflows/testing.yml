@@ -102,3 +102,26 @@ jobs:
       - name: "Typecheck"
         run: '"$(bundle info --path sorbet-static)/libexec/sorbet"'
         if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+      # Build the gem and install it as a user would: outside Bundler, building
+      # the support library and lib/llvm/config.rb at install time. GEM_PATH is
+      # only the new GEM_HOME, so ffi and rake must come from rubygems.org
+      # through the gem's own dependencies. The check runs outside the checkout,
+      # so only the installed gem can be loaded.
+      - name: "Build and install gem"
+        if: steps.macos_setup.outputs.setup == 'true' || steps.ubuntu_setup.outputs.setup == 'true'
+        env:
+          GEM_HOME: ${{ runner.temp }}/gem-install
+          GEM_PATH: ${{ runner.temp }}/gem-install
+        run: |
+          gem build ruby-llvm.gemspec --output "$RUNNER_TEMP/ruby-llvm.gem"
+          gem install --no-document "$RUNNER_TEMP/ruby-llvm.gem"
+          cd "$RUNNER_TEMP"
+          ruby -e '
+            require "llvm/core"
+            require "llvm/config"
+            spec = Gem.loaded_specs.fetch("ruby-llvm")
+            abort "loaded #{spec.full_gem_path}, not the installed gem" unless spec.full_gem_path.start_with?(ENV.fetch("GEM_HOME"))
+            type = LLVM::Int32.type.debug_s
+            abort "support library: Type#debug_s returned #{type.inspect}" unless type == "i32"
+            puts "installed ruby-llvm #{spec.version} for LLVM #{LLVM::CONFIG::VERSION}"
+          '
