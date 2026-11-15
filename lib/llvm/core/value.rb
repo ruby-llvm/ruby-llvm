@@ -481,9 +481,9 @@ module LLVM
     # @deprecated
     #: -> ConstantInt
     def nuw_neg
-      # :nocov:
+      # simplecov:disable
       self.class.from_ptr(C.const_nuw_neg(self))
-      # :nocov:
+      # simplecov:enable
     end
     deprecate :nuw_neg, "neg", 2025, 3
 

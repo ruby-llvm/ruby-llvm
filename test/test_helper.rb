@@ -12,14 +12,23 @@ end
 begin
   require 'simplecov'
 
+  # SimpleCov 1.x renames add_filter to skip and use_merging to merging.
+  # Ruby 3.1 and 3.2 get SimpleCov 0.22, which has only the old names.
+  SimpleCov.singleton_class.alias_method(:skip, :add_filter) unless SimpleCov.respond_to?(:skip)
+  SimpleCov.singleton_class.alias_method(:merging, :use_merging) unless SimpleCov.respond_to?(:merging)
+
   SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/lib/llvm/transforms/scalar.rb"
-    add_filter "/lib/llvm/transforms/ipo.rb"
-    add_filter "/lib/llvm/transforms/vectorize.rb"
-    add_filter "/lib/llvm/transforms/utils.rb"
-    add_filter "/lib/llvm/transforms/builder.rb"
-    add_filter "/lib/llvm/core/pass_manager.rb"
+    # One suite: report each run on its own instead of merging it with
+    # earlier runs that SimpleCov named differently (e.g. "Minitest").
+    merging false
+
+    skip "/test/"
+    skip "/lib/llvm/transforms/scalar.rb"
+    skip "/lib/llvm/transforms/ipo.rb"
+    skip "/lib/llvm/transforms/vectorize.rb"
+    skip "/lib/llvm/transforms/utils.rb"
+    skip "/lib/llvm/transforms/builder.rb"
+    skip "/lib/llvm/core/pass_manager.rb"
   end
 rescue LoadError
   warn "Proceeding without SimpleCov. gem install simplecov on supported platforms."
